@@ -31,7 +31,7 @@ class NetworkVisualizer
 {
 public:
     NetworkVisualizer(
-        const std::shared_ptr<ddspipe::core::DiscoveryDatabase> discovery_database) noexcept;
+        const std::shared_ptr<ddspipe::core::DiscoveryDatabase>& discovery_database) noexcept;
 
     void print_participants(
             std::ostream& target = std::cout) const noexcept;

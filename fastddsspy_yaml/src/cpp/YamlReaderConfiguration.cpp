@@ -146,6 +146,17 @@ void Configuration::load_specs_configuration_(
     }
 }
 
+bool Configuration::is_valid(
+        utils::Formatter& error_msg) const noexcept
+{
+    if (n_threads < 1)
+    {
+        error_msg << "Must be at least 1 thread. ";
+        return false;
+    }
+    return true;
+}
+
 } /* namespace yaml */
 } /* namespace spy */
 } /* namespace eprosima */

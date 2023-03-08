@@ -26,6 +26,8 @@ namespace participants {
  */
 class SpyVisualizer : public DataVisualizer, public NetworkVisualizer
 {
+public:
+    using NetworkVisualizer::NetworkVisualizer;
 };
 
 } /* namespace participants */

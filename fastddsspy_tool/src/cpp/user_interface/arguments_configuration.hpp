@@ -29,7 +29,7 @@
 #include "ProcessReturnCode.hpp"
 
 namespace eprosima {
-namespace fastddsspy {
+namespace spy {
 namespace ui {
 
 /*
@@ -95,7 +95,6 @@ enum optionIndex
     RELOAD_TIME,
     ACTIVATE_DEBUG,
     VERSION,
-    TIMEOUT,
     LOG_FILTER,
     LOG_VERBOSITY,
 };
@@ -129,7 +128,6 @@ ProcessReturnCode parse_arguments(
         char** argv,
         std::string& file_path,
         utils::Duration_ms& reload_time,
-        utils::Duration_ms& timeout,
         std::string& log_filter,
         eprosima::fastdds::dds::Log::Kind& log_verbosity);
 
@@ -151,5 +149,5 @@ ENUMERATION_BUILDER(
     );
 
 } /* namespace ui */
-} /* namespace fastddsspy */
+} /* namespace spy */
 } /* namespace eprosima */

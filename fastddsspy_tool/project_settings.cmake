@@ -38,17 +38,7 @@ set(MODULE_DEPENDENCIES
     ${MODULE_FIND_PACKAGES})
 
 set(MODULE_THIRDPARTY_HEADERONLY
-    optionparser
-    foxglove)
-
-set(MODULE_THIRDPARTY_PATH
-    "../../thirdparty")
-
-set(MODULE_LICENSE_FILE_PATH
-    "../../LICENSE")
-
-set(MODULE_VERSION_FILE_PATH
-    "../../VERSION")
+    optionparser)
 
 set(MODULE_TARGET_NAME
-    "foxglove_bridge")
+    "fastdds_spy")

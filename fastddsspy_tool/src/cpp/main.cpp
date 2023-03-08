@@ -37,16 +37,15 @@
 #include <ddspipe_participants/participant/dynamic_types/SchemaParticipant.hpp>
 #include <ddspipe_participants/participant/dynamic_types/DynTypesParticipant.hpp>
 
-#include <fastddsspy_participants/FoxgloveWsHandler.hpp>
+#include <fastddsspy_participants/visualizer/DataVisualizer.hpp>
+#include <fastddsspy_participants/visualizer/NetworkVisualizer.hpp>
 
 #include <fastddsspy_yaml/YamlReaderConfiguration.hpp>
 
 #include "user_interface/constants.hpp"
 #include "user_interface/arguments_configuration.hpp"
 #include "user_interface/ProcessReturnCode.hpp"
-
-using namespace eprosima::ddspipe;
-using namespace eprosima::fastddsspy;
+#include "user_interface/FastDdsSpyTool.hpp"
 
 int main(
         int argc,
@@ -58,26 +57,23 @@ int main(
     // Reload time
     eprosima::utils::Duration_ms reload_time = 0;
 
-    // Maximum timeout
-    eprosima::utils::Duration_ms timeout = 0;
-
     // Debug options
-    std::string log_filter = "(DDSPIPE|FOXGLOVEWS)";
+    std::string log_filter = "(DDSPIPE|FASTDDSSPY)";
     eprosima::fastdds::dds::Log::Kind log_verbosity = eprosima::fastdds::dds::Log::Kind::Warning;
 
     // Parse arguments
-    ui::ProcessReturnCode arg_parse_result =
-            ui::parse_arguments(argc, argv, file_path, reload_time, timeout, log_filter, log_verbosity);
+    eprosima::spy::ui::ProcessReturnCode arg_parse_result =
+            eprosima::spy::ui::parse_arguments(argc, argv, file_path, reload_time, log_filter, log_verbosity);
 
-    if (arg_parse_result == ui::ProcessReturnCode::help_argument)
+    if (arg_parse_result == eprosima::spy::ui::ProcessReturnCode::help_argument)
     {
-        return static_cast<int>(ui::ProcessReturnCode::success);
+        return static_cast<int>(eprosima::spy::ui::ProcessReturnCode::success);
     }
-    else if (arg_parse_result == ui::ProcessReturnCode::version_argument)
+    else if (arg_parse_result == eprosima::spy::ui::ProcessReturnCode::version_argument)
     {
-        return static_cast<int>(ui::ProcessReturnCode::success);
+        return static_cast<int>(eprosima::spy::ui::ProcessReturnCode::success);
     }
-    else if (arg_parse_result != ui::ProcessReturnCode::success)
+    else if (arg_parse_result != eprosima::spy::ui::ProcessReturnCode::success)
     {
         return static_cast<int>(arg_parse_result);
     }
@@ -104,10 +100,10 @@ int main(
     // Check file is in args, else get the default file
     if (file_path == "")
     {
-        file_path = ui::DEFAULT_CONFIGURATION_FILE_NAME;
+        file_path = eprosima::spy::ui::DEFAULT_CONFIGURATION_FILE_NAME;
 
         logUser(
-            FOXGLOVEWS_EXECUTION,
+            FASTDDSSPY_TOOL,
             "Not configuration file given, try to use default file " << file_path << ".");
     }
 
@@ -116,101 +112,29 @@ int main(
     if (!is_file_accessible(file_path.c_str(), eprosima::utils::FileAccessMode::read))
     {
         logUser(
-            FOXGLOVEWS_ARGS,
+            FASTDDSSPY_TOOL,
             "File '" << file_path << "' does not exist or it is not accessible. Using default configuration.");
         file_path = "";
     }
 
-    logUser(FOXGLOVEWS_EXECUTION, "Starting Foxglove Websocket execution.");
+    logUser(FASTDDSSPY_TOOL, "Starting Fast DDS Spy execution.");
 
     // Encapsulating execution in block to erase all memory correctly before closing process
     try
     {
-        // Create a multiple event handler that handles all events that make the application stop
-        eprosima::utils::event::MultipleEventHandler close_handler;
-
-        // First of all, create signal handler so SIGINT and SIGTERM do not break the program while initializing
-        close_handler.register_event_handler<eprosima::utils::event::EventHandler<eprosima::utils::event::Signal>,
-                eprosima::utils::event::Signal>(
-            std::make_unique<eprosima::utils::event::SignalEventHandler<eprosima::utils::event::Signal::sigint>>());
-        close_handler.register_event_handler<eprosima::utils::event::EventHandler<eprosima::utils::event::Signal>,
-                eprosima::utils::event::Signal>(
-            std::make_unique<eprosima::utils::event::SignalEventHandler<eprosima::utils::event::Signal::sigterm>>());
-
-        // If it must be a maximum time, register a periodic handler to finish handlers
-        if (timeout > 0)
-        {
-            close_handler.register_event_handler<eprosima::utils::event::PeriodicEventHandler>(
-                std::make_unique<eprosima::utils::event::PeriodicEventHandler>(
-                    []()
-                    {
-                        /* Do nothing */ },
-                    timeout));
-        }
-
         /////
-        // Foxglove Websocket Initialization
+        // Fast DDS Spy Initialization
 
         // Default configuration. Load it from file if file exists
-        eprosima::fastddsspy::yaml::Configuration configuration;
+        eprosima::spy::yaml::Configuration configuration;
 
         if (file_path != "")
         {
-            configuration = eprosima::fastddsspy::yaml::Configuration(file_path);
+            configuration = eprosima::spy::yaml::Configuration(file_path);
         }
 
-        // Create Payload Pool
-        std::shared_ptr<core::PayloadPool> payload_pool =
-            std::make_shared<core::FastPayloadPool>();
-
-        // Create Discovery Database
-        std::shared_ptr<core::DiscoveryDatabase> discovery_database =
-            std::make_shared<core::DiscoveryDatabase>();
-
-        // Create DynTypes Participant
-        std::shared_ptr<eprosima::ddspipe::participants::DynTypesParticipant> dyn_participant =
-            std::make_shared<eprosima::ddspipe::participants::DynTypesParticipant>(configuration.simple_configuration, payload_pool, discovery_database);
-        dyn_participant->init();
-
-        // Create Foxglove Websocket Participant
-        std::shared_ptr<eprosima::ddspipe::participants::SchemaParticipant> foxglove_websocket_participant =
-            std::make_shared<eprosima::ddspipe::participants::SchemaParticipant>(configuration.foxglove_ws_configuration, payload_pool, discovery_database, std::make_shared<eprosima::fastddsspy::participants::FoxgloveWsHandler>(
-                configuration.configuration
-            ));
-
-        // Create and populate Participant Database
-        std::shared_ptr<core::ParticipantsDatabase> participant_database =
-            std::make_shared<core::ParticipantsDatabase>();
-
-        // Allowed topic list
-        std::shared_ptr<core::AllowedTopicList> atl = std::make_shared<core::AllowedTopicList>(
-            configuration.allowlist,
-            configuration.blocklist);
-
-        // Thread Pool
-        std::shared_ptr<eprosima::utils::SlotThreadPool> thread_pool = std::make_shared<eprosima::utils::SlotThreadPool>(
-            configuration.n_threads
-        );
-
-        // Populate Participant Database
-        participant_database->add_participant(
-            dyn_participant->id(),
-            dyn_participant
-        );
-        participant_database->add_participant(
-            foxglove_websocket_participant->id(),
-            foxglove_websocket_participant
-        );
-
-        // Create pipe
-        core::DdsPipe pipe(
-            atl,
-            discovery_database,
-            payload_pool,
-            participant_database,
-            thread_pool,
-            configuration.builtin_topics
-        );
+        // Create the Spy
+        eprosima::spy::ui::FastDdsSpyTool spy(configuration);
 
         /////
         // File Watcher Handler
@@ -218,18 +142,18 @@ int main(
         // Callback will reload configuration and pass it to ddspipe
         // WARNING: it is needed to pass file_path, as FileWatcher only retrieves file_name
         std::function<void(std::string)> filewatcher_callback =
-                [&pipe, file_path]
+                [&spy, file_path]
                     (std::string file_name)
                 {
                     logUser(
-                        FOXGLOVEWS_EXECUTION,
+                        FASTDDSSPY_TOOL,
                         "FileWatcher notified changes in file " << file_name << ". Reloading configuration");
 
                     try
                     {
-                        eprosima::fastddsspy::yaml::Configuration new_configuration(file_path);
-                        pipe.reload_allowed_topics(
-                            std::make_shared<core::AllowedTopicList>(
+                        eprosima::spy::yaml::Configuration new_configuration(file_path);
+                        spy.reload_allowed_topics(
+                            std::make_shared<eprosima::ddspipe::core::AllowedTopicList>(
                                 new_configuration.allowlist,
                                 new_configuration.blocklist
                             )
@@ -237,7 +161,7 @@ int main(
                     }
                     catch (const std::exception& e)
                     {
-                        logWarning(FOXGLOVEWS_EXECUTION,
+                        logWarning(FASTDDSSPY_TOOL,
                                 "Error reloading configuration file " << file_name << " with error: " << e.what());
                     }
                 };
@@ -257,18 +181,18 @@ int main(
         {
             // Callback will reload configuration and pass it to ddspipe
             std::function<void()> periodic_callback =
-                    [&pipe, file_path]
+                    [&spy, file_path]
                         ()
                     {
                         logUser(
-                            FOXGLOVEWS_EXECUTION,
+                            FASTDDSSPY_TOOL,
                             "Periodic Timer raised. Reloading configuration from file " << file_path << ".");
 
                         try
                         {
-                            eprosima::fastddsspy::yaml::Configuration new_configuration(file_path);
-                            pipe.reload_allowed_topics(
-                            std::make_shared<core::AllowedTopicList>(
+                            eprosima::spy::yaml::Configuration new_configuration(file_path);
+                            spy.reload_allowed_topics(
+                            std::make_shared<eprosima::ddspipe::core::AllowedTopicList>(
                                 new_configuration.allowlist,
                                 new_configuration.blocklist
                             )
@@ -276,7 +200,7 @@ int main(
                         }
                         catch (const std::exception& e)
                         {
-                            logWarning(FOXGLOVEWS_EXECUTION,
+                            logWarning(FASTDDSSPY_TOOL,
                                     "Error reloading configuration file " << file_path << " with error: " << e.what());
                         }
                     };
@@ -285,17 +209,13 @@ int main(
                             reload_time);
         }
 
-        // Start Foxglove Websocket
-        pipe.enable();
+        logUser(FASTDDSSPY_TOOL, "Fast DDS Spy running.");
 
-        logUser(FOXGLOVEWS_EXECUTION, "Foxglove Websocket running.");
+        spy.run();
 
-        // Wait until signal arrives
-        close_handler.wait_for_event();
+        logUser(FASTDDSSPY_TOOL, "Stopping Fast DDS Spy.");
 
-        logUser(FOXGLOVEWS_EXECUTION, "Stopping Foxglove Websocket.");
-
-        // Before stopping the Foxglove Websocket erase event handlers that reload configuration
+        // Before stopping the Fast DDS Spy erase event handlers that reload configuration
         if (periodic_handler)
         {
             periodic_handler.reset();
@@ -306,31 +226,28 @@ int main(
             file_watcher_handler.reset();
         }
 
-        // Stop Foxglove Websocket
-        pipe.disable();
-
-        logUser(FOXGLOVEWS_EXECUTION, "Foxglove Websocket stopped correctly.");
+        logUser(FASTDDSSPY_TOOL, "Fast DDS Spy stopped correctly.");
     }
     catch (const eprosima::utils::ConfigurationException& e)
     {
-        logError(FOXGLOVEWS_ERROR,
-                "Error Loading Foxglove Websocket Configuration from file " << file_path <<
+        logError(FASTDDSSPY_TOOL,
+                "Error Loading Fast DDS Spy Configuration from file " << file_path <<
                 ". Error message:\n " <<
                 e.what());
-        return static_cast<int>(ui::ProcessReturnCode::execution_failed);
+        return static_cast<int>(eprosima::spy::ui::ProcessReturnCode::execution_failed);
     }
     catch (const eprosima::utils::InitializationException& e)
     {
-        logError(FOXGLOVEWS_ERROR,
-                "Error Initializing Foxglove Websocket. Error message:\n " <<
+        logError(FASTDDSSPY_TOOL,
+                "Error Initializing Fast DDS Spy. Error message:\n " <<
                 e.what());
-        return static_cast<int>(ui::ProcessReturnCode::execution_failed);
+        return static_cast<int>(eprosima::spy::ui::ProcessReturnCode::execution_failed);
     }
 
-    logUser(FOXGLOVEWS_EXECUTION, "Finishing Foxglove Websocket execution correctly.");
+    logUser(FASTDDSSPY_TOOL, "Finishing Fast DDS Spy execution correctly.");
 
     // Force print every log before closing
     eprosima::utils::Log::Flush();
 
-    return static_cast<int>(ui::ProcessReturnCode::success);
+    return static_cast<int>(eprosima::spy::ui::ProcessReturnCode::success);
 }

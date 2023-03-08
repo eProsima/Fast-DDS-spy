@@ -52,6 +52,11 @@ std::shared_ptr<ddspipe::core::IWriter> SpyParticipant::create_writer(
     }
 }
 
+void SpyParticipant::new_participant_info_(ddspipe::core::IRoutingData& data)
+{
+    // TODO IMPORTANT
+}
+
 } /* namespace participants */
 } /* namespace spy */
 } /* namespace eprosima */

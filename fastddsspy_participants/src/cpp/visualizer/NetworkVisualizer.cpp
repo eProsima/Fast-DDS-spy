@@ -19,7 +19,7 @@ namespace spy {
 namespace participants {
 
 NetworkVisualizer::NetworkVisualizer(
-        const std::shared_ptr<ddspipe::core::DiscoveryDatabase> discovery_database) noexcept
+        const std::shared_ptr<ddspipe::core::DiscoveryDatabase>& discovery_database) noexcept
     : discovery_database_(discovery_database)
 {
     // Do nothing
@@ -28,34 +28,34 @@ NetworkVisualizer::NetworkVisualizer(
 void NetworkVisualizer::print_participants(
         std::ostream& target /* = std::cout */) const noexcept
 {
-    // TODO
-    target << "participants";
+    // TODO IMPORTANT
+    target << "<participants> still in progress..." << std::endl;
 }
 
 void NetworkVisualizer::print_datareaders(
         std::ostream& target /* = std::cout */) const noexcept
 {
-    // TODO
-    target << "datareaders";
+    // TODO IMPORTANT
+    target << "<datareaders> still in progress..." << std::endl;
 }
 
 void NetworkVisualizer::print_datawriters(
         std::ostream& target /* = std::cout */) const noexcept
 {
-    // TODO
-    target << "datawriters";
+    // TODO IMPORTANT
+    target << "<datawriters> still in progress..." << std::endl;
 }
 
 void NetworkVisualizer::print_topics(
         std::ostream& target /* = std::cout */) const noexcept
 {
-    // TODO
-    target << "topics";
+    // TODO IMPORTANT
+    target << "<topics> still in progress..." << std::endl;
 }
 
 void NetworkVisualizer::new_participant_info(const ParticipantInfo& info) noexcept
 {
-    // TODO
+    // TODO IMPORTANT
 }
 
 } /* namespace participants */

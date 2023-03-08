@@ -18,6 +18,7 @@
 
 #include <ddspipe_core/types/topic/filter/IFilterTopic.hpp>
 #include <ddspipe_core/types/topic/dds/DistributedTopic.hpp>
+#include <ddspipe_core/configuration/IConfiguration.hpp>
 
 #include <ddspipe_participants/configuration/SimpleParticipantConfiguration.hpp>
 #include <ddspipe_participants/configuration/ParticipantConfiguration.hpp>
@@ -38,7 +39,7 @@ namespace yaml {
  *
  * TODO: Add version configuration so it could load different versions
  */
-class Configuration
+class Configuration : ddspipe::core::IConfiguration
 {
 public:
 
@@ -47,6 +48,9 @@ public:
     Configuration(const Yaml& yml);
 
     Configuration(const std::string& file_path);
+
+    virtual bool is_valid(
+            utils::Formatter& error_msg) const noexcept override;
 
     // Participants configurations
     std::shared_ptr<ddspipe::participants::SimpleParticipantConfiguration> simple_configuration;

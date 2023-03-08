@@ -80,6 +80,7 @@ void DataVisualizer::print_data_nts_(
         fastrtps::types::DynamicType_ptr& type,
         ddspipe::core::types::RtpsPayloadData& data) const noexcept
 {
+    // TODO IMPORTANT
     // TODO do it in a way that you can see the data deserialize
     static_cast<void>(type);
 

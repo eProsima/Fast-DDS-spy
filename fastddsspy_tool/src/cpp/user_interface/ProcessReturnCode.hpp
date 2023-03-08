@@ -20,7 +20,7 @@
 #pragma once
 
 namespace eprosima {
-namespace fastddsspy {
+namespace spy {
 namespace ui {
 
 enum class ProcessReturnCode : int
@@ -34,5 +34,5 @@ enum class ProcessReturnCode : int
 };
 
 } /* namespace ui */
-} /* namespace fastddsspy */
+} /* namespace spy */
 } /* namespace eprosima */
