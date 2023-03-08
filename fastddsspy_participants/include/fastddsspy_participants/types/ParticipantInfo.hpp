@@ -19,7 +19,7 @@
 
 namespace eprosima {
 namespace spy {
-namespace core {
+namespace participants {
 
 /**
  * TODO
@@ -31,16 +31,11 @@ struct ParticipantInfo
 
     //! Unique id of the participant
     ddspipe::core::types::Guid guid {};
+
+    //! Whether the participant is active or has left
+    bool active;
 };
 
-/**
- * @brief \c ParticipantInfo to stream serialization
- */
-DDSPIPE_CORE_DllAPI
-std::ostream& operator <<(
-        std::ostream& os,
-        const ParticipantInfo& endpoint);
-
-} /* namespace core */
+} /* namespace participants */
 } /* namespace spy */
 } /* namespace eprosima */

@@ -12,21 +12,32 @@
 // See the License for the specific language governing permissions and
 // limitations under the License\.
 
-#pragma once
-
-#include <fastddsspy_participants/visualizer/DataVisualizer.hpp>
-#include <fastddsspy_participants/visualizer/NetworkVisualizer.hpp>
+#include <fastddsspy_participants/types/ParticipantInfoData.hpp>
 
 namespace eprosima {
 namespace spy {
 namespace participants {
 
-/**
- * TODO
- */
-class SpyVisualizer : public DataVisualizer, public NetworkVisualizer
+ddspipe::core::types::TopicInternalTypeDiscriminator ParticipantInfoData::internal_type_discriminator() const noexcept
 {
-};
+    return INTERNAL_TOPIC_TYPE_PARTICIPANTS_INFO;
+}
+
+ddspipe::core::types::DdsTopic participant_info_topic() noexcept
+{
+    ddspipe::core::types::DdsTopic topic;
+    topic.m_topic_name = PARTICIPANT_INFO_TOPIC_NAME;
+    topic.type_name = PARTICIPANT_INFO_DATA_TYPE_NAME;
+    topic.m_internal_type_discriminator = INTERNAL_TOPIC_TYPE_PARTICIPANTS_INFO;
+
+    return topic;
+}
+
+bool is_participant_info_topic(
+        const ddspipe::core::ITopic& topic) noexcept
+{
+    return topic.internal_type_discriminator() == INTERNAL_TOPIC_TYPE_PARTICIPANTS_INFO;
+}
 
 } /* namespace participants */
 } /* namespace spy */
