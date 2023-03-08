@@ -22,31 +22,31 @@
 
 namespace eprosima {
 namespace spy {
-namespace core {
+namespace participants {
 
 /**
  * TODO
  */
-struct ParticipantInfoData : public core::IRoutingData
+struct ParticipantInfoData : public ddspipe::core::IRoutingData
 {
 
-    virtual types::TopicInternalTypeDiscriminator internal_type_discriminator() const noexcept override;
+    virtual ddspipe::core::types::TopicInternalTypeDiscriminator internal_type_discriminator() const noexcept override;
 
     //! Info of the participant
     ParticipantInfo info{};
 };
 
-DdsTopic participant_info_topic();
+ddspipe::core::types::DdsTopic participant_info_topic() noexcept;
 
 DDSPIPE_CORE_DllAPI
 bool is_participant_info_topic(
-        const ITopic& topic);
+        const ddspipe::core::ITopic& topic) noexcept;
 
 constexpr const char* PARTICIPANT_INFO_TOPIC_NAME = "__internal__/participant_info";
 constexpr const char* PARTICIPANT_INFO_DATA_TYPE_NAME = "__internal__::participant_info";
 
-const core::types::TopicInternalTypeDiscriminator INTERNAL_TOPIC_TYPE_PARTICIPANTS_INFO = "participant::type::v0";
+const ddspipe::core::types::TopicInternalTypeDiscriminator INTERNAL_TOPIC_TYPE_PARTICIPANTS_INFO = "participant::type::v0";
 
-} /* namespace core */
+} /* namespace participants */
 } /* namespace spy */
 } /* namespace eprosima */

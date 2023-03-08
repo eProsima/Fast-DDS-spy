@@ -30,15 +30,15 @@ class SpyDdsParticipant : public ddspipe::participants::DynTypesParticipant
 public:
 
     SpyDdsParticipant(
-            std::shared_ptr<ddspipe::participants::SimpleParticipantConfiguration> participant_configuration,
-            std::shared_ptr<ddspipe::core::PayloadPool> payload_pool,
-            std::shared_ptr<ddspipe::core::DiscoveryDatabase> discovery_database);
+            const std::shared_ptr<ddspipe::participants::SimpleParticipantConfiguration>& participant_configuration,
+            const std::shared_ptr<ddspipe::core::PayloadPool>& payload_pool,
+            const std::shared_ptr<ddspipe::core::DiscoveryDatabase>& discovery_database);
 
-    ~SpyDdsParticipant();
+    ~SpyDdsParticipant() = default;
 
     //! Override create_reader_() IParticipant method
-    std::shared_ptr<core::IReader> create_reader(
-            const core::ITopic& topic) override;
+    std::shared_ptr<ddspipe::core::IReader> create_reader(
+            const ddspipe::core::ITopic& topic) override;
 
     virtual void on_participant_discovery(
             fastdds::dds::DomainParticipant* participant,

@@ -12,21 +12,44 @@
 // See the License for the specific language governing permissions and
 // limitations under the License\.
 
-#pragma once
-
-#include <fastddsspy_participants/visualizer/DataVisualizer.hpp>
 #include <fastddsspy_participants/visualizer/NetworkVisualizer.hpp>
 
 namespace eprosima {
 namespace spy {
 namespace participants {
 
-/**
- * TODO
- */
-class SpyVisualizer : public DataVisualizer, public NetworkVisualizer
+void NetworkVisualizer::print_participants(
+        std::ostream& target /* = std::cout */) const noexcept
 {
-};
+    // TODO
+    target << "participants";
+}
+
+void NetworkVisualizer::print_datareaders(
+        std::ostream& target /* = std::cout */) const noexcept
+{
+    // TODO
+    target << "datareaders";
+}
+
+void NetworkVisualizer::print_datawriters(
+        std::ostream& target /* = std::cout */) const noexcept
+{
+    // TODO
+    target << "datawriters";
+}
+
+void NetworkVisualizer::print_topics(
+        std::ostream& target /* = std::cout */) const noexcept
+{
+    // TODO
+    target << "topics";
+}
+
+void NetworkVisualizer::new_participant_info(const ParticipantInfo& info) noexcept
+{
+    // TODO
+}
 
 } /* namespace participants */
 } /* namespace spy */
