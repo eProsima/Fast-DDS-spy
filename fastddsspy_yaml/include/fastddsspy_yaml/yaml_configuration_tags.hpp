@@ -22,7 +22,7 @@
 #include <string>
 
 namespace eprosima {
-namespace fastddsspy {
+namespace spy {
 namespace yaml {
 
 //////////////////////
@@ -36,5 +36,5 @@ constexpr const char* DDS_TAG("dds");
 constexpr const char* SPECS_TAG("specs");
 
 } /* namespace yaml */
-} /* namespace fastddsspy */
+} /* namespace spy */
 } /* namespace eprosima */
