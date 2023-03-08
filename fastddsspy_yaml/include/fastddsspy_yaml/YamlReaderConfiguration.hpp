@@ -25,13 +25,12 @@
 #include <ddspipe_yaml/Yaml.hpp>
 #include <ddspipe_yaml/YamlReader.hpp>
 
-#include <fastddsspy_participants/FoxgloveWsHandler.hpp>
-#include <fastddsspy_participants/FoxgloveWsHandlerConfiguration.hpp>
+#include <fastddsspy_participants/configuration/SpyParticipantConfiguration.hpp>
 
 #include <fastddsspy_yaml/library/library_dll.h>
 
 namespace eprosima {
-namespace fastddsspy {
+namespace spy {
 namespace yaml {
 
 /**
@@ -59,8 +58,6 @@ public:
     std::set<utils::Heritable<ddspipe::core::types::DistributedTopic>> builtin_topics {};
 
     // Specs
-    participants::FoxgloveWsHandlerConfiguration configuration;
-
     unsigned int n_threads = 12;
 
 protected:
@@ -78,5 +75,5 @@ protected:
 };
 
 } /* namespace yaml */
-} /* namespace fastddsspy */
+} /* namespace spy */
 } /* namespace eprosima */

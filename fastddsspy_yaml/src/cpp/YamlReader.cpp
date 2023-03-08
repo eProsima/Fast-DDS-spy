@@ -23,14 +23,14 @@ namespace ddspipe {
 namespace yaml {
 
 template <>
-fastddsspy::participants::SpyParticipantConfiguration
-YamlReader::get<fastddsspy::participants::SpyParticipantConfiguration>(
+spy::participants::SpyParticipantConfiguration
+YamlReader::get<spy::participants::SpyParticipantConfiguration>(
         const Yaml& yml,
         const YamlReaderVersion version)
 {
-    fastddsspy::participants::SpyParticipantConfiguration conf;
+    spy::participants::SpyParticipantConfiguration conf;
 
-    YamlReader::fill<participants::ParticipantConfiguration>(conf, yml, version);
+    YamlReader::fill<ddspipe::participants::ParticipantConfiguration>(conf, yml, version);
 
     return conf;
 }

@@ -28,7 +28,7 @@
 #include <fastddsspy_yaml/YamlReaderConfiguration.hpp>
 
 namespace eprosima {
-namespace fastddsspy {
+namespace spy {
 namespace yaml {
 
 using namespace eprosima::ddspipe::core;
@@ -41,7 +41,7 @@ Configuration::Configuration()
 {
     simple_configuration->id = "SimpleParticipant";
     simple_configuration->is_repeater = false;
-    spy_configuration->id = "FoxgloveWebsocketParticipant";
+    spy_configuration->id = "Fast-Spy-007";
     spy_configuration->is_repeater = false;
 }
 
@@ -147,5 +147,5 @@ void Configuration::load_specs_configuration_(
 }
 
 } /* namespace yaml */
-} /* namespace fastddsspy */
+} /* namespace spy */
 } /* namespace eprosima */
