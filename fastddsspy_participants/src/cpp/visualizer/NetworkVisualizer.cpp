@@ -18,6 +18,13 @@ namespace eprosima {
 namespace spy {
 namespace participants {
 
+NetworkVisualizer::NetworkVisualizer(
+        const std::shared_ptr<ddspipe::core::DiscoveryDatabase> discovery_database) noexcept
+    : discovery_database_(discovery_database)
+{
+    // Do nothing
+}
+
 void NetworkVisualizer::print_participants(
         std::ostream& target /* = std::cout */) const noexcept
 {
