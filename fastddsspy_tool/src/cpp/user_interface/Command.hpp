@@ -12,21 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/**
- * @file constants.hpp
- *
- * This file contains constant values common for the whole project
- */
-
 #pragma once
 
+#include <cpp_utils/user_interface/CommandReader.hpp>
+#include <cpp_utils/macros/custom_enumeration.hpp>
+
+#include <fastddsspy_participants/visualizer/SpyVisualizer.hpp>
+
 namespace eprosima {
-namespace fastddsspy {
+namespace spy {
 namespace ui {
 
-//! Default Foxgloveweb Websocket configuration file
-constexpr const char* DEFAULT_CONFIGURATION_FILE_NAME("FOXGLOVE_WEBSOCKET_CONFIGURATION.yaml");
+ENUMERATION_BUILDER(
+    CommandValue,
+    participant,
+    datawriter,
+    datareader,
+    topic,
+    print,
+    exit,
+    help
+);
 
 } /* namespace ui */
-} /* namespace fastddsspy */
+} /* namespace spy */
 } /* namespace eprosima */

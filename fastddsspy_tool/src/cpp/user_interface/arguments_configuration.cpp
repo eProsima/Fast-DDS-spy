@@ -29,7 +29,7 @@
 #include "arguments_configuration.hpp"
 
 namespace eprosima {
-namespace fastddsspy {
+namespace spy {
 namespace ui {
 
 const option::Descriptor usage[] = {
@@ -163,7 +163,6 @@ ProcessReturnCode parse_arguments(
         char** argv,
         std::string& file_path,
         utils::Duration_ms& reload_time,
-        utils::Duration_ms& timeout,
         std::string& log_filter,
         eprosima::fastdds::dds::Log::Kind& log_verbosity)
 {
@@ -424,5 +423,5 @@ std::ostream& operator <<(
 }
 
 } /* namespace ui */
-} /* namespace fastddsspy */
+} /* namespace spy */
 } /* namespace eprosima */

@@ -13,26 +13,20 @@
 // limitations under the License.
 
 /**
- * @file ProcessReturnCode.hpp
+ * @file constants.hpp
  *
+ * This file contains constant values common for the whole project
  */
 
 #pragma once
 
 namespace eprosima {
-namespace fastddsspy {
+namespace spy {
 namespace ui {
 
-enum class ProcessReturnCode : int
-{
-    success = 0,
-    help_argument = 1,
-    version_argument = 2,
-    incorrect_argument = 10,
-    required_argument_failed = 11,
-    execution_failed = 20,
-};
+//! Default Foxgloveweb Websocket configuration file
+constexpr const char* DEFAULT_CONFIGURATION_FILE_NAME("FOXGLOVE_WEBSOCKET_CONFIGURATION.yaml");
 
 } /* namespace ui */
-} /* namespace fastddsspy */
+} /* namespace spy */
 } /* namespace eprosima */
