@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include <functional>
+
 #include <ddspipe_participants/writer/auxiliar/BaseWriter.hpp>
 
 namespace eprosima {
@@ -27,16 +29,16 @@ class InternalWriter : public ddspipe::participants::BaseWriter
 {
 public:
 
-    DDSPIPE_PARTICIPANTS_DllAPI
     InternalWriter(
-            const std::function<void()>& callback);
+            const ddspipe::core::types::ParticipantId& participant_id,
+            const std::function<void(ddspipe::core::IRoutingData&)>& callback);
 
 protected:
 
     virtual utils::ReturnCode write_nts_(
             ddspipe::core::IRoutingData& data) noexcept override;
 
-    const std::function<void()> callback_;
+    const std::function<void(ddspipe::core::IRoutingData&)> callback_;
 };
 
 } /* namespace participants */

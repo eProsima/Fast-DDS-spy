@@ -14,13 +14,21 @@
 
 #pragma once
 
+#include <iostream>
+#include <shared_mutex>
+
+#include <fastrtps/types/DynamicTypePtr.h>
+
+#include <ddspipe_core/types/topic/dds/DdsTopic.hpp>
+#include <ddspipe_core/types/dds/Payload.hpp>
+
 #include <ddspipe_participants/participant/dynamic_types/ISchemaHandler.hpp>
 
 #include <fastddsspy_participants/types/ParticipantInfo.hpp>
 
 namespace eprosima {
 namespace spy {
-namespace core {
+namespace participants {
 
 /**
  * TODO
@@ -30,8 +38,8 @@ class DataVisualizer : public ddspipe::participants::ISchemaHandler
 public:
 
     bool activate(
-            const std::string& activate_topic,
-            std::ifstream& target = std::cin);
+            const ddspipe::core::types::DdsTopic& topic_to_activate,
+            std::ostream* target = &std::cout);
 
     void deactivate();
 
@@ -39,28 +47,26 @@ public:
             const fastrtps::types::DynamicType_ptr& dynamic_type) override;
 
     virtual void add_data(
-            const core::types::DdsTopic& topic,
-            core::types::RtpsPayloadData& data) override;
+            const ddspipe::core::types::DdsTopic& topic,
+            ddspipe::core::types::RtpsPayloadData& data) override;
 
 protected:
 
-    void print_data_(
+    void print_data_nts_(
         fastrtps::types::DynamicType_ptr& type,
-        core::types::RtpsPayloadData& data) const noexcept;
+        ddspipe::core::types::RtpsPayloadData& data) const noexcept;
 
-    fastrtps::types::DynamicType_ptr get_dynamic_type_(const std::string& type_name);
+    bool activated_ {false};
 
-    bool activated_;
+    ddspipe::core::types::DdsTopic activated_topic_;
 
-    std::string activated_topic_;
+    std::map<std::string, fastrtps::types::DynamicType_ptr> types_discovered_;
 
-    std::set<std::string> types_discovered_;
-
-    std::ifstream& target_;
+    std::ostream* target_;
 
     mutable std::shared_mutex mutex_;
 };
 
-} /* namespace core */
+} /* namespace participants */
 } /* namespace spy */
 } /* namespace eprosima */
