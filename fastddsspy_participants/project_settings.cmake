@@ -1,4 +1,4 @@
-# Copyright 2022 Proyectos y Sistemas de Mantenimiento SL (eProsima).
+# Copyright 2023 Proyectos y Sistemas de Mantenimiento SL (eProsima).
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,15 +20,17 @@ set(MODULE_NAME
     fastddsspy_participants)
 
 set(MODULE_SUMMARY
-    "...")
+    "Fast DDS Spy Participants implementation.")
 
 set(MODULE_FIND_PACKAGES
-        fastcdr
-        fastrtps
-        cpp_utils
-    )
+    fastcdr
+    fastrtps
+    cpp_utils
+    ddspipe_core
+    ddspipe_participants)
+
+set(fastrtps_MINIMUM_VERSION "2.8")
 
 set(MODULE_DEPENDENCIES
-        $<$<BOOL:${WIN32}>:iphlpapi$<SEMICOLON>Shlwapi>
-        ${MODULE_FIND_PACKAGES}
-    )
+    $<$<BOOL:${WIN32}>:iphlpapi$<SEMICOLON>Shlwapi>
+    ${MODULE_FIND_PACKAGES})
