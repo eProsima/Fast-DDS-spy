@@ -72,7 +72,7 @@ void DataVisualizer::add_data(
 {
     std::shared_lock<std::shared_mutex> _(mutex_);
 
-    if (activated_)
+    if (activated_ && topic == activated_topic_)
     {
         // TODO: make map search more safe
         print_data_nts_(types_discovered_[topic.type_name], data);
@@ -96,15 +96,17 @@ void DataVisualizer::print_data_nts_(
 {
     // Create PubSub Type
     fastrtps::types::DynamicPubSubType pubsub_type(type);
-    fastrtps::types::DynamicData* dyn_data =    fastrtps::types::DynamicDataFactory::get_instance()->create_data(type);
+    fastrtps::types::DynamicData* dyn_data = fastrtps::types::DynamicDataFactory::get_instance()->create_data(type);
 
     pubsub_type.deserialize(&data.payload, dyn_data);
 
     // TODO this does not make much sense as print does not allow to choose target
     // This must change in dynamic types
-    *target_ << "    -\n";
+    *target_ << "\n";
     fastrtps::types::DynamicDataHelper::print(dyn_data);
     *target_ << std::endl;
+
+    fastrtps::types::DynamicDataFactory::get_instance()->delete_data(dyn_data);
 }
 
 } /* namespace participants */

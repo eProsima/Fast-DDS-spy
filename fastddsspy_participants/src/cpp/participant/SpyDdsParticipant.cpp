@@ -83,8 +83,10 @@ void SpyDdsParticipant::on_subscriber_discovery(
         return;
     }
 
-    internal_notify_endpoint_discovered_(
-        create_endpoint_from_info_(info));
+    EndpointInfo endpoint_info = create_endpoint_from_info_(info);
+    endpoint_info.active = !(info.status == fastrtps::rtps::ReaderDiscoveryInfo::DISCOVERY_STATUS::REMOVED_READER);
+
+    internal_notify_endpoint_discovered_(endpoint_info);
 }
 
 void SpyDdsParticipant::on_publisher_discovery(
@@ -97,8 +99,10 @@ void SpyDdsParticipant::on_publisher_discovery(
         return;
     }
 
-    internal_notify_endpoint_discovered_(
-        create_endpoint_from_info_(info));
+    EndpointInfo endpoint_info = create_endpoint_from_info_(info);
+    endpoint_info.active = !(info.status == fastrtps::rtps::WriterDiscoveryInfo::DISCOVERY_STATUS::REMOVED_WRITER);
+
+    internal_notify_endpoint_discovered_(endpoint_info);
 }
 
 void SpyDdsParticipant::internal_notify_participant_discovered_(
@@ -126,8 +130,8 @@ void SpyDdsParticipant::internal_notify_endpoint_discovered_(
 bool SpyDdsParticipant::come_from_this_participant_(const ddspipe::core::types::Guid& guid) const noexcept
 {
     return (
-        guid == dds_participant_->guid()
-        || guid == rtps_participant_->getGuid()
+        guid.guid_prefix() == dds_participant_->guid().guidPrefix
+        || guid.guid_prefix() == rtps_participant_->getGuid().guidPrefix
     );
 }
 
