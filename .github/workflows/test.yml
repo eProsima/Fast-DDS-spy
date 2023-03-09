@@ -1,0 +1,49 @@
+# Main CI for DDS Pipe repository
+# This is executed:
+#  - every PullRequest (new or update)
+#  - every merge in main
+#  - every night (05:00)
+#
+# These jobs that require to install eprosima libraries uses the artifact generated for eprosima-CI nightly
+# so they do not have to compile the whole project. This saves huge amount of time.
+#
+# JOBS:
+#
+#   - uncrustify
+#     - ubuntu-22.04
+#     - test uncrustify
+#
+#   - python-linter
+#     - ubuntu-22.04
+#     - test python linter
+#
+# TODO: when merge CI in eprosima-CI repository, the jparisu fork must change for eProsima in actions.
+# TODO: When code is already available, add new jobs
+#
+
+name: test
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 5 * * *'
+
+jobs:
+
+  uncrustify:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Uncrustify
+        uses: jparisu/eProsima-CI/actions/uncrustify@main
+
+  python-linter:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Python Linter
+        uses: jparisu/eProsima-CI/actions/python_linter@main
+        with:
+          linter_configuration_version: feature/python-linter
