@@ -45,3 +45,11 @@ jobs:
     steps:
       - name: Python Linter
         uses: jparisu/eProsima-CI/actions/python_linter@main
+
+  docs:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Build and test documentation
+        uses: jparisu/eProsima-CI/actions/sphinx_docs@main
+        with:
+          docs_subpackage_name: fastddsspy_docs
