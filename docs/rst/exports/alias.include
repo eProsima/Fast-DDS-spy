@@ -1,0 +1,13 @@
+.. |FastDDSDocs| replace:: `Fast DDS Documentation <https://fast-dds.docs.eprosima.com/en/v2.10.0/>`__
+.. |DDSSpecification| replace:: `DDS specification <https://www.omg.org/spec/DDS/1.4/About-DDS/>`__
+
+.. |ddsrouter| replace:: *DDS Router*
+.. |fastdds| replace:: *Fast DDS*
+.. |spy| replace:: *Fast DDS Spy*
+
+.. |eddsrouter| replace:: *eProsima DDS Router*
+.. |efastdds| replace:: *eProsima Fast DDS*
+.. |eddsrecord| replace:: *eProsima Fast DDS Spy*
+.. |espy| replace:: *eProsima Fast DDS Spy*
+
+.. |k8s| replace:: *K8s*
