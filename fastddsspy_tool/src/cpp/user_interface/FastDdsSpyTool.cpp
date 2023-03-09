@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <cpp_utils/user_interface/CommandReader.hpp>
+#include <cpp_utils/exception/ConfigurationException.hpp>
 #include <cpp_utils/macros/custom_enumeration.hpp>
 
 #include <fastddsspy_participants/visualizer/SpyVisualizer.hpp>
@@ -71,6 +72,10 @@ FastDdsSpyTool::FastDdsSpyTool(const yaml::Configuration& configuration)
         spy_participant_->id(),
         spy_participant_
     );
+
+    // Add registration to Discovery Database so every new endpoint is checked to store its topic
+    discovery_database_->add_endpoint_discovered_callback(
+        [this](ddspipe::core::types::Endpoint endpoint){ this->endpoint_added_(endpoint); });
 
     // Create and initialize Pipe
     pipe_ = std::make_unique<ddspipe::core::DdsPipe>(
@@ -164,12 +169,42 @@ utils::ReturnCode FastDdsSpyTool::reload_allowed_topics(
     return pipe_->reload_allowed_topics(allowed_topics_);
 }
 
+void FastDdsSpyTool::endpoint_added_(
+        const ddspipe::core::types::Endpoint& endpoint) noexcept
+{
+    add_topic_(endpoint.topic);
+}
+
+void FastDdsSpyTool::add_topic_(
+        const ddspipe::core::types::DdsTopic& topic) noexcept
+{
+    std::unique_lock<TopicDatabase> _(topics_discovered_);
+
+    // Check if the topic already exist
+    if (topics_discovered_.find(topic.topic_name()) != topics_discovered_.end())
+    {
+        // TODO if name is the same and type is not, there is a problem here
+        return;
+    }
+
+    // Add new topic to the database
+    topics_discovered_.insert({topic.topic_name(), topic});
+}
+
 bool FastDdsSpyTool::search_topic_(
         const std::string& topic_name,
         ddspipe::core::types::DdsTopic& topic)
 {
-    // TODO IMPORTANT
-    return false;
+    std::shared_lock<TopicDatabase> _(topics_discovered_);
+
+    auto it = topics_discovered_.find(topic_name);
+    if (it == topics_discovered_.end())
+    {
+        return false;
+    }
+
+    topic = it->second;
+    return true;
 }
 
 void FastDdsSpyTool::printing_data_(
@@ -186,11 +221,18 @@ void FastDdsSpyTool::printing_data_(
     }
 
     // Topic discovered, try activate printing data
-    auto printing = spy_visualizer_->activate(topic);
+    auto type_discovered = spy_visualizer_->is_topic_type_discovered(topic);
 
-    if (!printing)
+    if (!type_discovered)
     {
         logUser(FASTDDSSPY_TOOL, "! Type <" << topic.type_name << "> is not discovered.")
+        return;
+    }
+
+    bool result = spy_visualizer_->activate(topic);
+    if (!result)
+    {
+        logUser(FASTDDSSPY_TOOL, "! Error printing Type <" << topic.type_name << ">.")
         return;
     }
 

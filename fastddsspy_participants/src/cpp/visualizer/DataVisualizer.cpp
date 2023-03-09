@@ -15,6 +15,10 @@
 #include <mutex>
 
 #include <fastrtps/types/DynamicType.h>
+#include <fastrtps/types/DynamicPubSubType.h>
+#include <fastrtps/types/DynamicData.h>
+#include <fastrtps/types/DynamicDataFactory.h>
+#include <fastrtps/types/DynamicDataHelper.hpp>
 
 #include <fastddsspy_participants/visualizer/DataVisualizer.hpp>
 
@@ -28,16 +32,15 @@ bool DataVisualizer::activate(
         const ddspipe::core::types::DdsTopic& topic_to_activate,
         std::ostream* target /* = &std::cout */)
 {
-    std::unique_lock<std::shared_mutex> _(mutex_);
-
-    // Check if the type exists
-    if (types_discovered_.find(topic_to_activate.type_name) == types_discovered_.end())
+    if (!is_topic_type_discovered(topic_to_activate))
     {
         logWarning(FASTDDSSPY_DATAVISUALIZER,
-            "Type " << topic_to_activate.type_name <<
-            " for topic " << topic_to_activate.topic_name() << " is not discovered.");
+            "Type <" << topic_to_activate.type_name <<
+            "> for topic <" << topic_to_activate.topic_name() << "> is not discovered.");
         return false;
     }
+
+    std::unique_lock<std::shared_mutex> _(mutex_);
 
     // If type exist, this is the new topic to activate
     activated_ = true;
@@ -76,15 +79,32 @@ void DataVisualizer::add_data(
     }
 }
 
+bool DataVisualizer::is_topic_type_discovered(const ddspipe::core::types::DdsTopic& topic) const noexcept
+{
+    std::shared_lock<std::shared_mutex> _(mutex_);
+    return is_topic_type_discovered_nts_(topic);
+}
+
+bool DataVisualizer::is_topic_type_discovered_nts_(const ddspipe::core::types::DdsTopic& topic) const noexcept
+{
+    return types_discovered_.find(topic.type_name) != types_discovered_.end();
+}
+
 void DataVisualizer::print_data_nts_(
         fastrtps::types::DynamicType_ptr& type,
         ddspipe::core::types::RtpsPayloadData& data) const noexcept
 {
-    // TODO IMPORTANT
-    // TODO do it in a way that you can see the data deserialize
-    static_cast<void>(type);
+    // Create PubSub Type
+    fastrtps::types::DynamicPubSubType pubsub_type(type);
+    fastrtps::types::DynamicData* dyn_data =    fastrtps::types::DynamicDataFactory::get_instance()->create_data(type);
 
-    *target_ << data.payload;
+    pubsub_type.deserialize(&data.payload, dyn_data);
+
+    // TODO this does not make much sense as print does not allow to choose target
+    // This must change in dynamic types
+    *target_ << "    -\n";
+    fastrtps::types::DynamicDataHelper::print(dyn_data);
+    *target_ << std::endl;
 }
 
 } /* namespace participants */

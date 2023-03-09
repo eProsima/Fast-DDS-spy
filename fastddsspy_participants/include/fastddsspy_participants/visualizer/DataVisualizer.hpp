@@ -50,7 +50,11 @@ public:
             const ddspipe::core::types::DdsTopic& topic,
             ddspipe::core::types::RtpsPayloadData& data) override;
 
+    bool is_topic_type_discovered(const ddspipe::core::types::DdsTopic& topic_to_activate) const noexcept;
+
 protected:
+
+    bool is_topic_type_discovered_nts_(const ddspipe::core::types::DdsTopic& topic_to_activate) const noexcept;
 
     void print_data_nts_(
         fastrtps::types::DynamicType_ptr& type,

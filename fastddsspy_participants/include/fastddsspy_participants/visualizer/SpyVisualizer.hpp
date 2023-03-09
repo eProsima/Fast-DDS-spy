@@ -27,8 +27,13 @@ namespace participants {
 class SpyVisualizer : public DataVisualizer, public NetworkVisualizer
 {
 public:
+
     void print_topics(
             std::ostream& target = std::cout) const noexcept;
+
+protected:
+
+    std::set<ddspipe::core::types::DdsTopic> get_topics_() const noexcept;
 };
 
 } /* namespace participants */

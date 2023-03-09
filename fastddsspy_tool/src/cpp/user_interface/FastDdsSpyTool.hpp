@@ -21,6 +21,7 @@
 #include <cpp_utils/time/time_utils.hpp>
 #include <cpp_utils/utils.hpp>
 #include <cpp_utils/thread_pool/pool/SlotThreadPool.hpp>
+#include <cpp_utils/types/Atomicable.hpp>
 
 #include <ddspipe_core/core/DdsPipe.hpp>
 #include <ddspipe_core/dynamic/ParticipantsDatabase.hpp>
@@ -52,6 +53,12 @@ public:
         const std::shared_ptr<ddspipe::core::AllowedTopicList>& allowed_topics);
 
 protected:
+
+    void endpoint_added_(
+            const ddspipe::core::types::Endpoint& endpoint) noexcept;
+
+    void add_topic_(
+            const ddspipe::core::types::DdsTopic& topic) noexcept;
 
     bool search_topic_(
             const std::string& topic_name,
@@ -92,6 +99,11 @@ protected:
 
     //! TODO
     std::unique_ptr<ddspipe::core::DdsPipe> pipe_;
+
+    //! TODO
+    using TopicDatabase =
+        utils::SharedAtomicable<std::map<std::string, ddspipe::core::types::DdsTopic>>;
+    TopicDatabase topics_discovered_;
 
 };
 

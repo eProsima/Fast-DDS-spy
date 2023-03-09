@@ -21,8 +21,28 @@ namespace participants {
 void SpyVisualizer::print_topics(
         std::ostream& target /* = std::cout */) const noexcept
 {
-    // TODO IMPORTANT
-    target << "<topics> still in progress..." << std::endl;
+    std::set<ddspipe::core::types::DdsTopic> topics = get_topics_();
+
+    target << "  Topics:\n";
+    for (const auto& topic : topics)
+    {
+        std::string topic_discovered = (is_topic_type_discovered(topic) ? "" : " [Not DataType available]");
+        target << "    - " << topic.topic_name() << " [" << topic.type_name << "]" << topic_discovered << "\n";
+    }
+    target << std::endl;
+}
+
+std::set<ddspipe::core::types::DdsTopic> SpyVisualizer::get_topics_() const noexcept
+{
+    std::set<ddspipe::core::types::DdsTopic> result;
+
+    std::shared_lock<EndpointInfoDatabase> _(endpoint_database_);
+
+    for (const auto& endpoint : endpoint_database_)
+    {
+        result.insert(endpoint.second.topic);
+    }
+    return result;
 }
 
 } /* namespace participants */
