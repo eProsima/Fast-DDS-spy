@@ -52,9 +52,11 @@ std::shared_ptr<ddspipe::core::IWriter> SpyParticipant::create_writer(
     }
 }
 
-void SpyParticipant::new_participant_info_(ddspipe::core::IRoutingData& data)
+void SpyParticipant::new_participant_info_(const ddspipe::core::IRoutingData& data)
 {
-    // TODO IMPORTANT
+    // Assuming that data is of type required
+    auto& participant_info = dynamic_cast<const ParticipantInfoData&>(data);
+    visualizer_->new_participant_info(participant_info.info);
 }
 
 } /* namespace participants */

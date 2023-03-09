@@ -49,9 +49,9 @@ public:
 
 protected:
 
-    using ParticipantInfoDatabase = utils::Atomicable<std::map<ddspipe::core::types::Guid, ParticipantInfo>>;
+    using ParticipantInfoDatabase = utils::SharedAtomicable<std::map<ddspipe::core::types::Guid, ParticipantInfo>>;
 
-    ParticipantInfoDatabase participant_database_;
+    mutable ParticipantInfoDatabase participant_database_;
 
     std::shared_ptr<ddspipe::core::DiscoveryDatabase> discovery_database_;
 };

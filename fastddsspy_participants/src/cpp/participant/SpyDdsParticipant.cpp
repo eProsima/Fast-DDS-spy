@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <fastdds/rtps/participant/RTPSParticipant.h>
+
 #include <fastddsspy_participants/participant/SpyDdsParticipant.hpp>
 #include <fastddsspy_participants/types/ParticipantInfoData.hpp>
 
@@ -59,6 +61,13 @@ void SpyDdsParticipant::on_participant_discovery(
 void SpyDdsParticipant::internal_notify_participant_discovered_(
         const ParticipantInfo& participant_discovered)
 {
+    // Only send participant if it is not any of the internal ones
+    if (participant_discovered.guid == dds_participant_->guid()
+        || participant_discovered.guid == rtps_participant_->getGuid())
+    {
+        return;
+    }
+
     // Create data containing Dynamic Type
     auto data = std::make_unique<ParticipantInfoData>();
     data->info = participant_discovered;

@@ -28,8 +28,14 @@ NetworkVisualizer::NetworkVisualizer(
 void NetworkVisualizer::print_participants(
         std::ostream& target /* = std::cout */) const noexcept
 {
-    // TODO IMPORTANT
-    target << "<participants> still in progress..." << std::endl;
+    std::shared_lock<ParticipantInfoDatabase> _(participant_database_);
+
+    target << "  Participants:\n";
+    for (const auto& participant : participant_database_)
+    {
+        target << "    " << participant.second.name << " [" << participant.first << "]\n";
+    }
+    target << std::endl;
 }
 
 void NetworkVisualizer::print_datareaders(
@@ -55,7 +61,21 @@ void NetworkVisualizer::print_topics(
 
 void NetworkVisualizer::new_participant_info(const ParticipantInfo& info) noexcept
 {
-    // TODO IMPORTANT
+    std::unique_lock<ParticipantInfoDatabase> _(participant_database_);
+
+    // First check if participant already in database
+    auto it = participant_database_.find(info.guid);
+
+    // If already exist, check if it must be removed
+    // If not exists and active, add it to the database
+    if (it != participant_database_.end() && !info.active)
+    {
+        participant_database_.erase(it);
+    }
+    else if (it == participant_database_.end() && info.active)
+    {
+        participant_database_.insert({info.guid, info});
+    }
 }
 
 } /* namespace participants */

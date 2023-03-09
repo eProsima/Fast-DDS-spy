@@ -47,7 +47,7 @@ public:
 
 protected:
 
-    void new_participant_info_(ddspipe::core::IRoutingData& data);
+    void new_participant_info_(const ddspipe::core::IRoutingData& data);
 
     //! Participants Internal Reader
     std::shared_ptr<InternalWriter> participants_writer_;
