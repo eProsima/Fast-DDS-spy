@@ -18,13 +18,6 @@ namespace eprosima {
 namespace spy {
 namespace participants {
 
-NetworkVisualizer::NetworkVisualizer(
-        const std::shared_ptr<ddspipe::core::DiscoveryDatabase>& discovery_database) noexcept
-    : discovery_database_(discovery_database)
-{
-    // Do nothing
-}
-
 void NetworkVisualizer::print_participants(
         std::ostream& target /* = std::cout */) const noexcept
 {
@@ -33,7 +26,7 @@ void NetworkVisualizer::print_participants(
     target << "  Participants:\n";
     for (const auto& participant : participant_database_)
     {
-        target << "    " << participant.second.name << " [" << participant.first << "]\n";
+        target << "    - " << participant.second.name << " [" << participant.first << "]\n";
     }
     target << std::endl;
 }
@@ -41,22 +34,33 @@ void NetworkVisualizer::print_participants(
 void NetworkVisualizer::print_datareaders(
         std::ostream& target /* = std::cout */) const noexcept
 {
-    // TODO IMPORTANT
-    target << "<datareaders> still in progress..." << std::endl;
+    std::shared_lock<EndpointInfoDatabase> _(endpoint_database_);
+
+    target << "  DataReaders:\n";
+    for (const auto& endpoint : endpoint_database_)
+    {
+        if (endpoint.second.is_reader())
+        {
+            target << "    - " << endpoint.second.topic.topic_name() << " [" << endpoint.first << "]\n";
+        }
+    }
+    target << std::endl;
 }
 
 void NetworkVisualizer::print_datawriters(
         std::ostream& target /* = std::cout */) const noexcept
 {
-    // TODO IMPORTANT
-    target << "<datawriters> still in progress..." << std::endl;
-}
+    std::shared_lock<EndpointInfoDatabase> _(endpoint_database_);
 
-void NetworkVisualizer::print_topics(
-        std::ostream& target /* = std::cout */) const noexcept
-{
-    // TODO IMPORTANT
-    target << "<topics> still in progress..." << std::endl;
+    target << "  DataWriters:\n";
+    for (const auto& endpoint : endpoint_database_)
+    {
+        if (endpoint.second.is_writer())
+        {
+            target << "    - " << endpoint.second.topic.topic_name() << " [" << endpoint.first << "]\n";
+        }
+    }
+    target << std::endl;
 }
 
 void NetworkVisualizer::new_participant_info(const ParticipantInfo& info) noexcept
@@ -75,6 +79,25 @@ void NetworkVisualizer::new_participant_info(const ParticipantInfo& info) noexce
     else if (it == participant_database_.end() && info.active)
     {
         participant_database_.insert({info.guid, info});
+    }
+}
+
+void NetworkVisualizer::new_endpoint_info(const EndpointInfo& info) noexcept
+{
+    std::unique_lock<EndpointInfoDatabase> _(endpoint_database_);
+
+    // First check if endpoint already in database
+    auto it = endpoint_database_.find(info.guid);
+
+    // If already exist, check if it must be removed
+    // If not exists and active, add it to the database
+    if (it != endpoint_database_.end() && !info.active)
+    {
+        endpoint_database_.erase(it);
+    }
+    else if (it == endpoint_database_.end() && info.active)
+    {
+        endpoint_database_.insert({info.guid, info});
     }
 }
 

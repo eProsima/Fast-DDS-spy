@@ -15,8 +15,10 @@
 #pragma once
 
 #include <ddspipe_participants/participant/dynamic_types/DynTypesParticipant.hpp>
+#include <ddspipe_core/types/dds/Endpoint.hpp>
 
 #include <fastddsspy_participants/types/ParticipantInfo.hpp>
+#include <fastddsspy_participants/types/EndpointInfo.hpp>
 
 namespace eprosima {
 namespace spy {
@@ -44,13 +46,29 @@ public:
             fastdds::dds::DomainParticipant* participant,
             fastrtps::rtps::ParticipantDiscoveryInfo&& info) override;
 
+    virtual void on_subscriber_discovery(
+            fastdds::dds::DomainParticipant* participant,
+            fastrtps::rtps::ReaderDiscoveryInfo&& info);
+
+    virtual void on_publisher_discovery(
+            fastdds::dds::DomainParticipant* participant,
+            fastrtps::rtps::WriterDiscoveryInfo&& info);
+
 protected:
 
     void internal_notify_participant_discovered_(
             const ParticipantInfo& participant_discovered);
 
+    void internal_notify_endpoint_discovered_(
+            const EndpointInfo& endpoint_discovered);
+
+    bool come_from_this_participant_(const ddspipe::core::types::Guid& guid) const noexcept;
+
     //! Participants Internal Reader
     std::shared_ptr<ddspipe::participants::InternalReader> participants_reader_;
+
+    //! Endpoint Internal Reader
+    std::shared_ptr<ddspipe::participants::InternalReader> endpoints_reader_;
 };
 
 } /* namespace participants */

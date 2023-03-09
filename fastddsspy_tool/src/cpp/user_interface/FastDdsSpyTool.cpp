@@ -39,7 +39,7 @@ FastDdsSpyTool::FastDdsSpyTool(const yaml::Configuration& configuration)
             configuration.n_threads))
     , participant_database_(std::make_shared<ddspipe::core::ParticipantsDatabase>())
     , spy_visualizer_(
-        std::make_shared<participants::SpyVisualizer>(discovery_database_))
+        std::make_shared<participants::SpyVisualizer>())
     , dds_participant_(
         std::make_shared<participants::SpyDdsParticipant>(
             configuration.simple_configuration,

@@ -15,7 +15,8 @@
 #include <fastdds/rtps/participant/RTPSParticipant.h>
 
 #include <fastddsspy_participants/participant/SpyDdsParticipant.hpp>
-#include <fastddsspy_participants/types/ParticipantInfoData.hpp>
+#include <fastddsspy_participants/types/ParticipantInfo.hpp>
+#include <fastddsspy_participants/types/EndpointInfo.hpp>
 
 namespace eprosima {
 namespace spy {
@@ -28,6 +29,8 @@ SpyDdsParticipant::SpyDdsParticipant(
     : ddspipe::participants::DynTypesParticipant(participant_configuration, payload_pool, discovery_database)
     , participants_reader_(std::make_shared<ddspipe::participants::InternalReader>(
                 this->id()))
+    , endpoints_reader_(std::make_shared<ddspipe::participants::InternalReader>(
+                this->id()))
 {
     // Do nothing
 }
@@ -35,10 +38,16 @@ SpyDdsParticipant::SpyDdsParticipant(
 std::shared_ptr<ddspipe::core::IReader> SpyDdsParticipant::create_reader(
         const ddspipe::core::ITopic& topic)
 {
-    // If type object topic, return the internal reader for type objects
+    // If participant info topic, return the internal reader for it
     if (is_participant_info_topic(topic))
     {
         return this->participants_reader_;
+    }
+
+    // If endpoint info topic, return the internal reader for it
+    if (is_endpoint_info_topic(topic))
+    {
+        return this->endpoints_reader_;
     }
 
     // If not type object, use the parent method
@@ -49,6 +58,12 @@ void SpyDdsParticipant::on_participant_discovery(
         fastdds::dds::DomainParticipant* participant,
         fastrtps::rtps::ParticipantDiscoveryInfo&& discovery_info)
 {
+    // If comes from this participant is not interesting
+    if (come_from_this_participant_(discovery_info.info.m_guid))
+    {
+        return;
+    }
+
     ParticipantInfo info;
     info.active = (discovery_info.status == eprosima::fastrtps::rtps::ParticipantDiscoveryInfo::DISCOVERED_PARTICIPANT
         || discovery_info.status == eprosima::fastrtps::rtps::ParticipantDiscoveryInfo::CHANGED_QOS_PARTICIPANT);
@@ -58,22 +73,62 @@ void SpyDdsParticipant::on_participant_discovery(
     internal_notify_participant_discovered_(info);
 }
 
-void SpyDdsParticipant::internal_notify_participant_discovered_(
-        const ParticipantInfo& participant_discovered)
+void SpyDdsParticipant::on_subscriber_discovery(
+        fastdds::dds::DomainParticipant* participant,
+        fastrtps::rtps::ReaderDiscoveryInfo&& info)
 {
-    // Only send participant if it is not any of the internal ones
-    if (participant_discovered.guid == dds_participant_->guid()
-        || participant_discovered.guid == rtps_participant_->getGuid())
+    // If comes from this participant is not interesting
+    if (come_from_this_participant_(info.info.guid()))
     {
         return;
     }
 
+    internal_notify_endpoint_discovered_(
+        create_endpoint_from_info_(info));
+}
+
+void SpyDdsParticipant::on_publisher_discovery(
+        fastdds::dds::DomainParticipant* participant,
+        fastrtps::rtps::WriterDiscoveryInfo&& info)
+{
+    // If comes from this participant is not interesting
+    if (come_from_this_participant_(info.info.guid()))
+    {
+        return;
+    }
+
+    internal_notify_endpoint_discovered_(
+        create_endpoint_from_info_(info));
+}
+
+void SpyDdsParticipant::internal_notify_participant_discovered_(
+        const ParticipantInfo& participant_discovered)
+{
     // Create data containing Dynamic Type
     auto data = std::make_unique<ParticipantInfoData>();
     data->info = participant_discovered;
 
     // Insert new data in internal reader queue
     participants_reader_->simulate_data_reception(std::move(data));
+}
+
+void SpyDdsParticipant::internal_notify_endpoint_discovered_(
+        const EndpointInfo& endpoint_discovered)
+{
+    // Create data containing Dynamic Type
+    auto data = std::make_unique<EndpointInfoData>();
+    data->info = endpoint_discovered;
+
+    // Insert new data in internal reader queue
+    endpoints_reader_->simulate_data_reception(std::move(data));
+}
+
+bool SpyDdsParticipant::come_from_this_participant_(const ddspipe::core::types::Guid& guid) const noexcept
+{
+    return (
+        guid == dds_participant_->guid()
+        || guid == rtps_participant_->getGuid()
+    );
 }
 
 } /* namespace participants */

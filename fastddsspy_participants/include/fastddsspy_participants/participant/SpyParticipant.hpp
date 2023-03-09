@@ -49,8 +49,12 @@ protected:
 
     void new_participant_info_(const ddspipe::core::IRoutingData& data);
 
+    void new_endpoint_info_(const ddspipe::core::IRoutingData& data);
+
     //! Participants Internal Reader
     std::shared_ptr<InternalWriter> participants_writer_;
+
+    std::shared_ptr<InternalWriter> endpoints_writer_;
 
     std::shared_ptr<SpyVisualizer> visualizer_;
 };

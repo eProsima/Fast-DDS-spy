@@ -13,7 +13,8 @@
 // limitations under the License.
 
 #include <fastddsspy_participants/participant/SpyParticipant.hpp>
-#include <fastddsspy_participants/types/ParticipantInfoData.hpp>
+#include <fastddsspy_participants/types/ParticipantInfo.hpp>
+#include <fastddsspy_participants/types/EndpointInfo.hpp>
 
 namespace eprosima {
 namespace spy {
@@ -28,14 +29,24 @@ SpyParticipant::SpyParticipant(
     , visualizer_(visualizer)
 {
     // TODO: study why couldn't do with bind and try it, better than create a lambda
-    auto callback = [this](ddspipe::core::IRoutingData& data){ this->new_participant_info_(data); };
+    auto participant_callback = [this](ddspipe::core::IRoutingData& data){ this->new_participant_info_(data); };
     participants_writer_ = std::make_shared<InternalWriter>(
         participant_configuration->id,
-        callback);
+        participant_callback);
+
+    auto endpoint_callback = [this](ddspipe::core::IRoutingData& data){ this->new_endpoint_info_(data); };
+    endpoints_writer_ = std::make_shared<InternalWriter>(
+        participant_configuration->id,
+        endpoint_callback);
 
     // Simulate that there is a reader of participants to force this track creation
     discovery_database_->add_endpoint(
         simulate_endpoint_(participant_info_topic())
+        );
+
+    // Simulate that there is a reader of endpoints to force this track creation
+    discovery_database_->add_endpoint(
+        simulate_endpoint_(endpoint_info_topic())
         );
 }
 
@@ -45,6 +56,10 @@ std::shared_ptr<ddspipe::core::IWriter> SpyParticipant::create_writer(
     if (is_participant_info_topic(topic))
     {
         return participants_writer_;
+    }
+    else if(is_endpoint_info_topic(topic))
+    {
+        return endpoints_writer_;
     }
     else
     {
@@ -57,6 +72,13 @@ void SpyParticipant::new_participant_info_(const ddspipe::core::IRoutingData& da
     // Assuming that data is of type required
     auto& participant_info = dynamic_cast<const ParticipantInfoData&>(data);
     visualizer_->new_participant_info(participant_info.info);
+}
+
+void SpyParticipant::new_endpoint_info_(const ddspipe::core::IRoutingData& data)
+{
+    // Assuming that data is of type required
+    auto& endpoint_info = dynamic_cast<const EndpointInfoData&>(data);
+    visualizer_->new_endpoint_info(endpoint_info.info);
 }
 
 } /* namespace participants */

@@ -19,6 +19,7 @@
 #include <ddspipe_core/dynamic/DiscoveryDatabase.hpp>
 
 #include <fastddsspy_participants/types/ParticipantInfo.hpp>
+#include <fastddsspy_participants/types/EndpointInfo.hpp>
 
 namespace eprosima {
 namespace spy {
@@ -30,8 +31,6 @@ namespace participants {
 class NetworkVisualizer
 {
 public:
-    NetworkVisualizer(
-        const std::shared_ptr<ddspipe::core::DiscoveryDatabase>& discovery_database) noexcept;
 
     void print_participants(
             std::ostream& target = std::cout) const noexcept;
@@ -42,18 +41,19 @@ public:
     void print_datawriters(
             std::ostream& target = std::cout) const noexcept;
 
-    void print_topics(
-            std::ostream& target = std::cout) const noexcept;
-
     void new_participant_info(const ParticipantInfo& info) noexcept;
+
+    void new_endpoint_info(const EndpointInfo& info) noexcept;
 
 protected:
 
     using ParticipantInfoDatabase = utils::SharedAtomicable<std::map<ddspipe::core::types::Guid, ParticipantInfo>>;
 
+    using EndpointInfoDatabase = utils::SharedAtomicable<std::map<ddspipe::core::types::Guid, EndpointInfo>>;
+
     mutable ParticipantInfoDatabase participant_database_;
 
-    std::shared_ptr<ddspipe::core::DiscoveryDatabase> discovery_database_;
+    mutable EndpointInfoDatabase endpoint_database_;
 };
 
 } /* namespace participants */

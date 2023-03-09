@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License\.
 
-#include <fastddsspy_participants/types/ParticipantInfoData.hpp>
+#include <fastddsspy_participants/types/ParticipantInfo.hpp>
 
 namespace eprosima {
 namespace spy {
