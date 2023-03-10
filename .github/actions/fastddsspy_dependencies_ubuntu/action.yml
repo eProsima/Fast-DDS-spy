@@ -21,6 +21,9 @@ runs:
   using: composite
   steps:
 
+    - name: Install Fast DDS dependencies
+      uses: jparisu/eProsima-CI/ubuntu/install_fast_dependencies@main
+
     - name: Install yaml cpp dependency
       uses: jparisu/eProsima-CI/ubuntu/install_yamlcpp@main
 
