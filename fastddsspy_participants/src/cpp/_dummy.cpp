@@ -9,3 +9,7 @@ int clang_should_fail()
     }
     return 1;
 }
+
+int uncrustify_should_fail(){
+    return 0;
+}
