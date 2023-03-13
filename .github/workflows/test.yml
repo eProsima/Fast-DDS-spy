@@ -1,4 +1,4 @@
-# Main CI for DDS Pipe repository
+# Main CI
 # This is executed:
 #  - every PullRequest (new or update)
 #  - every merge in main
@@ -9,6 +9,31 @@
 #
 # JOBS:
 #
+#   - ubuntu
+#     - [ ubuntu-22.04 | ubuntu-20.04 ]
+#     - [ Debug | Release ]
+#     - execute tests in different versions of ubuntu with different build types
+#
+#   - asan
+#     - ubuntu-22.04
+#     - execute tests with ASAN flag
+#
+#   - tsan
+#     - ubuntu-22.04
+#     - execute tests with TSAN flag
+#
+#   - clang
+#     - ubuntu-22.04
+#     - execute clang-tidy check
+#
+#   - coverage
+#     - ubuntu-22.04
+#     - execute test with coverage flag and upload results
+#
+#   - flaky
+#     - ubuntu-22.04
+#     - execute flaky tests
+#
 #   - uncrustify
 #     - ubuntu-22.04
 #     - test uncrustify
@@ -17,19 +42,9 @@
 #     - ubuntu-22.04
 #     - test python linter
 #
-#   - ASAN tests
-#     - ubuntu-22.04
-#     - execute tests with ASAN flag
-#
-#   - TSAN tests
-#     - ubuntu-22.04
-#     - execute tests with TSAN flag
-#
-#   - clang tests
-#     - ubuntu-22.04
-#     - execute clang check
-#
 # TODO: when merge CI in eprosima-CI repository, the jparisu fork must change for eProsima in actions.
+#
+# TODO: Add Windows CI
 #
 
 name: test
@@ -58,26 +73,41 @@ env:
 
 jobs:
 
-#####################################################################
-# UNCRUSTIFY
-
-  uncrustify:
-    runs-on: ubuntu-22.04
-    steps:
-
-      - name: Uncrustify
-        uses: jparisu/eProsima-CI/actions/uncrustify@main
-
 
 #####################################################################
-# PYTHON LINTER
+# UBUNTU TEST
 
-  python-linter:
-    runs-on: ubuntu-22.04
+  ubuntu:
+    runs-on: ${{ matrix.ubuntu-version }}
+    strategy:
+      fail-fast: false
+      matrix:
+        cmake-config:
+          - 'Release'
+          - 'Debug'
+        ubuntu-version:
+          - 'ubuntu-20.04'
+          - 'ubuntu-22.04'
     steps:
 
-      - name: Python Linter
-        uses: jparisu/eProsima-CI/actions/python_linter@main
+      - name: Sync repository
+        uses: actions/checkout@v3
+        with:
+          path: src
+
+      - name: Download dependencies and install requirements
+        uses: ./src/.github/actions/ubuntu_dependencies
+        with:
+          ubuntu_version: ${{ matrix.ubuntu-version }}
+          dependencies_artifact_postfix: ${{ github.event.inputs.dependencies_artifact_postfix || env.default_dependencies_artifact_postfix }}
+
+      - name: Compile and run tests
+        uses: jparisu/eProsima-CI/ubuntu/colcon_build_test@main
+        with:
+          packages_names: ${{ env.code_packages_names }}
+          cmake_args: -DBUILD_TESTS=ON -DCMAKE_BUILD_TYPE=${{ inputs.cmake-config }}
+          workspace_dependencies: './install'
+          ctest_args: --label-exclude "xfail|xasan"
 
   docs:
     runs-on: ubuntu-22.04
@@ -100,7 +130,7 @@ jobs:
           path: src
 
       - name: Download dependencies and install requirements
-        uses: ./src/.github/actions/fastddsspy_dependencies_ubuntu
+        uses: ./src/.github/actions/ubuntu_dependencies
         with:
           ubuntu_version: ubuntu-22.04
           dependencies_artifact_postfix: ${{ github.event.inputs.dependencies_artifact_postfix || env.default_dependencies_artifact_postfix }}
@@ -125,7 +155,7 @@ jobs:
           path: src
 
       - name: Download dependencies and install requirements
-        uses: ./src/.github/actions/fastddsspy_dependencies_ubuntu
+        uses: ./src/.github/actions/ubuntu_dependencies
         with:
           ubuntu_version: ubuntu-22.04
           dependencies_artifact_postfix: ${{ github.event.inputs.dependencies_artifact_postfix || env.default_dependencies_artifact_postfix }}
@@ -150,7 +180,7 @@ jobs:
           path: src
 
       - name: Download dependencies and install requirements
-        uses: ./src/.github/actions/fastddsspy_dependencies_ubuntu
+        uses: ./src/.github/actions/ubuntu_dependencies
         with:
           ubuntu_version: ubuntu-22.04
           dependencies_artifact_postfix: ${{ github.event.inputs.dependencies_artifact_postfix || env.default_dependencies_artifact_postfix }}
@@ -177,7 +207,7 @@ jobs:
           path: src
 
       - name: Download dependencies and install requirements
-        uses: ./src/.github/actions/fastddsspy_dependencies_ubuntu
+        uses: ./src/.github/actions/ubuntu_dependencies
         with:
           ubuntu_version: ubuntu-22.04
           dependencies_artifact_postfix: ${{ github.event.inputs.dependencies_artifact_postfix || env.default_dependencies_artifact_postfix }}
@@ -194,7 +224,7 @@ jobs:
 #####################################################################
 # FLAKY
 
-  tsan:
+  flaky:
     runs-on: ubuntu-22.04
     steps:
 
@@ -204,7 +234,7 @@ jobs:
           path: src
 
       - name: Download dependencies and install requirements
-        uses: ./src/.github/actions/fastddsspy_dependencies_ubuntu
+        uses: ./src/.github/actions/ubuntu_dependencies
         with:
           ubuntu_version: ubuntu-22.04
           dependencies_artifact_postfix: ${{ github.event.inputs.dependencies_artifact_postfix || env.default_dependencies_artifact_postfix }}
@@ -214,3 +244,25 @@ jobs:
         with:
           packages_names: ${{ env.code_packages_names }}
           workspace_dependencies: './install'
+
+
+#####################################################################
+# UNCRUSTIFY
+
+  uncrustify:
+    runs-on: ubuntu-22.04
+    steps:
+
+      - name: Uncrustify
+        uses: jparisu/eProsima-CI/actions/uncrustify@main
+
+
+#####################################################################
+# PYTHON LINTER
+
+  python-linter:
+    runs-on: ubuntu-22.04
+    steps:
+
+      - name: Python Linter
+        uses: jparisu/eProsima-CI/actions/python_linter@main
