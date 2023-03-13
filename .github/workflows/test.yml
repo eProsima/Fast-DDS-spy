@@ -17,6 +17,14 @@
 #     - ubuntu-22.04
 #     - test python linter
 #
+#   - ASAN tests
+#     - ubuntu-22.04
+#     - execute tests with ASAN flag
+#
+#   - TSAN tests
+#     - ubuntu-22.04
+#     - execute tests with TSAN flag
+#
 # TODO: when merge CI in eprosima-CI repository, the jparisu fork must change for eProsima in actions.
 # TODO: When code is already available, add new jobs
 #
@@ -24,7 +32,15 @@
 name: test
 
 on:
+
   workflow_dispatch:
+    inputs:
+
+      dependencies_artifact_postfix:
+        description: 'Postfix name to add to artifact name to download dependencies. This is use to download a specific artifact version from eProsima-CI.'
+        required: true
+        default: '_nightly'
+
   pull_request:
   push:
     branches:
@@ -32,17 +48,30 @@ on:
   schedule:
     - cron: '0 5 * * *'
 
+env:
+  code_packages_names: 'fastddsspy_participants fastddsspy_yaml fastddsspy_tool'
+  default_dependencies_artifact_postfix: '_nightly'
+
 jobs:
+
+#####################################################################
+# UNCRUSTIFY
 
   uncrustify:
     runs-on: ubuntu-22.04
     steps:
+
       - name: Uncrustify
         uses: jparisu/eProsima-CI/actions/uncrustify@main
+
+
+#####################################################################
+# PYTHON LINTER
 
   python-linter:
     runs-on: ubuntu-22.04
     steps:
+
       - name: Python Linter
         uses: jparisu/eProsima-CI/actions/python_linter@main
 
@@ -53,3 +82,52 @@ jobs:
         uses: jparisu/eProsima-CI/actions/sphinx_docs@main
         with:
           docs_subpackage_name: fastddsspy_docs
+
+#####################################################################
+# ASAN
+
+  asan:
+    runs-on: ubuntu-22.04
+    steps:
+
+      - name: Sync repository
+        uses: actions/checkout@v3
+        with:
+          path: src
+
+      - name: Download dependencies and install requirements
+        uses: ./src/.github/actions/fastddsspy_dependencies_ubuntu
+        with:
+          ubuntu_version: ubuntu-22.04
+          dependencies_artifact_postfix: ${{ github.event.inputs.dependencies_artifact_postfix || env.default_dependencies_artifact_postfix }}
+
+      - name: Compile and run tests
+        uses: jparisu/eProsima-CI/ubuntu/asan_build_test@main
+        with:
+          packages_names: ${{ env.packages_names }}
+          workspace_dependencies: './install'
+
+
+#####################################################################
+# TSAN
+
+  tsan:
+    runs-on: ubuntu-22.04
+    steps:
+
+      - name: Sync repository
+        uses: actions/checkout@v3
+        with:
+          path: src
+
+      - name: Download dependencies and install requirements
+        uses: ./src/.github/actions/fastddsspy_dependencies_ubuntu
+        with:
+          ubuntu_version: ubuntu-22.04
+          dependencies_artifact_postfix: ${{ github.event.inputs.dependencies_artifact_postfix || env.default_dependencies_artifact_postfix }}
+
+      - name: Compile and run tests
+        uses: jparisu/eProsima-CI/ubuntu/tsan_build_test@main
+        with:
+          packages_names: ${{ env.packages_names }}
+          workspace_dependencies: './install'
