@@ -182,9 +182,6 @@ jobs:
           ubuntu_version: ubuntu-22.04
           dependencies_artifact_postfix: ${{ github.event.inputs.dependencies_artifact_postfix || env.default_dependencies_artifact_postfix }}
 
-      - name: check codecov token
-        run: echo ${{ secrets.CODECOV_TOKEN }}
-
       - name: Compile and run tests
         uses: jparisu/eProsima-CI/ubuntu/coverage_build_test_upload@main
         with:
@@ -192,3 +189,28 @@ jobs:
           workspace_dependencies: './install'
           codecov_token: ${{ secrets.CODECOV_TOKEN }}
           codecov_file_path: ./src/codecov.yml
+
+
+#####################################################################
+# FLAKY
+
+  tsan:
+    runs-on: ubuntu-22.04
+    steps:
+
+      - name: Sync repository
+        uses: actions/checkout@v3
+        with:
+          path: src
+
+      - name: Download dependencies and install requirements
+        uses: ./src/.github/actions/fastddsspy_dependencies_ubuntu
+        with:
+          ubuntu_version: ubuntu-22.04
+          dependencies_artifact_postfix: ${{ github.event.inputs.dependencies_artifact_postfix || env.default_dependencies_artifact_postfix }}
+
+      - name: Compile and run tests
+        uses: jparisu/eProsima-CI/ubuntu/colcon_build_test_flaky@main
+        with:
+          packages_names: ${{ env.code_packages_names }}
+          workspace_dependencies: './install'
