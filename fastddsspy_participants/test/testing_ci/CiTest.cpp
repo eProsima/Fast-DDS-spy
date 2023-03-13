@@ -20,6 +20,7 @@
 TEST(CiTest, asan)
 {
     int* x = new int(42);
+    ASSERT_EQ(*x, 42);
 }
 
 TEST(CiTest, tsan)
@@ -32,6 +33,8 @@ TEST(CiTest, tsan)
 
     t1.join();
     t2.join();
+
+    ASSERT_EQ(x, 3);
 }
 
 TEST(CiTest, fail)

@@ -25,8 +25,11 @@
 #     - ubuntu-22.04
 #     - execute tests with TSAN flag
 #
+#   - clang tests
+#     - ubuntu-22.04
+#     - execute clang check
+#
 # TODO: when merge CI in eprosima-CI repository, the jparisu fork must change for eProsima in actions.
-# TODO: When code is already available, add new jobs
 #
 
 name: test
@@ -49,7 +52,8 @@ on:
     - cron: '0 5 * * *'
 
 env:
-  code_packages_names: 'fastddsspy_participants fastddsspy_yaml fastddsspy_tool'
+  # TODO: add more packages
+  code_packages_names: 'fastddsspy_participants'
   default_dependencies_artifact_postfix: '_nightly'
 
 jobs:
@@ -104,7 +108,7 @@ jobs:
       - name: Compile and run tests
         uses: jparisu/eProsima-CI/ubuntu/asan_build_test@main
         with:
-          packages_names: ${{ env.packages_names }}
+          packages_names: ${{ env.code_packages_names }}
           workspace_dependencies: './install'
 
 
@@ -129,5 +133,30 @@ jobs:
       - name: Compile and run tests
         uses: jparisu/eProsima-CI/ubuntu/tsan_build_test@main
         with:
-          packages_names: ${{ env.packages_names }}
+          packages_names: ${{ env.code_packages_names }}
+          workspace_dependencies: './install'
+
+
+#####################################################################
+# CLANG
+
+  clang:
+    runs-on: ubuntu-22.04
+    steps:
+
+      - name: Sync repository
+        uses: actions/checkout@v3
+        with:
+          path: src
+
+      - name: Download dependencies and install requirements
+        uses: ./src/.github/actions/fastddsspy_dependencies_ubuntu
+        with:
+          ubuntu_version: ubuntu-22.04
+          dependencies_artifact_postfix: ${{ github.event.inputs.dependencies_artifact_postfix || env.default_dependencies_artifact_postfix }}
+
+      - name: Compile and run tests
+        uses: jparisu/eProsima-CI/ubuntu/clang_build_test@main
+        with:
+          packages_names: ${{ env.code_packages_names }}
           workspace_dependencies: './install'

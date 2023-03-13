@@ -25,6 +25,7 @@ set(MODULE_SUMMARY
 set(MODULE_FIND_PACKAGES
         fastcdr
         fastrtps
+        cpp_utils
     )
 
 set(MODULE_DEPENDENCIES
