@@ -22,6 +22,7 @@ set(TEST_LIST
         asan
         tsan
         fail
+        flaky
     )
 
 set(TEST_EXTRA_LIBRARIES
@@ -36,3 +37,6 @@ add_unittest_executable(
         "${TEST_LIST}"
         "${TEST_EXTRA_LIBRARIES}"
     )
+
+# Set flaky tests as xfail
+add_xfail_label(${CMAKE_CURRENT_SOURCE_DIR}/TEST_XFAIL.list)

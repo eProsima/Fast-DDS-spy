@@ -42,6 +42,11 @@ TEST(CiTest, fail)
     ASSERT_TRUE(false);
 }
 
+TEST(CiTest, flaky)
+{
+    ASSERT_TRUE(false);
+}
+
 int main(
         int argc,
         char** argv)
