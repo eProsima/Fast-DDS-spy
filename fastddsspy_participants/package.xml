@@ -19,6 +19,7 @@
 
   <depend>fastrtps</depend>
   <depend>cmake_utils</depend>
+  <depend>cpp_utils</depend>
 
   <doc_depend>doxygen</doc_depend>
 
