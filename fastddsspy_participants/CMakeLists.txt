@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-# Copyright 2022 Proyectos y Sistemas de Mantenimiento SL (eProsima).
-=======
 # Copyright 2023 Proyectos y Sistemas de Mantenimiento SL (eProsima).
->>>>>>> 4b939ba (Implement participants headers)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -56,11 +52,8 @@ project(
 # - Set shared libraries by default
 # - Find external packages and thirdparties
 # - Activate Code coverage if flag CODE_COVERAGE
-<<<<<<< HEAD
-=======
 # - Activate Address sanitizer build if flag ASAN_BUILD
 # - Activate Thread sanitizer build if flag TSAN_BUILD
->>>>>>> 4b939ba (Implement participants headers)
 # - Configure log depending on LOG_INFO flag and CMake type
 configure_project_cpp()
 
