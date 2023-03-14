@@ -12,8 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <fastdds/rtps/participant/RTPSParticipant.h>
+
 #include <fastddsspy_participants/participant/SpyDdsParticipant.hpp>
-#include <fastddsspy_participants/types/ParticipantInfoData.hpp>
+#include <fastddsspy_participants/types/ParticipantInfo.hpp>
+#include <fastddsspy_participants/types/EndpointInfo.hpp>
 
 namespace eprosima {
 namespace spy {
@@ -26,6 +29,8 @@ SpyDdsParticipant::SpyDdsParticipant(
     : ddspipe::participants::DynTypesParticipant(participant_configuration, payload_pool, discovery_database)
     , participants_reader_(std::make_shared<ddspipe::participants::InternalReader>(
                 this->id()))
+    , endpoints_reader_(std::make_shared<ddspipe::participants::InternalReader>(
+                this->id()))
 {
     // Do nothing
 }
@@ -33,10 +38,16 @@ SpyDdsParticipant::SpyDdsParticipant(
 std::shared_ptr<ddspipe::core::IReader> SpyDdsParticipant::create_reader(
         const ddspipe::core::ITopic& topic)
 {
-    // If type object topic, return the internal reader for type objects
+    // If participant info topic, return the internal reader for it
     if (is_participant_info_topic(topic))
     {
         return this->participants_reader_;
+    }
+
+    // If endpoint info topic, return the internal reader for it
+    if (is_endpoint_info_topic(topic))
+    {
+        return this->endpoints_reader_;
     }
 
     // If not type object, use the parent method
@@ -47,6 +58,12 @@ void SpyDdsParticipant::on_participant_discovery(
         fastdds::dds::DomainParticipant* participant,
         fastrtps::rtps::ParticipantDiscoveryInfo&& discovery_info)
 {
+    // If comes from this participant is not interesting
+    if (come_from_this_participant_(discovery_info.info.m_guid))
+    {
+        return;
+    }
+
     ParticipantInfo info;
     info.active = (discovery_info.status == eprosima::fastrtps::rtps::ParticipantDiscoveryInfo::DISCOVERED_PARTICIPANT
         || discovery_info.status == eprosima::fastrtps::rtps::ParticipantDiscoveryInfo::CHANGED_QOS_PARTICIPANT);
@@ -54,6 +71,38 @@ void SpyDdsParticipant::on_participant_discovery(
     info.guid = discovery_info.info.m_guid;
 
     internal_notify_participant_discovered_(info);
+}
+
+void SpyDdsParticipant::on_subscriber_discovery(
+        fastdds::dds::DomainParticipant* participant,
+        fastrtps::rtps::ReaderDiscoveryInfo&& info)
+{
+    // If comes from this participant is not interesting
+    if (come_from_this_participant_(info.info.guid()))
+    {
+        return;
+    }
+
+    EndpointInfo endpoint_info = create_endpoint_from_info_(info);
+    endpoint_info.active = !(info.status == fastrtps::rtps::ReaderDiscoveryInfo::DISCOVERY_STATUS::REMOVED_READER);
+
+    internal_notify_endpoint_discovered_(endpoint_info);
+}
+
+void SpyDdsParticipant::on_publisher_discovery(
+        fastdds::dds::DomainParticipant* participant,
+        fastrtps::rtps::WriterDiscoveryInfo&& info)
+{
+    // If comes from this participant is not interesting
+    if (come_from_this_participant_(info.info.guid()))
+    {
+        return;
+    }
+
+    EndpointInfo endpoint_info = create_endpoint_from_info_(info);
+    endpoint_info.active = !(info.status == fastrtps::rtps::WriterDiscoveryInfo::DISCOVERY_STATUS::REMOVED_WRITER);
+
+    internal_notify_endpoint_discovered_(endpoint_info);
 }
 
 void SpyDdsParticipant::internal_notify_participant_discovered_(
@@ -65,6 +114,25 @@ void SpyDdsParticipant::internal_notify_participant_discovered_(
 
     // Insert new data in internal reader queue
     participants_reader_->simulate_data_reception(std::move(data));
+}
+
+void SpyDdsParticipant::internal_notify_endpoint_discovered_(
+        const EndpointInfo& endpoint_discovered)
+{
+    // Create data containing Dynamic Type
+    auto data = std::make_unique<EndpointInfoData>();
+    data->info = endpoint_discovered;
+
+    // Insert new data in internal reader queue
+    endpoints_reader_->simulate_data_reception(std::move(data));
+}
+
+bool SpyDdsParticipant::come_from_this_participant_(const ddspipe::core::types::Guid& guid) const noexcept
+{
+    return (
+        guid.guid_prefix() == dds_participant_->guid().guidPrefix
+        || guid.guid_prefix() == rtps_participant_->getGuid().guidPrefix
+    );
 }
 
 } /* namespace participants */

@@ -20,8 +20,7 @@
 
 #include <fastddsspy_participants/types/ParticipantInfo.hpp>
 #include <fastddsspy_participants/writer/InternalWriter.hpp>
-#include <fastddsspy_participants/visualizer/DataVisualizer.hpp>
-#include <fastddsspy_participants/visualizer/SpyVisualizer.hpp>
+#include <fastddsspy_participants/model/SpyModel.hpp>
 
 namespace eprosima {
 namespace spy {
@@ -39,7 +38,7 @@ public:
             const std::shared_ptr<ddspipe::participants::ParticipantConfiguration>& participant_configuration,
             const std::shared_ptr<ddspipe::core::PayloadPool>& payload_pool,
             const std::shared_ptr<ddspipe::core::DiscoveryDatabase>& discovery_database,
-            const std::shared_ptr<SpyVisualizer>& visualizer);
+            const std::shared_ptr<SpyModel>& model_);
 
     //! Override create_writer_() IParticipant method
     std::shared_ptr<ddspipe::core::IWriter> create_writer(
@@ -47,12 +46,16 @@ public:
 
 protected:
 
-    void new_participant_info_(ddspipe::core::IRoutingData& data);
+    void new_participant_info_(const ddspipe::core::IRoutingData& data);
+
+    void new_endpoint_info_(const ddspipe::core::IRoutingData& data);
 
     //! Participants Internal Reader
     std::shared_ptr<InternalWriter> participants_writer_;
 
-    std::shared_ptr<SpyVisualizer> visualizer_;
+    std::shared_ptr<InternalWriter> endpoints_writer_;
+
+    std::shared_ptr<SpyModel> model_;
 };
 
 } /* namespace participants */

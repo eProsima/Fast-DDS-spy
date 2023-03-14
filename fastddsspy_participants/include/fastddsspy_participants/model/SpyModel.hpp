@@ -14,8 +14,8 @@
 
 #pragma once
 
-#include <fastddsspy_participants/visualizer/DataVisualizer.hpp>
-#include <fastddsspy_participants/visualizer/NetworkVisualizer.hpp>
+#include <fastddsspy_participants/model/DataStreamer.hpp>
+#include <fastddsspy_participants/model/NetworkDatabase.hpp>
 
 namespace eprosima {
 namespace spy {
@@ -24,8 +24,10 @@ namespace participants {
 /**
  * TODO
  */
-class SpyVisualizer : public DataVisualizer, public NetworkVisualizer
+class SpyModel : public NetworkDatabase, public DataStreamer
 {
+    //! Use child ctor
+    using DataStreamer::DataStreamer;
 };
 
 } /* namespace participants */

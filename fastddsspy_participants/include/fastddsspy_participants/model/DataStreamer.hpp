@@ -24,8 +24,6 @@
 
 #include <ddspipe_participants/participant/dynamic_types/ISchemaHandler.hpp>
 
-#include <fastddsspy_participants/types/ParticipantInfo.hpp>
-
 namespace eprosima {
 namespace spy {
 namespace participants {
@@ -33,13 +31,18 @@ namespace participants {
 /**
  * TODO
  */
-class DataVisualizer : public ddspipe::participants::ISchemaHandler
+class DataStreamer : public ddspipe::participants::ISchemaHandler
 {
 public:
 
+    using CallbackType = void(
+        const ddspipe::core::types::DdsTopic&,
+        const fastrtps::types::DynamicType_ptr&,
+        const ddspipe::core::types::RtpsPayloadData&);
+
     bool activate(
             const ddspipe::core::types::DdsTopic& topic_to_activate,
-            std::ostream* target = &std::cout);
+            const std::shared_ptr<CallbackType>& callback);
 
     void deactivate();
 
@@ -50,19 +53,19 @@ public:
             const ddspipe::core::types::DdsTopic& topic,
             ddspipe::core::types::RtpsPayloadData& data) override;
 
+    bool is_topic_type_discovered(const ddspipe::core::types::DdsTopic& topic_to_activate) const noexcept;
+
 protected:
 
-    void print_data_nts_(
-        fastrtps::types::DynamicType_ptr& type,
-        ddspipe::core::types::RtpsPayloadData& data) const noexcept;
+    bool is_topic_type_discovered_nts_(const ddspipe::core::types::DdsTopic& topic_to_activate) const noexcept;
 
     bool activated_ {false};
+
+    std::shared_ptr<CallbackType> callback_;
 
     ddspipe::core::types::DdsTopic activated_topic_;
 
     std::map<std::string, fastrtps::types::DynamicType_ptr> types_discovered_;
-
-    std::ostream* target_;
 
     mutable std::shared_mutex mutex_;
 };

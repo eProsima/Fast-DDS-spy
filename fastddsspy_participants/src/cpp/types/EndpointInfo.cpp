@@ -12,43 +12,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License\.
 
-#include <fastddsspy_participants/visualizer/NetworkVisualizer.hpp>
+#include <fastddsspy_participants/types/EndpointInfo.hpp>
 
 namespace eprosima {
 namespace spy {
 namespace participants {
 
-void NetworkVisualizer::print_participants(
-        std::ostream& target /* = std::cout */) const noexcept
+ddspipe::core::types::TopicInternalTypeDiscriminator EndpointInfoData::internal_type_discriminator() const noexcept
 {
-    // TODO
-    target << "participants";
+    return INTERNAL_TOPIC_TYPE_ENDPOINT_INFO;
 }
 
-void NetworkVisualizer::print_datareaders(
-        std::ostream& target /* = std::cout */) const noexcept
+ddspipe::core::types::DdsTopic endpoint_info_topic() noexcept
 {
-    // TODO
-    target << "datareaders";
+    ddspipe::core::types::DdsTopic topic;
+    topic.m_topic_name = ENDPOINT_INFO_TOPIC_NAME;
+    topic.type_name = ENDPOINT_INFO_DATA_TYPE_NAME;
+    topic.m_internal_type_discriminator = INTERNAL_TOPIC_TYPE_ENDPOINT_INFO;
+
+    return topic;
 }
 
-void NetworkVisualizer::print_datawriters(
-        std::ostream& target /* = std::cout */) const noexcept
+bool is_endpoint_info_topic(
+        const ddspipe::core::ITopic& topic) noexcept
 {
-    // TODO
-    target << "datawriters";
-}
-
-void NetworkVisualizer::print_topics(
-        std::ostream& target /* = std::cout */) const noexcept
-{
-    // TODO
-    target << "topics";
-}
-
-void NetworkVisualizer::new_participant_info(const ParticipantInfo& info) noexcept
-{
-    // TODO
+    return topic.internal_type_discriminator() == INTERNAL_TOPIC_TYPE_ENDPOINT_INFO;
 }
 
 } /* namespace participants */

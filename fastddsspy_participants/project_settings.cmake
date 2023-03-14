@@ -13,7 +13,7 @@
 # limitations under the License.
 
 ###############################################################################
-# Set settings for project
+# Set settings for project fastddsspy_participants
 ###############################################################################
 
 set(MODULE_NAME

@@ -14,11 +14,13 @@
 
 #pragma once
 
+#include <fastrtps/types/DynamicTypePtr.h>
+
+#include <cpp_utils/collection/database/SafeDatabase.hpp>
 #include <cpp_utils/types/Atomicable.hpp>
 
-#include <ddspipe_core/dynamic/DiscoveryDatabase.hpp>
-
 #include <fastddsspy_participants/types/ParticipantInfo.hpp>
+#include <fastddsspy_participants/types/EndpointInfo.hpp>
 
 namespace eprosima {
 namespace spy {
@@ -27,30 +29,13 @@ namespace participants {
 /**
  * TODO
  */
-class NetworkVisualizer
+struct NetworkDatabase
 {
 public:
-    void print_participants(
-            std::ostream& target = std::cout) const noexcept;
 
-    void print_datareaders(
-            std::ostream& target = std::cout) const noexcept;
+    utils::SafeDatabase<ddspipe::core::types::Guid, ParticipantInfo> participant_database_;
 
-    void print_datawriters(
-            std::ostream& target = std::cout) const noexcept;
-
-    void print_topics(
-            std::ostream& target = std::cout) const noexcept;
-
-    void new_participant_info(const ParticipantInfo& info) noexcept;
-
-protected:
-
-    using ParticipantInfoDatabase = utils::Atomicable<std::map<ddspipe::core::types::Guid, ParticipantInfo>>;
-
-    ParticipantInfoDatabase participant_database_;
-
-    std::shared_ptr<ddspipe::core::DiscoveryDatabase> discovery_database_;
+    utils::SafeDatabase<ddspipe::core::types::Guid, EndpointInfo> endpoint_database_;
 };
 
 } /* namespace participants */

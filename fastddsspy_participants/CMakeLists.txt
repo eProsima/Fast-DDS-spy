@@ -13,7 +13,7 @@
 # limitations under the License.
 
 ###############################################################################
-# CMake build rules for Submodule
+# CMake build rules for Foxglove Websocket Submodule
 ###############################################################################
 cmake_minimum_required(VERSION 3.5)
 

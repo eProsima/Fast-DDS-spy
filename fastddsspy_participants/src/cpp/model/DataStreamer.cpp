@@ -15,8 +15,12 @@
 #include <mutex>
 
 #include <fastrtps/types/DynamicType.h>
+#include <fastrtps/types/DynamicPubSubType.h>
+#include <fastrtps/types/DynamicData.h>
+#include <fastrtps/types/DynamicDataFactory.h>
+#include <fastrtps/types/DynamicDataHelper.hpp>
 
-#include <fastddsspy_participants/visualizer/DataVisualizer.hpp>
+#include <fastddsspy_participants/model/DataStreamer.hpp>
 
 namespace eprosima {
 namespace spy {
@@ -24,36 +28,34 @@ namespace participants {
 
 using eprosima::ddspipe::core::types::operator<<;
 
-bool DataVisualizer::activate(
+bool DataStreamer::activate(
         const ddspipe::core::types::DdsTopic& topic_to_activate,
-        std::ostream* target /* = &std::cout */)
+        const std::shared_ptr<CallbackType>& callback)
 {
-    std::unique_lock<std::shared_mutex> _(mutex_);
-
-    // Check if the type exists
-    if (types_discovered_.find(topic_to_activate.type_name) == types_discovered_.end())
+    if (!is_topic_type_discovered(topic_to_activate))
     {
-        logWarning(FASTDDSSPY_DATAVISUALIZER,
-            "Type " << topic_to_activate.type_name <<
-            " for topic " << topic_to_activate.topic_name() << " is not discovered.");
+        logWarning(FASTDDSSPY_DATASTREAMER,
+            "Type <" << topic_to_activate.type_name <<
+            "> for topic <" << topic_to_activate.topic_name() << "> is not discovered.");
         return false;
     }
 
+    std::unique_lock<std::shared_mutex> _(mutex_);
+
     // If type exist, this is the new topic to activate
-    activated_ = true;
     activated_topic_ = topic_to_activate;
-    target_ = target;
+    callback_ = callback;
 
     return true;
 }
 
-void DataVisualizer::deactivate()
+void DataStreamer::deactivate()
 {
     std::unique_lock<std::shared_mutex> _(mutex_);
-    activated_ = false;
+    callback_.reset();
 }
 
-void DataVisualizer::add_schema(
+void DataStreamer::add_schema(
         const fastrtps::types::DynamicType_ptr& dynamic_type)
 {
     std::unique_lock<std::shared_mutex> _(mutex_);
@@ -63,27 +65,28 @@ void DataVisualizer::add_schema(
     types_discovered_[dynamic_type->get_name()] = dynamic_type;
 }
 
-void DataVisualizer::add_data(
+void DataStreamer::add_data(
         const ddspipe::core::types::DdsTopic& topic,
         ddspipe::core::types::RtpsPayloadData& data)
 {
     std::shared_lock<std::shared_mutex> _(mutex_);
 
-    if (activated_)
+    if (callback_ && topic == activated_topic_)
     {
         // TODO: make map search more safe
-        print_data_nts_(types_discovered_[topic.type_name], data);
+        (*callback_)(topic, types_discovered_[topic.type_name], data);
     }
 }
 
-void DataVisualizer::print_data_nts_(
-        fastrtps::types::DynamicType_ptr& type,
-        ddspipe::core::types::RtpsPayloadData& data) const noexcept
+bool DataStreamer::is_topic_type_discovered(const ddspipe::core::types::DdsTopic& topic) const noexcept
 {
-    // TODO do it in a way that you can see the data deserialize
-    static_cast<void>(type);
+    std::shared_lock<std::shared_mutex> _(mutex_);
+    return is_topic_type_discovered_nts_(topic);
+}
 
-    *target_ << data.payload;
+bool DataStreamer::is_topic_type_discovered_nts_(const ddspipe::core::types::DdsTopic& topic) const noexcept
+{
+    return types_discovered_.find(topic.type_name) != types_discovered_.end();
 }
 
 } /* namespace participants */

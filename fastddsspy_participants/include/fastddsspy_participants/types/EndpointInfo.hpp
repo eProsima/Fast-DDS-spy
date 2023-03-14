@@ -14,38 +14,41 @@
 
 #pragma once
 
+#include <ddspipe_core/library/library_dll.h>
+#include <ddspipe_core/types/dds/Guid.hpp>
 #include <ddspipe_core/interface/IRoutingData.hpp>
 #include <ddspipe_core/types/topic/TopicInternalTypeDiscriminator.hpp>
 #include <ddspipe_core/types/topic/dds/DdsTopic.hpp>
-
-#include <fastddsspy_participants/types/ParticipantInfo.hpp>
+#include <ddspipe_core/types/dds/Endpoint.hpp>
 
 namespace eprosima {
 namespace spy {
 namespace participants {
 
+using EndpointInfo = ddspipe::core::types::Endpoint;
+
 /**
  * TODO
  */
-struct ParticipantInfoData : public ddspipe::core::IRoutingData
+struct EndpointInfoData : public ddspipe::core::IRoutingData
 {
 
     virtual ddspipe::core::types::TopicInternalTypeDiscriminator internal_type_discriminator() const noexcept override;
 
-    //! Info of the participant
-    ParticipantInfo info{};
+    //! Info of the endpoint
+    EndpointInfo info{};
 };
 
-ddspipe::core::types::DdsTopic participant_info_topic() noexcept;
+ddspipe::core::types::DdsTopic endpoint_info_topic() noexcept;
 
 DDSPIPE_CORE_DllAPI
-bool is_participant_info_topic(
+bool is_endpoint_info_topic(
         const ddspipe::core::ITopic& topic) noexcept;
 
-constexpr const char* PARTICIPANT_INFO_TOPIC_NAME = "__internal__/participant_info";
-constexpr const char* PARTICIPANT_INFO_DATA_TYPE_NAME = "__internal__::participant_info";
+constexpr const char* ENDPOINT_INFO_TOPIC_NAME = "__internal__/endpoint_info";
+constexpr const char* ENDPOINT_INFO_DATA_TYPE_NAME = "__internal__::endpoint_info";
 
-const ddspipe::core::types::TopicInternalTypeDiscriminator INTERNAL_TOPIC_TYPE_PARTICIPANTS_INFO = "participant::type::v0";
+const ddspipe::core::types::TopicInternalTypeDiscriminator INTERNAL_TOPIC_TYPE_ENDPOINT_INFO = "endpoint::type::v0";
 
 } /* namespace participants */
 } /* namespace spy */

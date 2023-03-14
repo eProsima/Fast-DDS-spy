@@ -16,6 +16,9 @@
 
 #include <ddspipe_core/library/library_dll.h>
 #include <ddspipe_core/types/dds/Guid.hpp>
+#include <ddspipe_core/interface/IRoutingData.hpp>
+#include <ddspipe_core/types/topic/TopicInternalTypeDiscriminator.hpp>
+#include <ddspipe_core/types/topic/dds/DdsTopic.hpp>
 
 namespace eprosima {
 namespace spy {
@@ -35,6 +38,29 @@ struct ParticipantInfo
     //! Whether the participant is active or has left
     bool active;
 };
+
+/**
+ * TODO
+ */
+struct ParticipantInfoData : public ddspipe::core::IRoutingData
+{
+
+    virtual ddspipe::core::types::TopicInternalTypeDiscriminator internal_type_discriminator() const noexcept override;
+
+    //! Info of the participant
+    ParticipantInfo info{};
+};
+
+ddspipe::core::types::DdsTopic participant_info_topic() noexcept;
+
+DDSPIPE_CORE_DllAPI
+bool is_participant_info_topic(
+        const ddspipe::core::ITopic& topic) noexcept;
+
+constexpr const char* PARTICIPANT_INFO_TOPIC_NAME = "__internal__/participant_info";
+constexpr const char* PARTICIPANT_INFO_DATA_TYPE_NAME = "__internal__::participant_info";
+
+const ddspipe::core::types::TopicInternalTypeDiscriminator INTERNAL_TOPIC_TYPE_PARTICIPANTS_INFO = "participant::type::v0";
 
 } /* namespace participants */
 } /* namespace spy */
