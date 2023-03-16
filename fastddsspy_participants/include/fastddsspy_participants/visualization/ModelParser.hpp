@@ -15,14 +15,14 @@
 #pragma once
 
 #include <fastddsspy_participants/model/SpyModel.hpp>
-#include <fastddsspy_participants/controller/controller_data.hpp>
+#include <fastddsspy_participants/visualization/parser_data.hpp>
 
 namespace eprosima {
 namespace spy {
 namespace participants {
 
 /**
- * TODO
+ * Helper methods to get structured information from model.
  */
 class ModelParser
 {
