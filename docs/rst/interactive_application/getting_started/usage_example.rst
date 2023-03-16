@@ -42,7 +42,7 @@ Spy configuration
 Additionally, it is possible to change the default configuration parameters by means of a YAML configuration file.
 
 .. note::
-    Please refer to :ref:`Configuration <usage_configuration>` for more information on how to configure a |espy|.
+    Please refer to Configuration for more information on how to configure a |espy|.
 
 Spy execution
 =============
@@ -55,17 +55,25 @@ Launching a |espy| instance is as easy as executing the following command:
 
 Try out all the commands DDS Spy has to offer:
 
+* ``participants``
+
 .. figure:: /rst/figures/example_usage/spy_participants.png
     :align: center
     :scale: 75 %
+
+* ``datawriters``
 
 .. figure:: /rst/figures/example_usage/spy_datawriter.png
     :align: center
     :scale: 75 %
 
+* ``topics``
+
 .. figure:: /rst/figures/example_usage/spy_topics.png
     :align: center
     :scale: 75 %
+
+* ``print <topic>
 
 .. figure:: /rst/figures/example_usage/spy_square.png
     :align: center
