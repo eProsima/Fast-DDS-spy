@@ -20,7 +20,7 @@ namespace participants {
 
 InternalWriter::InternalWriter(
         const ddspipe::core::types::ParticipantId& participant_id,
-        const std::function<void(ddspipe::core::IRoutingData&)>& callback)
+        const std::function<utils::ReturnCode(ddspipe::core::IRoutingData&)>& callback)
     : ddspipe::participants::BaseWriter(participant_id)
     , callback_(callback)
 {
@@ -30,8 +30,7 @@ InternalWriter::InternalWriter(
 utils::ReturnCode InternalWriter::write_nts_(
         ddspipe::core::IRoutingData& data) noexcept
 {
-    callback_(data);
-    return utils::ReturnCode::RETCODE_OK;
+    return callback_(data);
 }
 
 } /* namespace participants */

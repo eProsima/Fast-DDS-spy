@@ -84,6 +84,7 @@ void SpyDdsParticipant::on_subscriber_discovery(
     }
 
     EndpointInfo endpoint_info = create_endpoint_from_info_(info);
+    // TODO: check if this notification arrives when a participants leaves
     endpoint_info.active = !(info.status == fastrtps::rtps::ReaderDiscoveryInfo::DISCOVERY_STATUS::REMOVED_READER);
 
     internal_notify_endpoint_discovered_(endpoint_info);
@@ -100,6 +101,7 @@ void SpyDdsParticipant::on_publisher_discovery(
     }
 
     EndpointInfo endpoint_info = create_endpoint_from_info_(info);
+    // TODO: check if this notification arrives when a participants leaves
     endpoint_info.active = !(info.status == fastrtps::rtps::WriterDiscoveryInfo::DISCOVERY_STATUS::REMOVED_WRITER);
 
     internal_notify_endpoint_discovered_(endpoint_info);

@@ -29,12 +29,12 @@ SpyParticipant::SpyParticipant(
     , model_(model)
 {
     // TODO: study why couldn't do with bind and try it, better than create a lambda
-    auto participant_callback = [this](ddspipe::core::IRoutingData& data){ this->new_participant_info_(data); };
+    auto participant_callback = [this](ddspipe::core::IRoutingData& data){ return this->new_participant_info_(data); };
     participants_writer_ = std::make_shared<InternalWriter>(
         participant_configuration->id,
         participant_callback);
 
-    auto endpoint_callback = [this](ddspipe::core::IRoutingData& data){ this->new_endpoint_info_(data); };
+    auto endpoint_callback = [this](ddspipe::core::IRoutingData& data){ return this->new_endpoint_info_(data); };
     endpoints_writer_ = std::make_shared<InternalWriter>(
         participant_configuration->id,
         endpoint_callback);
@@ -67,22 +67,24 @@ std::shared_ptr<ddspipe::core::IWriter> SpyParticipant::create_writer(
     }
 }
 
-void SpyParticipant::new_participant_info_(const ddspipe::core::IRoutingData& data)
+utils::ReturnCode SpyParticipant::new_participant_info_(const ddspipe::core::IRoutingData& data)
 {
     // Assuming that data is of type required
     auto& participant_info = dynamic_cast<const ParticipantInfoData&>(data);
     ParticipantInfo info = participant_info.info;
     ddspipe::core::types::Guid guid = info.guid;
     model_->participant_database_.add_or_modify(std::move(guid), std::move(info));
+    return utils::ReturnCode::RETCODE_OK;
 }
 
-void SpyParticipant::new_endpoint_info_(const ddspipe::core::IRoutingData& data)
+utils::ReturnCode SpyParticipant::new_endpoint_info_(const ddspipe::core::IRoutingData& data)
 {
     // Assuming that data is of type required
     auto& endpoint_info = dynamic_cast<const EndpointInfoData&>(data);
     EndpointInfo info = endpoint_info.info;
     ddspipe::core::types::Guid guid = info.guid;
     model_->endpoint_database_.add_or_modify(std::move(guid), std::move(info));
+    return utils::ReturnCode::RETCODE_OK;
 }
 
 } /* namespace participants */

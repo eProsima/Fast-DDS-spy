@@ -20,6 +20,8 @@
 #include <fastrtps/types/DynamicDataFactory.h>
 #include <fastrtps/types/DynamicDataHelper.hpp>
 
+#include <cpp_utils/utils.hpp>
+
 #include <fastddsspy_participants/model/DataStreamer.hpp>
 
 namespace eprosima {
@@ -73,8 +75,16 @@ void DataStreamer::add_data(
 
     if (callback_ && topic == activated_topic_)
     {
+        auto it = types_discovered_.find(topic.type_name);
+        if (it == types_discovered_.end())
+        {
+            // The topic that is supposed to be activated has no associated type. This should not happen
+            utils::tsnh(STR_ENTRY
+                << "Topic <" << topic << "> must not be activated if its type is not registered.");
+        }
+
         // TODO: make map search more safe
-        (*callback_)(topic, types_discovered_[topic.type_name], data);
+        (*callback_)(topic, it->second, data);
     }
 }
 

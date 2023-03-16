@@ -23,7 +23,7 @@ namespace spy {
 namespace participants {
 
 /**
- * Reader implementation that allows to introduce custom data to DDS Pipe.
+ * Writer implementation that allow to register a callback to be executed with each data received.
  */
 class InternalWriter : public ddspipe::participants::BaseWriter
 {
@@ -31,14 +31,14 @@ public:
 
     InternalWriter(
             const ddspipe::core::types::ParticipantId& participant_id,
-            const std::function<void(ddspipe::core::IRoutingData&)>& callback);
+            const std::function<utils::ReturnCode(ddspipe::core::IRoutingData&)>& callback);
 
 protected:
 
     virtual utils::ReturnCode write_nts_(
             ddspipe::core::IRoutingData& data) noexcept override;
 
-    const std::function<void(ddspipe::core::IRoutingData&)> callback_;
+    const std::function<utils::ReturnCode(ddspipe::core::IRoutingData&)> callback_;
 };
 
 } /* namespace participants */
