@@ -1,5 +1,5 @@
 name: fastddsspy_dependencies_ubuntu
-description: Common first step for all Fast DDS Spy jobs. It checkout repository, downloads dependencies and install required packages.
+description: Common first step for all Fast DDS Spy jobs. Checkout repository, download dependencies and install required packages.
 
 inputs:
 
@@ -27,6 +27,7 @@ runs:
     - name: Install yaml cpp dependency
       uses: jparisu/eProsima-CI/ubuntu/install_yamlcpp@main
 
+    # In DDS Pipe artifact they are included Fast DDS and dev-utils
     - name: Download dependencies artifact
       uses: jparisu/eProsima-CI/ubuntu/download_dependency@main
       with:
