@@ -13,7 +13,7 @@
 
 ## Documentation
 
-You can access the documentation online, which is hosted on [Read the Docs](https://dds-recorder.readthedocs.io/).
+You can access the documentation online, which is hosted on [Read the Docs](https://fast-dds-spy.readthedocs.io).
 
 * [Introduction](https://fast-dds-spy.readthedocs.io/en/latest/rst/formalia/titlepage.html)
 * [Getting Started](https://fast-dds-spy.readthedocs.io/en/latest/rst/getting_started/project_overview.html)

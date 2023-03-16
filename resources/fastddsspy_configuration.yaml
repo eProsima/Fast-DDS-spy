@@ -12,6 +12,5 @@ dds:
       type: "with_weird_type"
 
 specs:
-
   threads: 12
   max-history-depth: 5000
