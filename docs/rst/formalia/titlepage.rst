@@ -11,12 +11,12 @@
   :alt: eProsima
   :target: http://www.eprosima.com/
 
-*eProsima Fast DDS Spy* is an end-user software application that efficiently saves DDS data published in a DDS environment in a MCAP format database.
-Thus, the exact playback of the recorded network events is possible as the data is linked to the timestamp at which the original data was published.
-At the moment, it is only possible to replay the data using external tools capable of interpreting the MCAP format, as the *eProsima Fast DDS Spy* does not provide a replay tool.
+*eProsima Fast DDS Spy* is CLI interactive tool that allow to introspect a DDS network in human readable format.
+It is possible to query the network about the DomainParticipants connected, their endpoints (DataWriters and DataReaders) and the topics they belong to.
+It is also possible to see the user data sent through network topics in a schematic format in run time.
 
-*eProsima Fast DDS Spy* is easily configurable and installed with a default setup, so that DDS topics, data types and entities are automatically discovered without the need to specify the types of data recorded.
-This is because the recording tool exploits the DynamicTypes functionality of `eProsima Fast DDS <https://fast-dds.docs.eprosima.com>`_, the C++ implementation of the `DDS (Data Distribution Service) Specification <https://www.omg.org/spec/DDS/About-DDS/>`_ defined by the `Object Management Group (OMG) <https://www.omg.org/>`_.
+*eProsima Fast DDS Spy* is easily configurable and installed with a default setup, so that DDS topics, data types and entities are automatically discovered without the need to specify the types of data.
+This is because this tool exploits the DynamicTypes functionality of `eProsima Fast DDS <https://fast-dds.docs.eprosima.com>`_, the C++ implementation of the `DDS (Data Distribution Service) Specification <https://www.omg.org/spec/DDS/About-DDS/>`_ defined by the `Object Management Group (OMG) <https://www.omg.org/>`_.
 
 ########
 Overview
