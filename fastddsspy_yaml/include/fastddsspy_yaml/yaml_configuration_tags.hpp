@@ -26,12 +26,12 @@ namespace spy {
 namespace yaml {
 
 //////////////////////
-// DDS related tags //
+// DDS related tags
 //////////////////////
 constexpr const char* DDS_TAG("dds");
 
 ////////////////////////
-// Specs related tags //
+// Specs related tags
 ////////////////////////
 constexpr const char* SPECS_TAG("specs");
 

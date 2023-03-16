@@ -4,7 +4,7 @@
   <name>fastddsspy_participants</name>
   <version>0.1.0</version>
   <description>
-    Foxglove Websocket Participants implementation.
+    *eProsima Fast DDS Spy* core logic.
   </description>
   <maintainer email="RaulSanchezMateos@eprosima.com">Raul Sánchez-Mateos</maintainer>
   <maintainer email="javierparis@eprosima.com">Javier París</maintainer>
