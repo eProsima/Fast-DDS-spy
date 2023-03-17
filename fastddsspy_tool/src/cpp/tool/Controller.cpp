@@ -23,6 +23,7 @@
 
 #include <ddspipe_yaml/YamlWriter.hpp>
 
+#include <fastddsspy_participants/library/config.h>
 #include <fastddsspy_participants/model/SpyModel.hpp>
 #include <fastddsspy_participants/visualization/ModelParser.hpp>
 
@@ -39,7 +40,7 @@ Controller::Controller(
     : backend_(configuration)
     , model_(backend_.model())
 {
-    // Do nothing
+    view_.print_initial();
 }
 
 void Controller::run()
@@ -56,10 +57,32 @@ void Controller::run()
                 participants_command(command.arguments);
                 break;
 
-            // TODO add other cases
+            case CommandValue::datareader:
+                writers_command(command.arguments);
+                break;
+
+            case CommandValue::datawriter:
+                readers_command(command.arguments);
+                break;
+
+            case CommandValue::topic:
+                topics_command(command.arguments);
+                break;
 
             case CommandValue::print:
                 print_command(command.arguments);
+                break;
+
+            case CommandValue::version:
+                version_command(command.arguments);
+                break;
+
+            case CommandValue::help:
+                help_command(command.arguments);
+                break;
+
+            case CommandValue::error_input:
+                error_command(command.arguments);
                 break;
 
             default:
@@ -192,8 +215,33 @@ void Controller::participants_command(
     view_.show(yml);
 }
 
+<<<<<<< HEAD
 void Controller::print_command(
         const std::vector<std::string>& arguments) noexcept
+=======
+void Controller::writers_command(const std::vector<std::string>& arguments) noexcept
+{
+    // TODO
+    view_.show_error(STR_ENTRY
+        << "<" << arguments[0] << "> command is not implemented yet. Please be patient.");
+}
+
+void Controller::readers_command(const std::vector<std::string>& arguments) noexcept
+{
+    // TODO
+    view_.show_error(STR_ENTRY
+        << "<" << arguments[0] << "> command is not implemented yet. Please be patient.");
+}
+
+void Controller::topics_command(const std::vector<std::string>& arguments) noexcept
+{
+    // TODO
+    view_.show_error(STR_ENTRY
+        << "<" << arguments[0] << "> command is not implemented yet. Please be patient.");
+}
+
+void Controller::print_command(const std::vector<std::string>& arguments) noexcept
+>>>>>>> e635ee4 (Implement version command and add colors)
 {
     // Check the number of arguments is correct
     if (arguments.size() < 2)
@@ -304,6 +352,29 @@ void Controller::print_command(
     // Wait for other command to stop printing topics
     input_.wait_something();
     model_->deactivate();
+}
+
+void Controller::version_command(const std::vector<std::string>& arguments) noexcept
+{
+    view_.show(STR_ENTRY
+        << "Fast DDS Spy "
+        << FASTDDSSPY_PARTICIPANTS_VERSION_STRING
+        << "\ncommit hash: "
+        << FASTDDSSPY_PARTICIPANTS_COMMIT_HASH);
+}
+
+void Controller::help_command(const std::vector<std::string>& arguments) noexcept
+{
+    // TODO
+    view_.show_error(STR_ENTRY
+        << "<" << arguments[0] << "> command is not implemented yet. Please be patient.");
+}
+
+void Controller::error_command(const std::vector<std::string>& arguments) noexcept
+{
+    view_.show_error(STR_ENTRY
+        << "<" << arguments[0] << "> is not a known command. "
+        << "Use <help> command to see valid commands and arguments.");
 }
 
 } /* namespace spy */

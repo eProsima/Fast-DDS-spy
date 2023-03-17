@@ -19,8 +19,18 @@
 namespace eprosima {
 namespace spy {
 
-void View::show(
-        const std::string& value)
+void View::print_initial()
+{
+    std::cout << "\033[1;32m";
+    std::cout << " ____|             |        __ \\   __ \\    ___|        ___|                " << std::endl;
+    std::cout << " |     _` |   __|  __|      |   |  |   | \\___ \\      \\___ \\   __ \\   |   | " << std::endl;
+    std::cout << " __|  (   | \\__ \\  |        |   |  |   |       |           |  |   |  |   | " << std::endl;
+    std::cout << "_|   \\__,_| ____/ \\__|     ____/  ____/  _____/      _____/   .__/  \\__, | " << std::endl;
+    std::cout << "                                                              _|     ____/ " << std::endl;
+    std::cout << "\033[0m" << std::endl;
+}
+
+void View::show(const std::string& value)
 {
     show(value.c_str());
 }
@@ -39,8 +49,13 @@ void View::show(
 }
 
 template <>
-void View::show_error(
-        const std::string& value)
+void View::show(const utils::Formatter& value)
+{
+    show(value.to_string());
+}
+
+template <>
+void View::show_error(const std::string& value)
 {
     std::cout << "\033[1;31m" << value << "\033[0m" << std::endl;
 }

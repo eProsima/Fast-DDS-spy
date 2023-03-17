@@ -43,6 +43,9 @@ public:
 
 protected:
 
+
+    ////////////////////////////
+    // DATA STREAM CALLBACKS
     static fastrtps::types::DynamicData_ptr get_dynamic_data(
             const fastrtps::types::DynamicType_ptr& dyn_type,
             const ddspipe::core::types::RtpsPayloadData& data) noexcept;
@@ -57,22 +60,35 @@ protected:
             const fastrtps::types::DynamicType_ptr& dyn_type,
             const ddspipe::core::types::RtpsPayloadData& data);
 
-    bool verbose_argument(
-            const std::string& argument) const noexcept;
+    /////////////////////
+    // PARSE ARGUMENTS
+    bool verbose_argument(const std::string& argument) const noexcept;
 
     bool all_argument(
             const std::string& argument) const noexcept;
 
-    void participants_command(
-            const std::vector<std::string>& arguments) noexcept;
+    ////////////////////////////////////////////////////////////////////////////////////
+    // COMMANDS ROUTINES
 
-    void print_command(
-            const std::vector<std::string>& arguments) noexcept;
+    /////////////////////
+    // ENTITIES
+    void participants_command(const std::vector<std::string>& arguments) noexcept;
+    void writers_command(const std::vector<std::string>& arguments) noexcept;
+    void readers_command(const std::vector<std::string>& arguments) noexcept;
+    void topics_command(const std::vector<std::string>& arguments) noexcept;
 
-    bool search_topic_(
-            const std::string& topic_name,
-            ddspipe::core::types::DdsTopic& topic) const;
+    /////////////////////
+    // DATA STREAM
+    void print_command(const std::vector<std::string>& arguments) noexcept;
 
+    /////////////////////
+    // AUXILIARY
+    void version_command(const std::vector<std::string>& arguments) noexcept;
+    void help_command(const std::vector<std::string>& arguments) noexcept;
+    void error_command(const std::vector<std::string>& arguments) noexcept;
+
+    /////////////////////
+    // VARIABLES
     Backend backend_;
 
     Input input_;

@@ -99,7 +99,7 @@ int main(
     {
         file_path = eprosima::spy::DEFAULT_CONFIGURATION_FILE_NAME;
 
-        logUser(
+        logInfo(
             FASTDDSSPY_TOOL,
             "Not configuration file given, try to use default file " << file_path << ".");
     }
@@ -108,7 +108,7 @@ int main(
     // NOTE: this check is redundant with option parse arg check
     if (!is_file_accessible(file_path.c_str(), eprosima::utils::FileAccessMode::read))
     {
-        logUser(
+        logInfo(
             FASTDDSSPY_TOOL,
             "File '" << file_path << "' does not exist or it is not accessible. Using default configuration.");
         file_path = "";
@@ -140,7 +140,7 @@ int main(
                 [&spy, file_path]
                     (std::string file_name)
                 {
-                    logUser(
+                    logInfo(
                         FASTDDSSPY_TOOL,
                         "FileWatcher notified changes in file " << file_name << ". Reloading configuration");
 
@@ -179,7 +179,7 @@ int main(
                     [&spy, file_path]
                         ()
                     {
-                        logUser(
+                        logInfo(
                             FASTDDSSPY_TOOL,
                             "Periodic Timer raised. Reloading configuration from file " << file_path << ".");
 
