@@ -114,8 +114,6 @@ int main(
         file_path = "";
     }
 
-    logUser(FASTDDSSPY_TOOL, "Starting Fast DDS Spy execution.");
-
     // Encapsulating execution in block to erase all memory correctly before closing process
     try
     {
@@ -206,11 +204,7 @@ int main(
                             reload_time);
         }
 
-        logUser(FASTDDSSPY_TOOL, "Fast DDS Spy running.");
-
         spy.run();
-
-        logUser(FASTDDSSPY_TOOL, "Stopping Fast DDS Spy.");
 
         // Before stopping the Fast DDS Spy erase event handlers that reload configuration
         if (periodic_handler)
@@ -222,8 +216,6 @@ int main(
         {
             file_watcher_handler.reset();
         }
-
-        logUser(FASTDDSSPY_TOOL, "Fast DDS Spy stopped correctly.");
     }
     catch (const eprosima::utils::ConfigurationException& e)
     {
@@ -240,8 +232,6 @@ int main(
                 e.what());
         return static_cast<int>(eprosima::spy::ProcessReturnCode::execution_failed);
     }
-
-    logUser(FASTDDSSPY_TOOL, "Finishing Fast DDS Spy execution correctly.");
 
     // Force print every log before closing
     eprosima::utils::Log::Flush();

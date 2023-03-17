@@ -41,6 +41,9 @@ public:
         const fastrtps::types::DynamicType_ptr&,
         const ddspipe::core::types::RtpsPayloadData&)>;
 
+    bool activate_all(
+        const std::shared_ptr<CallbackType>& callback);
+
     bool activate(
             const ddspipe::core::types::DdsTopic& topic_to_activate,
             const std::shared_ptr<CallbackType>& callback);
@@ -65,6 +68,8 @@ protected:
     bool activated_ {false};
 
     std::shared_ptr<CallbackType> callback_;
+
+    bool activated_all_ {false};
 
     ddspipe::core::types::DdsTopic activated_topic_;
 

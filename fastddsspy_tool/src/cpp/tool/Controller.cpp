@@ -204,7 +204,24 @@ void Controller::print_command(const std::vector<std::string>& arguments) noexce
     // Print all data
     if (all_argument(arguments[1]))
     {
-        // TODO
+        bool activated = model_->activate_all(
+            std::make_shared<participants::DataStreamer::CallbackType>(
+                [this](
+                    const ddspipe::core::types::DdsTopic& topic,
+                    const fastrtps::types::DynamicType_ptr& dyn_type,
+                    const ddspipe::core::types::RtpsPayloadData& data
+                )
+                {
+                    data_stream_callback_verbose_(topic, dyn_type, data);
+                }));
+
+        if (!activated)
+        {
+            view_.show_error(STR_ENTRY
+                << "Error printing all topics.");
+            return;
+        }
+
     }
 
     // Print topi   c

@@ -28,7 +28,18 @@ namespace eprosima {
 namespace spy {
 namespace participants {
 
-using eprosima::ddspipe::core::types::operator <<;
+bool DataStreamer::activate_all(
+        const std::shared_ptr<CallbackType>& callback)
+{
+    std::unique_lock<std::shared_timed_mutex> _(mutex_);
+
+    // If type exist, this is the new topic to activate
+    activated_ = true;
+    activated_all_ = true;
+    callback_ = callback;
+
+    return true;
+}
 
 bool DataStreamer::activate(
         const ddspipe::core::types::DdsTopic& topic_to_activate,
@@ -45,7 +56,9 @@ bool DataStreamer::activate(
     std::unique_lock<std::shared_timed_mutex> _(mutex_);
 
     // If type exist, this is the new topic to activate
+    activated_ = true;
     activated_topic_ = topic_to_activate;
+    activated_all_ = false;
     callback_ = callback;
 
     return true;
@@ -54,6 +67,7 @@ bool DataStreamer::activate(
 void DataStreamer::deactivate()
 {
     std::unique_lock<std::shared_timed_mutex> _(mutex_);
+    activated_ = false;
     callback_.reset();
 }
 
@@ -73,18 +87,27 @@ void DataStreamer::add_data(
 {
     std::shared_lock<std::shared_timed_mutex> _(mutex_);
 
-    if (callback_ && topic == activated_topic_)
+    if (activated_)
     {
-        auto it = types_discovered_.find(topic.type_name);
-        if (it == types_discovered_.end())
+        // If all activated, add it only if schema is available, otherwise skip
+        if (activated_all_ && !is_topic_type_discovered_nts_(topic))
         {
-            // The topic that is supposed to be activated has no associated type. This should not happen
-            utils::tsnh(STR_ENTRY
-                    << "Topic <" << topic << "> must not be activated if its type is not registered.");
+            return;
         }
 
-        // TODO: make map search more safe
-        (*callback_)(topic, it->second, data);
+        if (activated_all_ || activated_topic_ == topic)
+        {
+            auto it = types_discovered_.find(topic.type_name);
+            if (it == types_discovered_.end())
+            {
+                // The topic that is supposed to be activated has no associated type. This should not happen
+                utils::tsnh(STR_ENTRY
+                    << "Topic <" << topic << "> must not be activated if its type is not registered.");
+            }
+
+            // TODO: make map search more safe
+            (*callback_)(topic, it->second, data);
+        }
     }
 }
 
