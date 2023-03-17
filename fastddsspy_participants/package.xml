@@ -21,7 +21,10 @@
   <depend>cpp_utils</depend>
   <depend>ddspipe_core</depend>
   <depend>ddspipe_participants</depend>
+  <depend>ddspipe_yaml</depend>
   <depend>fastrtps</depend>
+  <depend>ddsrecorder_yaml</depend>
+  <depend>ddsrecorder_participants</depend>
 
   <doc_depend>doxygen</doc_depend>
 

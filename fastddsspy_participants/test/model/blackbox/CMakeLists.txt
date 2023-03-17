@@ -12,5 +12,36 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-add_subdirectory(blackbox)
-add_subdirectory(unittest)
+set(TEST_NAME NetworkDatabaseTest)
+
+set(TEST_SOURCES
+        NetworkDatabaseTest.cpp
+    )
+all_library_sources("${TEST_SOURCES}")
+
+set(TEST_LIST
+        trivial
+    )
+
+set(TEST_EXTRA_LIBRARIES
+        fastcdr
+        fastrtps
+        cpp_utils
+        ddspipe_core
+        ddspipe_participants
+        ddspipe_yaml
+    )
+
+set(TEST_NEEDED_SOURCES
+    )
+
+set(TEST_EXTRA_HEADERS
+    )
+
+add_blackbox_executable(
+        "${TEST_NAME}"
+        "${TEST_SOURCES}"
+        "${TEST_LIST}"
+        "${TEST_NEEDED_SOURCES}"
+        "${TEST_EXTRA_HEADERS}"
+    )

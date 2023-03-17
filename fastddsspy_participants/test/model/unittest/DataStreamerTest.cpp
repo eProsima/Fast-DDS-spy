@@ -206,7 +206,7 @@ TEST(DataStreamerTest, add_data)
 
     ddspipe::core::types::RtpsPayloadData data;
 
-    int rand_1 = rand() % 20;
+    unsigned int rand_1 = rand() % 20;
 
     for (unsigned int i = 0; i < rand_1; i++)
     {
@@ -276,14 +276,14 @@ TEST(DataStreamerTest, add_data_two_topics)
 
     ddspipe::core::types::RtpsPayloadData data;
 
-    int rand_1 = rand() % 20;
+    unsigned int rand_1 = rand() % 20;
 
     for (unsigned int i = 0; i < rand_1; i++)
     {
         ds.add_data(topic_1, data);
     }
 
-    int rand_2 = rand() % 20;
+    unsigned int rand_2 = rand() % 20;
 
     for (unsigned int i = 0; i < rand_2; i++)
     {
