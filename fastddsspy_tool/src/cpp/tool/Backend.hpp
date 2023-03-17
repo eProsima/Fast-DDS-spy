@@ -27,7 +27,6 @@
 #include <ddspipe_core/dynamic/DiscoveryDatabase.hpp>
 #include <ddspipe_core/efficiency/payload/FastPayloadPool.hpp>
 
-#include <fastddsspy_participants/visualizer/SpyVisualizer.hpp>
 #include <fastddsspy_participants/participant/SpyDdsParticipant.hpp>
 #include <fastddsspy_participants/participant/SpyParticipant.hpp>
 
@@ -37,31 +36,21 @@
 
 namespace eprosima {
 namespace spy {
-namespace ui {
 
-class FastDdsSpyTool
+class Backend
 {
 public:
-    FastDdsSpyTool(const yaml::Configuration& configuration);
 
-    ~FastDdsSpyTool();
+    Backend(const yaml::Configuration& configuration);
 
-    void run();
+    ~Backend();
 
     utils::ReturnCode reload_allowed_topics(
         const std::shared_ptr<ddspipe::core::AllowedTopicList>& allowed_topics);
 
+    std::shared_ptr<eprosima::spy::participants::SpyModel> model() const noexcept;
+
 protected:
-
-    bool search_topic_(
-            const std::string& topic_name,
-            ddspipe::core::types::DdsTopic& topic);
-
-    void printing_data_(
-        utils::CommandReader<CommandValue>& reader,
-        const std::string& topic_name);
-
-    void print_help_();
 
     // TODO
     yaml::Configuration configuration_;
@@ -82,7 +71,7 @@ protected:
     std::shared_ptr<ddspipe::core::ParticipantsDatabase> participant_database_;
 
     //! TODO
-    std::shared_ptr<eprosima::spy::participants::SpyVisualizer> spy_visualizer_;
+    std::shared_ptr<eprosima::spy::participants::SpyModel> model_;
 
     //! TODO
     std::shared_ptr<eprosima::spy::participants::SpyDdsParticipant> dds_participant_;
@@ -95,6 +84,5 @@ protected:
 
 };
 
-} /* namespace ui */
 } /* namespace spy */
 } /* namespace eprosima */

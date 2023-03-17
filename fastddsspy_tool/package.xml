@@ -4,7 +4,7 @@
   <name>fastddsspy_tool</name>
   <version>0.1.0</version>
   <description>
-    *eProsima Fast DDS Spy* Application to execute a spy application to introspect data in a DDS network.
+    *eProsima Fast DDS Spy* Application to execute a interactive CLI spy application to introspect data in a DDS network.
   </description>
   <maintainer email="RaulSanchezMateos@eprosima.com">Raul Sánchez-Mateos</maintainer>
   <maintainer email="javierparis@eprosima.com">Javier París</maintainer>

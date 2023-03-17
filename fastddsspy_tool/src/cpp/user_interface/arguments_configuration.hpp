@@ -30,7 +30,6 @@
 
 namespace eprosima {
 namespace spy {
-namespace ui {
 
 /*
  * Struct to parse the executable arguments
@@ -148,6 +147,5 @@ ENUMERATION_BUILDER(
     info
     );
 
-} /* namespace ui */
 } /* namespace spy */
 } /* namespace eprosima */

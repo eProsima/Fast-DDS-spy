@@ -12,19 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/**
- * @file constants.hpp
- *
- * This file contains constant values common for the whole project
- */
-
 #pragma once
+
+#include <ostream>
+
+#include <fastddsspy_participants/model/DataStreamer.hpp>
 
 namespace eprosima {
 namespace spy {
 
-//! Default Foxgloveweb Websocket configuration file
-constexpr const char* DEFAULT_CONFIGURATION_FILE_NAME("FOXGLOVE_WEBSOCKET_CONFIGURATION.yaml");
+class View
+{
+public:
+
+    template <typename T>
+    void show(const T& value);
+
+    template <typename T>
+    void show_error(const T& value);
+};
 
 } /* namespace spy */
 } /* namespace eprosima */

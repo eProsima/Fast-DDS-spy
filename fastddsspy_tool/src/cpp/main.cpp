@@ -37,15 +37,12 @@
 #include <ddspipe_participants/participant/dynamic_types/SchemaParticipant.hpp>
 #include <ddspipe_participants/participant/dynamic_types/DynTypesParticipant.hpp>
 
-#include <fastddsspy_participants/visualizer/DataVisualizer.hpp>
-#include <fastddsspy_participants/visualizer/NetworkVisualizer.hpp>
-
 #include <fastddsspy_yaml/YamlReaderConfiguration.hpp>
 
 #include "user_interface/constants.hpp"
 #include "user_interface/arguments_configuration.hpp"
 #include "user_interface/ProcessReturnCode.hpp"
-#include "user_interface/FastDdsSpyTool.hpp"
+#include "tool/Controller.hpp"
 
 int main(
         int argc,
@@ -62,18 +59,18 @@ int main(
     eprosima::fastdds::dds::Log::Kind log_verbosity = eprosima::fastdds::dds::Log::Kind::Warning;
 
     // Parse arguments
-    eprosima::spy::ui::ProcessReturnCode arg_parse_result =
-            eprosima::spy::ui::parse_arguments(argc, argv, file_path, reload_time, log_filter, log_verbosity);
+    eprosima::spy::ProcessReturnCode arg_parse_result =
+            eprosima::spy::parse_arguments(argc, argv, file_path, reload_time, log_filter, log_verbosity);
 
-    if (arg_parse_result == eprosima::spy::ui::ProcessReturnCode::help_argument)
+    if (arg_parse_result == eprosima::spy::ProcessReturnCode::help_argument)
     {
-        return static_cast<int>(eprosima::spy::ui::ProcessReturnCode::success);
+        return static_cast<int>(eprosima::spy::ProcessReturnCode::success);
     }
-    else if (arg_parse_result == eprosima::spy::ui::ProcessReturnCode::version_argument)
+    else if (arg_parse_result == eprosima::spy::ProcessReturnCode::version_argument)
     {
-        return static_cast<int>(eprosima::spy::ui::ProcessReturnCode::success);
+        return static_cast<int>(eprosima::spy::ProcessReturnCode::success);
     }
-    else if (arg_parse_result != eprosima::spy::ui::ProcessReturnCode::success)
+    else if (arg_parse_result != eprosima::spy::ProcessReturnCode::success)
     {
         return static_cast<int>(arg_parse_result);
     }
@@ -100,7 +97,7 @@ int main(
     // Check file is in args, else get the default file
     if (file_path == "")
     {
-        file_path = eprosima::spy::ui::DEFAULT_CONFIGURATION_FILE_NAME;
+        file_path = eprosima::spy::DEFAULT_CONFIGURATION_FILE_NAME;
 
         logUser(
             FASTDDSSPY_TOOL,
@@ -134,7 +131,7 @@ int main(
         }
 
         // Create the Spy
-        eprosima::spy::ui::FastDdsSpyTool spy(configuration);
+        eprosima::spy::Controller spy(configuration);
 
         /////
         // File Watcher Handler
@@ -234,14 +231,14 @@ int main(
                 "Error Loading Fast DDS Spy Configuration from file " << file_path <<
                 ". Error message:\n " <<
                 e.what());
-        return static_cast<int>(eprosima::spy::ui::ProcessReturnCode::execution_failed);
+        return static_cast<int>(eprosima::spy::ProcessReturnCode::execution_failed);
     }
     catch (const eprosima::utils::InitializationException& e)
     {
         logError(FASTDDSSPY_TOOL,
                 "Error Initializing Fast DDS Spy. Error message:\n " <<
                 e.what());
-        return static_cast<int>(eprosima::spy::ui::ProcessReturnCode::execution_failed);
+        return static_cast<int>(eprosima::spy::ProcessReturnCode::execution_failed);
     }
 
     logUser(FASTDDSSPY_TOOL, "Finishing Fast DDS Spy execution correctly.");
@@ -249,5 +246,5 @@ int main(
     // Force print every log before closing
     eprosima::utils::Log::Flush();
 
-    return static_cast<int>(eprosima::spy::ui::ProcessReturnCode::success);
+    return static_cast<int>(eprosima::spy::ProcessReturnCode::success);
 }

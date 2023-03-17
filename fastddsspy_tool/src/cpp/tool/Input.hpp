@@ -15,25 +15,26 @@
 #pragma once
 
 #include <cpp_utils/user_interface/CommandReader.hpp>
-#include <cpp_utils/macros/custom_enumeration.hpp>
 
-#include <fastddsspy_participants/visualizer/SpyVisualizer.hpp>
+#include "Command.hpp"
 
 namespace eprosima {
 namespace spy {
-namespace ui {
 
-ENUMERATION_BUILDER(
-    CommandValue,
-    participant,
-    datawriter,
-    datareader,
-    topic,
-    print,
-    exit,
-    help
-);
+class Input
+{
+public:
 
-} /* namespace ui */
+    Input();
+
+    utils::Command<CommandValue> wait_next_command();
+
+    void wait_something();
+
+protected:
+
+    utils::CommandReader<CommandValue> reader_;
+};
+
 } /* namespace spy */
 } /* namespace eprosima */

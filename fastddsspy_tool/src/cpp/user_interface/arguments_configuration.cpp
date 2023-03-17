@@ -30,7 +30,6 @@
 
 namespace eprosima {
 namespace spy {
-namespace ui {
 
 const option::Descriptor usage[] = {
     {
@@ -422,6 +421,5 @@ std::ostream& operator <<(
     return output;
 }
 
-} /* namespace ui */
 } /* namespace spy */
 } /* namespace eprosima */

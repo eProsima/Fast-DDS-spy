@@ -12,6 +12,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Add subdirectory with tests
+############################
+# Yaml Writer Test         #
+############################
 
-add_subdirectory(unittest)
+set(TEST_NAME YamlWriterTest)
+
+set(TEST_SOURCES
+        ${PROJECT_SOURCE_DIR}/src/cpp/YamlWriter.cpp
+        YamlWriterTest.cpp
+    )
+
+set(TEST_LIST
+        test_SimpleParticipantData
+        test_ComplexParticipantData
+        test_ComplexParticipantData_Endpoint
+    )
+
+set(TEST_EXTRA_LIBRARIES
+        ${MODULE_DEPENDENCIES}
+    )
+
+add_unittest_executable(
+    "${TEST_NAME}"
+    "${TEST_SOURCES}"
+    "${TEST_LIST}"
+    "${TEST_EXTRA_LIBRARIES}")

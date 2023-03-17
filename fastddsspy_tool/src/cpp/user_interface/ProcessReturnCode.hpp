@@ -21,7 +21,6 @@
 
 namespace eprosima {
 namespace spy {
-namespace ui {
 
 enum class ProcessReturnCode : int
 {
@@ -33,6 +32,5 @@ enum class ProcessReturnCode : int
     execution_failed = 20,
 };
 
-} /* namespace ui */
 } /* namespace spy */
 } /* namespace eprosima */

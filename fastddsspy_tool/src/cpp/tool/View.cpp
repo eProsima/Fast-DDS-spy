@@ -12,19 +12,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/**
- * @file constants.hpp
- *
- * This file contains constant values common for the whole project
- */
+#include <ddspipe_yaml/Yaml.hpp>
 
-#pragma once
+#include "View.hpp"
 
 namespace eprosima {
 namespace spy {
 
-//! Default Foxgloveweb Websocket configuration file
-constexpr const char* DEFAULT_CONFIGURATION_FILE_NAME("FOXGLOVE_WEBSOCKET_CONFIGURATION.yaml");
+template <>
+void View::show(const Yaml& value)
+{
+    std::cout << value << std::endl;
+}
+
+template <>
+void View::show_error(const std::string& value)
+{
+    std::cout << "\033[1;31m" << value << "\033[0m" << std::endl;
+}
+
+template <>
+void View::show_error(const utils::Formatter& value)
+{
+    show_error(value.to_string());
+}
 
 } /* namespace spy */
 } /* namespace eprosima */

@@ -12,19 +12,39 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/**
- * @file constants.hpp
- *
- * This file contains constant values common for the whole project
- */
+#include <iostream>
 
-#pragma once
+#include <cpp_utils/user_interface/CommandReader.hpp>
+
+#include "Input.hpp"
 
 namespace eprosima {
 namespace spy {
 
-//! Default Foxgloveweb Websocket configuration file
-constexpr const char* DEFAULT_CONFIGURATION_FILE_NAME("FOXGLOVE_WEBSOCKET_CONFIGURATION.yaml");
+Input::Input()
+    : reader_(*CommandBuilder::get_instance())
+{
+    // Do nothing
+}
+
+utils::Command<CommandValue> Input::wait_next_command()
+{
+    utils::Command<CommandValue> command;
+    std::cout << std::endl << "Insert a command for Fast DDS Spy:\n>> " << std::flush;
+    auto res = reader_.read_next_command(command);
+
+    if (!res)
+    {
+        command.command = CommandValue::error_input;
+    }
+    return command;
+}
+
+void Input::wait_something()
+{
+    utils::Command<CommandValue> _;
+    reader_.read_next_command(_);
+}
 
 } /* namespace spy */
 } /* namespace eprosima */
