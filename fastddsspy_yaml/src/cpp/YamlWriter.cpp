@@ -107,7 +107,7 @@ void set(
         const ComplexEndpointData::ExtendedTopic& value)
 {
     set(yml, "name", value.topic_name);
-    set(yml, "type", value.topic_type;
+    set(yml, "type", value.topic_type);
 }
 
 template <>

@@ -176,45 +176,68 @@ bool Controller::all_argument(
 void Controller::participants_command(
         const std::vector<std::string>& arguments) noexcept
 {
+    dds_entity_command__(
+        arguments,
+        [](const participants::SpyModel& model) { return participants::ModelParser::participants(model); },
+        [](const participants::SpyModel& model) { return participants::ModelParser::participants_verbose(model); },
+        [](const participants::SpyModel& model, const ddspipe::core::types::Guid& guid) { return participants::ModelParser::participants(model, guid); },
+        "participant"
+        );
+}
+
+void Controller::writers_command(const std::vector<std::string>& arguments) noexcept
+{
+    dds_entity_command__(
+        arguments,
+        [](const participants::SpyModel& model) { return participants::ModelParser::writers(model); },
+        [](const participants::SpyModel& model) { return participants::ModelParser::writers_verbose(model); },
+        [](const participants::SpyModel& model, const ddspipe::core::types::Guid& guid) { return participants::ModelParser::writers(model, guid); },
+        "participant"
+        );
+}
+
+void Controller::readers_command(const std::vector<std::string>& arguments) noexcept
+{
+    dds_entity_command__(
+        arguments,
+        [](const participants::SpyModel& model) { return participants::ModelParser::readers(model); },
+        [](const participants::SpyModel& model) { return participants::ModelParser::readers_verbose(model); },
+        [](const participants::SpyModel& model, const ddspipe::core::types::Guid& guid) { return participants::ModelParser::readers(model, guid); },
+        "participant"
+        );
+}
+
+void Controller::topics_command(const std::vector<std::string>& arguments) noexcept
+{
     Yaml yml;
     // Size cannot be 0
     if (arguments.size() == 1)
     {
         // all participants simple
-        ddspipe::yaml::set(yml, participants::ModelParser::participants(*model_));
+        ddspipe::yaml::set(yml, participants::ModelParser::topics(*model_));
     }
     else if (verbose_argument(arguments[1]))
     {
         // verbose
-        ddspipe::yaml::set(yml, participants::ModelParser::participants_verbose(*model_));
+        ddspipe::yaml::set(yml, participants::ModelParser::topics_verbose(*model_));
     }
     else
     {
-        // guid given to read participant
-        ddspipe::core::types::Guid guid(arguments[1]);
-        if (!guid.is_valid())
+        auto data = participants::ModelParser::topics(*model_, arguments[1]);
+        if (data.name != arguments[1])
         {
             view_.show_error(STR_ENTRY
-                    << arguments[1]
-                    << " is not a valid GUID. Use format <xx.xx.xx.xx.xx.xx.xx.xx.xx.xx.xx.xx|xx.xx.xx.xx>");
+                << "<"
+                << arguments[1]
+                << "> topic does not exist in the DDS network.");
             return;
         }
-        else
-        {
-            auto data = participants::ModelParser::participants(*model_, guid);
-            if (!data.guid.is_valid())
-            {
-                view_.show_error(STR_ENTRY
-                        << arguments[1]
-                        << " does not match with a known participant.");
-                return;
-            }
-            ddspipe::yaml::set(yml, data);
-        }
+        ddspipe::yaml::set(yml, data);
     }
     view_.show(yml);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void Controller::print_command(
         const std::vector<std::string>& arguments) noexcept
@@ -240,6 +263,8 @@ void Controller::topics_command(const std::vector<std::string>& arguments) noexc
         << "<" << arguments[0] << "> command is not implemented yet. Please be patient.");
 }
 
+=======
+>>>>>>> 4599056 (Add commands for all entities)
 void Controller::print_command(const std::vector<std::string>& arguments) noexcept
 >>>>>>> e635ee4 (Implement version command and add colors)
 {
@@ -276,7 +301,7 @@ void Controller::print_command(const std::vector<std::string>& arguments) noexce
 
     }
 
-    // Print topi   c
+    // Print topic
     else
     {
         ddspipe::core::types::DdsTopic topic;

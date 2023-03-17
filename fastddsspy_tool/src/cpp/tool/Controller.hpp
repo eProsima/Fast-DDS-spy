@@ -96,7 +96,21 @@ protected:
     View view_;
 
     std::shared_ptr<eprosima::spy::participants::SpyModel> model_;
+
+private:
+
+    template <typename SimpleF, typename VerboseF, typename specificF>
+    void dds_entity_command__(
+            const std::vector<std::string>& arguments,
+            SimpleF simple_function,
+            VerboseF verbose_function,
+            specificF specific_function,
+            const char* entity_name) noexcept;
+
 };
 
 } /* namespace spy */
 } /* namespace eprosima */
+
+// Include implementation template file
+#include "impl/Controller.ipp"
