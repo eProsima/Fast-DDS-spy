@@ -12,35 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License\.
 
-#pragma once
-
-#include <fastrtps/types/DynamicTypePtr.h>
-
-#include <cpp_utils/collection/database/SafeDatabase.hpp>
-#include <cpp_utils/types/Atomicable.hpp>
-
-#include <fastddsspy_participants/types/ParticipantInfo.hpp>
-#include <fastddsspy_participants/types/EndpointInfo.hpp>
+#include <fastddsspy_participants/model/NetworkDatabase.hpp>
 
 namespace eprosima {
 namespace spy {
 namespace participants {
 
-/**
- * TODO
- */
-struct NetworkDatabase
+bool NetworkDatabase::get_topic(
+        const std::string& topic_name,
+        ddspipe::core::types::DdsTopic& topic) const noexcept
 {
-public:
-
-    utils::SafeDatabase<ddspipe::core::types::Guid, ParticipantInfo> participant_database_;
-
-    utils::SafeDatabase<ddspipe::core::types::Guid, EndpointInfo> endpoint_database_;
-
-    bool get_topic(
-            const std::string& topic_name,
-            ddspipe::core::types::DdsTopic& topic) const noexcept;
-};
+    for (const auto& it : endpoint_database_)
+    {
+        if (it.second.topic.m_topic_name == topic_name)
+        {
+            topic = it.second.topic;
+            return true;
+        }
+    }
+    return false;
+}
 
 } /* namespace participants */
 } /* namespace spy */
