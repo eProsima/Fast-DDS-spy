@@ -24,6 +24,7 @@
 #include <ddspipe_core/types/dds/Payload.hpp>
 
 #include <ddspipe_participants/participant/dynamic_types/ISchemaHandler.hpp>
+#include <fastddsspy_participants/model/TopicRateCalculator.hpp>
 
 namespace eprosima {
 namespace spy {
@@ -32,7 +33,7 @@ namespace participants {
 /**
  * TODO
  */
-class DataStreamer : public ddspipe::participants::ISchemaHandler
+class DataStreamer : public TopicRateCalculator
 {
 public:
 
