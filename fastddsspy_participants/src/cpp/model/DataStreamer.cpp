@@ -42,7 +42,7 @@ bool DataStreamer::activate(
         return false;
     }
 
-    std::unique_lock<std::shared_mutex> _(mutex_);
+    std::unique_lock<std::shared_timed_mutex> _(mutex_);
 
     // If type exist, this is the new topic to activate
     activated_topic_ = topic_to_activate;
@@ -53,14 +53,14 @@ bool DataStreamer::activate(
 
 void DataStreamer::deactivate()
 {
-    std::unique_lock<std::shared_mutex> _(mutex_);
+    std::unique_lock<std::shared_timed_mutex> _(mutex_);
     callback_.reset();
 }
 
 void DataStreamer::add_schema(
         const fastrtps::types::DynamicType_ptr& dynamic_type)
 {
-    std::unique_lock<std::shared_mutex> _(mutex_);
+    std::unique_lock<std::shared_timed_mutex> _(mutex_);
 
     // Add type to map if not yet
     // NOTE: it does not matter if it is already in set
@@ -71,7 +71,7 @@ void DataStreamer::add_data(
         const ddspipe::core::types::DdsTopic& topic,
         ddspipe::core::types::RtpsPayloadData& data)
 {
-    std::shared_lock<std::shared_mutex> _(mutex_);
+    std::shared_lock<std::shared_timed_mutex> _(mutex_);
 
     if (callback_ && topic == activated_topic_)
     {
@@ -90,7 +90,7 @@ void DataStreamer::add_data(
 
 bool DataStreamer::is_topic_type_discovered(const ddspipe::core::types::DdsTopic& topic) const noexcept
 {
-    std::shared_lock<std::shared_mutex> _(mutex_);
+    std::shared_lock<std::shared_timed_mutex> _(mutex_);
     return is_topic_type_discovered_nts_(topic);
 }
 

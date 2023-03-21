@@ -67,7 +67,7 @@ protected:
 
     std::map<std::string, fastrtps::types::DynamicType_ptr> types_discovered_;
 
-    mutable std::shared_mutex mutex_;
+    mutable std::shared_timed_mutex mutex_;
 };
 
 } /* namespace participants */
