@@ -1,0 +1,16 @@
+# This is a Yaml configuration example for Fast DDS Spy
+# Every value set here (except for topic lists) is the default. Thus not setting it will use this value.
+
+dds:
+  domain: 0
+
+  allowlist:
+    - name: "*"
+
+  blocklist:
+    - name: "some_weird_topic"
+      type: "with_weird_type"
+
+specs:
+  threads: 12
+  max-history-depth: 5000
