@@ -8,7 +8,7 @@
 CMake installation
 ==================
 
-This section explains how to compile |eddsrecord| with CMake_, either :ref:`locally <local_installation_sl>` or :ref:`globally <global_installation_sl>`.
+This section explains how to compile |espy| with CMake_, either :ref:`locally <local_installation_sl>` or :ref:`globally <global_installation_sl>`.
 
 .. _local_installation_sl:
 
@@ -100,7 +100,7 @@ Local installation
             cmake ~/fastdds-spy/ddspipe_participants -DCMAKE_INSTALL_PREFIX=~/fastdds-spy/install -DCMAKE_PREFIX_PATH=~/fastdds-spy/install
             cmake --build . --target install
 
-#.  Once all dependencies are installed, install |eddsrecord|:
+#.  Once all dependencies are installed, install |espy|:
 
     .. code-block:: bash
 
@@ -127,7 +127,7 @@ Local installation
 
 .. note::
 
-    By default, |eddsrecord| does not compile tests.
+    By default, |espy| does not compile tests.
     However, they can be activated by downloading and installing `Gtest <https://github.com/google/googletest>`_
     and building with CMake option ``-DBUILD_TESTS=ON``.
 
@@ -137,7 +137,7 @@ Local installation
 Global installation
 -------------------
 
-To install |eddsrecord| system-wide instead of locally, remove all the flags that appear in the configuration steps of :code:`Fast-CDR`, :code:`Fast-DDS`, :code:`Dev-Utils`, :code:`DDS-Pipe`, and :code:`fastdds-spy`, and change the first in the configuration step of :code:`foonathan_memory_vendor` to the following:
+To install |espy| system-wide instead of locally, remove all the flags that appear in the configuration steps of :code:`Fast-CDR`, :code:`Fast-DDS`, :code:`Dev-Utils`, :code:`DDS-Pipe`, and :code:`fastdds-spy`, and change the first in the configuration step of :code:`foonathan_memory_vendor` to the following:
 
 .. code-block:: bash
 

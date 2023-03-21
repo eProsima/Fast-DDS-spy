@@ -7,7 +7,7 @@
 Windows installation from sources
 #################################
 
-The instructions for installing the |eddsrecord| application from sources and its required dependencies are provided in this page.
+The instructions for installing the |espy| application from sources and its required dependencies are provided in this page.
 It is organized as follows:
 
 .. contents::
@@ -19,8 +19,8 @@ It is organized as follows:
 Dependencies installation
 =========================
 
-|eddsrecord| depends on *eProsima Fast DDS* library and certain Debian packages.
-This section describes the instructions for installing |eddsrecord| dependencies and requirements in a Windows environment from sources.
+|espy| depends on *eProsima Fast DDS* library and certain Debian packages.
+This section describes the instructions for installing |espy| dependencies and requirements in a Windows environment from sources.
 The following packages will be installed:
 
 - ``foonathan_memory_vendor``, an STL compatible C++ memory allocation library.
@@ -97,7 +97,7 @@ Gtest
 ^^^^^
 
 Gtest is a unit testing library for C++.
-By default, |eddsrecord| does not compile tests.
+By default, |espy| does not compile tests.
 It is possible to activate them with the opportune `CMake options <https://colcon.readthedocs.io/en/released/reference/verb/build.html#cmake-options>`_ when calling colcon_ or CMake_.
 For more details, please refer to the :ref:`cmake_options` section.
 
@@ -118,7 +118,7 @@ or refer to the `Gtest Installation Guide <https://github.com/google/googletest>
 Dependencies
 ------------
 
-|eddsrecord| has the following dependencies, when installed from sources in a Windows environment:
+|espy| has the following dependencies, when installed from sources in a Windows environment:
 
 * :ref:`windows_sources_asiotinyxml2`
 * :ref:`windows_sources_openssl`
@@ -179,7 +179,7 @@ From an administrative shell with *PowerShell*, execute the following commands i
 eProsima dependencies
 ^^^^^^^^^^^^^^^^^^^^^
 
-If it already exists in the system an installation of *Fast DDS* and *DDS Pipe* libraries, just source this libraries when building the |eddsrecord| application by using the command:
+If it already exists in the system an installation of *Fast DDS* and *DDS Pipe* libraries, just source this libraries when building the |espy| application by using the command:
 
 .. code-block:: bash
 
@@ -200,7 +200,7 @@ Colcon installation (recommended)
     To do so, launch a *Developer Command Prompt* from the search engine.
 
 #.  Create a :code:`Fast-DDS-Spy` directory and download the :code:`.repos` file that will be used to install
-    |eddsrecord| and its dependencies:
+    |espy| and its dependencies:
 
     .. code-block:: bash
 
@@ -214,7 +214,7 @@ Colcon installation (recommended)
 
         In case there is already a *Fast DDS* installation in the system it is not required to download and build
         every dependency in the :code:`.repos` file.
-        It is just needed to download and build the |eddsrecord| project having sourced its dependencies.
+        It is just needed to download and build the |espy| project having sourced its dependencies.
         Refer to section :ref:`eprosima_dependencies` in order to check how to source *Fast DDS* library.
 
 #.  Build the packages:
@@ -241,7 +241,7 @@ However :ref:`colcon_installation` is recommended.
 Run an application
 ==================
 
-If the |eddsrecord| was compiled using colcon, when running an instance of a |spy|, the colcon overlay built in the dedicated :code:`fastdds-spy` directory must be sourced.
+If the |espy| was compiled using colcon, when running an instance of a |spy|, the colcon overlay built in the dedicated :code:`fastdds-spy` directory must be sourced.
 There are two possibilities:
 
 * Every time a new shell is opened, prepare the environment locally by typing the command:
@@ -255,12 +255,12 @@ There are two possibilities:
 * Add the sourcing of the colcon overlay permanently, by opening the *Edit the system environment variables* control panel, and adding the installation path to the :code:`PATH`.
 
 However, when running an instance of a |spy| compiled using CMake, it must be linked with its dependencies where the packages have been installed.
-This can be done by opening the *Edit system environment variables* control panel and adding to the ``PATH`` the |eddsrecord|, *Fast DDS*, *Fast CDR*, *DDS Pipe* installation directories:
+This can be done by opening the *Edit system environment variables* control panel and adding to the ``PATH`` the |espy|, *Fast DDS*, *Fast CDR*, *DDS Pipe* installation directories:
 
 *   *Fast DDS*: ``C:\\Program Files\\fastrtps``
 *   *Fast CDR*: ``C:\\Program Files\\fastcdr``
 *   *DDS Pipe*: ``C:\\Program Files\\ddspipe``
-*   |eddsrecord|: ``C:\\Program Files\\ddsrecord``
+*   |espy|: ``C:\\Program Files\\ddsrecord``
 
 
 .. External links

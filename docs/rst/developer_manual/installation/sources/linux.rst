@@ -7,7 +7,7 @@
 Linux installation from sources
 ###############################
 
-The instructions for installing the |eddsrecord| from sources and its required dependencies are provided in this page.
+The instructions for installing the |espy| from sources and its required dependencies are provided in this page.
 It is organized as follows:
 
 .. contents::
@@ -39,7 +39,7 @@ Afterwards, the user can choose whether to follow either the :ref:`colcon <colco
 Requirements
 ------------
 
-The installation of |eddsrecord| in a Linux environment from sources requires the following tools to be installed in the system:
+The installation of |espy| in a Linux environment from sources requires the following tools to be installed in the system:
 
 * :ref:`cmake_gcc_pip_wget_git_sl`
 * :ref:`colcon_install` [optional]
@@ -51,7 +51,7 @@ The installation of |eddsrecord| in a Linux environment from sources requires th
 CMake, g++, pip, wget and git
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-These packages provide the tools required to install |eddsrecord| and its dependencies from command line.
+These packages provide the tools required to install |espy| and its dependencies from command line.
 Install CMake_, `g++ <https://gcc.gnu.org/>`_, pip_, wget_ and git_ using the package manager of the appropriate Linux distribution.
 For example, on Ubuntu use the command:
 
@@ -83,12 +83,12 @@ Gtest
 ^^^^^
 
 Gtest_ is a unit testing library for C++.
-By default, |eddsrecord| does not compile tests.
+By default, |espy| does not compile tests.
 It is possible to activate them with the opportune `CMake options <https://colcon.readthedocs.io/en/released/reference/verb/build.html#cmake-options>`_ when calling colcon_ or CMake_.
 For more details, please refer to the :ref:`cmake_options` section.
 For a detailed description of the Gtest_ installation process, please refer to the `Gtest Installation Guide <https://github.com/google/googletest>`_.
 
-It is also possible to clone the Gtest_ Github repository into the |eddsrecord| workspace and compile it with colcon_ as a dependency package.
+It is also possible to clone the Gtest_ Github repository into the |espy| workspace and compile it with colcon_ as a dependency package.
 Use the following command to download the code:
 
 .. code-block:: bash
@@ -101,7 +101,7 @@ Use the following command to download the code:
 Dependencies
 ------------
 
-|eddsrecord| has the following dependencies, when installed from sources in a Linux environment:
+|espy| has the following dependencies, when installed from sources in a Linux environment:
 
 * :ref:`asiotinyxml2_sl`
 * :ref:`openssl_sl`
@@ -153,7 +153,7 @@ For example, on Ubuntu use the command:
 eProsima dependencies
 ^^^^^^^^^^^^^^^^^^^^^
 
-If it already exists in the system an installation of *Fast DDS* and *DDS Pipe* libraries, just source this libraries when building |eddsrecord| by running the following commands.
+If it already exists in the system an installation of *Fast DDS* and *DDS Pipe* libraries, just source this libraries when building |espy| by running the following commands.
 In other case, just skip this step.
 
 .. code-block:: bash
@@ -167,7 +167,7 @@ In other case, just skip this step.
 Colcon installation
 ===================
 
-#.  Create a :code:`fastdds-spy` directory and download the :code:`.repos` file that will be used to install |eddsrecord| and its dependencies:
+#.  Create a :code:`fastdds-spy` directory and download the :code:`.repos` file that will be used to install |espy| and its dependencies:
 
     .. code-block:: bash
 
@@ -179,7 +179,7 @@ Colcon installation
     .. note::
 
         In case there is already a *Fast DDS* installation in the system it is not required to download and build every dependency in the :code:`.repos` file.
-        It is just needed to download and build the |eddsrecord| project having sourced its dependencies.
+        It is just needed to download and build the |espy| project having sourced its dependencies.
         Refer to section :ref:`eprosima_dependencies` in order to check how to source *Fast DDS* library.
 
 #.  Build the packages:
