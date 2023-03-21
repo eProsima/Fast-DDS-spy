@@ -46,10 +46,10 @@ public:
 
     void deactivate();
 
-    virtual void add_schema(
+    void add_schema(
             const fastrtps::types::DynamicType_ptr& dynamic_type) override;
 
-    virtual void add_data(
+    void add_data(
             const ddspipe::core::types::DdsTopic& topic,
             ddspipe::core::types::RtpsPayloadData& data) override;
 
