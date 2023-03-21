@@ -13,6 +13,3 @@
 # limitations under the License.
 
 # TODO add tests
-
-# TODO remove
-add_subdirectory(testing_ci)

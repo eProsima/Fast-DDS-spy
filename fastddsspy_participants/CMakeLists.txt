@@ -1,4 +1,4 @@
-# Copyright 2022 Proyectos y Sistemas de Mantenimiento SL (eProsima).
+# Copyright 2023 Proyectos y Sistemas de Mantenimiento SL (eProsima).
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
 # limitations under the License.
 
 ###############################################################################
-# CMake build rules for Dev Utils Submodule
+# CMake build rules for Submodule
 ###############################################################################
 cmake_minimum_required(VERSION 3.5)
 
@@ -52,6 +52,8 @@ project(
 # - Set shared libraries by default
 # - Find external packages and thirdparties
 # - Activate Code coverage if flag CODE_COVERAGE
+# - Activate Address sanitizer build if flag ASAN_BUILD
+# - Activate Thread sanitizer build if flag TSAN_BUILD
 # - Configure log depending on LOG_INFO flag and CMake type
 configure_project_cpp()
 
