@@ -109,13 +109,6 @@ jobs:
           workspace_dependencies: './install'
           ctest_args: --label-exclude "xfail|xasan"
 
-  docs:
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Build and test documentation
-        uses: jparisu/eProsima-CI/actions/sphinx_docs@main
-        with:
-          docs_subpackage_name: fastddsspy_docs
 
 #####################################################################
 # ASAN
@@ -244,6 +237,18 @@ jobs:
         with:
           packages_names: ${{ env.code_packages_names }}
           workspace_dependencies: './install'
+
+
+#####################################################################
+# DOCUMENTATION TEST
+
+  docs:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Build and test documentation
+        uses: jparisu/eProsima-CI/actions/sphinx_docs@main
+        with:
+          docs_subpackage_name: fastddsspy_docs
 
 
 #####################################################################
