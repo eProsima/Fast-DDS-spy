@@ -24,7 +24,7 @@ namespace participants {
 /**
  * Helper methods to get structured information from model.
  */
-class ModelParser
+struct ModelParser
 {
     static std::vector<SimpleParticipantData> participants(const SpyModel& model);
     static std::vector<ComplexParticipantData> participants_verbose(const SpyModel& model);

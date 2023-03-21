@@ -20,7 +20,7 @@ namespace eprosima {
 namespace spy {
 namespace participants {
 
-std::vector<SimpleParticipantData> participants(const SpyModel& model)
+std::vector<SimpleParticipantData> ModelParser::participants(const SpyModel& model)
 {
     std::vector<SimpleParticipantData> result;
     for (const auto& it : model.participant_database_)
@@ -34,98 +34,15 @@ std::vector<SimpleParticipantData> participants(const SpyModel& model)
     return result;
 }
 
-std::vector<ComplexParticipantData> participants_verbose(const SpyModel& model)
+std::vector<ComplexParticipantData> ModelParser::participants_verbose(const SpyModel& model)
 {
     std::vector<ComplexParticipantData> result;
 
-    // Get all endpoints divided by guid prefix, then by topic name, and then readers / writers
-    std::map<
-        ddspipe::core::types::GuidPrefix,
-        std::map<
-            std::pair<
-                std::string,
-                std::string>,
-            std::pair<
-                int,
-                int>>>
-                    endpoints;
-
-    for (const auto& endpoint : model.endpoint_database_)
-    {
-        // This endpoint info
-        auto prefix = endpoint.second.guid.guid_prefix();
-
-        // Check if guid prefix already exist, if not create it
-        auto it_endp = endpoints.find(prefix);
-        if (it_endp == endpoints.end())
-        {
-            it_endp = endpoints.emplace(
-                prefix,
-                std::map<std::pair<std::string,std::string>,std::pair<int,int>>()).first;
-        }
-
-        // Check if topic already exist, if not create it
-        std::pair<std::string, std::string> topic_name_and_type = {
-            endpoint.second.topic.m_topic_name,
-            endpoint.second.topic.type_name};
-        auto it_topic = it_endp->second.find(topic_name_and_type);
-        if (it_topic == it_endp->second.end())
-        {
-            it_topic = it_endp->second.emplace(
-                topic_name_and_type,
-                std::pair<int,int>()).first;
-        }
-
-        // Add a new endpoint to the counter
-        if (endpoint.second.is_reader())
-        {
-            it_topic->second.first++;
-        }
-        else if (endpoint.second.is_writer())
-        {
-            it_topic->second.second++;
-        }
-    }
-
-    // From endpoint information, create Participant info
     for (const auto& it : model.participant_database_)
     {
-        // Get only active participants
-        if (it.second.active)
-        {
-            ComplexParticipantData data;
-            data.guid = it.second.guid;
-            data.name = it.second.name;
-
-            // Look for the associated endpoints
-            auto it = endpoints.find(data.guid.guid_prefix());
-            if (it != endpoints.end())
-            {
-                for (const auto& topics : it->second)
-                {
-                    // Add readers if any
-                    if (topics.second.first)
-                    {
-                        data.readers.push_back({
-                            topics.first.first,
-                            topics.first.second,
-                            topics.second.first
-                        });
-                    }
-
-                    // Add writers if any
-                    if (topics.second.second)
-                    {
-                        data.readers.push_back({
-                            topics.first.first,
-                            topics.first.second,
-                            topics.second.second
-                        });
-                    }
-                }
-            }
-        }
+        result.push_back(participants(model, it.second.guid));
     }
+
     return result;
 }
 
@@ -157,19 +74,25 @@ void add_endpoint_to_vector(
     }
 }
 
-ComplexParticipantData participants(const SpyModel& model, const ddspipe::core::types::Guid& guid)
+ComplexParticipantData ModelParser::participants(const SpyModel& model, const ddspipe::core::types::Guid& guid)
 {
     ComplexParticipantData result;
-    result.guid = guid;
 
     // Look for participant name
     for (const auto& it : model.participant_database_)
     {
         if (it.first == guid)
         {
+            result.guid = guid;
             result.name = it.second.name;
             break;
         }
+    }
+
+    // If Participant does not exist, stop here
+    if (!result.guid.is_valid())
+    {
+        return result;
     }
 
     // Get all endpoints with same guid prefix from database and fill writers readers information
@@ -195,8 +118,6 @@ ComplexParticipantData participants(const SpyModel& model, const ddspipe::core::
 
     return result;
 }
-
-
 std::vector<SimpleEndpointData> writers(const SpyModel& model)
 {
     std::vector<SimpleEndpointData> result;
