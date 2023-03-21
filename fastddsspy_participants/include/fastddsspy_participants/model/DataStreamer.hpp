@@ -35,7 +35,7 @@ class DataStreamer : public ddspipe::participants::ISchemaHandler
 {
 public:
 
-    using CallbackType = void(
+    using CallbackType = void (
         const ddspipe::core::types::DdsTopic&,
         const fastrtps::types::DynamicType_ptr&,
         const ddspipe::core::types::RtpsPayloadData&);
@@ -53,11 +53,13 @@ public:
             const ddspipe::core::types::DdsTopic& topic,
             ddspipe::core::types::RtpsPayloadData& data) override;
 
-    bool is_topic_type_discovered(const ddspipe::core::types::DdsTopic& topic_to_activate) const noexcept;
+    bool is_topic_type_discovered(
+            const ddspipe::core::types::DdsTopic& topic_to_activate) const noexcept;
 
 protected:
 
-    bool is_topic_type_discovered_nts_(const ddspipe::core::types::DdsTopic& topic_to_activate) const noexcept;
+    bool is_topic_type_discovered_nts_(
+            const ddspipe::core::types::DdsTopic& topic_to_activate) const noexcept;
 
     bool activated_ {false};
 

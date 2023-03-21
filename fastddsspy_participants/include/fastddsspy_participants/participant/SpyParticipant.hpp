@@ -46,9 +46,11 @@ public:
 
 protected:
 
-    utils::ReturnCode new_participant_info_(const ddspipe::core::IRoutingData& data);
+    utils::ReturnCode new_participant_info_(
+            const ddspipe::core::IRoutingData& data);
 
-    utils::ReturnCode new_endpoint_info_(const ddspipe::core::IRoutingData& data);
+    utils::ReturnCode new_endpoint_info_(
+            const ddspipe::core::IRoutingData& data);
 
     //! Participants Internal Reader
     std::shared_ptr<InternalWriter> participants_writer_;

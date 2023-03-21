@@ -28,7 +28,7 @@ namespace eprosima {
 namespace spy {
 namespace participants {
 
-using eprosima::ddspipe::core::types::operator<<;
+using eprosima::ddspipe::core::types::operator <<;
 
 bool DataStreamer::activate(
         const ddspipe::core::types::DdsTopic& topic_to_activate,
@@ -37,8 +37,8 @@ bool DataStreamer::activate(
     if (!is_topic_type_discovered(topic_to_activate))
     {
         logWarning(FASTDDSSPY_DATASTREAMER,
-            "Type <" << topic_to_activate.type_name <<
-            "> for topic <" << topic_to_activate.topic_name() << "> is not discovered.");
+                "Type <" << topic_to_activate.type_name <<
+                "> for topic <" << topic_to_activate.topic_name() << "> is not discovered.");
         return false;
     }
 
@@ -80,7 +80,7 @@ void DataStreamer::add_data(
         {
             // The topic that is supposed to be activated has no associated type. This should not happen
             utils::tsnh(STR_ENTRY
-                << "Topic <" << topic << "> must not be activated if its type is not registered.");
+                    << "Topic <" << topic << "> must not be activated if its type is not registered.");
         }
 
         // TODO: make map search more safe
@@ -88,13 +88,15 @@ void DataStreamer::add_data(
     }
 }
 
-bool DataStreamer::is_topic_type_discovered(const ddspipe::core::types::DdsTopic& topic) const noexcept
+bool DataStreamer::is_topic_type_discovered(
+        const ddspipe::core::types::DdsTopic& topic) const noexcept
 {
     std::shared_lock<std::shared_timed_mutex> _(mutex_);
     return is_topic_type_discovered_nts_(topic);
 }
 
-bool DataStreamer::is_topic_type_discovered_nts_(const ddspipe::core::types::DdsTopic& topic) const noexcept
+bool DataStreamer::is_topic_type_discovered_nts_(
+        const ddspipe::core::types::DdsTopic& topic) const noexcept
 {
     return types_discovered_.find(topic.type_name) != types_discovered_.end();
 }

@@ -66,7 +66,7 @@ void SpyDdsParticipant::on_participant_discovery(
 
     ParticipantInfo info;
     info.active = (discovery_info.status == eprosima::fastrtps::rtps::ParticipantDiscoveryInfo::DISCOVERED_PARTICIPANT
-        || discovery_info.status == eprosima::fastrtps::rtps::ParticipantDiscoveryInfo::CHANGED_QOS_PARTICIPANT);
+            || discovery_info.status == eprosima::fastrtps::rtps::ParticipantDiscoveryInfo::CHANGED_QOS_PARTICIPANT);
     info.name = std::string(discovery_info.info.m_participantName);
     info.guid = discovery_info.info.m_guid;
 
@@ -129,12 +129,13 @@ void SpyDdsParticipant::internal_notify_endpoint_discovered_(
     endpoints_reader_->simulate_data_reception(std::move(data));
 }
 
-bool SpyDdsParticipant::come_from_this_participant_(const ddspipe::core::types::Guid& guid) const noexcept
+bool SpyDdsParticipant::come_from_this_participant_(
+        const ddspipe::core::types::Guid& guid) const noexcept
 {
     return (
         guid.guid_prefix() == dds_participant_->guid().guidPrefix
         || guid.guid_prefix() == rtps_participant_->getGuid().guidPrefix
-    );
+        );
 }
 
 } /* namespace participants */

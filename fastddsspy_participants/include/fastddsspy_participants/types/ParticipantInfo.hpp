@@ -60,7 +60,8 @@ bool is_participant_info_topic(
 constexpr const char* PARTICIPANT_INFO_TOPIC_NAME = "__internal__/participant_info";
 constexpr const char* PARTICIPANT_INFO_DATA_TYPE_NAME = "__internal__::participant_info";
 
-const ddspipe::core::types::TopicInternalTypeDiscriminator INTERNAL_TOPIC_TYPE_PARTICIPANTS_INFO = "participant::type::v0";
+const ddspipe::core::types::TopicInternalTypeDiscriminator INTERNAL_TOPIC_TYPE_PARTICIPANTS_INFO =
+        "participant::type::v0";
 
 } /* namespace participants */
 } /* namespace spy */
