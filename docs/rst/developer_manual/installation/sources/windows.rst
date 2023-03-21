@@ -232,7 +232,7 @@ Colcon installation (recommended)
 .. TODO check if this is correctly parsed, because in local it does not render correctly
 
 CMake installation
-------------------
+==================
 
 There exist the possibility to install |spy| by CMake, and could be see in following :ref:`section <windows_cmake_installation>`.
 However :ref:`colcon_installation` is recommended.
