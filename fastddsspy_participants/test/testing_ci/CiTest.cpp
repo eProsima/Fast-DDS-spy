@@ -15,18 +15,24 @@
 #include <cpp_utils/testing/gtest_aux.hpp>
 #include <gtest/gtest.h>
 
+#include <mutex>
 #include <thread>
 
 TEST(CiTest, asan)
 {
     int* x = new int(42);
     ASSERT_EQ(*x, 42);
+    delete x;
 }
 
 TEST(CiTest, tsan)
 {
     int x = 1;
-    auto foo = [&x](){ x++; };
+    std::mutex mutex;
+    auto foo = [&x, &mutex]()
+            {
+                std::lock_guard<std::mutex> _(mutex); x++;
+            };
 
     std::thread t1(foo);
     std::thread t2(foo);
@@ -39,12 +45,12 @@ TEST(CiTest, tsan)
 
 TEST(CiTest, fail)
 {
-    ASSERT_TRUE(false);
+    ASSERT_TRUE(true);
 }
 
 TEST(CiTest, flaky)
 {
-    ASSERT_TRUE(false);
+    ASSERT_TRUE(true);
 }
 
 int main(
