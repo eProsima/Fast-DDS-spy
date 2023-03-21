@@ -45,5 +45,3 @@ jobs:
     steps:
       - name: Python Linter
         uses: jparisu/eProsima-CI/actions/python_linter@main
-        with:
-          linter_configuration_version: feature/python-linter
