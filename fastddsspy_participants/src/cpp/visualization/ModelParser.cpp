@@ -20,7 +20,8 @@ namespace eprosima {
 namespace spy {
 namespace participants {
 
-std::vector<SimpleParticipantData> ModelParser::participants(const SpyModel& model)
+std::vector<SimpleParticipantData> ModelParser::participants(
+        const SpyModel& model)
 {
     std::vector<SimpleParticipantData> result;
     for (const auto& it : model.participant_database_)
@@ -34,7 +35,8 @@ std::vector<SimpleParticipantData> ModelParser::participants(const SpyModel& mod
     return result;
 }
 
-std::vector<ComplexParticipantData> ModelParser::participants_verbose(const SpyModel& model)
+std::vector<ComplexParticipantData> ModelParser::participants_verbose(
+        const SpyModel& model)
 {
     std::vector<ComplexParticipantData> result;
 
@@ -53,7 +55,8 @@ std::vector<ComplexParticipantData> ModelParser::participants_verbose(const SpyM
 void add_endpoint_to_vector(
         std::map<std::string, int>& already_endpoints_index,
         std::vector<ComplexParticipantData::Endpoint>& endpoints,
-        const std::pair<const eprosima::ddspipe::core::types::Guid, eprosima::spy::participants::EndpointInfo>& endpoint)
+        const std::pair<const eprosima::ddspipe::core::types::Guid,
+        eprosima::spy::participants::EndpointInfo>& endpoint)
 {
     // Check if this topic has already endpoints added
     auto it = already_endpoints_index.find(endpoint.second.topic.m_topic_name);
@@ -62,10 +65,10 @@ void add_endpoint_to_vector(
         // If first for this topic, add new topic
         already_endpoints_index[endpoint.second.topic.m_topic_name] = endpoints.size();
         endpoints.push_back({
-            endpoint.second.topic.m_topic_name,
-            endpoint.second.topic.type_name,
-            1
-        });
+                        endpoint.second.topic.m_topic_name,
+                        endpoint.second.topic.type_name,
+                        1
+                    });
     }
     else
     {
@@ -74,7 +77,9 @@ void add_endpoint_to_vector(
     }
 }
 
-ComplexParticipantData ModelParser::participants(const SpyModel& model, const ddspipe::core::types::Guid& guid)
+ComplexParticipantData ModelParser::participants(
+        const SpyModel& model,
+        const ddspipe::core::types::Guid& guid)
 {
     ComplexParticipantData result;
 
@@ -109,7 +114,7 @@ ComplexParticipantData ModelParser::participants(const SpyModel& model, const dd
             {
                 add_endpoint_to_vector(already_endpoints_index_readers, result.readers, endpoint);
             }
-            else if(endpoint.second.is_writer())
+            else if (endpoint.second.is_writer())
             {
                 add_endpoint_to_vector(already_endpoints_index_writers, result.writers, endpoint);
             }
@@ -118,62 +123,72 @@ ComplexParticipantData ModelParser::participants(const SpyModel& model, const dd
 
     return result;
 }
-std::vector<SimpleEndpointData> writers(const SpyModel& model)
+
+std::vector<SimpleEndpointData> writers(
+        const SpyModel& model)
 {
     std::vector<SimpleEndpointData> result;
     return result;
 }
 
-std::vector<ComplexEndpointData> writers_verbose(const SpyModel& model)
+std::vector<ComplexEndpointData> writers_verbose(
+        const SpyModel& model)
 {
     std::vector<ComplexEndpointData> result;
     return result;
 }
 
-ComplexEndpointData writers(const SpyModel& model, const ddspipe::core::types::Guid& guid)
+ComplexEndpointData writers(
+        const SpyModel& model,
+        const ddspipe::core::types::Guid& guid)
 {
     ComplexEndpointData result;
     return result;
 }
 
-
-std::vector<SimpleEndpointData> readers(const SpyModel& model)
+std::vector<SimpleEndpointData> readers(
+        const SpyModel& model)
 {
     std::vector<SimpleEndpointData> result;
     return result;
 }
 
-std::vector<ComplexEndpointData> readers_verbose(const SpyModel& model)
+std::vector<ComplexEndpointData> readers_verbose(
+        const SpyModel& model)
 {
     std::vector<ComplexEndpointData> result;
     return result;
 }
 
-ComplexEndpointData readers(const SpyModel& model, const ddspipe::core::types::Guid& guid)
+ComplexEndpointData readers(
+        const SpyModel& model,
+        const ddspipe::core::types::Guid& guid)
 {
     ComplexEndpointData result;
     return result;
 }
 
-
-std::vector<SimpleTopicData> topics(const SpyModel& model)
+std::vector<SimpleTopicData> topics(
+        const SpyModel& model)
 {
     std::vector<SimpleTopicData> result;
     return result;
 }
 
-std::vector<ComplexTopicData> topics_verbose(const SpyModel& model)
+std::vector<ComplexTopicData> topics_verbose(
+        const SpyModel& model)
 {
     std::vector<ComplexTopicData> result;
     return result;
 }
 
-ComplexTopicData topics(const SpyModel& model, const std::string& topic_name)
+ComplexTopicData topics(
+        const SpyModel& model,
+        const std::string& topic_name)
 {
     ComplexTopicData result;
     return result;
 }
-
 
 } /* namespace participants */
 } /* namespace spy */

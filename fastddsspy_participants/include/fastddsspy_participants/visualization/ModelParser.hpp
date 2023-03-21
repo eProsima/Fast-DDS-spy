@@ -26,21 +26,37 @@ namespace participants {
  */
 struct ModelParser
 {
-    static std::vector<SimpleParticipantData> participants(const SpyModel& model);
-    static std::vector<ComplexParticipantData> participants_verbose(const SpyModel& model);
-    static ComplexParticipantData participants(const SpyModel& model, const ddspipe::core::types::Guid& guid);
+    static std::vector<SimpleParticipantData> participants(
+            const SpyModel& model);
+    static std::vector<ComplexParticipantData> participants_verbose(
+            const SpyModel& model);
+    static ComplexParticipantData participants(
+            const SpyModel& model,
+            const ddspipe::core::types::Guid& guid);
 
-    static std::vector<SimpleEndpointData> writers(const SpyModel& model);
-    static std::vector<ComplexEndpointData> writers_verbose(const SpyModel& model);
-    static ComplexEndpointData writers(const SpyModel& model, const ddspipe::core::types::Guid& guid);
+    static std::vector<SimpleEndpointData> writers(
+            const SpyModel& model);
+    static std::vector<ComplexEndpointData> writers_verbose(
+            const SpyModel& model);
+    static ComplexEndpointData writers(
+            const SpyModel& model,
+            const ddspipe::core::types::Guid& guid);
 
-    static std::vector<SimpleEndpointData> readers(const SpyModel& model);
-    static std::vector<ComplexEndpointData> readers_verbose(const SpyModel& model);
-    static ComplexEndpointData readers(const SpyModel& model, const ddspipe::core::types::Guid& guid);
+    static std::vector<SimpleEndpointData> readers(
+            const SpyModel& model);
+    static std::vector<ComplexEndpointData> readers_verbose(
+            const SpyModel& model);
+    static ComplexEndpointData readers(
+            const SpyModel& model,
+            const ddspipe::core::types::Guid& guid);
 
-    static std::vector<SimpleTopicData> topics(const SpyModel& model);
-    static std::vector<ComplexTopicData> topics_verbose(const SpyModel& model);
-    static ComplexTopicData topics(const SpyModel& model, const std::string& topic_name);
+    static std::vector<SimpleTopicData> topics(
+            const SpyModel& model);
+    static std::vector<ComplexTopicData> topics_verbose(
+            const SpyModel& model);
+    static ComplexTopicData topics(
+            const SpyModel& model,
+            const std::string& topic_name);
 };
 
 } /* namespace participants */
