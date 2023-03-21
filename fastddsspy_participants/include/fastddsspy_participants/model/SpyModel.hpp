@@ -26,9 +26,6 @@ namespace participants {
  */
 class SpyModel : public NetworkDatabase, public DataStreamer
 {
-    //! Use child ctor
-    using DataStreamer::DataStreamer;
-    using DataStreamer::types_discovered_;
 };
 
 } /* namespace participants */
