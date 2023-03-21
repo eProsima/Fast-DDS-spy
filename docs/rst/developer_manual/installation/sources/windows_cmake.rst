@@ -8,14 +8,14 @@
 CMake installation
 ==================
 
-This section explains how to compile |eddsrecord| with CMake_, either :ref:`locally <windows_sources_local_installation>` or :ref:`globally <windows_sources_global_installation>`.
+This section explains how to compile |espy| with CMake_, either :ref:`locally <windows_sources_local_installation>` or :ref:`globally <windows_sources_global_installation>`.
 
 .. _windows_sources_local_installation:
 
 Local installation
 ------------------
 
-#.  Open a command prompt, and create a :code:`fastdds-spy` directory where to download and build |eddsrecord| and its dependencies:
+#.  Open a command prompt, and create a :code:`fastdds-spy` directory where to download and build |espy| and its dependencies:
 
     .. code-block:: bash
 
@@ -105,7 +105,7 @@ Local installation
             cmake <path\to\user\workspace>\fastdds-spy\src\ddspipe\ddspipe_participants -DCMAKE_INSTALL_PREFIX=<path\to\user\workspace>\fastdds-spy\install -DCMAKE_PREFIX_PATH=<path\to\user\workspace>\fastdds-spy\install
             cmake --build . --target install
 
-#.  Once all dependencies are installed, install |eddsrecord|:
+#.  Once all dependencies are installed, install |espy|:
 
     .. code-block:: bash
 
@@ -136,7 +136,7 @@ Local installation
 
 .. note::
 
-    By default, |eddsrecord| does not compile tests.
+    By default, |espy| does not compile tests.
     However, they can be activated by downloading and installing `Gtest <https://github.com/google/googletest>`_
     and building with CMake option ``-DBUILD_TESTS=ON``.
 
@@ -146,7 +146,7 @@ Local installation
 Global installation
 -------------------
 
-To install |eddsrecord| system-wide instead of locally, remove all the flags that appear in the configuration steps of :code:`Fast-CDR`, :code:`Fast-DDS`, :code:`Dev-Utils`, :code:`DDS-Pipe`, and :code:`fastdds-spy`
+To install |espy| system-wide instead of locally, remove all the flags that appear in the configuration steps of :code:`Fast-CDR`, :code:`Fast-DDS`, :code:`Dev-Utils`, :code:`DDS-Pipe`, and :code:`fastdds-spy`
 
 
 .. External links
