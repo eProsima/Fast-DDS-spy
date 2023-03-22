@@ -19,12 +19,14 @@
 namespace eprosima {
 namespace spy {
 
-void View::show(const std::string& value)
+void View::show(
+        const std::string& value)
 {
     show(value.c_str());
 }
 
-void View::show(const char* value)
+void View::show(
+        const char* value)
 {
     std::cout << value << std::endl;
 }

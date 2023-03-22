@@ -131,7 +131,8 @@ void Controller::data_stream_callback_verbose_(
     view_.show("---\n");
 }
 
-bool Controller::verbose_argument(const std::string& argument) const noexcept
+bool Controller::verbose_argument(
+        const std::string& argument) const noexcept
 {
     return (
         (argument == "verbose")
@@ -141,14 +142,16 @@ bool Controller::verbose_argument(const std::string& argument) const noexcept
         || (argument == "V"));
 }
 
-bool Controller::all_argument(const std::string& argument) const noexcept
+bool Controller::all_argument(
+        const std::string& argument) const noexcept
 {
     return (
         (argument == "all")
         || (argument == "a"));
 }
 
-void Controller::participants_command(const std::vector<std::string>& arguments) noexcept
+void Controller::participants_command(
+        const std::vector<std::string>& arguments) noexcept
 {
     Yaml yml;
     // Size cannot be 0
@@ -189,15 +192,16 @@ void Controller::participants_command(const std::vector<std::string>& arguments)
     view_.show(yml);
 }
 
-void Controller::print_command(const std::vector<std::string>& arguments) noexcept
+void Controller::print_command(
+        const std::vector<std::string>& arguments) noexcept
 {
     // Check the number of arguments is correct
     if (arguments.size() < 2)
     {
         view_.show_error(STR_ENTRY
-            << "Command <"
-            << arguments[0]
-            << "> requires at least one argument.");
+                << "Command <"
+                << arguments[0]
+                << "> requires at least one argument.");
         return;
     }
 
@@ -210,7 +214,7 @@ void Controller::print_command(const std::vector<std::string>& arguments) noexce
                     const ddspipe::core::types::DdsTopic& topic,
                     const fastrtps::types::DynamicType_ptr& dyn_type,
                     const ddspipe::core::types::RtpsPayloadData& data
-                )
+                    )
                 {
                     data_stream_callback_verbose_(topic, dyn_type, data);
                 }));
@@ -218,7 +222,7 @@ void Controller::print_command(const std::vector<std::string>& arguments) noexce
         if (!activated)
         {
             view_.show_error(STR_ENTRY
-                << "Error printing all topics.");
+                    << "Error printing all topics.");
             return;
         }
 
@@ -232,9 +236,9 @@ void Controller::print_command(const std::vector<std::string>& arguments) noexce
         if (!topic_exist)
         {
             view_.show_error(STR_ENTRY
-                << "Topic <"
-                << arguments[1]
-                << "> does not exist.");
+                    << "Topic <"
+                    << arguments[1]
+                    << "> does not exist.");
             return;
         }
 
@@ -242,9 +246,9 @@ void Controller::print_command(const std::vector<std::string>& arguments) noexce
         if (!topic_available)
         {
             view_.show_error(STR_ENTRY
-                << "Topic Type <"
-                << topic.type_name
-                << "> has not been discovered, and thus cannot print its data.");
+                    << "Topic Type <"
+                    << topic.type_name
+                    << "> has not been discovered, and thus cannot print its data.");
             return;
         }
 
@@ -264,7 +268,7 @@ void Controller::print_command(const std::vector<std::string>& arguments) noexce
                     const ddspipe::core::types::DdsTopic& topic,
                     const fastrtps::types::DynamicType_ptr& dyn_type,
                     const ddspipe::core::types::RtpsPayloadData& data
-                )
+                    )
                 {
                     data_stream_callback_verbose_(topic, dyn_type, data);
                 });
@@ -276,7 +280,7 @@ void Controller::print_command(const std::vector<std::string>& arguments) noexce
                     const ddspipe::core::types::DdsTopic& topic,
                     const fastrtps::types::DynamicType_ptr& dyn_type,
                     const ddspipe::core::types::RtpsPayloadData& data
-                )
+                    )
                 {
                     data_stream_callback_(topic, dyn_type, data);
                 });
@@ -290,9 +294,9 @@ void Controller::print_command(const std::vector<std::string>& arguments) noexce
         if (!activated)
         {
             view_.show_error(STR_ENTRY
-                << "Error showing data for topic <"
-                << topic.topic_name()
-                << ".");
+                    << "Error showing data for topic <"
+                    << topic.topic_name()
+                    << ".");
             return;
         }
     }

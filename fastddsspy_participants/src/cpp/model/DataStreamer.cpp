@@ -102,7 +102,7 @@ void DataStreamer::add_data(
             {
                 // The topic that is supposed to be activated has no associated type. This should not happen
                 utils::tsnh(STR_ENTRY
-                    << "Topic <" << topic << "> must not be activated if its type is not registered.");
+                        << "Topic <" << topic << "> must not be activated if its type is not registered.");
             }
 
             // TODO: make map search more safe

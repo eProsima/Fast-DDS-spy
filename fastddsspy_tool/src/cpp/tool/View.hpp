@@ -25,9 +25,11 @@ class View
 {
 public:
 
-    void show(const std::string& value);
+    void show(
+            const std::string& value);
 
-    void show(const char* value);
+    void show(
+            const char* value);
 
     template <typename T>
     void show(

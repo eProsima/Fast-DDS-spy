@@ -36,13 +36,13 @@ class DataStreamer : public ddspipe::participants::ISchemaHandler
 {
 public:
 
-    using CallbackType = std::function<void(
-        const ddspipe::core::types::DdsTopic&,
-        const fastrtps::types::DynamicType_ptr&,
-        const ddspipe::core::types::RtpsPayloadData&)>;
+    using CallbackType = std::function<void (
+                        const ddspipe::core::types::DdsTopic&,
+                        const fastrtps::types::DynamicType_ptr&,
+                        const ddspipe::core::types::RtpsPayloadData&)>;
 
     bool activate_all(
-        const std::shared_ptr<CallbackType>& callback);
+            const std::shared_ptr<CallbackType>& callback);
 
     bool activate(
             const ddspipe::core::types::DdsTopic& topic_to_activate,
