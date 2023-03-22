@@ -26,10 +26,12 @@ class View
 public:
 
     template <typename T>
-    void show(const T& value);
+    void show(
+            const T& value);
 
     template <typename T>
-    void show_error(const T& value);
+    void show_error(
+            const T& value);
 };
 
 } /* namespace spy */

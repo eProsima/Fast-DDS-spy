@@ -20,19 +20,22 @@ namespace eprosima {
 namespace spy {
 
 template <>
-void View::show(const Yaml& value)
+void View::show(
+        const Yaml& value)
 {
     std::cout << value << std::endl;
 }
 
 template <>
-void View::show_error(const std::string& value)
+void View::show_error(
+        const std::string& value)
 {
     std::cout << "\033[1;31m" << value << "\033[0m" << std::endl;
 }
 
 template <>
-void View::show_error(const utils::Formatter& value)
+void View::show_error(
+        const utils::Formatter& value)
 {
     show_error(value.to_string());
 }

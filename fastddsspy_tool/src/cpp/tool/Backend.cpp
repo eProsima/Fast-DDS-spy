@@ -17,7 +17,8 @@
 namespace eprosima {
 namespace spy {
 
-Backend::Backend(const yaml::Configuration& configuration)
+Backend::Backend(
+        const yaml::Configuration& configuration)
     : configuration_(configuration)
     , payload_pool_(std::make_shared<ddspipe::core::FastPayloadPool>())
     , discovery_database_(std::make_shared<ddspipe::core::DiscoveryDatabase>())
@@ -57,11 +58,11 @@ Backend::Backend(const yaml::Configuration& configuration)
     participant_database_->add_participant(
         dds_participant_->id(),
         dds_participant_
-    );
+        );
     participant_database_->add_participant(
         spy_participant_->id(),
         spy_participant_
-    );
+        );
 
     // Create and initialize Pipe
     pipe_ = std::make_unique<ddspipe::core::DdsPipe>(
@@ -71,7 +72,7 @@ Backend::Backend(const yaml::Configuration& configuration)
         participant_database_,
         thread_pool_,
         configuration.builtin_topics
-    );
+        );
 
     pipe_->enable();
 }

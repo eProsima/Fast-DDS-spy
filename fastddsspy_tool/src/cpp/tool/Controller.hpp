@@ -31,12 +31,13 @@ class Controller
 {
 public:
 
-    Controller(const yaml::Configuration& configuration);
+    Controller(
+            const yaml::Configuration& configuration);
 
     void run();
 
     utils::ReturnCode reload_allowed_topics(
-        const std::shared_ptr<ddspipe::core::AllowedTopicList>& allowed_topics);
+            const std::shared_ptr<ddspipe::core::AllowedTopicList>& allowed_topics);
 
 protected:
 
@@ -45,9 +46,11 @@ protected:
             const fastrtps::types::DynamicType_ptr& dyn_type,
             const ddspipe::core::types::RtpsPayloadData& data);
 
-    bool verbose_argument(const std::string& argument) const noexcept;
+    bool verbose_argument(
+            const std::string& argument) const noexcept;
 
-    void participants_command(const std::vector<std::string>& arguments) noexcept;
+    void participants_command(
+            const std::vector<std::string>& arguments) noexcept;
 
     Backend backend_;
 

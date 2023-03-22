@@ -45,7 +45,7 @@ TEST(YamlWriterTest, test_SimpleParticipantData)
     ASSERT_EQ(
         utils::generic_to_string(yml),
         utils::generic_to_string(yml_expected)
-    );
+        );
 }
 
 /**
@@ -78,7 +78,7 @@ TEST(YamlWriterTest, test_ComplexParticipantData)
     ASSERT_EQ(
         utils::generic_to_string(yml),
         utils::generic_to_string(yml_expected)
-    );
+        );
 }
 
 /**
@@ -100,7 +100,7 @@ TEST(YamlWriterTest, test_ComplexParticipantData_Endpoint)
     ASSERT_EQ(
         utils::generic_to_string(yml),
         utils::generic_to_string(yml_expected)
-    );
+        );
 }
 
 int main(

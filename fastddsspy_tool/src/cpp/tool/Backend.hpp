@@ -41,12 +41,13 @@ class Backend
 {
 public:
 
-    Backend(const yaml::Configuration& configuration);
+    Backend(
+            const yaml::Configuration& configuration);
 
     ~Backend();
 
     utils::ReturnCode reload_allowed_topics(
-        const std::shared_ptr<ddspipe::core::AllowedTopicList>& allowed_topics);
+            const std::shared_ptr<ddspipe::core::AllowedTopicList>& allowed_topics);
 
     std::shared_ptr<eprosima::spy::participants::SpyModel> model() const noexcept;
 

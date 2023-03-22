@@ -28,7 +28,8 @@
 namespace eprosima {
 namespace spy {
 
-Controller::Controller(const yaml::Configuration& configuration)
+Controller::Controller(
+        const yaml::Configuration& configuration)
     : backend_(configuration)
     , model_(backend_.model())
 {
@@ -45,14 +46,14 @@ void Controller::run()
 
         switch (command.command)
         {
-        case CommandValue::participant:
-            participants_command(command.arguments);
-            break;
+            case CommandValue::participant:
+                participants_command(command.arguments);
+                break;
 
-        // TODO add other cases
+            // TODO add other cases
 
-        default:
-            break;
+            default:
+                break;
         }
     }
 }
@@ -63,7 +64,8 @@ utils::ReturnCode Controller::reload_allowed_topics(
     return backend_.reload_allowed_topics(allowed_topics);
 }
 
-bool Controller::verbose_argument(const std::string& argument) const noexcept
+bool Controller::verbose_argument(
+        const std::string& argument) const noexcept
 {
     return (
         (argument == "verbose")
@@ -73,7 +75,8 @@ bool Controller::verbose_argument(const std::string& argument) const noexcept
         || (argument == "V"));
 }
 
-void Controller::participants_command(const std::vector<std::string>& arguments) noexcept
+void Controller::participants_command(
+        const std::vector<std::string>& arguments) noexcept
 {
     Yaml yml;
     // Size cannot be 0
@@ -94,8 +97,8 @@ void Controller::participants_command(const std::vector<std::string>& arguments)
         if (!guid.is_valid())
         {
             view_.show_error(STR_ENTRY
-                << arguments[1]
-                << " is not a valid GUID. Use format <xx.xx.xx.xx.xx.xx.xx.xx.xx.xx.xx.xx|xx.xx.xx.xx>");
+                    << arguments[1]
+                    << " is not a valid GUID. Use format <xx.xx.xx.xx.xx.xx.xx.xx.xx.xx.xx.xx|xx.xx.xx.xx>");
             return;
         }
         else
@@ -104,8 +107,8 @@ void Controller::participants_command(const std::vector<std::string>& arguments)
             if (!data.guid.is_valid())
             {
                 view_.show_error(STR_ENTRY
-                    << arguments[1]
-                    << " does not match with a known participant.");
+                        << arguments[1]
+                        << " does not match with a known participant.");
                 return;
             }
             ddspipe::yaml::set(yml, data);
@@ -113,7 +116,6 @@ void Controller::participants_command(const std::vector<std::string>& arguments)
     }
     view_.show(yml);
 }
-
 
 } /* namespace spy */
 } /* namespace eprosima */
