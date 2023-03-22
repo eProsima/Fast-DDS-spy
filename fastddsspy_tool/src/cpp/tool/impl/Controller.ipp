@@ -48,8 +48,8 @@ void Controller::dds_entity_command__(
         if (!guid.is_valid())
         {
             view_.show_error(STR_ENTRY
-                << arguments[1]
-                << " is not a valid GUID. Use format <xx.xx.xx.xx.xx.xx.xx.xx.xx.xx.xx.xx|xx.xx.xx.xx>");
+                    << arguments[1]
+                    << " is not a valid GUID. Use format <xx.xx.xx.xx.xx.xx.xx.xx.xx.xx.xx.xx|xx.xx.xx.xx>");
             return;
         }
         else
@@ -58,8 +58,8 @@ void Controller::dds_entity_command__(
             if (!data.guid.is_valid())
             {
                 view_.show_error(STR_ENTRY
-                    << arguments[1]
-                    << " does not match with any known " << entity_name << ".");
+                        << arguments[1]
+                        << " does not match with any known " << entity_name << ".");
                 return;
             }
             ddspipe::yaml::set(yml, data);

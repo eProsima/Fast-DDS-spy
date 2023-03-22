@@ -43,7 +43,6 @@ public:
 
 protected:
 
-
     ////////////////////////////
     // DATA STREAM CALLBACKS
     static fastrtps::types::DynamicData_ptr get_dynamic_data(
@@ -62,7 +61,8 @@ protected:
 
     /////////////////////
     // PARSE ARGUMENTS
-    bool verbose_argument(const std::string& argument) const noexcept;
+    bool verbose_argument(
+            const std::string& argument) const noexcept;
 
     bool all_argument(
             const std::string& argument) const noexcept;
@@ -72,20 +72,28 @@ protected:
 
     /////////////////////
     // ENTITIES
-    void participants_command(const std::vector<std::string>& arguments) noexcept;
-    void writers_command(const std::vector<std::string>& arguments) noexcept;
-    void readers_command(const std::vector<std::string>& arguments) noexcept;
-    void topics_command(const std::vector<std::string>& arguments) noexcept;
+    void participants_command(
+            const std::vector<std::string>& arguments) noexcept;
+    void writers_command(
+            const std::vector<std::string>& arguments) noexcept;
+    void readers_command(
+            const std::vector<std::string>& arguments) noexcept;
+    void topics_command(
+            const std::vector<std::string>& arguments) noexcept;
 
     /////////////////////
     // DATA STREAM
-    void print_command(const std::vector<std::string>& arguments) noexcept;
+    void print_command(
+            const std::vector<std::string>& arguments) noexcept;
 
     /////////////////////
     // AUXILIARY
-    void version_command(const std::vector<std::string>& arguments) noexcept;
-    void help_command(const std::vector<std::string>& arguments) noexcept;
-    void error_command(const std::vector<std::string>& arguments) noexcept;
+    void version_command(
+            const std::vector<std::string>& arguments) noexcept;
+    void help_command(
+            const std::vector<std::string>& arguments) noexcept;
+    void error_command(
+            const std::vector<std::string>& arguments) noexcept;
 
     /////////////////////
     // VARIABLES

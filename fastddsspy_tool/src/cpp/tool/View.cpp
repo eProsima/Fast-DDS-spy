@@ -30,7 +30,8 @@ void View::print_initial()
     std::cout << "\033[0m" << std::endl;
 }
 
-void View::show(const std::string& value)
+void View::show(
+        const std::string& value)
 {
     show(value.c_str());
 }
@@ -49,13 +50,15 @@ void View::show(
 }
 
 template <>
-void View::show(const utils::Formatter& value)
+void View::show(
+        const utils::Formatter& value)
 {
     show(value.to_string());
 }
 
 template <>
-void View::show_error(const std::string& value)
+void View::show_error(
+        const std::string& value)
 {
     std::cout << "\033[1;31m" << value << "\033[0m" << std::endl;
 }

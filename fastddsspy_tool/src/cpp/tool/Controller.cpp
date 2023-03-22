@@ -178,36 +178,66 @@ void Controller::participants_command(
 {
     dds_entity_command__(
         arguments,
-        [](const participants::SpyModel& model) { return participants::ModelParser::participants(model); },
-        [](const participants::SpyModel& model) { return participants::ModelParser::participants_verbose(model); },
-        [](const participants::SpyModel& model, const ddspipe::core::types::Guid& guid) { return participants::ModelParser::participants(model, guid); },
+        [](const participants::SpyModel& model)
+        {
+            return participants::ModelParser::participants(model);
+        },
+        [](const participants::SpyModel& model)
+        {
+            return participants::ModelParser::participants_verbose(model);
+        },
+        [](const participants::SpyModel& model, const ddspipe::core::types::Guid& guid)
+        {
+            return participants::ModelParser::participants(model, guid);
+        },
         "participant"
         );
 }
 
-void Controller::writers_command(const std::vector<std::string>& arguments) noexcept
+void Controller::writers_command(
+        const std::vector<std::string>& arguments) noexcept
 {
     dds_entity_command__(
         arguments,
-        [](const participants::SpyModel& model) { return participants::ModelParser::writers(model); },
-        [](const participants::SpyModel& model) { return participants::ModelParser::writers_verbose(model); },
-        [](const participants::SpyModel& model, const ddspipe::core::types::Guid& guid) { return participants::ModelParser::writers(model, guid); },
+        [](const participants::SpyModel& model)
+        {
+            return participants::ModelParser::writers(model);
+        },
+        [](const participants::SpyModel& model)
+        {
+            return participants::ModelParser::writers_verbose(model);
+        },
+        [](const participants::SpyModel& model, const ddspipe::core::types::Guid& guid)
+        {
+            return participants::ModelParser::writers(model, guid);
+        },
         "participant"
         );
 }
 
-void Controller::readers_command(const std::vector<std::string>& arguments) noexcept
+void Controller::readers_command(
+        const std::vector<std::string>& arguments) noexcept
 {
     dds_entity_command__(
         arguments,
-        [](const participants::SpyModel& model) { return participants::ModelParser::readers(model); },
-        [](const participants::SpyModel& model) { return participants::ModelParser::readers_verbose(model); },
-        [](const participants::SpyModel& model, const ddspipe::core::types::Guid& guid) { return participants::ModelParser::readers(model, guid); },
+        [](const participants::SpyModel& model)
+        {
+            return participants::ModelParser::readers(model);
+        },
+        [](const participants::SpyModel& model)
+        {
+            return participants::ModelParser::readers_verbose(model);
+        },
+        [](const participants::SpyModel& model, const ddspipe::core::types::Guid& guid)
+        {
+            return participants::ModelParser::readers(model, guid);
+        },
         "participant"
         );
 }
 
-void Controller::topics_command(const std::vector<std::string>& arguments) noexcept
+void Controller::topics_command(
+        const std::vector<std::string>& arguments) noexcept
 {
     Yaml yml;
     // Size cannot be 0
@@ -227,9 +257,9 @@ void Controller::topics_command(const std::vector<std::string>& arguments) noexc
         if (data.name != arguments[1])
         {
             view_.show_error(STR_ENTRY
-                << "<"
-                << arguments[1]
-                << "> topic does not exist in the DDS network.");
+                    << "<"
+                    << arguments[1]
+                    << "> topic does not exist in the DDS network.");
             return;
         }
         ddspipe::yaml::set(yml, data);
@@ -237,7 +267,8 @@ void Controller::topics_command(const std::vector<std::string>& arguments) noexc
     view_.show(yml);
 }
 
-void Controller::print_command(const std::vector<std::string>& arguments) noexcept
+void Controller::print_command(
+        const std::vector<std::string>& arguments) noexcept
 {
     // Check the number of arguments is correct
     if (arguments.size() < 2)
@@ -349,27 +380,30 @@ void Controller::print_command(const std::vector<std::string>& arguments) noexce
     model_->deactivate();
 }
 
-void Controller::version_command(const std::vector<std::string>& arguments) noexcept
+void Controller::version_command(
+        const std::vector<std::string>& arguments) noexcept
 {
     view_.show(STR_ENTRY
-        << "Fast DDS Spy "
-        << FASTDDSSPY_PARTICIPANTS_VERSION_STRING
-        << "\ncommit hash: "
-        << FASTDDSSPY_PARTICIPANTS_COMMIT_HASH);
+            << "Fast DDS Spy "
+            << FASTDDSSPY_PARTICIPANTS_VERSION_STRING
+            << "\ncommit hash: "
+            << FASTDDSSPY_PARTICIPANTS_COMMIT_HASH);
 }
 
-void Controller::help_command(const std::vector<std::string>& arguments) noexcept
+void Controller::help_command(
+        const std::vector<std::string>& arguments) noexcept
 {
     // TODO
     view_.show_error(STR_ENTRY
-        << "<" << arguments[0] << "> command is not implemented yet. Please be patient.");
+            << "<" << arguments[0] << "> command is not implemented yet. Please be patient.");
 }
 
-void Controller::error_command(const std::vector<std::string>& arguments) noexcept
+void Controller::error_command(
+        const std::vector<std::string>& arguments) noexcept
 {
     view_.show_error(STR_ENTRY
-        << "<" << arguments[0] << "> is not a known command. "
-        << "Use <help> command to see valid commands and arguments.");
+            << "<" << arguments[0] << "> is not a known command. "
+            << "Use <help> command to see valid commands and arguments.");
 }
 
 } /* namespace spy */

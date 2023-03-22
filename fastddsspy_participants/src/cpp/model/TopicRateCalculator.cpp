@@ -38,7 +38,8 @@ void TopicRateCalculator::add_data(
     rate_data.data_received++;
 }
 
-TopicRateCalculator::RateType TopicRateCalculator::get_topic_rate(const ddspipe::core::types::DdsTopic& topic) const noexcept
+TopicRateCalculator::RateType TopicRateCalculator::get_topic_rate(
+        const ddspipe::core::types::DdsTopic& topic) const noexcept
 {
     std::shared_lock<RateByTopicMapType> _(data_by_topic_);
 

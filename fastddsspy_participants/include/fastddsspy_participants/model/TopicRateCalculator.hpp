@@ -40,7 +40,8 @@ public:
 
     using RateType = float;
 
-    RateType get_topic_rate(const ddspipe::core::types::DdsTopic& topic) const noexcept;
+    RateType get_topic_rate(
+            const ddspipe::core::types::DdsTopic& topic) const noexcept;
 
 protected:
 
@@ -55,7 +56,8 @@ protected:
             const ddspipe::core::types::DdsTopic& topic,
             DataRateInfo& data) const noexcept;
 
-    DataRateInfo& get_or_create_data_rate_from_topic_nts_(const ddspipe::core::types::DdsTopic& topic);
+    DataRateInfo& get_or_create_data_rate_from_topic_nts_(
+            const ddspipe::core::types::DdsTopic& topic);
 
     using RateByTopicMapType = utils::SharedAtomicable<std::map<ddspipe::core::types::DdsTopic, DataRateInfo>>;
 
