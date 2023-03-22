@@ -23,8 +23,8 @@
 namespace eprosima {
 namespace spy {
 
-//! Default Foxgloveweb Websocket configuration file
-constexpr const char* DEFAULT_CONFIGURATION_FILE_NAME("FOXGLOVE_WEBSOCKET_CONFIGURATION.yaml");
+//! Default configuration file
+constexpr const char* DEFAULT_CONFIGURATION_FILE_NAME("FASTDDSSPY_CONFIGURATION.yaml");
 
 } /* namespace spy */
 } /* namespace eprosima */

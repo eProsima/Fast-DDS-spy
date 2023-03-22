@@ -20,7 +20,7 @@ set(MODULE_NAME
     fastddsspy_tool)
 
 set(MODULE_SUMMARY
-    "C++ application to run a Foxglove Websocket from a YAML configuration file.")
+    "C++ application to execute a Fast DDS Spy.")
 
 set(MODULE_FIND_PACKAGES
     yaml-cpp

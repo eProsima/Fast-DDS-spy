@@ -1,5 +1,3 @@
-// TODO: update
-
 // Copyright 2023 Proyectos y Sistemas de Mantenimiento SL (eProsima).
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,6 +24,8 @@
 #include <cpp_utils/Log.hpp>
 #include <cpp_utils/utils.hpp>
 
+#include <fastddsspy_participants/library/config.h>
+
 #include "arguments_configuration.hpp"
 
 namespace eprosima {
@@ -38,11 +38,8 @@ const option::Descriptor usage[] = {
         "",
         "",
         Arg::None,
-        "Usage: Fast DDS Router \n" \
-        "Connect different DDS networks via DDS through LAN or WAN.\n" \
-        "It will build a communication bridge between the different " \
-        "Participants included in the provided configuration file.\n" \
-        "To stop the execution gracefully use SIGINT (C^) or SIGTERM (kill) signals.\n" \
+        "Usage: Fast DDS Spy \n" \
+        "Start an interactive CLI to introspect a DDS network.\n" \
         "General options:"
     },
 
@@ -87,7 +84,7 @@ const option::Descriptor usage[] = {
         "config-path",
         Arg::Readable_File,
         "  -c \t--config-path\t  \t" \
-        "Path to the Configuration File (yaml format) [Default: ./DDS_RECORDER_CONFIGURATION.yaml]."
+        "Path to the Configuration File (yaml format) [Default: ./FASTDDSSPY_CONFIGURATION.yaml]."
     },
 
     {
@@ -129,7 +126,7 @@ const option::Descriptor usage[] = {
         Arg::String,
         "  \t--log-filter\t  \t" \
         "Set a Regex Filter to filter by category the info and warning log entries. " \
-        "[Default = \"(DDSROUTER|FOXGLOVEWS)\"]. "
+        "[Default = \"(DDSPIPE|FASTDDSSPY)\"]. "
     },
 
     {
@@ -154,7 +151,12 @@ const option::Descriptor usage[] = {
 
 void print_version()
 {
-    std::cout << "TODO" << std::endl;
+    std::cout
+        << "Fast DDS Spy - "
+        << FASTDDSSPY_PARTICIPANTS_VERSION_STRING
+        << "\ncommit hash: "
+        << FASTDDSSPY_PARTICIPANTS_COMMIT_HASH <<
+        std::endl;
 }
 
 ProcessReturnCode parse_arguments(

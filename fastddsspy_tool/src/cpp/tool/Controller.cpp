@@ -37,11 +37,6 @@ Controller::Controller(const yaml::Configuration& configuration)
 
 void Controller::run()
 {
-    // TODO
-
-    // utils::CommandReader<CommandValue> reader(
-    //     *CommandBuilder::get_instance());
-
     utils::Command<CommandValue> command;
     command.command = CommandValue::participant;
     while (command.command != CommandValue::exit)
@@ -54,49 +49,12 @@ void Controller::run()
             participants_command(command.arguments);
             break;
 
-        // case CommandValue::datareader:
-        //     model_->print_datareaders();
-        //     break;
-
-        // case CommandValue::datawriter:
-        //     model_->print_datawriters();
-        //     break;
-
-        // case CommandValue::topic:
-        //     model_->print_topics();
-        //     break;
-
-        // case CommandValue::print:
-
-        //     // Check the number of arguments is correct
-        //     if (command.arguments.size() != 2)
-        //     {
-        //         logUser(FASTDDSSPY_TOOL, "! Command <" << command.arguments[0] << "> requires exactly one argument.");
-        //     }
-        //     else
-        //     {
-        //         printing_data_(reader, command.arguments[1]);
-        //     }
-        //     break;
-
-        // case CommandValue::help:
-        //     print_help_();
-        //     break;
+        // TODO add other cases
 
         default:
             break;
         }
     }
-    //     logUser(FASTDDSSPY_TOOL, "Insert a command for Fast DDS Spy:");
-    //     auto res = reader.read_next_command(command);
-
-    //     if (!res)
-    //     {
-    //         logUser(FASTDDSSPY_TOOL, "! Command <" << command.arguments[0] << "> not supported.");
-    //         continue;
-    //     }
-
-    // }
 }
 
 utils::ReturnCode Controller::reload_allowed_topics(

@@ -107,7 +107,7 @@ jobs:
           packages_names: ${{ env.code_packages_names }}
           cmake_args: -DBUILD_TESTS=ON -DCMAKE_BUILD_TYPE=${{ matrix.cmake-config }}
           workspace_dependencies: './install'
-          ctest_args: --label-exclude "xfail|xasan"
+          ctest_args: --label-exclude "xfail"
 
 
 #####################################################################
