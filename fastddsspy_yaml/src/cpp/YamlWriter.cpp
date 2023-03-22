@@ -45,15 +45,10 @@ void set(
         Yaml& yml,
         const TimestampData& value)
 {
+    // TODO convert seconds to timestamp
     utils::Formatter f;
     f << value.timestamp.seconds();
     set(yml, f.to_string());
-
-    // TODO convert seconds to timestamp
-    // set(yml, utils::timestamp_to_string(
-    //         std::chrono::time_point_cast<std::chrono::seconds>(
-    //             std::chrono::duration_cast<std::chrono::seconds>(
-    //                 value.timestamp.seconds()))));
 }
 
 template <>
