@@ -275,9 +275,8 @@ void Controller::print_command(const std::vector<std::string>& arguments) noexce
     // Print topic
     else
     {
-        ddspipe::core::types::DdsTopic topic;
-        bool topic_exist = model_->get_topic(arguments[1], topic);
-        if (!topic_exist)
+        ddspipe::core::types::DdsTopic topic = participants::ModelParser::get_topic(*model_, arguments[1]);
+        if (topic.m_topic_name != arguments[1])
         {
             view_.show_error(STR_ENTRY
                     << "Topic <"

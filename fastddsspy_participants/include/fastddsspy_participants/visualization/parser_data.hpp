@@ -69,8 +69,8 @@ struct ComplexEndpointData
 
     struct QoS
     {
-        std::string durability;
-        std::string reliability;
+        ddspipe::core::types::DurabilityKind durability;
+        ddspipe::core::types::ReliabilityKind reliability;
     };
 
     ddspipe::core::types::Guid guid;

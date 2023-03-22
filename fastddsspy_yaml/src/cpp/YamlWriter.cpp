@@ -115,8 +115,23 @@ void set(
         Yaml& yml,
         const ComplexEndpointData::QoS& value)
 {
-    set(yml, "durability", value.durability);
-    set(yml, "reliability", value.reliability);
+    if (value.durability == ddspipe::core::types::DurabilityKind::VOLATILE)
+    {
+        set(yml, "durability", std::string("volatile"));
+    }
+    else
+    {
+        set(yml, "durability", std::string("transient-local"));
+    }
+
+    if (value.reliability == ddspipe::core::types::ReliabilityKind::BEST_EFFORT)
+    {
+        set(yml, "reliability", std::string("best-effort"));
+    }
+    else
+    {
+        set(yml, "reliability", std::string("reliable"));
+    }
 }
 
 template <>
@@ -136,7 +151,7 @@ void set(
         const SimpleTopicData::Rate& value)
 {
     utils::Formatter f;
-    f << value.rate << value.rate;
+    f << value.rate << " " << value.unit;
     set(yml, f.to_string());
 }
 

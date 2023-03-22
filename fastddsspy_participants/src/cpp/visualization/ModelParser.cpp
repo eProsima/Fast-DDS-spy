@@ -166,22 +166,8 @@ void fill_complex_endpoint(
     result.guid = endpoint.guid;
     result.topic.topic_name = endpoint.topic.m_topic_name;
     result.topic.topic_type = endpoint.topic.type_name;
-    if (endpoint.topic.topic_qos.durability_qos)    // TODO move to YamlWriter
-    {
-        result.qos.durability = "transient-local";
-    }
-    else
-    {
-        result.qos.durability = "volatile";
-    }
-    if (endpoint.topic.topic_qos.reliability_qos)
-    {
-        result.qos.reliability = "best-effort";
-    }
-    else
-    {
-        result.qos.reliability = "reliable";
-    }
+    result.qos.durability = endpoint.topic.topic_qos.durability_qos;
+    result.qos.reliability = endpoint.topic.topic_qos.reliability_qos;
 }
 
 void set_endpoint_simple_information(
@@ -303,7 +289,7 @@ std::set<eprosima::ddspipe::core::types::DdsTopic> get_topics(
     return result;
 }
 
-ddspipe::core::types::DdsTopic get_topic(
+ddspipe::core::types::DdsTopic ModelParser::get_topic(
         const SpyModel& model,
         std::string topic_name)
 {
@@ -349,7 +335,7 @@ std::vector<SimpleTopicData> ModelParser::topics(
                         datawriters,
                         datareaders,
                         {
-                            10, // TODO not implementated yet
+                            model.get_topic_rate(topic),
                             "Hz"
                         }
                     });
@@ -377,41 +363,38 @@ ComplexTopicData ModelParser::topics(
         const std::string& topic_name)
 {
     ComplexTopicData result;
-    std::vector<ComplexTopicData::Endpoint> datareaders;
-    std::vector<ComplexTopicData::Endpoint> datawriters;
 
-    std::string type_name = "Not discovered yet";
+    // Lets check if topic exists
+    auto topic = get_topic(model, topic_name);
+
+    // If topic not found, return an empty Daa
+    if (topic.m_topic_name != topic_name)
+    {
+        result.name = "";
+        return result;
+    }
+
+    // Topic found, fill its information
+    result.name = topic.m_topic_name;
+    result.type = topic.type_name;
+    result.discovered = model.is_topic_type_discovered(topic);
+    result.rate.rate = model.get_topic_rate(topic);
+    result.rate.unit = "Hz";
 
     for (const auto& it : model.endpoint_database_)
     {
-        if (it.second.topic.m_topic_name == topic_name)
+        if (topic.m_topic_name == it.second.topic.m_topic_name)
         {
-            type_name = it.second.topic.type_name;
             if (it.second.is_reader())
             {
-                datareaders.push_back({it.first});
+                result.datareaders.push_back({it.first});
             }
             if (it.second.is_writer())
             {
-                datawriters.push_back({it.first});
+                result.datawriters.push_back({it.first});
             }
         }
     }
-
-    if (type_name == "Not discovered yet")
-    {
-        result.name = "";
-    }
-    else
-    {
-        result.name = topic_name;
-    }
-    result.type = type_name;
-    result.datawriters = datawriters;
-    result.datareaders = datareaders;
-    result.rate.rate = 10;
-    result.rate.unit = "Hz";    // TODO not implementated yet
-    result.discovered = model.is_topic_type_discovered(get_topic(model, topic_name));
 
     return result;
 }
