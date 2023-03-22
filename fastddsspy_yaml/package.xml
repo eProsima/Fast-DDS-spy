@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>fastddsspy_participants</name>
+  <name>fastddsspy_yaml</name>
   <version>0.1.0</version>
   <description>
-    *eProsima Fast DDS Spy* core logic.
+     *eprosima Fast DDS Spy* Yaml Module to read and print yaml objects.
   </description>
   <maintainer email="RaulSanchezMateos@eprosima.com">Raul Sánchez-Mateos</maintainer>
   <maintainer email="javierparis@eprosima.com">Javier París</maintainer>
@@ -17,11 +17,13 @@
 
   <buildtool_depend>cmake</buildtool_depend>
 
+  <depend>yamlcpp</depend>
   <depend>cmake_utils</depend>
   <depend>cpp_utils</depend>
   <depend>ddspipe_core</depend>
   <depend>ddspipe_participants</depend>
-  <depend>fastrtps</depend>
+  <depend>ddspipe_yaml</depend>
+  <depend>fastddsspy_participants</depend>
 
   <doc_depend>doxygen</doc_depend>
 

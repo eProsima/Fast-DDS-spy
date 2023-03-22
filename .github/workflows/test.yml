@@ -68,7 +68,7 @@ on:
 
 env:
   # TODO: add more packages
-  code_packages_names: 'fastddsspy_participants'
+  code_packages_names: 'fastddsspy_participants fastddsspy_yaml'
   default_dependencies_artifact_postfix: '_nightly'
 
 jobs:
