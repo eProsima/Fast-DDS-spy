@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License\.
 
+#include <limits>
+
 #include <fastddsspy_participants/model/TopicRateCalculator.hpp>
 
 namespace eprosima {
@@ -54,8 +56,8 @@ TopicRateCalculator::RateType TopicRateCalculator::get_topic_rate(
     float seconds_elapsed = data.last_data_time.seconds() - data.first_data_time.seconds();
     if (seconds_elapsed == 0)
     {
-        // TODO decide what to do in this case
-        return data.data_received;
+        // If not enough data to set the rate, return invalid value
+        return std::numeric_limits<float>::infinity();
     }
 
     return static_cast<float>(data.data_received) / seconds_elapsed;

@@ -107,7 +107,6 @@ void DataStreamer::add_data(
                         << "Topic <" << topic << "> must not be activated if its type is not registered.");
             }
 
-            // TODO: make map search more safe
             (*callback_)(topic, it->second, data);
         }
     }

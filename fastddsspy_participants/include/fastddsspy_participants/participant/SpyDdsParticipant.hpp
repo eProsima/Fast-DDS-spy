@@ -25,7 +25,7 @@ namespace spy {
 namespace participants {
 
 /**
- * TODO
+ * TODO comment
  */
 class SpyDdsParticipant : public ddspipe::participants::DynTypesParticipant
 {

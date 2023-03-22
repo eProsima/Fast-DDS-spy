@@ -22,7 +22,7 @@ namespace spy {
 namespace participants {
 
 /**
- * TODO
+ * TODO comment
  */
 class SpyModel : public NetworkDatabase, public DataStreamer
 {

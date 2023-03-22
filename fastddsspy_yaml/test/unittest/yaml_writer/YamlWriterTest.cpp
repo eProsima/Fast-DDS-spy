@@ -24,7 +24,7 @@ using namespace eprosima::ddspipe::yaml;
 using namespace eprosima::spy::participants;
 
 /**
- * TODO
+ * Convert a SimpleParticipantData to yaml
  */
 TEST(YamlWriterTest, test_SimpleParticipantData)
 {
@@ -49,7 +49,7 @@ TEST(YamlWriterTest, test_SimpleParticipantData)
 }
 
 /**
- * TODO
+ * Convert a ComplexParticipantData to yaml
  */
 TEST(YamlWriterTest, test_ComplexParticipantData)
 {
@@ -82,7 +82,7 @@ TEST(YamlWriterTest, test_ComplexParticipantData)
 }
 
 /**
- * TODO
+ * Convert a ComplexParticipantData::Endpoint to yaml
  */
 TEST(YamlWriterTest, test_ComplexParticipantData_Endpoint)
 {

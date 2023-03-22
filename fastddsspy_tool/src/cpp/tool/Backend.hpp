@@ -53,34 +53,34 @@ public:
 
 protected:
 
-    // TODO
+    // TODO comment
     yaml::Configuration configuration_;
 
-    //! TODO
+    //! TODO comment
     std::shared_ptr<ddspipe::core::PayloadPool> payload_pool_;
 
-    //! TODO
+    //! TODO comment
     std::shared_ptr<ddspipe::core::DiscoveryDatabase> discovery_database_;
 
-    //! TODO
+    //! TODO comment
     std::shared_ptr<ddspipe::core::AllowedTopicList> allowed_topics_;
 
-    //! TODO
+    //! TODO comment
     std::shared_ptr<eprosima::utils::SlotThreadPool> thread_pool_;
 
-    //! TODO
+    //! TODO comment
     std::shared_ptr<ddspipe::core::ParticipantsDatabase> participant_database_;
 
-    //! TODO
+    //! TODO comment
     std::shared_ptr<eprosima::spy::participants::SpyModel> model_;
 
-    //! TODO
+    //! TODO comment
     std::shared_ptr<eprosima::spy::participants::SpyDdsParticipant> dds_participant_;
 
-    //! TODO
+    //! TODO comment
     std::shared_ptr<eprosima::spy::participants::SpyParticipant> spy_participant_;
 
-    //! TODO
+    //! TODO comment
     std::unique_ptr<ddspipe::core::DdsPipe> pipe_;
 
 };

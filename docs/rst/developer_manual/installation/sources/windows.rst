@@ -229,8 +229,6 @@ Colcon installation (recommended)
     For more information on the specific syntax, please refer to the `CMake specific arguments <https://colcon.readthedocs.io/en/released/reference/verb/build.html#cmake-specific-arguments>`_ page of the colcon_ manual.
 
 
-.. TODO check if this is correctly parsed, because in local it does not render correctly
-
 CMake installation
 ==================
 

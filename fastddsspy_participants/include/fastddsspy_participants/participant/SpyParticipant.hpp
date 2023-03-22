@@ -27,13 +27,13 @@ namespace spy {
 namespace participants {
 
 /**
- * TODO
+ * TODO comment
  */
 class SpyParticipant : public ddspipe::participants::SchemaParticipant
 {
 public:
 
-    // TODO
+    // TODO comment
     SpyParticipant(
             const std::shared_ptr<ddspipe::participants::ParticipantConfiguration>& participant_configuration,
             const std::shared_ptr<ddspipe::core::PayloadPool>& payload_pool,
