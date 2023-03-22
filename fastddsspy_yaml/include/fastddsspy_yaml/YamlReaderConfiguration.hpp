@@ -44,9 +44,11 @@ public:
 
     Configuration();
 
-    Configuration(const Yaml& yml);
+    Configuration(
+            const Yaml& yml);
 
-    Configuration(const std::string& file_path);
+    Configuration(
+            const std::string& file_path);
 
     // Participants configurations
     std::shared_ptr<ddspipe::participants::SimpleParticipantConfiguration> simple_configuration;

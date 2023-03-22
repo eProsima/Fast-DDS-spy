@@ -147,7 +147,6 @@ void set(
     // TODO
 }
 
-
 } /* namespace yaml */
 } /* namespace ddspipe */
 } /* namespace eprosima */

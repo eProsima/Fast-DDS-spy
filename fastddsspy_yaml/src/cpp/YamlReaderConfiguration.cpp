@@ -45,13 +45,15 @@ Configuration::Configuration()
     spy_configuration->is_repeater = false;
 }
 
-Configuration::Configuration(const Yaml& yml)
+Configuration::Configuration(
+        const Yaml& yml)
     : Configuration()
 {
     load_configuration_(yml);
 }
 
-Configuration::Configuration(const std::string& file_path)
+Configuration::Configuration(
+        const std::string& file_path)
     : Configuration(YamlManager::load_file(file_path))
 {
     // Do nothing
@@ -96,7 +98,8 @@ void Configuration::load_dds_configuration_(
     // Get optional allowlist
     if (YamlReader::is_tag_present(yml, ALLOWLIST_TAG))
     {
-        allowlist = YamlReader::get_set<utils::Heritable<ddspipe::core::types::IFilterTopic>>(yml, ALLOWLIST_TAG, version);
+        allowlist = YamlReader::get_set<utils::Heritable<ddspipe::core::types::IFilterTopic>>(yml, ALLOWLIST_TAG,
+                        version);
 
         // Add to allowlist always the type object topic
         ddspipe::core::types::WildcardDdsFilterTopic internal_topic;
@@ -109,14 +112,16 @@ void Configuration::load_dds_configuration_(
     // Get optional blocklist
     if (YamlReader::is_tag_present(yml, BLOCKLIST_TAG))
     {
-        blocklist = YamlReader::get_set<utils::Heritable<ddspipe::core::types::IFilterTopic>>(yml, BLOCKLIST_TAG, version);
+        blocklist = YamlReader::get_set<utils::Heritable<ddspipe::core::types::IFilterTopic>>(yml, BLOCKLIST_TAG,
+                        version);
     }
 
     /////
     // Get optional builtin topics
     if (YamlReader::is_tag_present(yml, BUILTIN_TAG))
     {
-        builtin_topics = YamlReader::get_set<utils::Heritable<ddspipe::core::types::DistributedTopic>>(yml, BUILTIN_TAG, version);
+        builtin_topics = YamlReader::get_set<utils::Heritable<ddspipe::core::types::DistributedTopic>>(yml, BUILTIN_TAG,
+                        version);
     }
 
     // Set the domain in Simple Participant Configuration
