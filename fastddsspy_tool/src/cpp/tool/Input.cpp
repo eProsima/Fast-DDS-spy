@@ -30,7 +30,8 @@ Input::Input()
 utils::Command<CommandValue> Input::wait_next_command()
 {
     utils::Command<CommandValue> command;
-    std::cout << std::endl << "Insert a command for Fast DDS Spy:\n>> " << std::flush;
+    std::cout << std::endl << "\033[1;36m" << "Insert a command for Fast DDS Spy:\n>> " << "\033[0m" << std::flush;
+
     auto res = reader_.read_next_command(command);
 
     if (!res)

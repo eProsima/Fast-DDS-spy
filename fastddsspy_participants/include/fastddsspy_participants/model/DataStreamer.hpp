@@ -15,6 +15,7 @@
 #pragma once
 
 #include <iostream>
+#include <functional>
 #include <shared_mutex>
 
 #include <fastrtps/types/DynamicTypePtr.h>
@@ -35,10 +36,13 @@ class DataStreamer : public ddspipe::participants::ISchemaHandler
 {
 public:
 
-    using CallbackType = void (
-        const ddspipe::core::types::DdsTopic&,
-        const fastrtps::types::DynamicType_ptr&,
-        const ddspipe::core::types::RtpsPayloadData&);
+    using CallbackType = std::function<void (
+                        const ddspipe::core::types::DdsTopic&,
+                        const fastrtps::types::DynamicType_ptr&,
+                        const ddspipe::core::types::RtpsPayloadData&)>;
+
+    bool activate_all(
+            const std::shared_ptr<CallbackType>& callback);
 
     bool activate(
             const ddspipe::core::types::DdsTopic& topic_to_activate,
@@ -64,6 +68,8 @@ protected:
     bool activated_ {false};
 
     std::shared_ptr<CallbackType> callback_;
+
+    bool activated_all_ {false};
 
     ddspipe::core::types::DdsTopic activated_topic_;
 

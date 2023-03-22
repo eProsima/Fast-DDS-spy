@@ -16,6 +16,8 @@
 
 #include <memory>
 
+#include <fastrtps/types/DynamicDataPtr.h>
+
 #include <fastddsspy_participants/model/DataStreamer.hpp>
 
 #include <fastddsspy_yaml/YamlReaderConfiguration.hpp>
@@ -41,7 +43,16 @@ public:
 
 protected:
 
-    void data_stream_callback(
+    static fastrtps::types::DynamicData_ptr get_dynamic_data(
+            const fastrtps::types::DynamicType_ptr& dyn_type,
+            const ddspipe::core::types::RtpsPayloadData& data) noexcept;
+
+    void data_stream_callback_(
+            const ddspipe::core::types::DdsTopic& topic,
+            const fastrtps::types::DynamicType_ptr& dyn_type,
+            const ddspipe::core::types::RtpsPayloadData& data);
+
+    void data_stream_callback_verbose_(
             const ddspipe::core::types::DdsTopic& topic,
             const fastrtps::types::DynamicType_ptr& dyn_type,
             const ddspipe::core::types::RtpsPayloadData& data);
@@ -49,8 +60,18 @@ protected:
     bool verbose_argument(
             const std::string& argument) const noexcept;
 
+    bool all_argument(
+            const std::string& argument) const noexcept;
+
     void participants_command(
             const std::vector<std::string>& arguments) noexcept;
+
+    void print_command(
+            const std::vector<std::string>& arguments) noexcept;
+
+    bool search_topic_(
+            const std::string& topic_name,
+            ddspipe::core::types::DdsTopic& topic) const;
 
     Backend backend_;
 

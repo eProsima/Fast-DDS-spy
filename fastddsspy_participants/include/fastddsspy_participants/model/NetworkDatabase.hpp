@@ -36,6 +36,10 @@ public:
     utils::SafeDatabase<ddspipe::core::types::Guid, ParticipantInfo> participant_database_;
 
     utils::SafeDatabase<ddspipe::core::types::Guid, EndpointInfo> endpoint_database_;
+
+    bool get_topic(
+            const std::string& topic_name,
+            ddspipe::core::types::DdsTopic& topic) const noexcept;
 };
 
 } /* namespace participants */

@@ -10,47 +10,29 @@
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
-// limitations under the License.
+// limitations under the License\.
 
-#include <ddspipe_yaml/Yaml.hpp>
-
-#include "View.hpp"
+#include <fastddsspy_participants/model/NetworkDatabase.hpp>
 
 namespace eprosima {
 namespace spy {
+namespace participants {
 
-void View::show(
-        const std::string& value)
+bool NetworkDatabase::get_topic(
+        const std::string& topic_name,
+        ddspipe::core::types::DdsTopic& topic) const noexcept
 {
-    show(value.c_str());
+    for (const auto& it : endpoint_database_)
+    {
+        if (it.second.topic.m_topic_name == topic_name)
+        {
+            topic = it.second.topic;
+            return true;
+        }
+    }
+    return false;
 }
 
-void View::show(
-        const char* value)
-{
-    std::cout << value << std::endl;
-}
-
-template <>
-void View::show(
-        const Yaml& value)
-{
-    std::cout << value << std::endl;
-}
-
-template <>
-void View::show_error(
-        const std::string& value)
-{
-    std::cout << "\033[1;31m" << value << "\033[0m" << std::endl;
-}
-
-template <>
-void View::show_error(
-        const utils::Formatter& value)
-{
-    show_error(value.to_string());
-}
-
+} /* namespace participants */
 } /* namespace spy */
 } /* namespace eprosima */

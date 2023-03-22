@@ -12,7 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <chrono>
+
 #include <cpp_utils/Formatter.hpp>
+#include <cpp_utils/time/time_utils.hpp>
 
 #include <ddspipe_yaml/YamlWriter.hpp>
 
@@ -42,7 +45,10 @@ void set(
         Yaml& yml,
         const TimestampData& value)
 {
-    // TODO
+    // TODO convert seconds to timestamp
+    utils::Formatter f;
+    f << value.timestamp.seconds();
+    set(yml, f.to_string());
 }
 
 template <>
@@ -88,7 +94,9 @@ void set(
         Yaml& yml,
         const SimpleEndpointData::Topic& value)
 {
-    // TODO
+    utils::Formatter f;
+    f << value.topic_name << " [" << value.topic_type << "]";
+    set(yml, f.to_string());
 }
 
 template <>
@@ -152,7 +160,9 @@ void set(
         Yaml& yml,
         const DdsDataData& value)
 {
-    // TODO
+    set(yml, "topic", value.topic);
+    set(yml, "writer", value.writer);
+    set(yml, "timestamp", value.timestamp);
 }
 
 } /* namespace yaml */
