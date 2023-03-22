@@ -47,10 +47,10 @@ void set(
     utils::Formatter f;
     f
         << utils::timestamp_to_string(
-            std::chrono::time_point<std::chrono::system_clock>(
-                std::chrono::seconds(
-                    value.timestamp.seconds())),
-            "%Y/%m/%d %H:%M:%S");
+        std::chrono::time_point<std::chrono::system_clock>(
+            std::chrono::seconds(
+                value.timestamp.seconds())),
+        "%Y/%m/%d %H:%M:%S");
     set(yml, f.to_string());
 }
 
