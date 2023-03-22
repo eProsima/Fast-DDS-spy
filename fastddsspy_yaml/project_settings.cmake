@@ -20,7 +20,7 @@ set(MODULE_NAME
     fastddsspy_yaml)
 
 set(MODULE_SUMMARY
-    "C++ library to create a Foxglove Websocket configuration from a YAML.")
+    "C++ library to create a Fast DDS Spy configuration from a YAML.")
 
 set(MODULE_FIND_PACKAGES
     yaml-cpp
@@ -31,9 +31,6 @@ set(MODULE_FIND_PACKAGES
     ddspipe_participants
     ddspipe_yaml
     fastddsspy_participants)
-
-set(MODULE_THIRDPARTY_HEADERONLY
-    foxglove)
 
 set(MODULE_DEPENDENCIES
     $<$<BOOL:${WIN32}>:iphlpapi$<SEMICOLON>Shlwapi>
