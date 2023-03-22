@@ -39,14 +39,14 @@ eProsima_ENUMERATION_BUILDER(
     CommandValue,
         {
             { CommandValue::empty_command COMMA {""}} COMMA
-            { CommandValue::help COMMA {"h" COMMA "help" COMMA "H" COMMA "man"}} COMMA
-            { CommandValue::exit COMMA {"q" COMMA "x" COMMA "quit" COMMA "quit()" COMMA "exit" COMMA "exit()"}} COMMA
+            { CommandValue::help COMMA {"help" COMMA "h" COMMA "H" COMMA "man"}} COMMA
+            { CommandValue::exit COMMA {"quit" COMMA "q" COMMA "Q" COMMA "quit()" COMMA "exit" COMMA "x" COMMA "exit()"}} COMMA
             { CommandValue::version COMMA {"version" COMMA "v" COMMA "V"}} COMMA
             { CommandValue::participant COMMA {"participant" COMMA "participants" COMMA "p" COMMA "P"}} COMMA
-            { CommandValue::datawriter COMMA {"datawriter" COMMA "datawriters" COMMA "writer" COMMA "writers" COMMA "publication" COMMA "publications" COMMA "w" COMMA "W"}} COMMA
-            { CommandValue::datareader COMMA {"datareader" COMMA "datareaders" COMMA "reader" COMMA "readers" COMMA "subscription" COMMA "subscriptions" COMMA "r" COMMA "R"}} COMMA
+            { CommandValue::datawriter COMMA {"datawriter" COMMA "datawriters" COMMA "w" COMMA "W" COMMA "writer" COMMA "writers" COMMA "publication" COMMA "publications"}} COMMA
+            { CommandValue::datareader COMMA {"datareader" COMMA "datareaders" COMMA "r" COMMA "R" COMMA "reader" COMMA "readers" COMMA "subscription" COMMA "subscriptions"}} COMMA
             { CommandValue::topic COMMA {"topic"  COMMA "topics" COMMA "t" COMMA "T"}} COMMA
-            { CommandValue::print COMMA {"print" COMMA "show"}} COMMA
+            { CommandValue::print COMMA {"print" COMMA "show" COMMA "s" COMMA "S"}} COMMA
         }
     );
 

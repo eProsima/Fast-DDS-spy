@@ -131,6 +131,9 @@ void Controller::data_stream_callback_(
         const fastrtps::types::DynamicType_ptr& dyn_type,
         const ddspipe::core::types::RtpsPayloadData& data)
 {
+    // Block entrance so prints does not collapse
+    std::lock_guard<std::mutex> _(view_mutex_);
+
     // Get deserializad data
     auto dyn_data = get_dynamic_data_(dyn_type, data);
 
@@ -146,6 +149,9 @@ void Controller::data_stream_callback_verbose_(
         const fastrtps::types::DynamicType_ptr& dyn_type,
         const ddspipe::core::types::RtpsPayloadData& data)
 {
+    // Block entrance so prints does not collapse
+    std::lock_guard<std::mutex> _(view_mutex_);
+
     // Prepare info data
     participants::DdsDataData data_info{
         {topic.m_topic_name, topic.type_name},
@@ -224,7 +230,7 @@ void Controller::writers_command_(
         {
             return participants::ModelParser::writers(model, guid);
         },
-        "participant"
+        "writer"
         );
 }
 
@@ -245,7 +251,7 @@ void Controller::readers_command_(
         {
             return participants::ModelParser::readers(model, guid);
         },
-        "participant"
+        "reader"
         );
 }
 
@@ -407,7 +413,7 @@ void Controller::help_command_(
         const std::vector<std::string>& arguments) noexcept
 {
     view_.show(STR_ENTRY
-        << "Fast DDS Spy is a interactive CLI that allow to instrospect DDS networks.\n"
+        << "Fast DDS Spy is an interactive CLI that allow to instrospect DDS networks.\n"
         << "Each command shows data related with the network in Yaml format.\n"
         << "Commands available and the information they show:\n"
         << "\thelp                   : this help.\n"
@@ -416,26 +422,25 @@ void Controller::help_command_(
         << "\tparticipants           : DomainParticipants discovered in the network.\n"
         << "\tparticipants verbose   : verbose information about DomainParticipants discovered in the network.\n"
         << "\tparticipants <Guid>    : verbose information related with a specific DomainParticipant.\n"
-        << "\twriters            : DataWriters discovered in the network.\n"
-        << "\twriters verbose    : verbose information about DataWriters discovered in the network.\n"
-        << "\twriters <Guid>     : verbose information related with a specific DataWriter.\n"
-        << "\treader             : DataReaders discovered in the network.\n"
-        << "\treader verbose     : verbose information about DataReaders discovered in the network.\n"
-        << "\treader <Guid>      : verbose information related with a specific DataReader.\n"
+        << "\twriters                : DataWriters discovered in the network.\n"
+        << "\twriters verbose        : verbose information about DataWriters discovered in the network.\n"
+        << "\twriters <Guid>         : verbose information related with a specific DataWriter.\n"
+        << "\treader                 : DataReaders discovered in the network.\n"
+        << "\treader verbose         : verbose information about DataReaders discovered in the network.\n"
+        << "\treader <Guid>          : verbose information related with a specific DataReader.\n"
         << "\ttopics                 : Topics discovered in the network.\n"
         << "\ttopics verbose         : verbose information about Topics discovered in the network.\n"
         << "\ttopics <name>          : verbose information related with a specific Topic.\n"
-        << "\tprint <name>           : data of a specific Topic (Data Type must be discovered).\n"
-        << "\tprint <name> verbose   : data with additional source info of a specific Topic.\n"
-        << "\tprint all              : verbose data of all topics (only those whose Data Type is discovered).\n"
+        << "\tshow <name>            : data of a specific Topic (Data Type must be discovered).\n"
+        << "\tshow <name> verbose    : data with additional source info of a specific Topic.\n"
+        << "\tshow all               : verbose data of all topics (only those whose Data Type is discovered).\n"
         << "\n"
         << "Notes and comments:\n"
         << "\tTo exit from data printing, press enter.\n"
-        << "\tEach command is accessible by using its first letter (p/w/r/t).\n"
+        << "\tEach command is accessible by using its first letter (h/v/q/p/w/r/t/s).\n"
         << "\n"
         << "For more information about these commands and formats, please refer to the documentation:\n"
         << "https://fast-dds-spy.readthedocs.io/en/latest/\n"
-        << "\n"
     );
 }
 
