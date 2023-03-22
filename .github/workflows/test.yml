@@ -68,7 +68,7 @@ on:
 
 env:
   # TODO: add more packages
-  code_packages_names: 'fastddsspy_participants fastddsspy_yaml'
+  code_packages_names: 'fastddsspy_participants fastddsspy_yaml fastddsspy_tool'
   default_dependencies_artifact_postfix: '_nightly'
 
 jobs:
@@ -105,9 +105,9 @@ jobs:
         uses: jparisu/eProsima-CI/ubuntu/colcon_build_test@main
         with:
           packages_names: ${{ env.code_packages_names }}
-          cmake_args: -DBUILD_TESTS=ON -DCMAKE_BUILD_TYPE=${{ inputs.cmake-config }}
+          cmake_args: -DBUILD_TESTS=ON -DCMAKE_BUILD_TYPE=${{ matrix.cmake-config }}
           workspace_dependencies: './install'
-          ctest_args: --label-exclude "xfail|xasan"
+          ctest_args: --label-exclude "xfail"
 
 
 #####################################################################

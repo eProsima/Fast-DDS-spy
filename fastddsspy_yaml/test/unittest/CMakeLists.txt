@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Add subdirectory with tests
+##############
+# Yaml Tests #
+##############
 
-add_subdirectory(unittest)
+add_subdirectory(yaml_writer)

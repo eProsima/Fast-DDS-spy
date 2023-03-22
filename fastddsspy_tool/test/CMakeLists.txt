@@ -13,5 +13,3 @@
 # limitations under the License.
 
 # Add subdirectory with tests
-
-add_subdirectory(unittest)

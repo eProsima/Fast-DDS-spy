@@ -32,6 +32,14 @@ using namespace eprosima::spy::participants;
 template <>
 void set(
         Yaml& yml,
+        const ddspipe::core::types::Guid& value)
+{
+    set(yml, utils::generic_to_string(value));
+}
+
+template <>
+void set(
+        Yaml& yml,
         const TimestampData& value)
 {
     // TODO
@@ -49,22 +57,22 @@ void set(
 template <>
 void set(
         Yaml& yml,
+        const ComplexParticipantData::Endpoint& value)
+{
+    utils::Formatter f;
+    f << value.topic_name << " [" << value.topic_type << "] (" << value.number << ")";
+    set(yml, f.to_string());
+}
+
+template <>
+void set(
+        Yaml& yml,
         const ComplexParticipantData& value)
 {
     set(yml, "name", value.name);
     set(yml, "guid", value.guid);
     set(yml, "datawriters", value.writers);
     set(yml, "datareaders", value.readers);
-}
-
-template <>
-void set(
-        Yaml& yml,
-        const ComplexParticipantData::Endpoint& value)
-{
-    utils::Formatter f;
-    f << value.topic_name << " [" << value.topic_type << "] (" << value.number << ")";
-    set(yml, f.to_string());
 }
 
 template <>
