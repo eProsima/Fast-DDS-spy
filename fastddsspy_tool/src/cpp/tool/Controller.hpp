@@ -43,6 +43,8 @@ public:
 
 protected:
 
+    ////////////////////////////
+    // DATA STREAM CALLBACKS
     static fastrtps::types::DynamicData_ptr get_dynamic_data(
             const fastrtps::types::DynamicType_ptr& dyn_type,
             const ddspipe::core::types::RtpsPayloadData& data) noexcept;
@@ -57,22 +59,44 @@ protected:
             const fastrtps::types::DynamicType_ptr& dyn_type,
             const ddspipe::core::types::RtpsPayloadData& data);
 
+    /////////////////////
+    // PARSE ARGUMENTS
     bool verbose_argument(
             const std::string& argument) const noexcept;
 
     bool all_argument(
             const std::string& argument) const noexcept;
 
+    ////////////////////////////////////////////////////////////////////////////////////
+    // COMMANDS ROUTINES
+
+    /////////////////////
+    // ENTITIES
     void participants_command(
             const std::vector<std::string>& arguments) noexcept;
+    void writers_command(
+            const std::vector<std::string>& arguments) noexcept;
+    void readers_command(
+            const std::vector<std::string>& arguments) noexcept;
+    void topics_command(
+            const std::vector<std::string>& arguments) noexcept;
 
+    /////////////////////
+    // DATA STREAM
     void print_command(
             const std::vector<std::string>& arguments) noexcept;
 
-    bool search_topic_(
-            const std::string& topic_name,
-            ddspipe::core::types::DdsTopic& topic) const;
+    /////////////////////
+    // AUXILIARY
+    void version_command(
+            const std::vector<std::string>& arguments) noexcept;
+    void help_command(
+            const std::vector<std::string>& arguments) noexcept;
+    void error_command(
+            const std::vector<std::string>& arguments) noexcept;
 
+    /////////////////////
+    // VARIABLES
     Backend backend_;
 
     Input input_;
@@ -80,7 +104,21 @@ protected:
     View view_;
 
     std::shared_ptr<eprosima::spy::participants::SpyModel> model_;
+
+private:
+
+    template <typename SimpleF, typename VerboseF, typename specificF>
+    void dds_entity_command__(
+            const std::vector<std::string>& arguments,
+            SimpleF simple_function,
+            VerboseF verbose_function,
+            specificF specific_function,
+            const char* entity_name) noexcept;
+
 };
 
 } /* namespace spy */
 } /* namespace eprosima */
+
+// Include implementation template file
+#include "impl/Controller.ipp"

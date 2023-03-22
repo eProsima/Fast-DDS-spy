@@ -25,6 +25,8 @@ class View
 {
 public:
 
+    void print_initial();
+
     void show(
             const std::string& value);
 

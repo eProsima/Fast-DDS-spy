@@ -50,6 +50,10 @@ struct ModelParser
             const SpyModel& model,
             const ddspipe::core::types::Guid& guid);
 
+    static ddspipe::core::types::DdsTopic get_topic(
+            const SpyModel& model,
+            std::string topic_name);
+
     static std::vector<SimpleTopicData> topics(
             const SpyModel& model);
     static std::vector<ComplexTopicData> topics_verbose(

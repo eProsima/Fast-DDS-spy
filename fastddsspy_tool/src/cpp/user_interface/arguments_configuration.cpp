@@ -152,11 +152,11 @@ const option::Descriptor usage[] = {
 void print_version()
 {
     std::cout
-        << "Fast DDS Spy - "
+        << "Fast DDS Spy "
         << FASTDDSSPY_PARTICIPANTS_VERSION_STRING
         << "\ncommit hash: "
-        << FASTDDSSPY_PARTICIPANTS_COMMIT_HASH <<
-        std::endl;
+        << FASTDDSSPY_PARTICIPANTS_COMMIT_HASH
+        << std::endl;
 }
 
 ProcessReturnCode parse_arguments(

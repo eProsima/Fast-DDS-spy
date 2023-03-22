@@ -85,6 +85,8 @@ void DataStreamer::add_data(
         const ddspipe::core::types::DdsTopic& topic,
         ddspipe::core::types::RtpsPayloadData& data)
 {
+    TopicRateCalculator::add_data(topic, data);
+
     std::shared_lock<std::shared_timed_mutex> _(mutex_);
 
     if (activated_)

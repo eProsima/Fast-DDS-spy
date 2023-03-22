@@ -84,14 +84,6 @@ void set(
 template <>
 void set(
         Yaml& yml,
-        const SimpleEndpointData& value)
-{
-    // TODO
-}
-
-template <>
-void set(
-        Yaml& yml,
         const SimpleEndpointData::Topic& value)
 {
     utils::Formatter f;
@@ -102,9 +94,11 @@ void set(
 template <>
 void set(
         Yaml& yml,
-        const ComplexEndpointData& value)
+        const SimpleEndpointData& value)
 {
-    // TODO
+    set(yml, "guid", value.guid);
+    set(yml, "participant", value.participant_name);
+    set(yml, "topic", value.topic);
 }
 
 template <>
@@ -112,7 +106,8 @@ void set(
         Yaml& yml,
         const ComplexEndpointData::ExtendedTopic& value)
 {
-    // TODO
+    set(yml, "name", value.topic_name);
+    set(yml, "type", value.topic_type);
 }
 
 template <>
@@ -120,15 +115,34 @@ void set(
         Yaml& yml,
         const ComplexEndpointData::QoS& value)
 {
-    // TODO
+    if (value.durability == ddspipe::core::types::DurabilityKind::VOLATILE)
+    {
+        set(yml, "durability", std::string("volatile"));
+    }
+    else
+    {
+        set(yml, "durability", std::string("transient-local"));
+    }
+
+    if (value.reliability == ddspipe::core::types::ReliabilityKind::BEST_EFFORT)
+    {
+        set(yml, "reliability", std::string("best-effort"));
+    }
+    else
+    {
+        set(yml, "reliability", std::string("reliable"));
+    }
 }
 
 template <>
 void set(
         Yaml& yml,
-        const SimpleTopicData& value)
+        const ComplexEndpointData& value)
 {
-    // TODO
+    set(yml, "guid", value.guid);
+    set(yml, "participant", value.participant_name);
+    set(yml, "topic", value.topic);
+    set(yml, "qos", value.qos);
 }
 
 template <>
@@ -136,15 +150,21 @@ void set(
         Yaml& yml,
         const SimpleTopicData::Rate& value)
 {
-    // TODO
+    utils::Formatter f;
+    f << value.rate << " " << value.unit;
+    set(yml, f.to_string());
 }
 
 template <>
 void set(
         Yaml& yml,
-        const ComplexTopicData& value)
+        const SimpleTopicData& value)
 {
-    // TODO
+    set(yml, "name", value.name);
+    set(yml, "type", value.type);
+    set(yml, "datawriters", value.datawriters);
+    set(yml, "datareaders", value.datareaders);
+    set(yml, "rate", value.rate);
 }
 
 template <>
@@ -152,7 +172,20 @@ void set(
         Yaml& yml,
         const ComplexTopicData::Endpoint& value)
 {
-    // TODO
+    set(yml, value.guid);
+}
+
+template <>
+void set(
+        Yaml& yml,
+        const ComplexTopicData& value)
+{
+    set(yml, "name", value.name);
+    set(yml, "type", value.type);
+    set(yml, "datawriters", value.datawriters);
+    set(yml, "datareaders", value.datareaders);
+    set(yml, "rate", value.rate);
+    set(yml, "dynamic_type_discovered", value.discovered);
 }
 
 template <>
