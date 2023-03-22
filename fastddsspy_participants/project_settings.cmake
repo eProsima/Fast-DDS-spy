@@ -28,9 +28,7 @@ set(MODULE_FIND_PACKAGES
     cpp_utils
     ddspipe_core
     ddspipe_participants
-    ddspipe_yaml
-    ddsrecorder_yaml
-    ddsrecorder_participants)
+    ddspipe_yaml)
 
 set(fastrtps_MINIMUM_VERSION "2.8")
 

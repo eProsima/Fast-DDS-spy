@@ -21,8 +21,7 @@
 
 #include <ddspipe_core/core/DdsPipe.hpp>
 #include <ddspipe_core/efficiency/payload/FastPayloadPool.hpp>
-
-#include <ddsrecorder_yaml/YamlReaderConfiguration.hpp>
+#include <fastddsspy_yaml/YamlReaderConfiguration.hpp>
 
 using namespace eprosima;
 
@@ -53,8 +52,7 @@ TEST(NetworkDatabaseTest, trivial)
 {
 
     // // Create Configuration
-    YAML::Node yml;
-    ddsrecorder::yaml::Configuration configuration(yml);
+    spy::yaml::Configuration configuration();
 
     // Create Participant configuration
     std::shared_ptr<ddspipe::participants::ParticipantConfiguration> participant_configuration =
@@ -79,14 +77,14 @@ TEST(NetworkDatabaseTest, trivial)
     // Create participants
     std::shared_ptr<test::SpyParticipantMock> spy_participant =
             std::make_shared<test::SpyParticipantMock>(
-                participant_configuration,
+                configuration.spy_configuration,
                 payload_pool,
                 discovery_database,
                 model);
 
     std::shared_ptr<test::SpyDdsParticipantMock> dds_participant =
             std::make_shared<test::SpyDdsParticipantMock>(
-                simple_participant_configuration,
+                configuration.simple_configuration,
                 payload_pool,
                 discovery_database);
 

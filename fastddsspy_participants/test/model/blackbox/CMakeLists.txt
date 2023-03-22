@@ -30,6 +30,7 @@ set(TEST_EXTRA_LIBRARIES
         ddspipe_core
         ddspipe_participants
         ddspipe_yaml
+        fastddsspy_yaml
     )
 
 set(TEST_NEEDED_SOURCES
