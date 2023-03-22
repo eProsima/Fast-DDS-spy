@@ -58,11 +58,11 @@ void Controller::run()
                 break;
 
             case CommandValue::datareader:
-                writers_command(command.arguments);
+                readers_command(command.arguments);
                 break;
 
             case CommandValue::datawriter:
-                readers_command(command.arguments);
+                writers_command(command.arguments);
                 break;
 
             case CommandValue::topic:
@@ -237,36 +237,7 @@ void Controller::topics_command(const std::vector<std::string>& arguments) noexc
     view_.show(yml);
 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-void Controller::print_command(
-        const std::vector<std::string>& arguments) noexcept
-=======
-void Controller::writers_command(const std::vector<std::string>& arguments) noexcept
-{
-    // TODO
-    view_.show_error(STR_ENTRY
-        << "<" << arguments[0] << "> command is not implemented yet. Please be patient.");
-}
-
-void Controller::readers_command(const std::vector<std::string>& arguments) noexcept
-{
-    // TODO
-    view_.show_error(STR_ENTRY
-        << "<" << arguments[0] << "> command is not implemented yet. Please be patient.");
-}
-
-void Controller::topics_command(const std::vector<std::string>& arguments) noexcept
-{
-    // TODO
-    view_.show_error(STR_ENTRY
-        << "<" << arguments[0] << "> command is not implemented yet. Please be patient.");
-}
-
-=======
->>>>>>> 4599056 (Add commands for all entities)
 void Controller::print_command(const std::vector<std::string>& arguments) noexcept
->>>>>>> e635ee4 (Implement version command and add colors)
 {
     // Check the number of arguments is correct
     if (arguments.size() < 2)
