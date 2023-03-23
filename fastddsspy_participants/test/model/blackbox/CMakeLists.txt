@@ -67,6 +67,11 @@ all_library_sources("${TEST_SOURCES}")
 
 set(TEST_LIST
         trivial
+        guid
+        n_msgs_guid
+        topic
+        active_true
+        active_false
     )
 
 set(TEST_EXTRA_LIBRARIES
