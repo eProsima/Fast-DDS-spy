@@ -55,22 +55,24 @@ public:
     std::shared_ptr<ddspipe::core::IReader> create_reader(
             const ddspipe::core::ITopic& topic)
     {
-        if (topic.internal_type_discriminator() != spy::participants::INTERNAL_TOPIC_TYPE_PARTICIPANTS_INFO)
+        if (topic.internal_type_discriminator() != spy::participants::INTERNAL_TOPIC_TYPE_ENDPOINT_INFO)
         {
             return std::make_shared<ddspipe::participants::BlankReader>();
         }
 
-        return participant_reader;
+        return endpoint_reader;
     }
 
-    std::shared_ptr<ddspipe::participants::InternalReader> participant_reader =
+    std::shared_ptr<ddspipe::participants::InternalReader> endpoint_reader =
         std::make_shared<ddspipe::participants::InternalReader>(id_);
 
 };
 
 }
 
-TEST(NetworkDatabaseTest, trivial)
+std::shared_ptr<ddspipe::core::DdsPipe> create_pipe(
+    std::shared_ptr<spy::participants::SpyModel>& model,
+    std::shared_ptr<test::SpyDdsParticipantMock>& dds_participant)
 {
     // Create Payload Pool
     std::shared_ptr<ddspipe::core::PayloadPool> payload_pool =
@@ -80,9 +82,9 @@ TEST(NetworkDatabaseTest, trivial)
     std::shared_ptr<ddspipe::core::DiscoveryDatabase> discovery_database =
             std::make_shared<ddspipe::core::DiscoveryDatabase>();
 
-    // Create Model
-    std::shared_ptr<spy::participants::SpyModel> model =
-            std::make_shared<spy::participants::SpyModel>();
+    // Create and populate Participant Database
+    std::shared_ptr<ddspipe::core::ParticipantsDatabase> participant_database =
+            std::make_shared<ddspipe::core::ParticipantsDatabase>();
 
     // Create participants
     std::shared_ptr<spy::participants::SpyParticipantConfiguration> spy_configuration =
@@ -93,15 +95,6 @@ TEST(NetworkDatabaseTest, trivial)
                 payload_pool,
                 discovery_database,
                 model);
-
-    const ddspipe::core::types::ParticipantId id_ = "DDS Spy mock participant";
-
-    std::shared_ptr<test::SpyDdsParticipantMock> dds_participant =
-            std::make_shared<test::SpyDdsParticipantMock>(id_);
-
-    // Create and populate Participant Database
-    std::shared_ptr<ddspipe::core::ParticipantsDatabase> participant_database =
-            std::make_shared<ddspipe::core::ParticipantsDatabase>();
 
     participant_database->add_participant(
         spy_participant->id(),
@@ -137,33 +130,41 @@ TEST(NetworkDatabaseTest, trivial)
                 builtin_topics,
                 true
                 );
+    return pipe;
+}
 
+TEST(EndpointDatabaseTest, trivial)
+{
+    // Create Model
+    std::shared_ptr<spy::participants::SpyModel> model =
+            std::make_shared<spy::participants::SpyModel>();
+
+    const ddspipe::core::types::ParticipantId id_ = "DDS Spy mock participant";
+
+    std::shared_ptr<test::SpyDdsParticipantMock> dds_participant =
+            std::make_shared<test::SpyDdsParticipantMock>(id_);
+
+    // Create DDS Pipe
+    std::shared_ptr<ddspipe::core::DdsPipe> pipe = create_pipe(model, dds_participant);
     pipe->enable();
 
-
-    auto dds_reader = dds_participant->participant_reader;
+    auto dds_reader = dds_participant->endpoint_reader;
     ASSERT_NE(dds_reader, nullptr);
 
-    // Send N messages
+    // Send messages
     for (unsigned int i = 0; i < 10; i++)
     {
-        auto new_data = std::make_unique<spy::participants::ParticipantInfoData>();
-        new_data->info.name = "reader::" + std::to_string(i);
+        auto new_data = std::make_unique<spy::participants::EndpointInfoData>();
         new_data->info.active = true;
         ddspipe::core::types::Guid guid_data;
         new_data->info.guid = guid_data;
         dds_reader->simulate_data_reception(std::move(new_data));
     }
+
+    // Wait
     sleep(1);
 
-    std::cout << "Information database !!!" << std::endl;
-    for (const auto& participant : model->participant_database_)
-    {
-        std::cout << "participant_database_!!!" << std::endl;
-        std::cout << "guid: " << participant.first << std::endl;
-        std::cout << "name: " << participant.second.name << std::endl;
-    }
-
+    // Check information
     for (const auto& endpoint : model->endpoint_database_)
     {
         std::cout << "endpoint_database_!!!" << std::endl;
