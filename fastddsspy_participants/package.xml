@@ -21,7 +21,6 @@
   <depend>cpp_utils</depend>
   <depend>ddspipe_core</depend>
   <depend>ddspipe_participants</depend>
-  <depend>ddspipe_yaml</depend>
   <depend>fastrtps</depend>
 
   <doc_depend>doxygen</doc_depend>

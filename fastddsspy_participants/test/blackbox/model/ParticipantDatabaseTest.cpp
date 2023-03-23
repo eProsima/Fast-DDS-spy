@@ -28,10 +28,11 @@
 #include <fastddsspy_participants/configuration/SpyParticipantConfiguration.hpp>
 
 using namespace eprosima;
+using namespace eprosima::ddspipe::core;
 
 namespace test {
 
-const unsigned int DOMAIN = 222;
+const unsigned int WAIT_MS = 100;
 
 
 class SpyDdsParticipantMock : public ddspipe::participants::BlankParticipant
@@ -40,21 +41,21 @@ public:
 
     //! Constructor with Id of this participant
     SpyDdsParticipantMock(
-            const ddspipe::core::types::ParticipantId& id)
+            const types::ParticipantId& id)
             : ddspipe::participants::BlankParticipant(id)
     {
     }
 
     //! Override create_writer() IParticipant method
-    std::shared_ptr<ddspipe::core::IWriter> create_writer(
-            const ddspipe::core::ITopic& topic)
+    std::shared_ptr<IWriter> create_writer(
+            const ITopic& topic)
     {
         return std::make_shared<ddspipe::participants::BlankWriter>();
     }
 
     //! Override create_reader() IParticipant method
-    std::shared_ptr<ddspipe::core::IReader> create_reader(
-            const ddspipe::core::ITopic& topic)
+    std::shared_ptr<IReader> create_reader(
+            const ITopic& topic)
     {
         if (topic.internal_type_discriminator() != spy::participants::INTERNAL_TOPIC_TYPE_PARTICIPANTS_INFO)
         {
@@ -71,21 +72,21 @@ public:
 
 }
 
-std::shared_ptr<ddspipe::core::DdsPipe> create_pipe(
+std::shared_ptr<DdsPipe> create_pipe(
     std::shared_ptr<spy::participants::SpyModel>& model,
     std::shared_ptr<test::SpyDdsParticipantMock>& dds_participant)
 {
     // Create Payload Pool
-    std::shared_ptr<ddspipe::core::PayloadPool> payload_pool =
-            std::make_shared<ddspipe::core::FastPayloadPool>();
+    std::shared_ptr<PayloadPool> payload_pool =
+            std::make_shared<FastPayloadPool>();
 
     // Create Discovery Database
-    std::shared_ptr<ddspipe::core::DiscoveryDatabase> discovery_database =
-            std::make_shared<ddspipe::core::DiscoveryDatabase>();
+    std::shared_ptr<DiscoveryDatabase> discovery_database =
+            std::make_shared<DiscoveryDatabase>();
 
     // Create and populate Participant Database
-    std::shared_ptr<ddspipe::core::ParticipantsDatabase> participant_database =
-            std::make_shared<ddspipe::core::ParticipantsDatabase>();
+    std::shared_ptr<ParticipantsDatabase> participant_database =
+            std::make_shared<ParticipantsDatabase>();
 
     // Create participants
     std::shared_ptr<spy::participants::SpyParticipantConfiguration> spy_configuration =
@@ -108,9 +109,9 @@ std::shared_ptr<ddspipe::core::DdsPipe> create_pipe(
         );
 
     // Create allowed topics list
-    std::set<utils::Heritable<ddspipe::core::types::IFilterTopic>> lists = {};
-    std::shared_ptr<ddspipe::core::AllowedTopicList> allowed_topics =
-            std::make_shared<ddspipe::core::AllowedTopicList>(
+    std::set<utils::Heritable<types::IFilterTopic>> lists = {};
+    std::shared_ptr<AllowedTopicList> allowed_topics =
+            std::make_shared<AllowedTopicList>(
                 lists,
                 lists);
 
@@ -120,9 +121,9 @@ std::shared_ptr<ddspipe::core::DdsPipe> create_pipe(
             std::make_shared<utils::SlotThreadPool>(n_threads);
 
     // Create DDS Pipe
-    std::set<utils::Heritable<ddspipe::core::types::DistributedTopic>> builtin_topics = {};
-    std::shared_ptr<ddspipe::core::DdsPipe> pipe =
-            std::make_unique<ddspipe::core::DdsPipe>(
+    std::set<utils::Heritable<types::DistributedTopic>> builtin_topics = {};
+    std::shared_ptr<DdsPipe> pipe =
+            std::make_unique<DdsPipe>(
                 allowed_topics,
                 discovery_database,
                 payload_pool,
@@ -134,33 +135,42 @@ std::shared_ptr<ddspipe::core::DdsPipe> create_pipe(
     return pipe;
 }
 
+void random_participant_info(
+    spy::participants::ParticipantInfoData& participant_data,
+    bool active = true,
+    unsigned int seed = 0)
+{
+    participant_data.info.name = ddspipe::core::testing::random_participant_id();
+    participant_data.info.active = active;
+    participant_data.info.guid = ddspipe::core::testing::random_guid(seed);
+}
+
 TEST(ParticipantDatabaseTest, trivial)
 {
     // Create Model
     std::shared_ptr<spy::participants::SpyModel> model =
             std::make_shared<spy::participants::SpyModel>();
 
-    const ddspipe::core::types::ParticipantId id_ = "DDS Spy mock participant";
+    const types::ParticipantId id_ = "DDS Spy mock participant";
 
     std::shared_ptr<test::SpyDdsParticipantMock> dds_participant =
             std::make_shared<test::SpyDdsParticipantMock>(id_);
 
     // Create DDS Pipe
-    std::shared_ptr<ddspipe::core::DdsPipe> pipe = create_pipe(model, dds_participant);
+    std::shared_ptr<DdsPipe> pipe = create_pipe(model, dds_participant);
     pipe->enable();
 
     auto dds_reader = dds_participant->participant_reader;
     ASSERT_NE(dds_reader, nullptr);
 
     // Send message
-    auto new_data = std::make_unique<spy::participants::ParticipantInfoData>();
-    new_data->info.name = "participant::trivial";
-    new_data->info.active = true;
-    new_data->info.guid = ddspipe::core::testing::random_guid();
-    dds_reader->simulate_data_reception(std::move(new_data));
+    spy::participants::ParticipantInfoData new_data;
+    random_participant_info(new_data);
+    dds_reader->simulate_data_reception(
+        std::make_unique<spy::participants::ParticipantInfoData>(new_data));
 
     // Wait
-    sleep(1);
+    std::this_thread::sleep_for(std::chrono::milliseconds(test::WAIT_MS));
 
     // Check information
     ASSERT_EQ(model->participant_database_.size(), 1);
@@ -172,31 +182,29 @@ TEST(ParticipantDatabaseTest, name_participant)
     std::shared_ptr<spy::participants::SpyModel> model =
             std::make_shared<spy::participants::SpyModel>();
 
-    const ddspipe::core::types::ParticipantId id_ = "DDS Spy mock participant";
+    const types::ParticipantId id_ = "DDS Spy mock participant";
 
     std::shared_ptr<test::SpyDdsParticipantMock> dds_participant =
             std::make_shared<test::SpyDdsParticipantMock>(id_);
 
     // Create DDS Pipe
-    std::shared_ptr<ddspipe::core::DdsPipe> pipe = create_pipe(model, dds_participant);
+    std::shared_ptr<DdsPipe> pipe = create_pipe(model, dds_participant);
     pipe->enable();
 
     auto dds_reader = dds_participant->participant_reader;
     ASSERT_NE(dds_reader, nullptr);
 
     // Send message
-    auto new_data = std::make_unique<spy::participants::ParticipantInfoData>();
-    new_data->info.name = "participant::test";
-    new_data->info.active = true;
-    ddspipe::core::types::Guid guid_data = ddspipe::core::testing::random_guid();
-    new_data->info.guid = guid_data;
-    dds_reader->simulate_data_reception(std::move(new_data));
+    spy::participants::ParticipantInfoData new_data;
+    random_participant_info(new_data);
+    dds_reader->simulate_data_reception(
+        std::make_unique<spy::participants::ParticipantInfoData>(new_data));
 
     // Wait
-    sleep(1);
+    std::this_thread::sleep_for(std::chrono::milliseconds(test::WAIT_MS));
 
     // Check information
-    ASSERT_EQ(model->participant_database_.at(guid_data).name, "participant::test");
+    ASSERT_EQ(model->participant_database_.at(new_data.info.guid).name, new_data.info.name);
     ASSERT_EQ(model->participant_database_.size(), 1);
 }
 
@@ -206,32 +214,29 @@ TEST(ParticipantDatabaseTest, guid)
     std::shared_ptr<spy::participants::SpyModel> model =
             std::make_shared<spy::participants::SpyModel>();
 
-    const ddspipe::core::types::ParticipantId id_ = "DDS Spy mock participant";
+    const types::ParticipantId id_ = "DDS Spy mock participant";
 
     std::shared_ptr<test::SpyDdsParticipantMock> dds_participant =
             std::make_shared<test::SpyDdsParticipantMock>(id_);
 
     // Create DDS Pipe
-    std::shared_ptr<ddspipe::core::DdsPipe> pipe = create_pipe(model, dds_participant);
+    std::shared_ptr<DdsPipe> pipe = create_pipe(model, dds_participant);
     pipe->enable();
 
     auto dds_reader = dds_participant->participant_reader;
     ASSERT_NE(dds_reader, nullptr);
 
     // Send message
-    auto new_data = std::make_unique<spy::participants::ParticipantInfoData>();
-    new_data->info.name = "participant::test";
-    new_data->info.active = true;
-    ddspipe::core::types::Guid guid_data = ddspipe::core::testing::random_guid();
-    new_data->info.guid = guid_data;
-    dds_reader->simulate_data_reception(std::move(new_data));
+    spy::participants::ParticipantInfoData new_data;
+    random_participant_info(new_data);
+    dds_reader->simulate_data_reception(
+        std::make_unique<spy::participants::ParticipantInfoData>(new_data));
 
     // Wait
-    sleep(1);
+    std::this_thread::sleep_for(std::chrono::milliseconds(test::WAIT_MS));
 
     // Check information
-    ASSERT_EQ(model->participant_database_.at(guid_data).guid, guid_data);
-
+    ASSERT_EQ(model->participant_database_.at(new_data.info.guid).guid, new_data.info.guid);
     ASSERT_EQ(model->participant_database_.size(), 1);
 }
 
@@ -241,32 +246,29 @@ TEST(ParticipantDatabaseTest, active_true)
     std::shared_ptr<spy::participants::SpyModel> model =
             std::make_shared<spy::participants::SpyModel>();
 
-    const ddspipe::core::types::ParticipantId id_ = "DDS Spy mock participant";
+    const types::ParticipantId id_ = "DDS Spy mock participant";
 
     std::shared_ptr<test::SpyDdsParticipantMock> dds_participant =
             std::make_shared<test::SpyDdsParticipantMock>(id_);
 
     // Create DDS Pipe
-    std::shared_ptr<ddspipe::core::DdsPipe> pipe = create_pipe(model, dds_participant);
+    std::shared_ptr<DdsPipe> pipe = create_pipe(model, dds_participant);
     pipe->enable();
 
     auto dds_reader = dds_participant->participant_reader;
     ASSERT_NE(dds_reader, nullptr);
 
     // Send message
-    auto new_data = std::make_unique<spy::participants::ParticipantInfoData>();
-    new_data->info.name = "participant::test";
-    new_data->info.active = true;
-    ddspipe::core::types::Guid guid_data = ddspipe::core::testing::random_guid();
-    new_data->info.guid = guid_data;
-    dds_reader->simulate_data_reception(std::move(new_data));
+    spy::participants::ParticipantInfoData new_data;
+    random_participant_info(new_data);
+    dds_reader->simulate_data_reception(
+        std::make_unique<spy::participants::ParticipantInfoData>(new_data));
 
     // Wait
-    sleep(1);
+    std::this_thread::sleep_for(std::chrono::milliseconds(test::WAIT_MS));
 
     // Check information
-    ASSERT_TRUE(model->participant_database_.at(guid_data).active);
-
+    ASSERT_TRUE(model->participant_database_.at(new_data.info.guid).active);
     ASSERT_EQ(model->participant_database_.size(), 1);
 }
 
@@ -276,31 +278,29 @@ TEST(ParticipantDatabaseTest, active_false)
     std::shared_ptr<spy::participants::SpyModel> model =
             std::make_shared<spy::participants::SpyModel>();
 
-    const ddspipe::core::types::ParticipantId id_ = "DDS Spy mock participant";
+    const types::ParticipantId id_ = "DDS Spy mock participant";
 
     std::shared_ptr<test::SpyDdsParticipantMock> dds_participant =
             std::make_shared<test::SpyDdsParticipantMock>(id_);
 
     // Create DDS Pipe
-    std::shared_ptr<ddspipe::core::DdsPipe> pipe = create_pipe(model, dds_participant);
+    std::shared_ptr<DdsPipe> pipe = create_pipe(model, dds_participant);
     pipe->enable();
 
     auto dds_reader = dds_participant->participant_reader;
     ASSERT_NE(dds_reader, nullptr);
 
     // Send message
-    auto new_data = std::make_unique<spy::participants::ParticipantInfoData>();
-    new_data->info.name = "participant::test";
-    new_data->info.active = false;
-    ddspipe::core::types::Guid guid_data = ddspipe::core::testing::random_guid();
-    new_data->info.guid = guid_data;
-    dds_reader->simulate_data_reception(std::move(new_data));
+    spy::participants::ParticipantInfoData new_data;
+    random_participant_info(new_data, false);
+    dds_reader->simulate_data_reception(
+        std::make_unique<spy::participants::ParticipantInfoData>(new_data));
 
     // Wait
-    sleep(1);
+    std::this_thread::sleep_for(std::chrono::milliseconds(test::WAIT_MS));
 
     // Check information
-    ASSERT_FALSE(model->participant_database_.at(guid_data).active);
+    ASSERT_FALSE(model->participant_database_.at(new_data.info.guid).active);
 
     ASSERT_EQ(model->participant_database_.size(), 1);
 }
@@ -311,41 +311,42 @@ TEST(ParticipantDatabaseTest, n_msgs_name)
     std::shared_ptr<spy::participants::SpyModel> model =
             std::make_shared<spy::participants::SpyModel>();
 
-    const ddspipe::core::types::ParticipantId id_ = "DDS Spy mock participant";
+    const types::ParticipantId id_ = "DDS Spy mock participant";
 
     std::shared_ptr<test::SpyDdsParticipantMock> dds_participant =
             std::make_shared<test::SpyDdsParticipantMock>(id_);
 
     // Create DDS Pipe
-    std::shared_ptr<ddspipe::core::DdsPipe> pipe = create_pipe(model, dds_participant);
+    std::shared_ptr<DdsPipe> pipe = create_pipe(model, dds_participant);
     pipe->enable();
 
     auto dds_reader = dds_participant->participant_reader;
     ASSERT_NE(dds_reader, nullptr);
 
     // Send messages
-    for (unsigned int i = 0; i < 10; i++)
+    unsigned int n_msgs = rand() % 15;
+    std::vector<spy::participants::ParticipantInfoData> datas;
+    for (unsigned int i = 0; i < n_msgs; i++)
     {
-        auto new_data = std::make_unique<spy::participants::ParticipantInfoData>();
-        new_data->info.name = "participant::test"+std::to_string(i);
-        new_data->info.active = true;
-        ddspipe::core::types::Guid guid_data = ddspipe::core::testing::random_guid();
-        new_data->info.guid = guid_data;
-        dds_reader->simulate_data_reception(std::move(new_data));
+        spy::participants::ParticipantInfoData new_data;
+        random_participant_info(new_data, true, i);
+        datas.push_back(new_data);
+        dds_reader->simulate_data_reception(
+            std::make_unique<spy::participants::ParticipantInfoData>(new_data));
     }
+
+    // Wait
+    std::this_thread::sleep_for(std::chrono::milliseconds(test::WAIT_MS));
 
     unsigned int i = 0;
     for (const auto& participant : model->participant_database_)
     {
-        ASSERT_EQ(participant.second.name, "participant::test"+std::to_string(i));
+        ASSERT_EQ(participant.second.name, datas[i].info.name);
         i++;
     }
 
-    // Wait
-    sleep(1);
-
     // Check information
-    ASSERT_EQ(model->participant_database_.size(), 1);
+    ASSERT_EQ(model->participant_database_.size(), n_msgs);
 }
 
 TEST(ParticipantDatabaseTest, n_msgs_guid)
@@ -354,42 +355,42 @@ TEST(ParticipantDatabaseTest, n_msgs_guid)
     std::shared_ptr<spy::participants::SpyModel> model =
             std::make_shared<spy::participants::SpyModel>();
 
-    const ddspipe::core::types::ParticipantId id_ = "DDS Spy mock participant";
+    const types::ParticipantId id_ = "DDS Spy mock participant";
 
     std::shared_ptr<test::SpyDdsParticipantMock> dds_participant =
             std::make_shared<test::SpyDdsParticipantMock>(id_);
 
     // Create DDS Pipe
-    std::shared_ptr<ddspipe::core::DdsPipe> pipe = create_pipe(model, dds_participant);
+    std::shared_ptr<DdsPipe> pipe = create_pipe(model, dds_participant);
     pipe->enable();
 
     auto dds_reader = dds_participant->participant_reader;
     ASSERT_NE(dds_reader, nullptr);
 
     // Send messages
-    std::vector<ddspipe::core::types::Guid> guid_data;
-    for (unsigned int i = 0; i < 10; i++)
+    unsigned int n_msgs = rand() % 15;
+    std::vector<spy::participants::ParticipantInfoData> datas;
+    for (unsigned int i = 0; i < n_msgs; i++)
     {
-        auto new_data = std::make_unique<spy::participants::ParticipantInfoData>();
-        new_data->info.name = "participant::test"+std::to_string(i);
-        new_data->info.active = true;
-        guid_data.push_back(ddspipe::core::testing::random_guid());
-        new_data->info.guid = guid_data[i];
-        dds_reader->simulate_data_reception(std::move(new_data));
+        spy::participants::ParticipantInfoData new_data;
+        random_participant_info(new_data, true, i);
+        datas.push_back(new_data);
+        dds_reader->simulate_data_reception(
+            std::make_unique<spy::participants::ParticipantInfoData>(new_data));
     }
+
+    // Wait
+    std::this_thread::sleep_for(std::chrono::milliseconds(test::WAIT_MS));
 
     unsigned int i = 0;
     for (const auto& participant : model->participant_database_)
     {
-        ASSERT_EQ(participant.first, guid_data[i]);
+        ASSERT_EQ(participant.first, datas[i].info.guid);
         i++;
     }
 
-    // Wait
-    sleep(1);
-
     // Check information
-    ASSERT_EQ(model->participant_database_.size(), 1);
+    ASSERT_EQ(model->participant_database_.size(), n_msgs);
 }
 
 int main(

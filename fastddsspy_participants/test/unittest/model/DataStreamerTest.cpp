@@ -24,6 +24,15 @@
 
 using namespace eprosima;
 
+void create_schema(ddspipe::core::types::DdsTopic& topic, fastrtps::types::DynamicType_ptr& dynamic_type_topic)
+{
+    fastrtps::types::DynamicTypeBuilder_ptr dynamic_type_topic_builder;
+    dynamic_type_topic_builder = fastrtps::types::DynamicTypeBuilderFactory::get_instance()->create_struct_builder();
+
+    dynamic_type_topic_builder->set_name(topic.type_name);
+    dynamic_type_topic = dynamic_type_topic_builder->build();
+}
+
 TEST(DataStreamerTest, activate_false)
 {
     spy::participants::DataStreamer ds;
@@ -48,11 +57,7 @@ TEST(DataStreamerTest, activate_true)
         std::make_shared<spy::participants::DataStreamer::CallbackType>();
 
     fastrtps::types::DynamicType_ptr dynamic_type_topic;
-    fastrtps::types::DynamicTypeBuilder_ptr dynamic_type_topic_builder;
-    dynamic_type_topic_builder = fastrtps::types::DynamicTypeBuilderFactory::get_instance()->create_struct_builder();
-
-    dynamic_type_topic_builder->set_name(topic.type_name);
-    dynamic_type_topic = dynamic_type_topic_builder->build();
+    create_schema(topic, dynamic_type_topic);
 
     ds.add_schema(dynamic_type_topic);
 
@@ -71,11 +76,7 @@ TEST(DataStreamerTest, activate_twice)
         std::make_shared<spy::participants::DataStreamer::CallbackType>();
 
     fastrtps::types::DynamicType_ptr dynamic_type_topic_1;
-    fastrtps::types::DynamicTypeBuilder_ptr dynamic_type_topic_1_builder;
-    dynamic_type_topic_1_builder = fastrtps::types::DynamicTypeBuilderFactory::get_instance()->create_struct_builder();
-
-    dynamic_type_topic_1_builder->set_name(topic_1.type_name);
-    dynamic_type_topic_1 = dynamic_type_topic_1_builder->build();
+    create_schema(topic_1, dynamic_type_topic_1);
 
     ds.add_schema(dynamic_type_topic_1);
 
@@ -84,11 +85,7 @@ TEST(DataStreamerTest, activate_twice)
     topic_2.type_name = "type2";
 
     fastrtps::types::DynamicType_ptr dynamic_type_topic_2;
-    fastrtps::types::DynamicTypeBuilder_ptr dynamic_type_topic_2_builder;
-    dynamic_type_topic_2_builder = fastrtps::types::DynamicTypeBuilderFactory::get_instance()->create_struct_builder();
-
-    dynamic_type_topic_2_builder->set_name(topic_2.type_name);
-    dynamic_type_topic_2 = dynamic_type_topic_2_builder->build();
+    create_schema(topic_2, dynamic_type_topic_2);
 
     ds.add_schema(dynamic_type_topic_2);
 
@@ -112,11 +109,7 @@ TEST(DataStreamerTest, topic_type_discovered)
     topic_2.type_name = "type2";
 
     fastrtps::types::DynamicType_ptr dynamic_type_topic_2;
-    fastrtps::types::DynamicTypeBuilder_ptr dynamic_type_topic_2_builder;
-    dynamic_type_topic_2_builder = fastrtps::types::DynamicTypeBuilderFactory::get_instance()->create_struct_builder();
-
-    dynamic_type_topic_2_builder->set_name(topic_2.type_name);
-    dynamic_type_topic_2 = dynamic_type_topic_2_builder->build();
+    create_schema(topic_2, dynamic_type_topic_2);
 
     ds.add_schema(dynamic_type_topic_2);
 
@@ -143,11 +136,7 @@ TEST(DataStreamerTest, deactivate)
         });
 
     fastrtps::types::DynamicType_ptr dynamic_type_topic;
-    fastrtps::types::DynamicTypeBuilder_ptr dynamic_type_topic_builder;
-    dynamic_type_topic_builder = fastrtps::types::DynamicTypeBuilderFactory::get_instance()->create_struct_builder();
-
-    dynamic_type_topic_builder->set_name(topic.type_name);
-    dynamic_type_topic = dynamic_type_topic_builder->build();
+    create_schema(topic, dynamic_type_topic);
 
     ds.add_schema(dynamic_type_topic);
 
@@ -155,7 +144,7 @@ TEST(DataStreamerTest, deactivate)
 
     ddspipe::core::types::RtpsPayloadData data;
 
-    int rand_1 = rand() % 20;
+    unsigned int rand_1 = rand() % 20;
 
     for (unsigned int i = 0; i < rand_1; i++)
     {
@@ -164,7 +153,7 @@ TEST(DataStreamerTest, deactivate)
 
     ds.deactivate();
 
-    int rand_2 = rand() % 20;
+    unsigned int rand_2 = rand() % 20;
 
     for (unsigned int i = 0; i < rand_2; i++)
     {
@@ -194,11 +183,7 @@ TEST(DataStreamerTest, add_data)
         });
 
     fastrtps::types::DynamicType_ptr dynamic_type_topic;
-    fastrtps::types::DynamicTypeBuilder_ptr dynamic_type_topic_builder;
-    dynamic_type_topic_builder = fastrtps::types::DynamicTypeBuilderFactory::get_instance()->create_struct_builder();
-
-    dynamic_type_topic_builder->set_name(topic.type_name);
-    dynamic_type_topic = dynamic_type_topic_builder->build();
+    create_schema(topic, dynamic_type_topic);
 
     ds.add_schema(dynamic_type_topic);
 
@@ -237,11 +222,7 @@ TEST(DataStreamerTest, add_data_two_topics)
         });
 
     fastrtps::types::DynamicType_ptr dynamic_type_topic_1;
-    fastrtps::types::DynamicTypeBuilder_ptr dynamic_type_topic_1_builder;
-    dynamic_type_topic_1_builder = fastrtps::types::DynamicTypeBuilderFactory::get_instance()->create_struct_builder();
-
-    dynamic_type_topic_1_builder->set_name(topic_1.type_name);
-    dynamic_type_topic_1 = dynamic_type_topic_1_builder->build();
+    create_schema(topic_1, dynamic_type_topic_1);
 
     ds.add_schema(dynamic_type_topic_1);
 
@@ -264,11 +245,7 @@ TEST(DataStreamerTest, add_data_two_topics)
         });
 
     fastrtps::types::DynamicType_ptr dynamic_type_topic_2;
-    fastrtps::types::DynamicTypeBuilder_ptr dynamic_type_topic_2_builder;
-    dynamic_type_topic_2_builder = fastrtps::types::DynamicTypeBuilderFactory::get_instance()->create_struct_builder();
-
-    dynamic_type_topic_2_builder->set_name(topic_2.type_name);
-    dynamic_type_topic_2 = dynamic_type_topic_2_builder->build();
+    create_schema(topic_2, dynamic_type_topic_2);
 
     ds.add_schema(dynamic_type_topic_2);
 
