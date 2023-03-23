@@ -15,92 +15,22 @@
 #include <cpp_utils/testing/gtest_aux.hpp>
 #include <gtest/gtest.h>
 
-#include <fastddsspy_participants/model/SpyModel.hpp>
 #include <fastddsspy_participants/participant/SpyParticipant.hpp>
-#include <fastddsspy_participants/participant/SpyDdsParticipant.hpp>
 
 #include <ddspipe_core/core/DdsPipe.hpp>
 #include <ddspipe_core/efficiency/payload/FastPayloadPool.hpp>
-#include <fastddsspy_yaml/YamlReaderConfiguration.hpp>
+
 #include <ddspipe_participants/writer/auxiliar/BlankWriter.hpp>
 #include <ddspipe_participants/reader/auxiliar/BlankReader.hpp>
-#include <ddspipe_participants/writer/auxiliar/BaseWriter.hpp>
-#include <ddspipe_participants/reader/auxiliar/BaseReader.hpp>
+#include <ddspipe_participants/reader/auxiliar/InternalReader.hpp>
 #include <ddspipe_participants/participant/auxiliar/BlankParticipant.hpp>
+#include <fastddsspy_participants/configuration/SpyParticipantConfiguration.hpp>
 
 using namespace eprosima;
 
 namespace test {
 
 const unsigned int DOMAIN = 222;
-
-// struct SpyDdsDataMock : public ddspipe::core::IRoutingData
-// {
-// public:
-
-//     // bool operator ==(
-//     //         const SpyDdsDataMock& other) const;
-
-//     ddspipe::core::types::TopicInternalTypeDiscriminator internal_type_discriminator() const noexcept
-//     {
-//         return spy::participants::INTERNAL_TOPIC_TYPE_PARTICIPANTS_INFO;
-//     }
-
-//     std::string data;
-// };
-
-// class SpyDdsWriterMock : public ddspipe::participants::BaseWriter
-// {
-// public:
-
-//     SpyDdsWriterMock(
-//             const ddspipe::core::types::ParticipantId& id)
-//             : ddspipe::participants::BaseWriter(id)
-//     {
-//     }
-
-//     utils::ReturnCode write_nts_(
-//             ddspipe::core::IRoutingData& data) noexcept
-//     {
-//         return utils::ReturnCode::RETCODE_OK;
-//     }
-
-
-// };
-
-// class SpyDdsReaderMock : public ddspipe::participants::BaseReader
-// {
-// public:
-
-//     SpyDdsReaderMock(
-//             const ddspipe::core::types::ParticipantId& id)
-//             : ddspipe::participants::BaseReader(id)
-//     {
-//     }
-
-//     void simulate_data_reception(
-//         spy::participants::ParticipantInfoData& data)
-//     {
-//         data_queue_.push(std::move(data));
-//         on_data_available_();
-//     }
-
-//     utils::ReturnCode take_nts_(
-//             std::unique_ptr<ddspipe::core::IRoutingData>& data) noexcept
-//     {
-//         if (data_queue_.empty())
-//         {
-//             return utils::ReturnCode::RETCODE_NO_DATA;
-//         }
-
-//         data.reset(new MockRoutingData(std::move(data_queue_.front())));
-//         data_queue_.pop();
-//         return utils::ReturnCode::RETCODE_OK;
-//     }
-
-// protected:
-//     std::queue<spy::participants::ParticipantInfoData> data_queue_;
-// };
 
 
 class SpyDdsParticipantMock : public ddspipe::participants::BlankParticipant
@@ -112,26 +42,7 @@ public:
             const ddspipe::core::types::ParticipantId& id)
             : ddspipe::participants::BlankParticipant(id)
     {
-
     }
-
-    //! Override id() IParticipant method
-    // ddspipe::core::types::ParticipantId id() const noexcept
-    // {
-    //     return id_;
-    // }
-
-    // //! Override is_repeater() IParticipant method
-    // bool is_repeater() const noexcept
-    // {
-    //     return false;
-    // }
-
-    // //! Override is_rtps_kind() IParticipant method
-    // bool is_rtps_kind() const noexcept
-    // {
-    //     return false;
-    // }
 
     //! Override create_writer() IParticipant method
     std::shared_ptr<ddspipe::core::IWriter> create_writer(
@@ -150,64 +61,17 @@ public:
         }
 
         return participant_reader;
-
-        // Block access to internal struct
-        // std::lock_guard<std::mutex> _(mutex_);
-
-        // Look in case it already exists
-        // auto it = readers_.find(topic.topic_unique_name());
-        // if (it != readers_.end())
-        // {
-        //     return it->second;
-        // }
-
-        // // Create a new one, store it and return it
-        // auto entity = std::make_shared<::InternalReader>(id_);
-        // readers_[topic.topic_unique_name()] = entity;
-
-        // return entity;
     }
 
-    // std::shared_ptr<test::SpyDdsWriterMock> get_writer(
-    //         const ddspipe::core::ITopic& topic)
-    // {
-    //     auto it = writers_.find(topic.topic_unique_name());
-    //     if (it == writers_.end())
-    //     {
-    //         return std::shared_ptr<MockWriter>();
-    //     }
-    //     return it->second;
-    // }
-
-    // std::shared_ptr<test::SpyDdsReaderMock> get_reader(
-    //         const ddspipe::core::ITopic& topic)
-    // {
-    //     auto it = readers_.find(topic.topic_unique_name());
-    //     if (it == readers_.end())
-    //     {
-    //         return std::shared_ptr<MockReader>();
-    //     }
-    //     return it->second;
-    // }
     std::shared_ptr<ddspipe::participants::InternalReader> participant_reader =
         std::make_shared<ddspipe::participants::InternalReader>(id_);
 
-// protected:
-//     // std::map<std::string, std::shared_ptr<test::SpyDdsWriterMock>> writers_;
-//     // std::map<std::string, std::shared_ptr<test::SpyDdsReaderMock>> readers_;
-
-//     //! Participant Id
-//     const ddspipe::core::types::ParticipantId id_;
 };
-
 
 }
 
 TEST(NetworkDatabaseTest, trivial)
 {
-    // Create Configuration
-    spy::yaml::Configuration configuration;
-
     // Create Payload Pool
     std::shared_ptr<ddspipe::core::PayloadPool> payload_pool =
             std::make_shared<ddspipe::core::FastPayloadPool>();
@@ -221,9 +85,11 @@ TEST(NetworkDatabaseTest, trivial)
             std::make_shared<spy::participants::SpyModel>();
 
     // Create participants
+    std::shared_ptr<spy::participants::SpyParticipantConfiguration> spy_configuration =
+        std::make_shared<spy::participants::SpyParticipantConfiguration>();
     std::shared_ptr<spy::participants::SpyParticipant> spy_participant =
             std::make_shared<spy::participants::SpyParticipant>(
-                configuration.spy_configuration,
+                spy_configuration,
                 payload_pool,
                 discovery_database,
                 model);
@@ -247,22 +113,20 @@ TEST(NetworkDatabaseTest, trivial)
         dds_participant
         );
 
-
-    ddspipe::core::types::DomainId domainId;
-    domainId.domain_id = test::DOMAIN;
-    configuration.simple_configuration->domain = domainId;
-
     // Create allowed topics list
+    std::set<utils::Heritable<ddspipe::core::types::IFilterTopic>> lists = {};
     std::shared_ptr<ddspipe::core::AllowedTopicList> allowed_topics =
             std::make_shared<ddspipe::core::AllowedTopicList>(
-                configuration.allowlist,
-                configuration.blocklist);
+                lists,
+                lists);
 
     // Create Thread Pool
+    unsigned int n_threads = 12;
     std::shared_ptr<utils::SlotThreadPool> thread_pool =
-            std::make_shared<utils::SlotThreadPool>(configuration.n_threads);
+            std::make_shared<utils::SlotThreadPool>(n_threads);
 
     // Create DDS Pipe
+    std::set<utils::Heritable<ddspipe::core::types::DistributedTopic>> builtin_topics = {};
     std::shared_ptr<ddspipe::core::DdsPipe> pipe =
             std::make_unique<ddspipe::core::DdsPipe>(
                 allowed_topics,
@@ -270,26 +134,20 @@ TEST(NetworkDatabaseTest, trivial)
                 payload_pool,
                 participant_database,
                 thread_pool,
-                configuration.builtin_topics,
+                builtin_topics,
                 true
                 );
 
     pipe->enable();
 
-    // Create reader and writer
-    // ddspipe::core::types::DistributedTopic topic_1;
-    // topic_1.m_topic_name = "topic1";
+
     auto dds_reader = dds_participant->participant_reader;
     ASSERT_NE(dds_reader, nullptr);
-
-    // auto spy_reader = spy_participant->create_writer(topic_1);
-    // ASSERT_NE(spy_reader, nullptr);
 
     // Send N messages
     for (unsigned int i = 0; i < 10; i++)
     {
         auto new_data = std::make_unique<spy::participants::ParticipantInfoData>();
-        // spy::participants::ParticipantInfoData new_data;
         new_data->info.name = "reader::" + std::to_string(i);
         new_data->info.active = true;
         ddspipe::core::types::Guid guid_data;
