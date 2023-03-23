@@ -11,26 +11,26 @@
   :alt: eProsima
   :target: http://www.eprosima.com/
 
-*eProsima Fast DDS Spy* is CLI interactive tool that allow to introspect a DDS network in human readable format.
-It is possible to query the network about the DomainParticipants connected, their endpoints (DataWriters and DataReaders) and the topics they belong to.
+*eProsima Fast DDS Spy* is CLI interactive tool that allows to introspect a DDS network in human readable format.
+It is possible to query the network about the DomainParticipants connected, their endpoints (DataWriters and DataReaders) and the topics they communicate in.
 It is also possible to see the user data sent through network topics in a schematic format in run time.
 
-*eProsima Fast DDS Spy* is easily configurable and installed with a default setup, so that DDS topics, data types and entities are automatically discovered without the need to specify the types of data.
-This is because this tool exploits the DynamicTypes functionality of `eProsima Fast DDS <https://fast-dds.docs.eprosima.com>`_, the C++ implementation of the `DDS (Data Distribution Service) Specification <https://www.omg.org/spec/DDS/About-DDS/>`_ defined by the `Object Management Group (OMG) <https://www.omg.org/>`_.
 
 ########
 Overview
 ########
 
-*eProsima Fast DDS Spy* is a tool that introspect or "sniffing" DDS packages in the network and maintain a local database.
-*Fast DDS Spy* is an interactive CLI tool that responds to user commands introduced by text and print in ``stdin`` the information requested.
-This tool has several commands to interact with it, that allows to get information regarding the status of the network.
-It supports to list topics existing, list Participants, DataReaders, DataWriters and even read user data
+*eProsima Fast DDS Spy* is a tool that introspect or "sniffing" DDS packages in the network and maintain a local database that is accessible from a interactive CLI.
+*Fast DDS Spy* responds to user commands introduced by text and print in ``stdin`` the information requested.
+This tool has several commands to interact with, that allows to get information regarding the status of the network.
+It supports to list topics existing, list Participants, DataReaders, DataWriters and even read user data in real time in a human readable format.
 
+.. figure:: /rst/figures/overview.png
+    :align: center
 
-.. TODO : Add cool figure
-.. .. figure:: /rst/figures/ddsrecord_overview.png
-..     :align: center
+*eProsima Fast DDS Spy* is easily configurable and installed with a default setup, so that DDS topics, data types and entities are automatically discovered without the need to specify the types of data.
+This is because this tool exploits the DynamicTypes functionality of `eProsima Fast DDS <https://fast-dds.docs.eprosima.com>`_, the C++ implementation of the `DDS (Data Distribution Service) Specification <https://www.omg.org/spec/DDS/About-DDS/>`_ defined by the `Object Management Group (OMG) <https://www.omg.org/>`_.
+
 
 ###############################
 Contacts and Commercial support
