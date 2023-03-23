@@ -47,5 +47,16 @@ void Input::wait_something()
     reader_.read_next_command(_);
 }
 
+utils::Command<CommandValue> Input::parse_as_command(const std::vector<std::string>& args)
+{
+    utils::Command<CommandValue> command;
+    auto res = reader_.parse_as_command(std::vector<std::string>(args), command);
+    if (!res)
+    {
+        command.command = CommandValue::error_input;
+    }
+    return command;
+}
+
 } /* namespace spy */
 } /* namespace eprosima */

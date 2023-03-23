@@ -149,6 +149,12 @@ void Configuration::load_specs_configuration_(
             MAX_HISTORY_DEPTH_TAG,
             version);
     }
+
+    // Get optional gathering time
+    if (YamlReader::is_tag_present(yml, GATHERING_TIME_TAG))
+    {
+        one_shot_wait_time_ms = YamlReader::get<utils::Duration_ms>(yml, GATHERING_TIME_TAG, version);
+    }
 }
 
 bool Configuration::is_valid(

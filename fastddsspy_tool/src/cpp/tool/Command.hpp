@@ -14,7 +14,6 @@
 
 #pragma once
 
-#include <cpp_utils/user_interface/CommandReader.hpp>
 #include <cpp_utils/macros/custom_enumeration.hpp>
 #include <cpp_utils/enum/EnumBuilder.hpp>
 

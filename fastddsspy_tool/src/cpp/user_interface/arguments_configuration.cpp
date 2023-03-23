@@ -165,7 +165,8 @@ ProcessReturnCode parse_arguments(
         std::string& file_path,
         utils::Duration_ms& reload_time,
         std::string& log_filter,
-        eprosima::fastdds::dds::Log::Kind& log_verbosity)
+        eprosima::fastdds::dds::Log::Kind& log_verbosity,
+        std::vector<std::string>& one_shot_command)
 {
     // Variable to pretty print usage help
     int columns;
@@ -186,86 +187,75 @@ ProcessReturnCode parse_arguments(
 #endif // if defined(_WIN32)
 
     // Parse arguments
-    // No required arguments
-    if (argc > 0)
-    {
-        argc -= (argc > 0); // reduce arg count of program name if present
-        argv += (argc > 0); // skip program name argv[0] if present
+    argc -= (argc > 0); // reduce arg count of program name if present
+    argv += (argc > 0); // skip program name argv[0] if present
 
-        option::Stats stats(usage, argc, argv);
-        std::vector<option::Option> options(stats.options_max);
-        std::vector<option::Option> buffer(stats.buffer_max);
-        option::Parser parse(usage, argc, argv, &options[0], &buffer[0]);
+    option::Stats stats(usage, argc, argv);
+    std::vector<option::Option> options(stats.options_max);
+    std::vector<option::Option> buffer(stats.buffer_max);
+    option::Parser parse(usage, argc, argv, &options[0], &buffer[0]);
 
-        // Parsing error
-        if (parse.error())
-        {
-            option::printUsage(fwrite, stdout, usage, columns);
-            return ProcessReturnCode::incorrect_argument;
-        }
-
-        // Unknown args provided
-        if (parse.nonOptionsCount())
-        {
-            logError(FOXGLOVEWS_ARGS, "ERROR: Unknown argument: <" << parse.nonOption(0) << ">." );
-            option::printUsage(fwrite, stdout, usage, columns);
-            return ProcessReturnCode::incorrect_argument;
-        }
-
-        // Adding Help before every other check to show help in case an argument is incorrect
-        if (options[optionIndex::HELP])
-        {
-            option::printUsage(fwrite, stdout, usage, columns);
-            return ProcessReturnCode::help_argument;
-        }
-
-        if (options[optionIndex::VERSION])
-        {
-            print_version();
-            return ProcessReturnCode::version_argument;
-        }
-
-        for (int i = 0; i < parse.optionsCount(); ++i)
-        {
-            option::Option& opt = buffer[i];
-            switch (opt.index())
-            {
-                case optionIndex::CONFIGURATION_FILE:
-                    file_path = opt.arg;
-                    break;
-
-                case optionIndex::RELOAD_TIME:
-                    reload_time = std::stol(opt.arg) * 1000; // pass to milliseconds
-                    break;
-
-                case optionIndex::ACTIVATE_DEBUG:
-                    log_filter = "FOXGLOVEWS";
-                    log_verbosity = eprosima::fastdds::dds::Log::Kind::Info;
-                    break;
-
-                case optionIndex::LOG_FILTER:
-                    log_filter = opt.arg;
-                    break;
-
-                case optionIndex::LOG_VERBOSITY:
-                    log_verbosity = eprosima::fastdds::dds::Log::Kind(static_cast<int>(from_string_LogKind(opt.arg)));
-                    break;
-
-                case optionIndex::UNKNOWN_OPT:
-                    logError(FOXGLOVEWS_ARGS, opt << " is not a valid argument.");
-                    option::printUsage(fwrite, stdout, usage, columns);
-                    return ProcessReturnCode::incorrect_argument;
-                    break;
-
-                default:
-                    break;
-            }
-        }
-    }
-    else
+    // Parsing error
+    if (parse.error())
     {
         option::printUsage(fwrite, stdout, usage, columns);
         return ProcessReturnCode::incorrect_argument;
+    }
+
+    // Unknown args provided
+    for (int i=0; i < parse.nonOptionsCount(); ++i)
+    {
+        one_shot_command.push_back(parse.nonOption(i));
+    }
+
+    // Adding Help before every other check to show help in case an argument is incorrect
+    if (options[optionIndex::HELP])
+    {
+        option::printUsage(fwrite, stdout, usage, columns);
+        return ProcessReturnCode::help_argument;
+    }
+
+    if (options[optionIndex::VERSION])
+    {
+        print_version();
+        return ProcessReturnCode::version_argument;
+    }
+
+    for (int i = 0; i < parse.optionsCount(); ++i)
+    {
+        option::Option& opt = buffer[i];
+        switch (opt.index())
+        {
+            case optionIndex::CONFIGURATION_FILE:
+                file_path = opt.arg;
+                break;
+
+            case optionIndex::RELOAD_TIME:
+                reload_time = std::stol(opt.arg) * 1000; // pass to milliseconds
+                break;
+
+            case optionIndex::ACTIVATE_DEBUG:
+                log_filter = "FOXGLOVEWS";
+                log_verbosity = eprosima::fastdds::dds::Log::Kind::Info;
+                break;
+
+            case optionIndex::LOG_FILTER:
+                log_filter = opt.arg;
+                break;
+
+            case optionIndex::LOG_VERBOSITY:
+                log_verbosity = eprosima::fastdds::dds::Log::Kind(static_cast<int>(from_string_LogKind(opt.arg)));
+                break;
+
+            case optionIndex::UNKNOWN_OPT:
+                logError(FOXGLOVEWS_ARGS, opt << " is not a valid argument.");
+                option::printUsage(fwrite, stdout, usage, columns);
+                return ProcessReturnCode::incorrect_argument;
+                break;
+
+            default:
+                break;
+        }
     }
 
     return ProcessReturnCode::success;
