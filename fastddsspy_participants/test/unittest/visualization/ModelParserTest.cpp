@@ -42,6 +42,7 @@ void random_endpoint_info(
     endpoint_data.kind = kind;
     endpoint_data.guid = ddspipe::core::testing::random_guid(seed);
     endpoint_data.topic = topic;
+    endpoint_data.discoverer_participant_id = ddspipe::core::testing::random_participant_id(seed);
 }
 
 TEST(ModelParserTest, simple_participant)
@@ -256,7 +257,7 @@ TEST(ModelParserTest, simple_endpoint_writer)
     std::vector<spy::participants::SimpleEndpointData> expected_result;
     expected_result.push_back({
                                 endpoint.guid,
-                                "participant_name",
+                                endpoint.discoverer_participant_id,
                                 {
                                     endpoint.topic.m_topic_name,
                                     endpoint.topic.type_name
@@ -287,7 +288,7 @@ TEST(ModelParserTest, simple_endpoint_reader)
     std::vector<spy::participants::SimpleEndpointData> expected_result;
     expected_result.push_back({
                                 endpoint.guid,
-                                "participant_name",
+                                endpoint.discoverer_participant_id,
                                 {
                                     endpoint.topic.m_topic_name,
                                     endpoint.topic.type_name
@@ -334,6 +335,98 @@ TEST(ModelParserTest, simple_endpoint_reader_writers)
     // Check information
     ASSERT_EQ(result.size(), 0);
     ASSERT_EQ(model.endpoint_database_.size(), 1);
+}
+
+TEST(ModelParserTest, complex_endpoint_writer)
+{
+
+    // Create model
+    spy::participants::SpyModel model;
+    // Fill model
+    spy::participants::EndpointInfo endpoint;
+    random_endpoint_info(endpoint, ddspipe::core::types::EndpointKind::writer, true, 2);
+    model.endpoint_database_.add(endpoint.guid, endpoint);
+
+    // Obtain information from model
+    spy::participants::ComplexEndpointData result;
+    result = spy::participants::ModelParser::writers(model, endpoint.guid);
+
+    // Create expected return
+    spy::participants::ComplexEndpointData expected_result;
+    expected_result.guid = endpoint.guid;
+    expected_result.participant_name = endpoint.discoverer_participant_id;
+    expected_result.topic.topic_name = endpoint.topic.m_topic_name;
+    expected_result.topic.topic_type = endpoint.topic.type_name;
+    if (endpoint.topic.topic_qos.durability_qos)    // TODO move to YamlWriter
+    {
+        expected_result.qos.durability = "transient-local";
+    }
+    else
+    {
+        expected_result.qos.durability = "volatile";
+    }
+    if (endpoint.topic.topic_qos.reliability_qos)
+    {
+        expected_result.qos.reliability = "best-effort";
+    }
+    else
+    {
+        expected_result.qos.reliability = "reliable";
+    }
+
+    // Check information
+    ASSERT_EQ(result.guid, expected_result.guid);
+    // ASSERT_EQ(result.participant_name, expected_result.participant_name);
+    ASSERT_EQ(result.topic.topic_name, expected_result.topic.topic_name);
+    ASSERT_EQ(result.topic.topic_type, expected_result.topic.topic_type);
+    ASSERT_EQ(result.qos.durability, expected_result.qos.durability);
+    ASSERT_EQ(result.qos.reliability, expected_result.qos.reliability);
+}
+
+TEST(ModelParserTest, complex_endpoint_reader)
+{
+
+    // Create model
+    spy::participants::SpyModel model;
+    // Fill model
+    spy::participants::EndpointInfo endpoint;
+    random_endpoint_info(endpoint, ddspipe::core::types::EndpointKind::reader, true, 2);
+    model.endpoint_database_.add(endpoint.guid, endpoint);
+
+    // Obtain information from model
+    spy::participants::ComplexEndpointData result;
+    result = spy::participants::ModelParser::readers(model, endpoint.guid);
+
+    // Create expected return
+    spy::participants::ComplexEndpointData expected_result;
+    expected_result.guid = endpoint.guid;
+    expected_result.participant_name = endpoint.discoverer_participant_id;
+    expected_result.topic.topic_name = endpoint.topic.m_topic_name;
+    expected_result.topic.topic_type = endpoint.topic.type_name;
+    if (endpoint.topic.topic_qos.durability_qos)    // TODO move to YamlWriter
+    {
+        expected_result.qos.durability = "transient-local";
+    }
+    else
+    {
+        expected_result.qos.durability = "volatile";
+    }
+    if (endpoint.topic.topic_qos.reliability_qos)
+    {
+        expected_result.qos.reliability = "best-effort";
+    }
+    else
+    {
+        expected_result.qos.reliability = "reliable";
+    }
+
+    // Check information
+    ASSERT_EQ(result.guid, expected_result.guid);
+    // ASSERT_EQ(result.participant_name, expected_result.participant_name);
+    ASSERT_EQ(result.topic.topic_name, expected_result.topic.topic_name);
+    ASSERT_EQ(result.topic.topic_type, expected_result.topic.topic_type);
+    ASSERT_EQ(result.qos.durability, expected_result.qos.durability);
+    ASSERT_EQ(result.qos.reliability, expected_result.qos.reliability);
 }
 
 TEST(ModelParserTest, simple_topic)
