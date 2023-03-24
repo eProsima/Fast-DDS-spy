@@ -74,17 +74,17 @@ TEST(ModelParserTest, simple_participant_two_participants)
     // Fill model
     ddspipe::core::types::Guid guid_data1 = ddspipe::core::testing::random_guid();
     spy::participants::ParticipantInfo participant1 = {
-                                                        "hello1",
-                                                        guid_data1,
-                                                        true
-                                                    };
+        "hello1",
+        guid_data1,
+        true
+    };
     model.participant_database_.add(guid_data1, participant1);
     ddspipe::core::types::Guid guid_data2 = ddspipe::core::testing::random_guid();
     spy::participants::ParticipantInfo participant2 = {
-                                                        "hello2",
-                                                        guid_data2,
-                                                        true
-                                                    };
+        "hello2",
+        guid_data2,
+        true
+    };
     model.participant_database_.add(guid_data2, participant2);
 
     // Obtain information from model
@@ -256,14 +256,14 @@ TEST(ModelParserTest, simple_endpoint_writer)
     // Create expected return
     std::vector<spy::participants::SimpleEndpointData> expected_result;
     expected_result.push_back({
-                                endpoint.guid,
-                                endpoint.discoverer_participant_id,
-                                {
-                                    endpoint.topic.m_topic_name,
-                                    endpoint.topic.type_name
-                                }
+        endpoint.guid,
+        endpoint.discoverer_participant_id,
+        {
+            endpoint.topic.m_topic_name,
+            endpoint.topic.type_name
+        }
 
-                            });
+    });
 
     // Check information
     ASSERT_EQ(result[0].guid, expected_result[0].guid);
@@ -287,13 +287,13 @@ TEST(ModelParserTest, simple_endpoint_reader)
     // Create expected return
     std::vector<spy::participants::SimpleEndpointData> expected_result;
     expected_result.push_back({
-                                endpoint.guid,
-                                endpoint.discoverer_participant_id,
-                                {
-                                    endpoint.topic.m_topic_name,
-                                    endpoint.topic.type_name
-                                }
-                            });
+        endpoint.guid,
+        endpoint.discoverer_participant_id,
+        {
+            endpoint.topic.m_topic_name,
+            endpoint.topic.type_name
+        }
+    });
 
     // Check information
     ASSERT_EQ(result[0].guid, expected_result[0].guid);
@@ -578,15 +578,15 @@ TEST(ModelParserTest, simple_topic)
     // Create expected return
     std::vector<spy::participants::SimpleTopicData> expected_result;
     expected_result.push_back({
-                                topic.m_topic_name,
-                                topic.type_name,
-                                2,
-                                1,
-                                {
-                                    10,
-                                    "Hz"
-                                }
-                            });
+        topic.m_topic_name,
+        topic.type_name,
+        2,
+        1,
+        {
+            10,
+            "Hz"
+        }
+    });
 
     // Check information
     ASSERT_EQ(result[0].name, expected_result[0].name);
