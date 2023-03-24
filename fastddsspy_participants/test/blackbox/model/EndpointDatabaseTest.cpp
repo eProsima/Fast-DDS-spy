@@ -136,14 +136,16 @@ std::shared_ptr<DdsPipe> create_pipe(
 }
 
 void random_endpoint_info(
-        spy::participants::EndpointInfoData& participant_data,
+        spy::participants::EndpointInfo& endpoint_data,
+        ddspipe::core::types::EndpointKind kind = ddspipe::core::types::EndpointKind::invalid,
         bool active = true,
-        unsigned int seed = 0)
+        unsigned int seed = 0,
+        ddspipe::core::types::DdsTopic topic = ddspipe::core::testing::random_dds_topic(rand() % 15))
 {
-    participant_data.info.active = active;
-    participant_data.info.guid = ddspipe::core::testing::random_guid(seed);
-    participant_data.info.topic.m_topic_name = "__internal__/endpoint_info";
-    participant_data.info.topic.type_name = "__internal__::endpoint_info";
+    endpoint_data.active = active;
+    endpoint_data.kind = kind;
+    endpoint_data.guid = ddspipe::core::testing::random_guid(seed);
+    endpoint_data.topic = topic;
 }
 
 TEST(EndpointDatabaseTest, trivial)
