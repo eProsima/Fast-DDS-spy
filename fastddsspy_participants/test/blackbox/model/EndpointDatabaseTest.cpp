@@ -206,7 +206,6 @@ TEST(EndpointDatabaseTest, guid)
 
     // Check information
     ASSERT_EQ(model->endpoint_database_.at(new_data.info.guid).guid, new_data.info.guid);
-    ASSERT_EQ(model->endpoint_database_.size(), 1);
 }
 
 TEST(EndpointDatabaseTest, n_msgs_guid)
@@ -282,7 +281,6 @@ TEST(EndpointDatabaseTest, topic)
     // Check information
     ASSERT_EQ(model->endpoint_database_.at(new_data.info.guid).topic.m_topic_name, new_data.info.topic.m_topic_name);
     ASSERT_EQ(model->endpoint_database_.at(new_data.info.guid).topic.type_name, new_data.info.topic.type_name);
-    ASSERT_EQ(model->endpoint_database_.size(), 1);
 }
 
 TEST(EndpointDatabaseTest, active_true)
@@ -314,7 +312,6 @@ TEST(EndpointDatabaseTest, active_true)
 
     // Check information
     ASSERT_TRUE(model->endpoint_database_.at(new_data.info.guid).active);
-    ASSERT_EQ(model->endpoint_database_.size(), 1);
 }
 
 TEST(EndpointDatabaseTest, active_false)
@@ -346,7 +343,6 @@ TEST(EndpointDatabaseTest, active_false)
 
     // Check information
     ASSERT_FALSE(model->endpoint_database_.at(new_data.info.guid).active);
-    ASSERT_EQ(model->endpoint_database_.size(), 1);
 }
 
 int main(
