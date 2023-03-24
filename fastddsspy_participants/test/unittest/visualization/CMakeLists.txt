@@ -33,6 +33,7 @@ set(TEST_LIST
         complex_endpoint_writer
         complex_endpoint_reader
         simple_topic
+        topics_verbose
         complex_topic
     )
 

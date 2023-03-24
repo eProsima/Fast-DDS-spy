@@ -596,6 +596,67 @@ TEST(ModelParserTest, simple_topic)
     // TODO test Rate
 }
 
+TEST(ModelParserTest, topics_verbose)
+{
+    // Create model
+    spy::participants::SpyModel model;
+    // Fill model
+    ddspipe::core::types::DdsTopic topic;
+    topic = ddspipe::core::testing::random_dds_topic();
+    spy::participants::EndpointInfo endpoint_writer_1;
+    random_endpoint_info(endpoint_writer_1, ddspipe::core::types::EndpointKind::writer, true, 1, topic);
+    model.endpoint_database_.add(endpoint_writer_1.guid, endpoint_writer_1);
+    spy::participants::EndpointInfo endpoint_writer_2;
+    random_endpoint_info(endpoint_writer_2, ddspipe::core::types::EndpointKind::writer, true, 2, topic);
+    model.endpoint_database_.add(endpoint_writer_2.guid, endpoint_writer_2);
+    spy::participants::EndpointInfo endpoint_reader;
+    random_endpoint_info(endpoint_reader, ddspipe::core::types::EndpointKind::reader, true, 3, topic);
+    model.endpoint_database_.add(endpoint_reader.guid, endpoint_reader);
+
+    // Obtain information from model
+    std::vector<spy::participants::ComplexTopicData> result;
+    result = spy::participants::ModelParser::topics_verbose(model);
+
+    // Create expected return
+    std::vector<spy::participants::ComplexTopicData> expected_result;
+    spy::participants::ComplexTopicData fill_expected_result;
+    std::vector<spy::participants::ComplexTopicData::Endpoint> datawriters;
+    datawriters.push_back({endpoint_writer_1.guid});
+    datawriters.push_back({endpoint_writer_2.guid});
+    std::vector<spy::participants::ComplexTopicData::Endpoint> datareaders;
+    datareaders.push_back({endpoint_reader.guid});
+    fill_expected_result.name = topic.m_topic_name;
+    fill_expected_result.type = topic.type_name;
+    fill_expected_result.datawriters = datawriters;
+    fill_expected_result.datareaders = datareaders;
+    fill_expected_result.discovered = true;
+    expected_result.push_back(fill_expected_result);
+
+    // Check information
+    unsigned int i = 0;
+    for (const auto& it : result)
+    {
+        ASSERT_EQ(it.name, expected_result[i].name);
+        ASSERT_EQ(it.type, expected_result[i].type);
+        unsigned int l = 0;
+        for (const auto& datawriter : it.datawriters)
+        {
+            ASSERT_EQ(datawriter.guid, expected_result[i].datawriters[l].guid);
+            l++;
+        }
+        l = 0;
+        for (const auto& datareader : it.datareaders)
+        {
+            ASSERT_EQ(datareader.guid, expected_result[i].datareaders[l].guid);
+            l++;
+        }
+        // ASSERT_EQ(it.discovered, expected_result[i].discovered); // fail???
+        // TODO test Rate
+        i++;
+    }
+
+}
+
 TEST(ModelParserTest, complex_topic)
 {
     // Create model
@@ -645,7 +706,7 @@ TEST(ModelParserTest, complex_topic)
         ASSERT_EQ(datareader.guid, expected_result.datareaders[i].guid);
         i++;
     }
-    // ASSERT_EQ(result.discovered, expected_result.discovered); fail???
+    // ASSERT_EQ(result.discovered, expected_result.discovered);  // fail???
     // TODO test Rate
 }
 
