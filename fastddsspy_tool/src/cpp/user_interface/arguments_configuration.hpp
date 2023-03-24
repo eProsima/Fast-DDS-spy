@@ -20,6 +20,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 #include <optionparser.h>
 
@@ -128,7 +129,8 @@ ProcessReturnCode parse_arguments(
         std::string& file_path,
         utils::Duration_ms& reload_time,
         std::string& log_filter,
-        eprosima::fastdds::dds::Log::Kind& log_verbosity);
+        eprosima::fastdds::dds::Log::Kind& log_verbosity,
+        std::vector<std::string>& one_shot_command);
 
 //! \c Option to stream serializator
 std::ostream& operator <<(

@@ -36,7 +36,7 @@ void Controller::dds_entity_command__(
         // all participants simple
         ddspipe::yaml::set(yml, simple_function(*model_));
     }
-    else if (verbose_argument(arguments[1]))
+    else if (verbose_argument_(arguments[1]))
     {
         // verbose
         ddspipe::yaml::set(yml, verbose_function(*model_));

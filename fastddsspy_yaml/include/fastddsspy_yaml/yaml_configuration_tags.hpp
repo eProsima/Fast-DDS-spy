@@ -34,6 +34,7 @@ constexpr const char* DDS_TAG("dds");
 // Specs related tags
 ////////////////////////
 constexpr const char* SPECS_TAG("specs");
+constexpr const char* GATHERING_TIME_TAG("discovery-time");
 
 } /* namespace yaml */
 } /* namespace spy */

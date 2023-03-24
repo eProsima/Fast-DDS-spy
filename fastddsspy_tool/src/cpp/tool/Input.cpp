@@ -47,5 +47,21 @@ void Input::wait_something()
     reader_.read_next_command(_);
 }
 
+utils::Command<CommandValue> Input::parse_as_command(
+        const std::vector<std::string>& args)
+{
+    // TODO use the cpp_utils method once it is merged
+    utils::Command<CommandValue> command;
+    // Set args in command, and the enum value will be set string_to_enumeration
+    command.arguments = args;
+    // Check if command exists
+    auto res = CommandBuilder::get_instance()->string_to_enumeration(command.arguments[0], command.command);
+    if (!res)
+    {
+        command.command = CommandValue::error_input;
+    }
+    return command;
+}
+
 } /* namespace spy */
 } /* namespace eprosima */

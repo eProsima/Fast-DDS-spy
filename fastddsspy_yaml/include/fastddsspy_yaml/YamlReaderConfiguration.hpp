@@ -15,6 +15,7 @@
 #pragma once
 
 #include <cpp_utils/memory/Heritable.hpp>
+#include <cpp_utils/time/time_utils.hpp>
 
 #include <ddspipe_core/types/topic/filter/IFilterTopic.hpp>
 #include <ddspipe_core/types/topic/dds/DistributedTopic.hpp>
@@ -65,6 +66,7 @@ public:
 
     // Specs
     unsigned int n_threads = 12;
+    utils::Duration_ms one_shot_wait_time_ms = 1000;
 
 protected:
 

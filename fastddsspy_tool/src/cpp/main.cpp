@@ -58,9 +58,19 @@ int main(
     std::string log_filter = "(DDSPIPE|FASTDDSSPY)";
     eprosima::fastdds::dds::Log::Kind log_verbosity = eprosima::fastdds::dds::Log::Kind::Warning;
 
+    // One shot command
+    std::vector<std::string> one_shot_command;
+
     // Parse arguments
     eprosima::spy::ProcessReturnCode arg_parse_result =
-            eprosima::spy::parse_arguments(argc, argv, file_path, reload_time, log_filter, log_verbosity);
+            eprosima::spy::parse_arguments(
+        argc,
+        argv,
+        file_path,
+        reload_time,
+        log_filter,
+        log_verbosity,
+        one_shot_command);
 
     if (arg_parse_result == eprosima::spy::ProcessReturnCode::help_argument)
     {
@@ -204,7 +214,15 @@ int main(
                             reload_time);
         }
 
-        spy.run();
+        // If one-shot is required, do one shot run. Otherwise run along
+        if (one_shot_command.empty())
+        {
+            spy.run();
+        }
+        else
+        {
+            spy.one_shot_run(one_shot_command);
+        }
 
         // Before stopping the Fast DDS Spy erase event handlers that reload configuration
         if (periodic_handler)

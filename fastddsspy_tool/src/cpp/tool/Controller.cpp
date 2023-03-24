@@ -40,55 +40,26 @@ Controller::Controller(
     : backend_(configuration)
     , model_(backend_.model())
 {
-    view_.print_initial();
+    // Do nothing
 }
 
 void Controller::run()
 {
+    view_.print_initial();
     utils::Command<CommandValue> command;
     command.command = CommandValue::participant;
     while (command.command != CommandValue::exit)
     {
         command = input_.wait_next_command();
-
-        switch (command.command)
-        {
-            case CommandValue::participant:
-                participants_command(command.arguments);
-                break;
-
-            case CommandValue::datareader:
-                readers_command(command.arguments);
-                break;
-
-            case CommandValue::datawriter:
-                writers_command(command.arguments);
-                break;
-
-            case CommandValue::topic:
-                topics_command(command.arguments);
-                break;
-
-            case CommandValue::print:
-                print_command(command.arguments);
-                break;
-
-            case CommandValue::version:
-                version_command(command.arguments);
-                break;
-
-            case CommandValue::help:
-                help_command(command.arguments);
-                break;
-
-            case CommandValue::error_input:
-                error_command(command.arguments);
-                break;
-
-            default:
-                break;
-        }
+        run_command_(command);
     }
+}
+
+void Controller::one_shot_run(
+        const std::vector<std::string>& args)
+{
+    utils::sleep_for(configuration_.one_shot_wait_time_ms);
+    run_command_(input_.parse_as_command(args));
 }
 
 utils::ReturnCode Controller::reload_allowed_topics(
@@ -97,7 +68,49 @@ utils::ReturnCode Controller::reload_allowed_topics(
     return backend_.reload_allowed_topics(allowed_topics);
 }
 
-fastrtps::types::DynamicData_ptr Controller::get_dynamic_data(
+void Controller::run_command_(
+        const utils::Command<CommandValue>& command)
+{
+    switch (command.command)
+    {
+        case CommandValue::participant:
+            participants_command_(command.arguments);
+            break;
+
+        case CommandValue::datareader:
+            readers_command_(command.arguments);
+            break;
+
+        case CommandValue::datawriter:
+            writers_command_(command.arguments);
+            break;
+
+        case CommandValue::topic:
+            topics_command_(command.arguments);
+            break;
+
+        case CommandValue::print:
+            print_command_(command.arguments);
+            break;
+
+        case CommandValue::version:
+            version_command_(command.arguments);
+            break;
+
+        case CommandValue::help:
+            help_command_(command.arguments);
+            break;
+
+        case CommandValue::error_input:
+            error_command_(command.arguments);
+            break;
+
+        default:
+            break;
+    }
+}
+
+fastrtps::types::DynamicData_ptr Controller::get_dynamic_data_(
         const fastrtps::types::DynamicType_ptr& dyn_type,
         const ddspipe::core::types::RtpsPayloadData& data) noexcept
 {
@@ -119,7 +132,7 @@ void Controller::data_stream_callback_(
         const ddspipe::core::types::RtpsPayloadData& data)
 {
     // Get deserializad data
-    auto dyn_data = get_dynamic_data(dyn_type, data);
+    auto dyn_data = get_dynamic_data_(dyn_type, data);
 
     // TODO this does not make much sense as print does not allow to choose target
     // change in dyn types to be able to print it in view
@@ -146,7 +159,7 @@ void Controller::data_stream_callback_verbose_(
     view_.show(yml);
 
     // Get deserializad data
-    auto dyn_data = get_dynamic_data(dyn_type, data);
+    auto dyn_data = get_dynamic_data_(dyn_type, data);
 
     // Print data
     view_.show("data:\n---");
@@ -154,7 +167,7 @@ void Controller::data_stream_callback_verbose_(
     view_.show("---\n");
 }
 
-bool Controller::verbose_argument(
+bool Controller::verbose_argument_(
         const std::string& argument) const noexcept
 {
     return (
@@ -165,7 +178,7 @@ bool Controller::verbose_argument(
         || (argument == "V"));
 }
 
-bool Controller::all_argument(
+bool Controller::all_argument_(
         const std::string& argument) const noexcept
 {
     return (
@@ -173,7 +186,7 @@ bool Controller::all_argument(
         || (argument == "a"));
 }
 
-void Controller::participants_command(
+void Controller::participants_command_(
         const std::vector<std::string>& arguments) noexcept
 {
     dds_entity_command__(
@@ -194,7 +207,7 @@ void Controller::participants_command(
         );
 }
 
-void Controller::writers_command(
+void Controller::writers_command_(
         const std::vector<std::string>& arguments) noexcept
 {
     dds_entity_command__(
@@ -215,7 +228,7 @@ void Controller::writers_command(
         );
 }
 
-void Controller::readers_command(
+void Controller::readers_command_(
         const std::vector<std::string>& arguments) noexcept
 {
     dds_entity_command__(
@@ -236,7 +249,7 @@ void Controller::readers_command(
         );
 }
 
-void Controller::topics_command(
+void Controller::topics_command_(
         const std::vector<std::string>& arguments) noexcept
 {
     Yaml yml;
@@ -246,7 +259,7 @@ void Controller::topics_command(
         // all participants simple
         ddspipe::yaml::set(yml, participants::ModelParser::topics(*model_));
     }
-    else if (verbose_argument(arguments[1]))
+    else if (verbose_argument_(arguments[1]))
     {
         // verbose
         ddspipe::yaml::set(yml, participants::ModelParser::topics_verbose(*model_));
@@ -267,7 +280,7 @@ void Controller::topics_command(
     view_.show(yml);
 }
 
-void Controller::print_command(
+void Controller::print_command_(
         const std::vector<std::string>& arguments) noexcept
 {
     // Check the number of arguments is correct
@@ -281,7 +294,7 @@ void Controller::print_command(
     }
 
     // Print all data
-    if (all_argument(arguments[1]))
+    if (all_argument_(arguments[1]))
     {
         bool activated = model_->activate_all(
             std::make_shared<participants::DataStreamer::CallbackType>(
@@ -330,7 +343,7 @@ void Controller::print_command(
         bool verbose = false;
         if (arguments.size() >= 3)
         {
-            verbose = verbose_argument(arguments[2]);
+            verbose = verbose_argument_(arguments[2]);
         }
 
         std::shared_ptr<participants::DataStreamer::CallbackType> callback;
@@ -380,7 +393,7 @@ void Controller::print_command(
     model_->deactivate();
 }
 
-void Controller::version_command(
+void Controller::version_command_(
         const std::vector<std::string>& arguments) noexcept
 {
     view_.show(STR_ENTRY
@@ -390,7 +403,7 @@ void Controller::version_command(
             << FASTDDSSPY_PARTICIPANTS_COMMIT_HASH);
 }
 
-void Controller::help_command(
+void Controller::help_command_(
         const std::vector<std::string>& arguments) noexcept
 {
     // TODO
@@ -398,7 +411,7 @@ void Controller::help_command(
             << "<" << arguments[0] << "> command is not implemented yet. Please be patient.");
 }
 
-void Controller::error_command(
+void Controller::error_command_(
         const std::vector<std::string>& arguments) noexcept
 {
     view_.show_error(STR_ENTRY

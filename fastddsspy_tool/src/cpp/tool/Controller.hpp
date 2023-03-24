@@ -38,14 +38,20 @@ public:
 
     void run();
 
+    void one_shot_run(
+            const std::vector<std::string>& args);
+
     utils::ReturnCode reload_allowed_topics(
             const std::shared_ptr<ddspipe::core::AllowedTopicList>& allowed_topics);
 
 protected:
 
+    void run_command_(
+            const utils::Command<CommandValue>& command);
+
     ////////////////////////////
     // DATA STREAM CALLBACKS
-    static fastrtps::types::DynamicData_ptr get_dynamic_data(
+    static fastrtps::types::DynamicData_ptr get_dynamic_data_(
             const fastrtps::types::DynamicType_ptr& dyn_type,
             const ddspipe::core::types::RtpsPayloadData& data) noexcept;
 
@@ -61,10 +67,10 @@ protected:
 
     /////////////////////
     // PARSE ARGUMENTS
-    bool verbose_argument(
+    bool verbose_argument_(
             const std::string& argument) const noexcept;
 
-    bool all_argument(
+    bool all_argument_(
             const std::string& argument) const noexcept;
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -72,27 +78,27 @@ protected:
 
     /////////////////////
     // ENTITIES
-    void participants_command(
+    void participants_command_(
             const std::vector<std::string>& arguments) noexcept;
-    void writers_command(
+    void writers_command_(
             const std::vector<std::string>& arguments) noexcept;
-    void readers_command(
+    void readers_command_(
             const std::vector<std::string>& arguments) noexcept;
-    void topics_command(
+    void topics_command_(
             const std::vector<std::string>& arguments) noexcept;
 
     /////////////////////
     // DATA STREAM
-    void print_command(
+    void print_command_(
             const std::vector<std::string>& arguments) noexcept;
 
     /////////////////////
     // AUXILIARY
-    void version_command(
+    void version_command_(
             const std::vector<std::string>& arguments) noexcept;
-    void help_command(
+    void help_command_(
             const std::vector<std::string>& arguments) noexcept;
-    void error_command(
+    void error_command_(
             const std::vector<std::string>& arguments) noexcept;
 
     /////////////////////
@@ -104,6 +110,8 @@ protected:
     View view_;
 
     std::shared_ptr<eprosima::spy::participants::SpyModel> model_;
+
+    yaml::Configuration configuration_;
 
 private:
 
