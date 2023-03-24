@@ -24,7 +24,9 @@
 
 using namespace eprosima;
 
-void create_schema(ddspipe::core::types::DdsTopic& topic, fastrtps::types::DynamicType_ptr& dynamic_type_topic)
+void create_schema(
+        ddspipe::core::types::DdsTopic& topic,
+        fastrtps::types::DynamicType_ptr& dynamic_type_topic)
 {
     fastrtps::types::DynamicTypeBuilder_ptr dynamic_type_topic_builder;
     dynamic_type_topic_builder = fastrtps::types::DynamicTypeBuilderFactory::get_instance()->create_struct_builder();
@@ -41,7 +43,7 @@ TEST(DataStreamerTest, activate_false)
     topic.type_name = "type1";
 
     std::shared_ptr<spy::participants::DataStreamer::CallbackType> cb =
-        std::make_shared<spy::participants::DataStreamer::CallbackType>();
+            std::make_shared<spy::participants::DataStreamer::CallbackType>();
 
     ASSERT_FALSE(ds.activate(topic, cb));
 }
@@ -54,7 +56,7 @@ TEST(DataStreamerTest, activate_true)
     topic.type_name = "type1";
 
     std::shared_ptr<spy::participants::DataStreamer::CallbackType> cb =
-        std::make_shared<spy::participants::DataStreamer::CallbackType>();
+            std::make_shared<spy::participants::DataStreamer::CallbackType>();
 
     fastrtps::types::DynamicType_ptr dynamic_type_topic;
     create_schema(topic, dynamic_type_topic);
@@ -73,7 +75,7 @@ TEST(DataStreamerTest, activate_twice)
     topic_1.type_name = "type1";
 
     std::shared_ptr<spy::participants::DataStreamer::CallbackType> cb =
-        std::make_shared<spy::participants::DataStreamer::CallbackType>();
+            std::make_shared<spy::participants::DataStreamer::CallbackType>();
 
     fastrtps::types::DynamicType_ptr dynamic_type_topic_1;
     create_schema(topic_1, dynamic_type_topic_1);
@@ -126,9 +128,9 @@ TEST(DataStreamerTest, deactivate)
     std::atomic<uint32_t> data_sent(0);
 
     std::shared_ptr<spy::participants::DataStreamer::CallbackType> cb =
-        std::make_shared<spy::participants::DataStreamer::CallbackType>(
+            std::make_shared<spy::participants::DataStreamer::CallbackType>(
         [&data_sent]
-        (const ddspipe::core::types::DdsTopic& topic,
+            (const ddspipe::core::types::DdsTopic& topic,
         const fastrtps::types::DynamicType_ptr& type,
         const ddspipe::core::types::RtpsPayloadData& data)
         {
@@ -173,9 +175,9 @@ TEST(DataStreamerTest, add_data)
     std::atomic<uint32_t> data_sent(0);
 
     std::shared_ptr<spy::participants::DataStreamer::CallbackType> cb =
-        std::make_shared<spy::participants::DataStreamer::CallbackType>(
+            std::make_shared<spy::participants::DataStreamer::CallbackType>(
         [&data_sent]
-        (const ddspipe::core::types::DdsTopic& topic,
+            (const ddspipe::core::types::DdsTopic& topic,
         const fastrtps::types::DynamicType_ptr& type,
         const ddspipe::core::types::RtpsPayloadData& data)
         {
@@ -212,9 +214,9 @@ TEST(DataStreamerTest, add_data_two_topics)
     std::atomic<uint32_t> data_sent_1(0);
 
     std::shared_ptr<spy::participants::DataStreamer::CallbackType> cb_1 =
-        std::make_shared<spy::participants::DataStreamer::CallbackType>(
+            std::make_shared<spy::participants::DataStreamer::CallbackType>(
         [&data_sent_1]
-        (const ddspipe::core::types::DdsTopic& topic,
+            (const ddspipe::core::types::DdsTopic& topic,
         const fastrtps::types::DynamicType_ptr& type,
         const ddspipe::core::types::RtpsPayloadData& data)
         {
@@ -235,9 +237,9 @@ TEST(DataStreamerTest, add_data_two_topics)
     std::atomic<uint32_t> data_sent_2(0);
 
     std::shared_ptr<spy::participants::DataStreamer::CallbackType> cb_2 =
-        std::make_shared<spy::participants::DataStreamer::CallbackType>(
+            std::make_shared<spy::participants::DataStreamer::CallbackType>(
         [&data_sent_2]
-        (const ddspipe::core::types::DdsTopic& topic,
+            (const ddspipe::core::types::DdsTopic& topic,
         const fastrtps::types::DynamicType_ptr& type,
         const ddspipe::core::types::RtpsPayloadData& data)
         {

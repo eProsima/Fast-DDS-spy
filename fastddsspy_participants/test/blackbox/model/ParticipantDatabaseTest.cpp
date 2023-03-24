@@ -42,7 +42,7 @@ public:
     //! Constructor with Id of this participant
     SpyDdsParticipantMock(
             const types::ParticipantId& id)
-            : ddspipe::participants::BlankParticipant(id)
+        : ddspipe::participants::BlankParticipant(id)
     {
     }
 
@@ -66,15 +66,15 @@ public:
     }
 
     std::shared_ptr<ddspipe::participants::InternalReader> participant_reader =
-        std::make_shared<ddspipe::participants::InternalReader>(id_);
+            std::make_shared<ddspipe::participants::InternalReader>(id_);
 
 };
 
-}
+} // namespace test
 
 std::shared_ptr<DdsPipe> create_pipe(
-    std::shared_ptr<spy::participants::SpyModel>& model,
-    std::shared_ptr<test::SpyDdsParticipantMock>& dds_participant)
+        std::shared_ptr<spy::participants::SpyModel>& model,
+        std::shared_ptr<test::SpyDdsParticipantMock>& dds_participant)
 {
     // Create Payload Pool
     std::shared_ptr<PayloadPool> payload_pool =
@@ -90,13 +90,13 @@ std::shared_ptr<DdsPipe> create_pipe(
 
     // Create participants
     std::shared_ptr<spy::participants::SpyParticipantConfiguration> spy_configuration =
-        std::make_shared<spy::participants::SpyParticipantConfiguration>();
+            std::make_shared<spy::participants::SpyParticipantConfiguration>();
     std::shared_ptr<spy::participants::SpyParticipant> spy_participant =
             std::make_shared<spy::participants::SpyParticipant>(
-                spy_configuration,
-                payload_pool,
-                discovery_database,
-                model);
+        spy_configuration,
+        payload_pool,
+        discovery_database,
+        model);
 
     participant_database->add_participant(
         spy_participant->id(),
@@ -112,8 +112,8 @@ std::shared_ptr<DdsPipe> create_pipe(
     std::set<utils::Heritable<types::IFilterTopic>> lists = {};
     std::shared_ptr<AllowedTopicList> allowed_topics =
             std::make_shared<AllowedTopicList>(
-                lists,
-                lists);
+        lists,
+        lists);
 
     // Create Thread Pool
     unsigned int n_threads = 12;
@@ -124,21 +124,21 @@ std::shared_ptr<DdsPipe> create_pipe(
     std::set<utils::Heritable<types::DistributedTopic>> builtin_topics = {};
     std::shared_ptr<DdsPipe> pipe =
             std::make_unique<DdsPipe>(
-                allowed_topics,
-                discovery_database,
-                payload_pool,
-                participant_database,
-                thread_pool,
-                builtin_topics,
-                true
-                );
+        allowed_topics,
+        discovery_database,
+        payload_pool,
+        participant_database,
+        thread_pool,
+        builtin_topics,
+        true
+        );
     return pipe;
 }
 
 void random_participant_info(
-    spy::participants::ParticipantInfoData& participant_data,
-    bool active = true,
-    unsigned int seed = 0)
+        spy::participants::ParticipantInfoData& participant_data,
+        bool active = true,
+        unsigned int seed = 0)
 {
     participant_data.info.name = ddspipe::core::testing::random_participant_id();
     participant_data.info.active = active;
