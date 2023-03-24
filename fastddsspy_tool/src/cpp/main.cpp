@@ -64,13 +64,13 @@ int main(
     // Parse arguments
     eprosima::spy::ProcessReturnCode arg_parse_result =
             eprosima::spy::parse_arguments(
-                argc,
-                argv,
-                file_path,
-                reload_time,
-                log_filter,
-                log_verbosity,
-                one_shot_command);
+        argc,
+        argv,
+        file_path,
+        reload_time,
+        log_filter,
+        log_verbosity,
+        one_shot_command);
 
     if (arg_parse_result == eprosima::spy::ProcessReturnCode::help_argument)
     {

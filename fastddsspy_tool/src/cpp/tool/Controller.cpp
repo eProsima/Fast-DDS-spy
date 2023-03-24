@@ -55,7 +55,8 @@ void Controller::run()
     }
 }
 
-void Controller::one_shot_run(const std::vector<std::string>& args)
+void Controller::one_shot_run(
+        const std::vector<std::string>& args)
 {
     utils::sleep_for(configuration_.one_shot_wait_time_ms);
     run_command_(input_.parse_as_command(args));

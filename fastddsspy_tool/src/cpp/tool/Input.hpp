@@ -31,7 +31,8 @@ public:
 
     void wait_something();
 
-    utils::Command<CommandValue> parse_as_command(const std::vector<std::string>& args);
+    utils::Command<CommandValue> parse_as_command(
+            const std::vector<std::string>& args);
 
 protected:
 

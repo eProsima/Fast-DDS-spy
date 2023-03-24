@@ -47,7 +47,8 @@ void Input::wait_something()
     reader_.read_next_command(_);
 }
 
-utils::Command<CommandValue> Input::parse_as_command(const std::vector<std::string>& args)
+utils::Command<CommandValue> Input::parse_as_command(
+        const std::vector<std::string>& args)
 {
     // TODO use the cpp_utils method once it is merged
     utils::Command<CommandValue> command;

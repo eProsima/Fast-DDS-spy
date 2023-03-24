@@ -203,7 +203,7 @@ ProcessReturnCode parse_arguments(
     }
 
     // Unknown args provided
-    for (int i=0; i < parse.nonOptionsCount(); ++i)
+    for (int i = 0; i < parse.nonOptionsCount(); ++i)
     {
         one_shot_command.push_back(parse.nonOption(i));
     }

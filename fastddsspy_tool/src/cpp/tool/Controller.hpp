@@ -38,14 +38,16 @@ public:
 
     void run();
 
-    void one_shot_run(const std::vector<std::string>& args);
+    void one_shot_run(
+            const std::vector<std::string>& args);
 
     utils::ReturnCode reload_allowed_topics(
             const std::shared_ptr<ddspipe::core::AllowedTopicList>& allowed_topics);
 
 protected:
 
-    void run_command_(const utils::Command<CommandValue>& command);
+    void run_command_(
+            const utils::Command<CommandValue>& command);
 
     ////////////////////////////
     // DATA STREAM CALLBACKS
