@@ -1,0 +1,3 @@
+# DDS Domain - Optional (Default: 0)
+dds:
+  domain: 0
