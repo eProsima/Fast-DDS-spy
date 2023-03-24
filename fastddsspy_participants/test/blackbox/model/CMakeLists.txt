@@ -72,6 +72,8 @@ set(TEST_LIST
         topic
         active_true
         active_false
+        is_writer
+        is_reader
     )
 
 set(TEST_EXTRA_LIBRARIES
