@@ -22,6 +22,7 @@ all_library_sources("${TEST_SOURCES}")
 set(TEST_LIST
         simple_participant
         simple_participant_two_participants
+        participants_verbose
         complex_participant
         simple_endpoint_writer
         simple_endpoint_reader

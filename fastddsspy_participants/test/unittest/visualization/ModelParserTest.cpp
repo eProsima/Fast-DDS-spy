@@ -106,6 +106,76 @@ TEST(ModelParserTest, simple_participant_two_participants)
 
 }
 
+TEST(ModelParserTest, participants_verbose)
+{
+    // Create model
+    spy::participants::SpyModel model;
+    // Fill model
+    // Participant
+    spy::participants::ParticipantInfo participant;
+    random_participant_info(participant);
+    model.participant_database_.add(participant.guid, participant);
+    // Endpoints
+    spy::participants::EndpointInfo endpoint_writer;
+    random_endpoint_info(endpoint_writer, ddspipe::core::types::EndpointKind::writer, true, 2);
+    model.endpoint_database_.add(endpoint_writer.guid, endpoint_writer);
+
+    spy::participants::EndpointInfo endpoint_reader;
+    random_endpoint_info(endpoint_reader, ddspipe::core::types::EndpointKind::reader, true, 3);
+    model.endpoint_database_.add(endpoint_reader.guid, endpoint_reader);
+
+    // Obtain information from model
+    std::vector<spy::participants::ComplexParticipantData> result;
+    result = spy::participants::ModelParser::participants_verbose(model);
+
+    // Create expected return
+    std::vector<spy::participants::ComplexParticipantData> expected_result;
+    spy::participants::ComplexParticipantData fill_expected_result;
+    spy::participants::ComplexParticipantData::Endpoint writers = {
+        endpoint_writer.topic.m_topic_name,
+        endpoint_writer.topic.type_name,
+        1
+    };
+    spy::participants::ComplexParticipantData::Endpoint readers = {
+        endpoint_reader.topic.m_topic_name,
+        endpoint_reader.topic.type_name,
+        1
+    };
+    fill_expected_result.guid = participant.guid;
+    fill_expected_result.name = participant.name;
+    fill_expected_result.readers.push_back(readers);
+    fill_expected_result.writers.push_back(writers);
+    expected_result.push_back(fill_expected_result);
+
+    // Check information
+    unsigned int i = 0;
+    for (const auto& it : result)
+    {
+        ASSERT_EQ(it.guid, expected_result[i].guid);
+        ASSERT_EQ(it.name, expected_result[i].name);
+        unsigned int l = 0;
+        for (const auto& writer : it.writers)
+        {
+            ASSERT_EQ(writer.topic_name, expected_result[i].writers[l].topic_name);
+            ASSERT_EQ(writer.topic_type, expected_result[i].writers[l].topic_type);
+            ASSERT_EQ(writer.number, expected_result[i].writers[l].number);
+            l++;
+        }
+        l = 0;
+        for (const auto& reader : it.readers)
+        {
+            ASSERT_EQ(reader.topic_name, expected_result[i].readers[l].topic_name);
+            ASSERT_EQ(reader.topic_type, expected_result[i].readers[l].topic_type);
+            ASSERT_EQ(reader.number, expected_result[i].readers[l].number);
+            l++;
+        }
+        i++;
+    }
+    ASSERT_EQ(model.participant_database_.size(), 1);
+    ASSERT_EQ(model.endpoint_database_.size(), 2);
+}
+
+
 TEST(ModelParserTest, complex_participant)
 {
     // Create model
