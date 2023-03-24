@@ -31,6 +31,7 @@ set(TEST_LIST
         complex_endpoint_writer
         complex_endpoint_reader
         simple_topic
+        complex_topic
     )
 
 set(TEST_EXTRA_LIBRARIES

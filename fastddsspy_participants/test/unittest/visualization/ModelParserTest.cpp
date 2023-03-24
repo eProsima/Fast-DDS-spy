@@ -343,6 +343,10 @@ TEST(ModelParserTest, complex_endpoint_writer)
     // Create model
     spy::participants::SpyModel model;
     // Fill model
+    spy::participants::ParticipantInfo participant;
+    random_participant_info(participant);
+    model.participant_database_.add(participant.guid, participant);
+
     spy::participants::EndpointInfo endpoint;
     random_endpoint_info(endpoint, ddspipe::core::types::EndpointKind::writer, true, 2);
     model.endpoint_database_.add(endpoint.guid, endpoint);
@@ -354,7 +358,7 @@ TEST(ModelParserTest, complex_endpoint_writer)
     // Create expected return
     spy::participants::ComplexEndpointData expected_result;
     expected_result.guid = endpoint.guid;
-    expected_result.participant_name = endpoint.discoverer_participant_id;
+    expected_result.participant_name = participant.name;
     expected_result.topic.topic_name = endpoint.topic.m_topic_name;
     expected_result.topic.topic_type = endpoint.topic.type_name;
     if (endpoint.topic.topic_qos.durability_qos)    // TODO move to YamlWriter
@@ -376,7 +380,7 @@ TEST(ModelParserTest, complex_endpoint_writer)
 
     // Check information
     ASSERT_EQ(result.guid, expected_result.guid);
-    // ASSERT_EQ(result.participant_name, expected_result.participant_name);
+    ASSERT_EQ(result.participant_name, expected_result.participant_name);
     ASSERT_EQ(result.topic.topic_name, expected_result.topic.topic_name);
     ASSERT_EQ(result.topic.topic_type, expected_result.topic.topic_type);
     ASSERT_EQ(result.qos.durability, expected_result.qos.durability);
@@ -389,6 +393,11 @@ TEST(ModelParserTest, complex_endpoint_reader)
     // Create model
     spy::participants::SpyModel model;
     // Fill model
+    spy::participants::ParticipantInfo participant;
+    random_participant_info(participant);
+    model.participant_database_.add(participant.guid, participant);
+
+
     spy::participants::EndpointInfo endpoint;
     random_endpoint_info(endpoint, ddspipe::core::types::EndpointKind::reader, true, 2);
     model.endpoint_database_.add(endpoint.guid, endpoint);
@@ -400,7 +409,7 @@ TEST(ModelParserTest, complex_endpoint_reader)
     // Create expected return
     spy::participants::ComplexEndpointData expected_result;
     expected_result.guid = endpoint.guid;
-    expected_result.participant_name = endpoint.discoverer_participant_id;
+    expected_result.participant_name = participant.name;
     expected_result.topic.topic_name = endpoint.topic.m_topic_name;
     expected_result.topic.topic_type = endpoint.topic.type_name;
     if (endpoint.topic.topic_qos.durability_qos)    // TODO move to YamlWriter
@@ -422,7 +431,7 @@ TEST(ModelParserTest, complex_endpoint_reader)
 
     // Check information
     ASSERT_EQ(result.guid, expected_result.guid);
-    // ASSERT_EQ(result.participant_name, expected_result.participant_name);
+    ASSERT_EQ(result.participant_name, expected_result.participant_name);
     ASSERT_EQ(result.topic.topic_name, expected_result.topic.topic_name);
     ASSERT_EQ(result.topic.topic_type, expected_result.topic.topic_type);
     ASSERT_EQ(result.qos.durability, expected_result.qos.durability);
@@ -468,6 +477,60 @@ TEST(ModelParserTest, simple_topic)
     ASSERT_EQ(result[0].type, expected_result[0].type);
     ASSERT_EQ(result[0].datawriters, expected_result[0].datawriters);
     ASSERT_EQ(result[0].datareaders, expected_result[0].datareaders);
+    // TODO test Rate
+}
+
+TEST(ModelParserTest, complex_topic)
+{
+    // Create model
+    spy::participants::SpyModel model;
+    // Fill model
+    ddspipe::core::types::DdsTopic topic;
+    topic = ddspipe::core::testing::random_dds_topic();
+    spy::participants::EndpointInfo endpoint_writer_1;
+    random_endpoint_info(endpoint_writer_1, ddspipe::core::types::EndpointKind::writer, true, 1, topic);
+    model.endpoint_database_.add(endpoint_writer_1.guid, endpoint_writer_1);
+    spy::participants::EndpointInfo endpoint_writer_2;
+    random_endpoint_info(endpoint_writer_2, ddspipe::core::types::EndpointKind::writer, true, 2, topic);
+    model.endpoint_database_.add(endpoint_writer_2.guid, endpoint_writer_2);
+    spy::participants::EndpointInfo endpoint_reader;
+    random_endpoint_info(endpoint_reader, ddspipe::core::types::EndpointKind::reader, true, 3, topic);
+    model.endpoint_database_.add(endpoint_reader.guid, endpoint_reader);
+
+    // Obtain information from model
+    spy::participants::ComplexTopicData result;
+    result = spy::participants::ModelParser::topics(model, topic.m_topic_name);
+
+    // Create expected return
+    std::vector<spy::participants::ComplexTopicData::Endpoint> datawriters;
+    datawriters.push_back({endpoint_writer_1.guid});
+    datawriters.push_back({endpoint_writer_2.guid});
+    std::vector<spy::participants::ComplexTopicData::Endpoint> datareaders;
+    datareaders.push_back({endpoint_reader.guid});
+    spy::participants::ComplexTopicData expected_result;
+    expected_result.name = topic.m_topic_name;
+    expected_result.type = topic.type_name;
+    expected_result.datawriters = datawriters;
+    expected_result.datareaders = datareaders;
+    expected_result.discovered = true;
+
+    // Check information
+    ASSERT_EQ(result.name, expected_result.name);
+    ASSERT_EQ(result.type, expected_result.type);
+    unsigned int i = 0;
+    for (const auto& datawriter : result.datawriters)
+    {
+        ASSERT_EQ(datawriter.guid, expected_result.datawriters[i].guid);
+        i++;
+    }
+    i = 0;
+    for (const auto& datareader : result.datareaders)
+    {
+        ASSERT_EQ(datareader.guid, expected_result.datareaders[i].guid);
+        i++;
+    }
+    // ASSERT_EQ(result.discovered, expected_result.discovered); fail???
+    // TODO test Rate
 }
 
 int main(
