@@ -26,16 +26,19 @@
    Docker Image </rst/installation/docker.rst>
 
 
-.. _index_spy_application:
+.. _index_user_manual:
 
 .. toctree::
-   :caption: Getting Started
+   :caption: User Manual
    :maxdepth: 2
    :numbered: 5
    :hidden:
 
-   /rst/interactive_application/getting_started/project_overview
-   /rst/interactive_application/getting_started/usage_example
+   /rst/user_manual/getting_started/usage_example
+   /rst/user_manual/tool.rst
+   /rst/user_manual/configuration.rst
+   /rst/user_manual/commands.rst
+   /rst/user_manual/output_format.rst
 
 .. _index_developer_manual:
 
