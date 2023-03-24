@@ -363,19 +363,19 @@ TEST(ModelParserTest, endpoint_reader_verbose)
     fill_expected_result.topic.topic_type = endpoint.topic.type_name;
     if (endpoint.topic.topic_qos.durability_qos)    // TODO move to YamlWriter
     {
-        fill_expected_result.qos.durability = "transient-local";
+        fill_expected_result.qos.durability = fastrtps::rtps::DurabilityKind_t::TRANSIENT_LOCAL;
     }
     else
     {
-        fill_expected_result.qos.durability = "volatile";
+        fill_expected_result.qos.durability = fastrtps::rtps::DurabilityKind_t::VOLATILE;
     }
     if (endpoint.topic.topic_qos.reliability_qos)
     {
-        fill_expected_result.qos.reliability = "best-effort";
+        fill_expected_result.qos.reliability = fastrtps::rtps::ReliabilityKind_t::BEST_EFFORT;
     }
     else
     {
-        fill_expected_result.qos.reliability = "reliable";
+        fill_expected_result.qos.reliability = fastrtps::rtps::ReliabilityKind_t::RELIABLE;
     }
     expected_result.push_back(fill_expected_result);
 
@@ -421,19 +421,19 @@ TEST(ModelParserTest, endpoint_writer_verbose)
     fill_expected_result.topic.topic_type = endpoint.topic.type_name;
     if (endpoint.topic.topic_qos.durability_qos)    // TODO move to YamlWriter
     {
-        fill_expected_result.qos.durability = "transient-local";
+        fill_expected_result.qos.durability = fastrtps::rtps::DurabilityKind_t::TRANSIENT_LOCAL;
     }
     else
     {
-        fill_expected_result.qos.durability = "volatile";
+        fill_expected_result.qos.durability = fastrtps::rtps::DurabilityKind_t::VOLATILE;
     }
     if (endpoint.topic.topic_qos.reliability_qos)
     {
-        fill_expected_result.qos.reliability = "best-effort";
+        fill_expected_result.qos.reliability = fastrtps::rtps::ReliabilityKind_t::BEST_EFFORT;
     }
     else
     {
-        fill_expected_result.qos.reliability = "reliable";
+        fill_expected_result.qos.reliability = fastrtps::rtps::ReliabilityKind_t::RELIABLE;
     }
     expected_result.push_back(fill_expected_result);
 
@@ -479,19 +479,19 @@ TEST(ModelParserTest, complex_endpoint_writer)
     expected_result.topic.topic_type = endpoint.topic.type_name;
     if (endpoint.topic.topic_qos.durability_qos)    // TODO move to YamlWriter
     {
-        expected_result.qos.durability = "transient-local";
+        expected_result.qos.durability = fastrtps::rtps::DurabilityKind_t::TRANSIENT_LOCAL;
     }
     else
     {
-        expected_result.qos.durability = "volatile";
+        expected_result.qos.durability = fastrtps::rtps::DurabilityKind_t::VOLATILE;
     }
     if (endpoint.topic.topic_qos.reliability_qos)
     {
-        expected_result.qos.reliability = "best-effort";
+        expected_result.qos.reliability = fastrtps::rtps::ReliabilityKind_t::BEST_EFFORT;
     }
     else
     {
-        expected_result.qos.reliability = "reliable";
+        expected_result.qos.reliability = fastrtps::rtps::ReliabilityKind_t::RELIABLE;
     }
 
     // Check information
@@ -530,19 +530,19 @@ TEST(ModelParserTest, complex_endpoint_reader)
     expected_result.topic.topic_type = endpoint.topic.type_name;
     if (endpoint.topic.topic_qos.durability_qos)    // TODO move to YamlWriter
     {
-        expected_result.qos.durability = "transient-local";
+        expected_result.qos.durability = fastrtps::rtps::DurabilityKind_t::TRANSIENT_LOCAL;
     }
     else
     {
-        expected_result.qos.durability = "volatile";
+        expected_result.qos.durability = fastrtps::rtps::DurabilityKind_t::VOLATILE;
     }
     if (endpoint.topic.topic_qos.reliability_qos)
     {
-        expected_result.qos.reliability = "best-effort";
+        expected_result.qos.reliability = fastrtps::rtps::ReliabilityKind_t::BEST_EFFORT;
     }
     else
     {
-        expected_result.qos.reliability = "reliable";
+        expected_result.qos.reliability = fastrtps::rtps::ReliabilityKind_t::RELIABLE;
     }
 
     // Check information

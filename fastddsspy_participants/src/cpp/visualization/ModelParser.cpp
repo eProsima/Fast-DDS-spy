@@ -166,8 +166,22 @@ void fill_complex_endpoint(
     result.guid = endpoint.guid;
     result.topic.topic_name = endpoint.topic.m_topic_name;
     result.topic.topic_type = endpoint.topic.type_name;
-    result.qos.durability = endpoint.topic.topic_qos.durability_qos;
-    result.qos.reliability = endpoint.topic.topic_qos.reliability_qos;
+    if (endpoint.topic.topic_qos.durability_qos)    // TODO move to YamlWriter
+    {
+        result.qos.durability = fastrtps::rtps::DurabilityKind_t::TRANSIENT_LOCAL;
+    }
+    else
+    {
+        result.qos.durability = fastrtps::rtps::DurabilityKind_t::VOLATILE;
+    }
+    if (endpoint.topic.topic_qos.reliability_qos)
+    {
+        result.qos.reliability = fastrtps::rtps::ReliabilityKind_t::BEST_EFFORT;
+    }
+    else
+    {
+        result.qos.reliability = fastrtps::rtps::ReliabilityKind_t::RELIABLE;
+    }
 }
 
 void set_endpoint_simple_information(
