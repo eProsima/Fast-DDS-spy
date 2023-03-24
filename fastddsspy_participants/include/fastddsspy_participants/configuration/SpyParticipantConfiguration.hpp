@@ -22,7 +22,7 @@ namespace spy {
 namespace participants {
 
 /**
- * TODO
+ * TODO comment
  */
 struct SpyParticipantConfiguration : ddspipe::participants::ParticipantConfiguration
 {

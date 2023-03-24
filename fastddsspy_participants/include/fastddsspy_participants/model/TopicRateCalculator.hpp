@@ -28,7 +28,7 @@ namespace spy {
 namespace participants {
 
 /**
- * TODO
+ * TODO comment
  */
 class TopicRateCalculator : public ddspipe::participants::ISchemaHandler
 {

@@ -28,8 +28,6 @@ namespace eprosima {
 namespace ddspipe {
 namespace yaml {
 
-// TODO : maybe the methods here should use const tags to write a yaml.
-
 using namespace eprosima::spy::participants;
 
 template <>
@@ -45,9 +43,14 @@ void set(
         Yaml& yml,
         const TimestampData& value)
 {
-    // TODO convert seconds to timestamp
+    // TODO use cpp_utils seconds_to_timestamp when merged
     utils::Formatter f;
-    f << value.timestamp.seconds();
+    f
+        << utils::timestamp_to_string(
+        std::chrono::time_point<std::chrono::system_clock>(
+            std::chrono::seconds(
+                value.timestamp.seconds())),
+        "%Y/%m/%d %H:%M:%S");
     set(yml, f.to_string());
 }
 

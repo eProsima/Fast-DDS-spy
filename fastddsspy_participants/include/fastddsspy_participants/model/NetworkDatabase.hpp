@@ -27,7 +27,7 @@ namespace spy {
 namespace participants {
 
 /**
- * TODO
+ * TODO comment
  */
 struct NetworkDatabase
 {

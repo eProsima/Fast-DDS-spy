@@ -28,7 +28,7 @@ namespace participants {
 using EndpointInfo = ddspipe::core::types::Endpoint;
 
 /**
- * TODO
+ * TODO comment
  */
 struct EndpointInfoData : public ddspipe::core::IRoutingData
 {

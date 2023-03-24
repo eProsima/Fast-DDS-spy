@@ -218,7 +218,7 @@ std::vector<ComplexEndpointData> ModelParser::writers_verbose(
 
     for (const auto& endpoint : model.endpoint_database_)
     {
-        if (endpoint.second.is_writer())
+        if (endpoint.second.active && endpoint.second.is_writer())
         {
             result.push_back(writers(model, endpoint.second.guid));
         }
@@ -255,7 +255,7 @@ std::vector<ComplexEndpointData> ModelParser::readers_verbose(
 
     for (const auto& endpoint : model.endpoint_database_)
     {
-        if (endpoint.second.is_reader())
+        if (endpoint.second.active && endpoint.second.is_reader())
         {
             result.push_back(readers(model, endpoint.second.guid));
         }
@@ -284,7 +284,10 @@ std::set<eprosima::ddspipe::core::types::DdsTopic> get_topics(
     std::set<eprosima::ddspipe::core::types::DdsTopic> result;
     for (const auto& endpoint : model.endpoint_database_)
     {
-        result.insert(endpoint.second.topic);
+        if (endpoint.second.active)
+        {
+            result.insert(endpoint.second.topic);
+        }
     }
     return result;
 }
@@ -296,7 +299,7 @@ ddspipe::core::types::DdsTopic ModelParser::get_topic(
 
     for (const auto& endpoint : model.endpoint_database_)
     {
-        if (endpoint.second.topic.m_topic_name == topic_name)
+        if (endpoint.second.active && endpoint.second.topic.m_topic_name == topic_name)
         {
             return endpoint.second.topic;
         }
@@ -317,7 +320,7 @@ std::vector<SimpleTopicData> ModelParser::topics(
         int datareaders = 0;
         for (const auto& endpoint : model.endpoint_database_)
         {
-            if (endpoint.second.topic.m_topic_name == topic.m_topic_name)
+            if (endpoint.second.active && endpoint.second.topic.m_topic_name == topic.m_topic_name)
             {
                 if (endpoint.second.is_reader())
                 {
@@ -383,7 +386,7 @@ ComplexTopicData ModelParser::topics(
 
     for (const auto& it : model.endpoint_database_)
     {
-        if (topic.m_topic_name == it.second.topic.m_topic_name)
+        if (it.second.active && topic.m_topic_name == it.second.topic.m_topic_name)
         {
             if (it.second.is_reader())
             {

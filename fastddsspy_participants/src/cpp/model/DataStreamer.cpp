@@ -87,30 +87,50 @@ void DataStreamer::add_data(
 {
     TopicRateCalculator::add_data(topic, data);
 
-    std::shared_lock<std::shared_timed_mutex> _(mutex_);
+    fastrtps::types::DynamicType_ptr dyn_type;
 
-    if (activated_)
     {
-        // If all activated, add it only if schema is available, otherwise skip
-        if (activated_all_ && !is_topic_type_discovered_nts_(topic))
+        std::shared_lock<std::shared_timed_mutex> _(mutex_);
+
+        if (!activated_)
         {
+            // If not activated, do nothing.
             return;
         }
 
-        if (activated_all_ || activated_topic_ == topic)
+        if (activated_all_)
         {
-            auto it = types_discovered_.find(topic.type_name);
-            if (it == types_discovered_.end())
+            if (!is_topic_type_discovered_nts_(topic))
             {
-                // The topic that is supposed to be activated has no associated type. This should not happen
-                utils::tsnh(STR_ENTRY
-                        << "Topic <" << topic << "> must not be activated if its type is not registered.");
+                // If all activated, add it only if schema is available, otherwise skip
+                return;
             }
+        }
+        else
+        {
+            if (!(activated_topic_ == topic))
+            {
+                // If not all activated, and this is not the activated topic skip
+                return;
+            }
+        }
 
-            // TODO: make map search more safe
-            (*callback_)(topic, it->second, data);
+        auto it = types_discovered_.find(topic.type_name);
+        if (it == types_discovered_.end())
+        {
+            // The topic that is supposed to be activated has no associated type. This should not happen
+            utils::tsnh(STR_ENTRY
+                    << "Topic <" << topic << "> must not be activated if its type is not registered.");
+        }
+        else
+        {
+            dyn_type = it->second;
         }
     }
+
+    // This should be called without mutex taken
+    // Here should only arrive if it must call callback. Otherwise must return somewhere before
+    (*callback_)(topic, dyn_type, data);
 }
 
 bool DataStreamer::is_topic_type_discovered(

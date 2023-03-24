@@ -37,8 +37,6 @@ namespace yaml {
 
 /**
  * @brief Class that encapsulates specific methods to get a full ddspipe Configuration from a yaml node.
- *
- * TODO: Add version configuration so it could load different versions
  */
 class Configuration : ddspipe::core::IConfiguration
 {

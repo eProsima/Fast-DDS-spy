@@ -67,7 +67,6 @@ on:
     - cron: '0 5 * * *'
 
 env:
-  # TODO: add more packages
   code_packages_names: 'fastddsspy_participants fastddsspy_yaml fastddsspy_tool'
   default_dependencies_artifact_postfix: '_nightly'
 

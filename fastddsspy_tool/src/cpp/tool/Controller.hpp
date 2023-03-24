@@ -15,6 +15,7 @@
 #pragma once
 
 #include <memory>
+#include <mutex>
 
 #include <fastrtps/types/DynamicDataPtr.h>
 
@@ -122,6 +123,8 @@ private:
             VerboseF verbose_function,
             specificF specific_function,
             const char* entity_name) noexcept;
+
+    std::mutex view_mutex_;
 
 };
 

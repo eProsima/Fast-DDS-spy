@@ -25,7 +25,7 @@ namespace spy {
 namespace participants {
 
 /**
- * TODO
+ * TODO comment
  */
 struct ParticipantInfo
 {
@@ -40,7 +40,7 @@ struct ParticipantInfo
 };
 
 /**
- * TODO
+ * TODO comment
  */
 struct ParticipantInfoData : public ddspipe::core::IRoutingData
 {
