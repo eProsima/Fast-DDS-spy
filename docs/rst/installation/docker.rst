@@ -33,7 +33,7 @@ The steps to run |spy| in a Docker container are explained below.
 
 #.  Build a |spy| configuration YAML file on the local machine.
     This will be the |spy| configuration file that runs inside the Docker container.
-    Open your preferred text editor and copy a full configuration example into the ``/<fastddsspy>/FASTDDS_SPY_CONFIGURATION.yaml`` file,
+    Open your preferred text editor and copy a full configuration example into the ``/<fastddsspy>/FASTDDSSPY_CONFIGURATION.yaml`` file,
     where ``fastddsspy`` is the path where to execute the tool.
     To make this accessible from the Docker container we will create a shared volume containing just
     this file. This is explained in next point.
@@ -50,7 +50,7 @@ The steps to run |spy| in a Docker container are explained below.
             --net=host \
             --ipc=host \
             --privileged \
-            -v /<fastddsspy>/FASTDDS_SPY_CONFIGURATION.yaml:/root/FASTDDS_SPY_CONFIGURATION.yaml \
+            -v /<fastddsspy>/FASTDDSSPY_CONFIGURATION.yaml:/root/FASTDDSSPY_CONFIGURATION.yaml \
             ubuntu-fastddsspy:v0.3.0
 
     It is important to mention that both the path to the configuration file hosted in the local machine and the one

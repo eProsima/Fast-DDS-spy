@@ -1,0 +1,27 @@
+#########
+# DDS related configuration
+dds:
+
+  # Allowed topics - Optional (Default: "*")
+  allowlist:
+    - name: "*"
+
+  # Blocked topics - Optional (Default: empty)
+  blocklist:
+    - name: "add_blocked_topics_list_here"
+
+  # DDS Domain - Optional (Default: 0)
+  domain: 0
+
+#########
+# Complex configuration
+specs:
+
+  # Number of threads to read the DDS information (Default: 12)
+  threads: 12
+
+  # Time elapsed in milliseconds when using tool as one-shot to wait and gather data from the network (Default: 1000)
+  discovery-time: 1000
+
+  # Max history depth by default for every DataReader of every topic (Default: 5000)
+  max-depth: 5000
