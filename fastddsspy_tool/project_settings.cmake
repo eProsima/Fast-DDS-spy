@@ -41,4 +41,4 @@ set(MODULE_THIRDPARTY_HEADERONLY
     optionparser)
 
 set(MODULE_TARGET_NAME
-    "fastdds_spy")
+    "fastddsspy")

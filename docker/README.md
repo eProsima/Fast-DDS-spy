@@ -1,11 +1,11 @@
 # eProsima Fast DDS Spy docker Image
 
-This image is installed with a Fast DDS Spy that is able to run a `fastdds_spy` application
+This image is installed with a Fast DDS Spy that is able to run a `fastddsspy` application
 Fast DDS Spy and all dependencies are already installed in the image.
 In order to run the image use the following command.
 
 ```bash
-fastdds_spy
+fastddsspy
 ```
 
 ---
