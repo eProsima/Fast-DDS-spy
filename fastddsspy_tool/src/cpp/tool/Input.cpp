@@ -49,8 +49,12 @@ void Input::wait_something()
 
 utils::Command<CommandValue> Input::parse_as_command(const std::vector<std::string>& args)
 {
+    // TODO use the cpp_utils method once it is merged
     utils::Command<CommandValue> command;
-    auto res = reader_.parse_as_command(std::vector<std::string>(args), command);
+    // Set args in command, and the enum value will be set string_to_enumeration
+    command.arguments = args;
+    // Check if command exists
+    auto res = CommandBuilder::get_instance()->string_to_enumeration(command.arguments[0], command.command);
     if (!res)
     {
         command.command = CommandValue::error_input;
