@@ -337,6 +337,122 @@ TEST(ModelParserTest, simple_endpoint_reader_writers)
     ASSERT_EQ(model.endpoint_database_.size(), 1);
 }
 
+TEST(ModelParserTest, endpoint_reader_verbose)
+{
+    // Create model
+    spy::participants::SpyModel model;
+    // Fill model
+    spy::participants::ParticipantInfo participant;
+    random_participant_info(participant);
+    model.participant_database_.add(participant.guid, participant);
+
+    spy::participants::EndpointInfo endpoint;
+    random_endpoint_info(endpoint, ddspipe::core::types::EndpointKind::reader, true, 2);
+    model.endpoint_database_.add(endpoint.guid, endpoint);
+
+    // Obtain information from model
+    std::vector<spy::participants::ComplexEndpointData> result;
+    result = spy::participants::ModelParser::readers_verbose(model);
+
+    // Create expected return
+    std::vector<spy::participants::ComplexEndpointData> expected_result;
+    spy::participants::ComplexEndpointData fill_expected_result;
+    fill_expected_result.guid = endpoint.guid;
+    fill_expected_result.participant_name = participant.name;
+    fill_expected_result.topic.topic_name = endpoint.topic.m_topic_name;
+    fill_expected_result.topic.topic_type = endpoint.topic.type_name;
+    if (endpoint.topic.topic_qos.durability_qos)    // TODO move to YamlWriter
+    {
+        fill_expected_result.qos.durability = "transient-local";
+    }
+    else
+    {
+        fill_expected_result.qos.durability = "volatile";
+    }
+    if (endpoint.topic.topic_qos.reliability_qos)
+    {
+        fill_expected_result.qos.reliability = "best-effort";
+    }
+    else
+    {
+        fill_expected_result.qos.reliability = "reliable";
+    }
+    expected_result.push_back(fill_expected_result);
+
+    // Check information
+    unsigned int i = 0;
+    for (const auto& it : result)
+    {
+        ASSERT_EQ(it.guid, expected_result[i].guid);
+        ASSERT_EQ(it.participant_name, expected_result[i].participant_name);
+        ASSERT_EQ(it.topic.topic_name, expected_result[i].topic.topic_name);
+        ASSERT_EQ(it.topic.topic_type, expected_result[i].topic.topic_type);
+        ASSERT_EQ(it.qos.durability, expected_result[i].qos.durability);
+        ASSERT_EQ(it.qos.reliability, expected_result[i].qos.reliability);
+
+        i++;
+    }
+
+}
+
+TEST(ModelParserTest, endpoint_writer_verbose)
+{
+    // Create model
+    spy::participants::SpyModel model;
+    // Fill model
+    spy::participants::ParticipantInfo participant;
+    random_participant_info(participant);
+    model.participant_database_.add(participant.guid, participant);
+
+    spy::participants::EndpointInfo endpoint;
+    random_endpoint_info(endpoint, ddspipe::core::types::EndpointKind::writer, true, 2);
+    model.endpoint_database_.add(endpoint.guid, endpoint);
+
+    // Obtain information from model
+    std::vector<spy::participants::ComplexEndpointData> result;
+    result = spy::participants::ModelParser::writers_verbose(model);
+
+    // Create expected return
+    std::vector<spy::participants::ComplexEndpointData> expected_result;
+    spy::participants::ComplexEndpointData fill_expected_result;
+    fill_expected_result.guid = endpoint.guid;
+    fill_expected_result.participant_name = participant.name;
+    fill_expected_result.topic.topic_name = endpoint.topic.m_topic_name;
+    fill_expected_result.topic.topic_type = endpoint.topic.type_name;
+    if (endpoint.topic.topic_qos.durability_qos)    // TODO move to YamlWriter
+    {
+        fill_expected_result.qos.durability = "transient-local";
+    }
+    else
+    {
+        fill_expected_result.qos.durability = "volatile";
+    }
+    if (endpoint.topic.topic_qos.reliability_qos)
+    {
+        fill_expected_result.qos.reliability = "best-effort";
+    }
+    else
+    {
+        fill_expected_result.qos.reliability = "reliable";
+    }
+    expected_result.push_back(fill_expected_result);
+
+    // Check information
+    unsigned int i = 0;
+    for (const auto& it : result)
+    {
+        ASSERT_EQ(it.guid, expected_result[i].guid);
+        ASSERT_EQ(it.participant_name, expected_result[i].participant_name);
+        ASSERT_EQ(it.topic.topic_name, expected_result[i].topic.topic_name);
+        ASSERT_EQ(it.topic.topic_type, expected_result[i].topic.topic_type);
+        ASSERT_EQ(it.qos.durability, expected_result[i].qos.durability);
+        ASSERT_EQ(it.qos.reliability, expected_result[i].qos.reliability);
+
+        i++;
+    }
+
+}
+
 TEST(ModelParserTest, complex_endpoint_writer)
 {
 

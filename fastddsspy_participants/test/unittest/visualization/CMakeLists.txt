@@ -28,6 +28,8 @@ set(TEST_LIST
         simple_endpoint_reader
         simple_endpoint_writer_readers
         simple_endpoint_reader_writers
+        endpoint_reader_verbose
+        endpoint_writer_verbose
         complex_endpoint_writer
         complex_endpoint_reader
         simple_topic
