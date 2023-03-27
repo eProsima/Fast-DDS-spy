@@ -135,7 +135,7 @@ def parse_options():
     return parser.parse_args()
 
 
-def test_fastddsspy_closure(fastddsspy, killing_signal):
+def test_spy_closure(fastddsspy, killing_signal):
     """
     Test that fastddsspy command closes correctly.
 
@@ -261,6 +261,6 @@ if __name__ == '__main__':
         sys.exit(1)
 
     sys.exit(
-        test_fastddsspy_closure(
+        test_spy_closure(
             args.exe,           # Path to executable
             args.signal))       # Signal to kill subprocess
