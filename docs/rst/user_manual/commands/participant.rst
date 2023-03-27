@@ -1,7 +1,7 @@
-.. include:: ../exports/alias.include
-.. include:: ../exports/roles.include
+.. include:: ../../exports/alias.include
+.. include:: ../../exports/roles.include
 
-.. _user_manual_format:
+.. _user_manual_command_participant:
 
 ####################
 Participants Command
@@ -12,46 +12,66 @@ Participants Command
 Arguments
 =========
 
+**Participants** command support 0 or 1 argument.
+
+*No argument*
+-------------
+
+When no arguments are given to this command, the information shown is a **list** with every DomainParticipant currently active in the network, giving their Guid and names.
+The output format is as follows: :ref:`user_manual_command_participant_output_simple`.
+
+Verbose
+-------
+
+This argument queries for more complete information about each of the DomainParticipants in the network.
+It adds the information about endpoints and the topics they communicate in of each of the Participants.
+The output got is a **list** of data with :ref:`verbose information <user_manual_command_participant_output_verbose>`.
+Check the :ref:`verbose <user_manual_commands_input_verbose>` section in order to know how to add this argument to the command.
+
+Guid
+----
+
+This argument requires a string with :ref:`Guid format <user_manual_commands_input_guid>`.
+This command queries the database for a **single DomainParticipant** and retrieves its :ref:`verbose information <user_manual_command_participant_output_verbose>`.
+This Guid must exist inside the DDS network.
 
 Output Format
 =============
 
 The participant information is retrieved in 2 formats depending on the verbose option.
 
-.. tabs::
+.. _user_manual_command_participant_output_simple:
 
-    .. tab:: simple
-
-        .. code-block:: yaml
-
-
-
-    .. tab:: verbose
-
-        .. code-block:: python
-
-            # Create a new Computing Node
-            node = ComputingNode("My_Computing_Node")
-
-            def process_solution():
-                JobSolutionDataType solution;
-                # Do some code that calculates the solution
-                return solution
-
-            # Wait for 1 task from any client and answer it with process_solution callback
-            node.process_job(callback=process_solution)
-
-
-This is the information retrieved by the command :ref:`user_manual_command_participants`.
+Simple Participant info
+-----------------------
 
 .. code-block:: yaml
+
+    name: <participant name>
+    guid: <guid>
+
+.. _user_manual_command_participant_output_verbose:
+
+Verbose Participant info
+------------------------
+
+.. code-block:: yaml
+
+    name: <participant name>
+    guid: <guid>
+    datawriters:
+        - <topic name> [<topic data type name>] (<number of datawriters>)
+        - ...
+    datareaders:
+        - <topic name> [<topic data type name>] (<number of datareaders>)
+        - ...
 
 Example
 =======
 
 Let's assume we have a DDS network where 2 ShapesDemo applications are running.
 
-This would be the expected output for the command `participants`:
+This would be the expected output for the command ``participants``:
 
 .. code-block::
 
@@ -60,7 +80,7 @@ This would be the expected output for the command `participants`:
     - name: Fast DDS ShapesDemo Participant
       guid: 01.0f.22.ba.79.47.8d.f0.00.00.00.00|0.0.1.c1
 
-This would be the expected output for the command `participants verbose`:
+This would be the expected output for the command ``participants verbose``:
 
 .. code-block::
 
@@ -76,7 +96,7 @@ This would be the expected output for the command `participants verbose`:
       datareaders:
         - Square [ShapeType] (1)
 
-This would be the expected output for the command `participants 01.0f.22.ba.3b.47.ab.3c.00.00.00.00|0.0.1.c1`:
+This would be the expected output for the command ``participants 01.0f.22.ba.3b.47.ab.3c.00.00.00.00|0.0.1.c1``:
 
 .. code-block::
 

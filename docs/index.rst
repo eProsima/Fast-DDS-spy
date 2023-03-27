@@ -37,8 +37,7 @@
    /rst/user_manual/getting_started/usage_example
    /rst/user_manual/tool.rst
    /rst/user_manual/configuration.rst
-   /rst/user_manual/commands.rst
-   /rst/user_manual/output_format.rst
+   /rst/user_manual/commands/commands.rst
 
 .. _index_developer_manual:
 

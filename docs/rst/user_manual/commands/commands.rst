@@ -7,6 +7,11 @@
 Commands
 ########
 
-Each of the :ref:`Commands <user_manual_commands>` of the :term:`CLI` retrieve the information in a different format.
-All these formats have been designed to follow the YAML format and retrieve the most relevant information regarding the query.
-In the following section each of the command outputs is explained.
+TODO
+
+.. toctree::
+   :maxdepth: 2
+
+   /rst/user_manual/commands/participant.rst
+   /rst/user_manual/commands/format.rst
+   /rst/user_manual/commands/all_commands.rst
