@@ -97,12 +97,10 @@ TEST(ModelParserTest, simple_participant_two_participants)
     expected_result.push_back({"hello2", guid_data2});
 
     // Check information
-    unsigned int i = 0;
-    for (const auto& participant : model.participant_database_)
+    for (unsigned int i = 0; i++; model.participant_database_.size())
     {
         ASSERT_EQ(result[i].name, expected_result[i].name);
         ASSERT_EQ(result[i].guid, expected_result[i].guid);
-        i++;
     }
 
 }
@@ -361,22 +359,8 @@ TEST(ModelParserTest, endpoint_reader_verbose)
     fill_expected_result.participant_name = participant.name;
     fill_expected_result.topic.topic_name = endpoint.topic.m_topic_name;
     fill_expected_result.topic.topic_type = endpoint.topic.type_name;
-    if (endpoint.topic.topic_qos.durability_qos)    // TODO move to YamlWriter
-    {
-        fill_expected_result.qos.durability = fastrtps::rtps::DurabilityKind_t::TRANSIENT_LOCAL;
-    }
-    else
-    {
-        fill_expected_result.qos.durability = fastrtps::rtps::DurabilityKind_t::VOLATILE;
-    }
-    if (endpoint.topic.topic_qos.reliability_qos)
-    {
-        fill_expected_result.qos.reliability = fastrtps::rtps::ReliabilityKind_t::BEST_EFFORT;
-    }
-    else
-    {
-        fill_expected_result.qos.reliability = fastrtps::rtps::ReliabilityKind_t::RELIABLE;
-    }
+    fill_expected_result.qos.durability = endpoint.topic.topic_qos.durability_qos;
+    fill_expected_result.qos.reliability = endpoint.topic.topic_qos.reliability_qos;
     expected_result.push_back(fill_expected_result);
 
     // Check information
@@ -419,22 +403,8 @@ TEST(ModelParserTest, endpoint_writer_verbose)
     fill_expected_result.participant_name = participant.name;
     fill_expected_result.topic.topic_name = endpoint.topic.m_topic_name;
     fill_expected_result.topic.topic_type = endpoint.topic.type_name;
-    if (endpoint.topic.topic_qos.durability_qos)    // TODO move to YamlWriter
-    {
-        fill_expected_result.qos.durability = fastrtps::rtps::DurabilityKind_t::TRANSIENT_LOCAL;
-    }
-    else
-    {
-        fill_expected_result.qos.durability = fastrtps::rtps::DurabilityKind_t::VOLATILE;
-    }
-    if (endpoint.topic.topic_qos.reliability_qos)
-    {
-        fill_expected_result.qos.reliability = fastrtps::rtps::ReliabilityKind_t::BEST_EFFORT;
-    }
-    else
-    {
-        fill_expected_result.qos.reliability = fastrtps::rtps::ReliabilityKind_t::RELIABLE;
-    }
+    fill_expected_result.qos.durability = endpoint.topic.topic_qos.durability_qos;
+    fill_expected_result.qos.reliability = endpoint.topic.topic_qos.reliability_qos;
     expected_result.push_back(fill_expected_result);
 
     // Check information
@@ -477,22 +447,8 @@ TEST(ModelParserTest, complex_endpoint_writer)
     expected_result.participant_name = participant.name;
     expected_result.topic.topic_name = endpoint.topic.m_topic_name;
     expected_result.topic.topic_type = endpoint.topic.type_name;
-    if (endpoint.topic.topic_qos.durability_qos)    // TODO move to YamlWriter
-    {
-        expected_result.qos.durability = fastrtps::rtps::DurabilityKind_t::TRANSIENT_LOCAL;
-    }
-    else
-    {
-        expected_result.qos.durability = fastrtps::rtps::DurabilityKind_t::VOLATILE;
-    }
-    if (endpoint.topic.topic_qos.reliability_qos)
-    {
-        expected_result.qos.reliability = fastrtps::rtps::ReliabilityKind_t::BEST_EFFORT;
-    }
-    else
-    {
-        expected_result.qos.reliability = fastrtps::rtps::ReliabilityKind_t::RELIABLE;
-    }
+    expected_result.qos.durability = endpoint.topic.topic_qos.durability_qos;
+    expected_result.qos.reliability = endpoint.topic.topic_qos.reliability_qos;
 
     // Check information
     ASSERT_EQ(result.guid, expected_result.guid);
@@ -528,22 +484,8 @@ TEST(ModelParserTest, complex_endpoint_reader)
     expected_result.participant_name = participant.name;
     expected_result.topic.topic_name = endpoint.topic.m_topic_name;
     expected_result.topic.topic_type = endpoint.topic.type_name;
-    if (endpoint.topic.topic_qos.durability_qos)    // TODO move to YamlWriter
-    {
-        expected_result.qos.durability = fastrtps::rtps::DurabilityKind_t::TRANSIENT_LOCAL;
-    }
-    else
-    {
-        expected_result.qos.durability = fastrtps::rtps::DurabilityKind_t::VOLATILE;
-    }
-    if (endpoint.topic.topic_qos.reliability_qos)
-    {
-        expected_result.qos.reliability = fastrtps::rtps::ReliabilityKind_t::BEST_EFFORT;
-    }
-    else
-    {
-        expected_result.qos.reliability = fastrtps::rtps::ReliabilityKind_t::RELIABLE;
-    }
+    expected_result.qos.durability = endpoint.topic.topic_qos.durability_qos;
+    expected_result.qos.reliability = endpoint.topic.topic_qos.reliability_qos;
 
     // Check information
     ASSERT_EQ(result.guid, expected_result.guid);
