@@ -70,8 +70,6 @@ public:
 
 };
 
-} // namespace test
-
 std::shared_ptr<DdsPipe> create_pipe(
         std::shared_ptr<spy::participants::SpyModel>& model,
         std::shared_ptr<test::SpyDdsParticipantMock>& dds_participant)
@@ -148,6 +146,9 @@ void random_endpoint_info(
     endpoint_data.info.topic = topic;
 }
 
+
+} // namespace test
+
 TEST(EndpointDatabaseTest, trivial)
 {
     // Create Model
@@ -160,7 +161,7 @@ TEST(EndpointDatabaseTest, trivial)
             std::make_shared<test::SpyDdsParticipantMock>(id_);
 
     // Create DDS Pipe
-    std::shared_ptr<DdsPipe> pipe = create_pipe(model, dds_participant);
+    std::shared_ptr<DdsPipe> pipe = test::create_pipe(model, dds_participant);
     pipe->enable();
 
     auto dds_reader = dds_participant->endpoint_reader;
@@ -168,7 +169,7 @@ TEST(EndpointDatabaseTest, trivial)
 
     // Send message
     spy::participants::EndpointInfoData new_data;
-    random_endpoint_info(new_data);
+    test::random_endpoint_info(new_data);
     dds_reader->simulate_data_reception(
         std::make_unique<spy::participants::EndpointInfoData>(new_data));
 
@@ -191,7 +192,7 @@ TEST(EndpointDatabaseTest, guid)
             std::make_shared<test::SpyDdsParticipantMock>(id_);
 
     // Create DDS Pipe
-    std::shared_ptr<DdsPipe> pipe = create_pipe(model, dds_participant);
+    std::shared_ptr<DdsPipe> pipe = test::create_pipe(model, dds_participant);
     pipe->enable();
 
     auto dds_reader = dds_participant->endpoint_reader;
@@ -199,7 +200,7 @@ TEST(EndpointDatabaseTest, guid)
 
     // Send message
     spy::participants::EndpointInfoData new_data;
-    random_endpoint_info(new_data);
+    test::random_endpoint_info(new_data);
     dds_reader->simulate_data_reception(
         std::make_unique<spy::participants::EndpointInfoData>(new_data));
 
@@ -222,7 +223,7 @@ TEST(EndpointDatabaseTest, n_msgs_guid)
             std::make_shared<test::SpyDdsParticipantMock>(id_);
 
     // Create DDS Pipe
-    std::shared_ptr<DdsPipe> pipe = create_pipe(model, dds_participant);
+    std::shared_ptr<DdsPipe> pipe = test::create_pipe(model, dds_participant);
     pipe->enable();
 
     auto dds_reader = dds_participant->endpoint_reader;
@@ -234,7 +235,7 @@ TEST(EndpointDatabaseTest, n_msgs_guid)
     for (unsigned int i = 0; i < n_msgs; i++)
     {
         spy::participants::EndpointInfoData new_data;
-        random_endpoint_info(new_data, true, i);
+        test::random_endpoint_info(new_data, true, i);
         datas.push_back(new_data);
         dds_reader->simulate_data_reception(
             std::make_unique<spy::participants::EndpointInfoData>(new_data));
@@ -265,7 +266,7 @@ TEST(EndpointDatabaseTest, topic)
             std::make_shared<test::SpyDdsParticipantMock>(id_);
 
     // Create DDS Pipe
-    std::shared_ptr<DdsPipe> pipe = create_pipe(model, dds_participant);
+    std::shared_ptr<DdsPipe> pipe = test::create_pipe(model, dds_participant);
     pipe->enable();
 
     auto dds_reader = dds_participant->endpoint_reader;
@@ -273,7 +274,7 @@ TEST(EndpointDatabaseTest, topic)
 
     // Send messages
     spy::participants::EndpointInfoData new_data;
-    random_endpoint_info(new_data);
+    test::random_endpoint_info(new_data);
     dds_reader->simulate_data_reception(
         std::make_unique<spy::participants::EndpointInfoData>(new_data));
 
@@ -297,7 +298,7 @@ TEST(EndpointDatabaseTest, active_true)
             std::make_shared<test::SpyDdsParticipantMock>(id_);
 
     // Create DDS Pipe
-    std::shared_ptr<DdsPipe> pipe = create_pipe(model, dds_participant);
+    std::shared_ptr<DdsPipe> pipe = test::create_pipe(model, dds_participant);
     pipe->enable();
 
     auto dds_reader = dds_participant->endpoint_reader;
@@ -305,7 +306,7 @@ TEST(EndpointDatabaseTest, active_true)
 
     // Send messages
     spy::participants::EndpointInfoData new_data;
-    random_endpoint_info(new_data);
+    test::random_endpoint_info(new_data);
     dds_reader->simulate_data_reception(
         std::make_unique<spy::participants::EndpointInfoData>(new_data));
 
@@ -328,7 +329,7 @@ TEST(EndpointDatabaseTest, active_false)
             std::make_shared<test::SpyDdsParticipantMock>(id_);
 
     // Create DDS Pipe
-    std::shared_ptr<DdsPipe> pipe = create_pipe(model, dds_participant);
+    std::shared_ptr<DdsPipe> pipe = test::create_pipe(model, dds_participant);
     pipe->enable();
 
     auto dds_reader = dds_participant->endpoint_reader;
@@ -336,7 +337,7 @@ TEST(EndpointDatabaseTest, active_false)
 
     // Send messages
     spy::participants::EndpointInfoData new_data;
-    random_endpoint_info(new_data, false);
+    test::random_endpoint_info(new_data, false);
     dds_reader->simulate_data_reception(
         std::make_unique<spy::participants::EndpointInfoData>(new_data));
 
@@ -359,7 +360,7 @@ TEST(EndpointDatabaseTest, is_writer)
             std::make_shared<test::SpyDdsParticipantMock>(id_);
 
     // Create DDS Pipe
-    std::shared_ptr<DdsPipe> pipe = create_pipe(model, dds_participant);
+    std::shared_ptr<DdsPipe> pipe = test::create_pipe(model, dds_participant);
     pipe->enable();
 
     auto dds_reader = dds_participant->endpoint_reader;
@@ -367,7 +368,7 @@ TEST(EndpointDatabaseTest, is_writer)
 
     // Send messages
     spy::participants::EndpointInfoData new_data;
-    random_endpoint_info(new_data, true, 1, ddspipe::core::types::EndpointKind::writer);
+    test::random_endpoint_info(new_data, true, 1, ddspipe::core::types::EndpointKind::writer);
     dds_reader->simulate_data_reception(
         std::make_unique<spy::participants::EndpointInfoData>(new_data));
 
@@ -390,7 +391,7 @@ TEST(EndpointDatabaseTest, is_reader)
             std::make_shared<test::SpyDdsParticipantMock>(id_);
 
     // Create DDS Pipe
-    std::shared_ptr<DdsPipe> pipe = create_pipe(model, dds_participant);
+    std::shared_ptr<DdsPipe> pipe = test::create_pipe(model, dds_participant);
     pipe->enable();
 
     auto dds_reader = dds_participant->endpoint_reader;
@@ -398,7 +399,7 @@ TEST(EndpointDatabaseTest, is_reader)
 
     // Send messages
     spy::participants::EndpointInfoData new_data;
-    random_endpoint_info(new_data, true, 1, ddspipe::core::types::EndpointKind::reader);
+    test::random_endpoint_info(new_data, true, 1, ddspipe::core::types::EndpointKind::reader);
     dds_reader->simulate_data_reception(
         std::make_unique<spy::participants::EndpointInfoData>(new_data));
 

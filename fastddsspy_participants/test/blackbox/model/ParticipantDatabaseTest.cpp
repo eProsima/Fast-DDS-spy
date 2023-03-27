@@ -70,8 +70,6 @@ public:
 
 };
 
-} // namespace test
-
 std::shared_ptr<DdsPipe> create_pipe(
         std::shared_ptr<spy::participants::SpyModel>& model,
         std::shared_ptr<test::SpyDdsParticipantMock>& dds_participant)
@@ -145,6 +143,8 @@ void random_participant_info(
     participant_data.info.guid = ddspipe::core::testing::random_guid(seed);
 }
 
+} // namespace test
+
 TEST(ParticipantDatabaseTest, trivial)
 {
     // Create Model
@@ -157,7 +157,7 @@ TEST(ParticipantDatabaseTest, trivial)
             std::make_shared<test::SpyDdsParticipantMock>(id_);
 
     // Create DDS Pipe
-    std::shared_ptr<DdsPipe> pipe = create_pipe(model, dds_participant);
+    std::shared_ptr<DdsPipe> pipe = test::create_pipe(model, dds_participant);
     pipe->enable();
 
     auto dds_reader = dds_participant->participant_reader;
@@ -165,7 +165,7 @@ TEST(ParticipantDatabaseTest, trivial)
 
     // Send message
     spy::participants::ParticipantInfoData new_data;
-    random_participant_info(new_data);
+    test::random_participant_info(new_data);
     dds_reader->simulate_data_reception(
         std::make_unique<spy::participants::ParticipantInfoData>(new_data));
 
@@ -188,7 +188,7 @@ TEST(ParticipantDatabaseTest, name_participant)
             std::make_shared<test::SpyDdsParticipantMock>(id_);
 
     // Create DDS Pipe
-    std::shared_ptr<DdsPipe> pipe = create_pipe(model, dds_participant);
+    std::shared_ptr<DdsPipe> pipe = test::create_pipe(model, dds_participant);
     pipe->enable();
 
     auto dds_reader = dds_participant->participant_reader;
@@ -196,7 +196,7 @@ TEST(ParticipantDatabaseTest, name_participant)
 
     // Send message
     spy::participants::ParticipantInfoData new_data;
-    random_participant_info(new_data);
+    test::random_participant_info(new_data);
     dds_reader->simulate_data_reception(
         std::make_unique<spy::participants::ParticipantInfoData>(new_data));
 
@@ -220,7 +220,7 @@ TEST(ParticipantDatabaseTest, guid)
             std::make_shared<test::SpyDdsParticipantMock>(id_);
 
     // Create DDS Pipe
-    std::shared_ptr<DdsPipe> pipe = create_pipe(model, dds_participant);
+    std::shared_ptr<DdsPipe> pipe = test::create_pipe(model, dds_participant);
     pipe->enable();
 
     auto dds_reader = dds_participant->participant_reader;
@@ -228,7 +228,7 @@ TEST(ParticipantDatabaseTest, guid)
 
     // Send message
     spy::participants::ParticipantInfoData new_data;
-    random_participant_info(new_data);
+    test::random_participant_info(new_data);
     dds_reader->simulate_data_reception(
         std::make_unique<spy::participants::ParticipantInfoData>(new_data));
 
@@ -252,7 +252,7 @@ TEST(ParticipantDatabaseTest, active_true)
             std::make_shared<test::SpyDdsParticipantMock>(id_);
 
     // Create DDS Pipe
-    std::shared_ptr<DdsPipe> pipe = create_pipe(model, dds_participant);
+    std::shared_ptr<DdsPipe> pipe = test::create_pipe(model, dds_participant);
     pipe->enable();
 
     auto dds_reader = dds_participant->participant_reader;
@@ -260,7 +260,7 @@ TEST(ParticipantDatabaseTest, active_true)
 
     // Send message
     spy::participants::ParticipantInfoData new_data;
-    random_participant_info(new_data);
+    test::random_participant_info(new_data);
     dds_reader->simulate_data_reception(
         std::make_unique<spy::participants::ParticipantInfoData>(new_data));
 
@@ -284,7 +284,7 @@ TEST(ParticipantDatabaseTest, active_false)
             std::make_shared<test::SpyDdsParticipantMock>(id_);
 
     // Create DDS Pipe
-    std::shared_ptr<DdsPipe> pipe = create_pipe(model, dds_participant);
+    std::shared_ptr<DdsPipe> pipe = test::create_pipe(model, dds_participant);
     pipe->enable();
 
     auto dds_reader = dds_participant->participant_reader;
@@ -292,7 +292,7 @@ TEST(ParticipantDatabaseTest, active_false)
 
     // Send message
     spy::participants::ParticipantInfoData new_data;
-    random_participant_info(new_data, false);
+    test::random_participant_info(new_data, false);
     dds_reader->simulate_data_reception(
         std::make_unique<spy::participants::ParticipantInfoData>(new_data));
 
@@ -317,7 +317,7 @@ TEST(ParticipantDatabaseTest, n_msgs_name)
             std::make_shared<test::SpyDdsParticipantMock>(id_);
 
     // Create DDS Pipe
-    std::shared_ptr<DdsPipe> pipe = create_pipe(model, dds_participant);
+    std::shared_ptr<DdsPipe> pipe = test::create_pipe(model, dds_participant);
     pipe->enable();
 
     auto dds_reader = dds_participant->participant_reader;
@@ -329,7 +329,7 @@ TEST(ParticipantDatabaseTest, n_msgs_name)
     for (unsigned int i = 0; i < n_msgs; i++)
     {
         spy::participants::ParticipantInfoData new_data;
-        random_participant_info(new_data, true, i);
+        test::random_participant_info(new_data, true, i);
         datas.push_back(new_data);
         dds_reader->simulate_data_reception(
             std::make_unique<spy::participants::ParticipantInfoData>(new_data));
@@ -361,7 +361,7 @@ TEST(ParticipantDatabaseTest, n_msgs_guid)
             std::make_shared<test::SpyDdsParticipantMock>(id_);
 
     // Create DDS Pipe
-    std::shared_ptr<DdsPipe> pipe = create_pipe(model, dds_participant);
+    std::shared_ptr<DdsPipe> pipe = test::create_pipe(model, dds_participant);
     pipe->enable();
 
     auto dds_reader = dds_participant->participant_reader;
@@ -373,7 +373,7 @@ TEST(ParticipantDatabaseTest, n_msgs_guid)
     for (unsigned int i = 0; i < n_msgs; i++)
     {
         spy::participants::ParticipantInfoData new_data;
-        random_participant_info(new_data, true, i);
+        test::random_participant_info(new_data, true, i);
         datas.push_back(new_data);
         dds_reader->simulate_data_reception(
             std::make_unique<spy::participants::ParticipantInfoData>(new_data));
