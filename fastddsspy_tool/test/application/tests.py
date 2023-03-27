@@ -16,13 +16,11 @@ Tests for the fastddsspy executable.
 
 Contains a package of system test for fastddsspy tool
 
-Usage: test.py -e <binary_path> -c <config_file_path>
+Usage: test.py -e <binary_path>
 
 Arguments:
 
-    DDS Router binary path          : -e | --exe binary_path
-
-    DDS Router binary path          : -c | --config-file <config_file_path>
+    Fast DDS Spy binary path          : -e | --exe binary_path
 
     Run test in Debug mode          : -d | --debug
 
