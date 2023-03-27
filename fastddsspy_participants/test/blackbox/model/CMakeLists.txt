@@ -29,6 +29,7 @@ set(TEST_LIST
         guid
         active_true
         active_false
+        change_value
         n_msgs_name
         n_msgs_guid
     )
@@ -72,6 +73,7 @@ set(TEST_LIST
         topic
         active_true
         active_false
+        change_value
         is_writer
         is_reader
     )

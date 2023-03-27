@@ -138,7 +138,7 @@ void random_participant_info(
         bool active = true,
         unsigned int seed = 0)
 {
-    participant_data.info.name = ddspipe::core::testing::random_participant_id();
+    participant_data.info.name = ddspipe::core::testing::random_participant_id(seed);
     participant_data.info.active = active;
     participant_data.info.guid = ddspipe::core::testing::random_guid(seed);
 }
@@ -292,6 +292,50 @@ TEST(ParticipantDatabaseTest, active_false)
 
     // Send message
     spy::participants::ParticipantInfoData new_data;
+    test::random_participant_info(new_data, false);
+    dds_reader->simulate_data_reception(
+        std::make_unique<spy::participants::ParticipantInfoData>(new_data));
+
+    // Wait
+    std::this_thread::sleep_for(std::chrono::milliseconds(test::WAIT_MS));
+
+    // Check information
+    ASSERT_FALSE(model->participant_database_.at(new_data.info.guid).active);
+
+    ASSERT_EQ(model->participant_database_.size(), 1);
+}
+
+TEST(ParticipantDatabaseTest, change_value)
+{
+    // Create Model
+    std::shared_ptr<spy::participants::SpyModel> model =
+            std::make_shared<spy::participants::SpyModel>();
+
+    const types::ParticipantId id_ = "DDS Spy mock participant";
+
+    std::shared_ptr<test::SpyDdsParticipantMock> dds_participant =
+            std::make_shared<test::SpyDdsParticipantMock>(id_);
+
+    // Create DDS Pipe
+    std::shared_ptr<DdsPipe> pipe = test::create_pipe(model, dds_participant);
+    pipe->enable();
+
+    auto dds_reader = dds_participant->participant_reader;
+    ASSERT_NE(dds_reader, nullptr);
+
+    // Send message
+    spy::participants::ParticipantInfoData new_data;
+    test::random_participant_info(new_data);
+    dds_reader->simulate_data_reception(
+        std::make_unique<spy::participants::ParticipantInfoData>(new_data));
+
+    // Wait
+    std::this_thread::sleep_for(std::chrono::milliseconds(test::WAIT_MS));
+
+    // Check information
+    ASSERT_TRUE(model->participant_database_.at(new_data.info.guid).active);
+
+    // Change information
     test::random_participant_info(new_data, false);
     dds_reader->simulate_data_reception(
         std::make_unique<spy::participants::ParticipantInfoData>(new_data));

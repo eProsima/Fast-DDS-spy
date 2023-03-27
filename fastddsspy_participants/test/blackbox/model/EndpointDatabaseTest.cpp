@@ -136,16 +136,25 @@ std::shared_ptr<DdsPipe> create_pipe(
 void random_endpoint_info(
         spy::participants::EndpointInfoData& endpoint_data,
         bool active = true,
-        unsigned int seed = 0,
-        ddspipe::core::types::EndpointKind kind = ddspipe::core::testing::random_endpoint_kind(rand() % 10),
-        ddspipe::core::types::DdsTopic topic = ddspipe::core::testing::random_dds_topic(rand() % 10))
+        unsigned int seed = 0)
+{
+    endpoint_data.info.active = active;
+    endpoint_data.info.kind = ddspipe::core::testing::random_endpoint_kind(seed);
+    endpoint_data.info.guid = ddspipe::core::testing::random_guid(seed);
+    endpoint_data.info.topic = ddspipe::core::testing::random_dds_topic(seed);
+}
+
+void random_endpoint_info(
+        spy::participants::EndpointInfoData& endpoint_data,
+        ddspipe::core::types::EndpointKind kind,
+        bool active = true,
+        unsigned int seed = 0)
 {
     endpoint_data.info.active = active;
     endpoint_data.info.kind = kind;
     endpoint_data.info.guid = ddspipe::core::testing::random_guid(seed);
-    endpoint_data.info.topic = topic;
+    endpoint_data.info.topic = ddspipe::core::testing::random_dds_topic(seed);
 }
-
 
 } // namespace test
 
@@ -348,6 +357,45 @@ TEST(EndpointDatabaseTest, active_false)
     ASSERT_FALSE(model->endpoint_database_.at(new_data.info.guid).active);
 }
 
+TEST(EndpointDatabaseTest, change_value)
+{
+    // Create Model
+    std::shared_ptr<spy::participants::SpyModel> model =
+            std::make_shared<spy::participants::SpyModel>();
+
+    const types::ParticipantId id_ = "DDS Spy mock participant";
+
+    std::shared_ptr<test::SpyDdsParticipantMock> dds_participant =
+            std::make_shared<test::SpyDdsParticipantMock>(id_);
+
+    // Create DDS Pipe
+    std::shared_ptr<DdsPipe> pipe = test::create_pipe(model, dds_participant);
+    pipe->enable();
+
+    auto dds_reader = dds_participant->endpoint_reader;
+    ASSERT_NE(dds_reader, nullptr);
+
+    // Send messages
+    spy::participants::EndpointInfoData new_data;
+    test::random_endpoint_info(new_data);
+    dds_reader->simulate_data_reception(
+        std::make_unique<spy::participants::EndpointInfoData>(new_data));
+
+    // Wait
+    std::this_thread::sleep_for(std::chrono::milliseconds(test::WAIT_MS));
+
+    // Change value
+    test::random_endpoint_info(new_data, false);
+    dds_reader->simulate_data_reception(
+        std::make_unique<spy::participants::EndpointInfoData>(new_data));
+
+    // Wait
+    std::this_thread::sleep_for(std::chrono::milliseconds(test::WAIT_MS));
+
+    // Check information
+    ASSERT_FALSE(model->endpoint_database_.at(new_data.info.guid).active);
+}
+
 TEST(EndpointDatabaseTest, is_writer)
 {
     // Create Model
@@ -368,7 +416,7 @@ TEST(EndpointDatabaseTest, is_writer)
 
     // Send messages
     spy::participants::EndpointInfoData new_data;
-    test::random_endpoint_info(new_data, true, 1, ddspipe::core::types::EndpointKind::writer);
+    test::random_endpoint_info(new_data, ddspipe::core::types::EndpointKind::writer);
     dds_reader->simulate_data_reception(
         std::make_unique<spy::participants::EndpointInfoData>(new_data));
 
@@ -399,7 +447,7 @@ TEST(EndpointDatabaseTest, is_reader)
 
     // Send messages
     spy::participants::EndpointInfoData new_data;
-    test::random_endpoint_info(new_data, true, 1, ddspipe::core::types::EndpointKind::reader);
+    test::random_endpoint_info(new_data, ddspipe::core::types::EndpointKind::reader);
     dds_reader->simulate_data_reception(
         std::make_unique<spy::participants::EndpointInfoData>(new_data));
 
