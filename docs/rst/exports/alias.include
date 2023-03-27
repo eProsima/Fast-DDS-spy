@@ -3,6 +3,7 @@
 
 .. |ddsrouter| replace:: *DDS Router*
 .. |fastdds| replace:: *Fast DDS*
+.. |ddspipe| replace:: *DDS Pipe*
 .. |spy| replace:: *Fast DDS Spy*
 
 .. |eddsrouter| replace:: *eProsima DDS Router*

@@ -9,8 +9,8 @@ Commands
 
 Each
 
-Entities Commands
-=================
+Entity Commands
+===============
 
 The information retrieved by these commands follows :term:`YAML` format and queries the application database about the network current status.
 
