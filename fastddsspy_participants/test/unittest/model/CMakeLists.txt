@@ -12,5 +12,34 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-add_subdirectory(blackbox)
-add_subdirectory(unittest)
+set(TEST_NAME DataStreamerTest)
+
+set(TEST_SOURCES
+        DataStreamerTest.cpp
+    )
+all_library_sources("${TEST_SOURCES}")
+
+set(TEST_LIST
+        activate_false
+        activate_true
+        activate_twice
+        topic_type_discovered
+        deactivate
+        add_data
+        add_data_two_topics
+    )
+
+set(TEST_EXTRA_LIBRARIES
+        fastcdr
+        fastrtps
+        cpp_utils
+        ddspipe_core
+        ddspipe_participants
+    )
+
+add_unittest_executable(
+        "${TEST_NAME}"
+        "${TEST_SOURCES}"
+        "${TEST_LIST}"
+        "${TEST_EXTRA_LIBRARIES}"
+    )
