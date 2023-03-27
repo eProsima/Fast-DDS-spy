@@ -3,12 +3,6 @@
 
 .. _user_manual_commands_input:
 
-############
-Input format
-############
-
-TODO
-
 .. _user_manual_commands_input_verbose:
 
 Verbose
@@ -16,6 +10,7 @@ Verbose
 
 :code:`verbose` is a common argument for most of the :ref:`Commands <user_manual_commands>` available.
 This argument generate more complete and complex output data for the query executed by the command.
+In order to see verbose information, add one of the key-words right after the command and its required arguments.
 
 Key-words
 ---------
@@ -23,13 +18,25 @@ Key-words
 These are the key-words recognize as this argument:
 ``verbose`` ``v`` ``-v`` ``--v`` ``V``.
 
+.. _user_manual_commands_input_all:
+
+All
+===
+
+Some commands support an ``all`` argument.
+
+Key-words
+---------
+
+These are the key-words recognize as this argument:
+``all`` ``a`` ``-a`` ``--a`` ``A``.
+
 .. _user_manual_commands_input_guid:
 
 Guid
 ====
 
 :term:`Guid` identifies a DDS entity by a unique Id.
-This argument is available with :ref:`user_manual_command_participant` and TODO and it retrieves verbose information regarding a unique entity.
 
 Format
 ------

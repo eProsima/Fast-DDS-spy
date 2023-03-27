@@ -2,7 +2,7 @@
 # Every value set here (except for topic lists) is the default. Thus not setting it will use this value.
 
 dds:
-  domain: 0
+  domain: 1
 
   allowlist:
     - name: "*"

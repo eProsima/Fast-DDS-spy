@@ -12,6 +12,14 @@ Glossary
         **Command Line Interface**
         This is a channel of communication between an application and a user using the Command Line, so-called Terminal.
 
+    DDS
+        **Data Distribution Service** protocol.
+        Specification: `<https://www.omg.org/spec/DDS/>`_.
+
+    YAML
+        **YAML Ain Markup Language** human-friendly data serialization language.
+        Specification: `<https://yaml.org/>`_.
+
 
 DDS nomenclature
 ================
@@ -59,16 +67,16 @@ DDS nomenclature
     Endpoint
         DDS element that publish or subscribes in a specific Topic. Endpoint kinds are *DataWriter* or *DataReader*.
 
+    Entity Id
+        DDS Identifier created by 4 bytes, represented by 4 hexadecimal values separated by ``.``.
+        This identifier differentiates each of the entities inside a :term:`DomainParticipant`.
+        e.g. ``00.00.01.c1``.
+
     Guid Prefix
         DDS Identifier created by 12 bytes, represented by 12 hexadecimal values separated by ``.``.
         Every entity that belongs to the same :term:`DomainParticipant` has the same Guid Prefix.
         The EntityId uniquely identifies sub-entities inside a Participant.
         e.g. ``01.0f.22.ba.3b.47.ab.3c.00.00.00.00``.
-
-    Entity Id
-        DDS Identifier created by 4 bytes, represented by 4 hexadecimal values separated by ``.``.
-        This identifier differentiates each of the entities inside a :term:`DomainParticipant`.
-        e.g. ``00.00.01.c1``.
 
     Guid
         Global Unique Identifier.

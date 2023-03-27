@@ -3,16 +3,22 @@
 
 .. _user_manual_command_participant:
 
-####################
-Participants Command
-####################
+############
+Participants
+############
 
 **Participants** is a command that retrieves information of the :term:`DomainParticipants <DomainParticipant>` currently active in the network.
+
+Key-words
+=========
+
+These are the key-words recognize as this command:
+``participant`` ``participants`` ``p`` ``P``.
 
 Arguments
 =========
 
-**Participants** command support 0 or 1 argument.
+**Participants** command support 0 or 1 argument:
 
 *No argument*
 -------------
@@ -26,7 +32,7 @@ Verbose
 This argument queries for more complete information about each of the DomainParticipants in the network.
 It adds the information about endpoints and the topics they communicate in of each of the Participants.
 The output got is a **list** of data with :ref:`verbose information <user_manual_command_participant_output_verbose>`.
-Check the :ref:`verbose <user_manual_commands_input_verbose>` section in order to know how to add this argument to the command.
+Check the :ref:`verbose <user_manual_commands_input_verbose>` section in order to know which key-words are available for this argument.
 
 Guid
 ----
@@ -76,32 +82,34 @@ This would be the expected output for the command ``participants``:
 .. code-block::
 
     - name: Fast DDS ShapesDemo Participant
-      guid: 01.0f.22.ba.3b.47.ab.3c.00.00.00.00|0.0.1.c1
+      guid: 01.0f.44.59.21.58.14.d2.00.00.00.00|0.0.1.c1
     - name: Fast DDS ShapesDemo Participant
-      guid: 01.0f.22.ba.79.47.8d.f0.00.00.00.00|0.0.1.c1
+      guid: 01.0f.44.59.da.57.de.ec.00.00.00.00|0.0.1.c1
+    - ...
 
 This would be the expected output for the command ``participants verbose``:
 
 .. code-block::
 
     - name: Fast DDS ShapesDemo Participant
-      guid: 01.0f.22.ba.3b.47.ab.3c.00.00.00.00|0.0.1.c1
-      datawriters:
-        - Square [ShapeType] (2)
-        - Circle [ShapeType] (1)
-    - name: Fast DDS ShapesDemo Participant
-      guid: 01.0f.22.ba.79.47.8d.f0.00.00.00.00|0.0.1.c1
+      guid: 01.0f.44.59.21.58.14.d2.00.00.00.00|0.0.1.c1
       datawriters:
         - Triangle [ShapeType] (1)
       datareaders:
         - Square [ShapeType] (1)
+    - name: Fast DDS ShapesDemo Participant
+      guid: 01.0f.44.59.da.57.de.ec.00.00.00.00|0.0.1.c1
+      datawriters:
+        - Square [ShapeType] (2)
+        - Circle [ShapeType] (1)
+    - ...
 
-This would be the expected output for the command ``participants 01.0f.22.ba.3b.47.ab.3c.00.00.00.00|0.0.1.c1``:
+This would be the expected output for the command ``participants 01.0f.44.59.da.57.de.ec.00.00.00.00|0.0.1.c1``:
 
 .. code-block::
 
     name: Fast DDS ShapesDemo Participant
-    guid: 01.0f.22.ba.3b.47.ab.3c.00.00.00.00|0.0.1.c1
+    guid: 01.0f.44.59.da.57.de.ec.00.00.00.00|0.0.1.c1
     datawriters:
-    - Square [ShapeType] (2)
-    - Circle [ShapeType] (1)
+      - Square [ShapeType] (2)
+      - Circle [ShapeType] (1)
