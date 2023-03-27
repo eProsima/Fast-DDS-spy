@@ -41,54 +41,121 @@ Spy configuration
 
 Additionally, it is possible to change the default configuration parameters by means of a YAML configuration file.
 
+.. TODO refer to Configuration
+
 .. note::
     Please refer to Configuration for more information on how to configure a |espy|.
 
 Spy execution
 =============
 
-Launching a |espy| instance is as easy as executing the following command:
+Source the following file to setup the |espy| environment:
 
 .. code-block:: bash
 
-    fastdds_spy
+    source install/setup.bash
+
+Launch an |espy| instance as executing the following command:
+
+.. code-block:: bash
+
+    fastddsspy
 
 Try out all the commands DDS Spy has to offer:
 
 * ``participants``
 
-.. figure:: /rst/figures/example_usage/spy_participants.png
-    :align: center
-    :scale: 75 %
+.. code-block:: bash
+
+    Insert a command for Fast DDS Spy:
+    >> participants
+    - name: TypeIntrospectionExample_Participant_Publisher
+    guid: 01.0f.af.e6.b2.34.33.12.00.00.00.00|0.0.1.c1
 
 * ``datawriters``
 
-.. figure:: /rst/figures/example_usage/spy_datawriter.png
-    :align: center
-    :scale: 75 %
+.. code-block:: bash
+
+    Insert a command for Fast DDS Spy:
+    >> datawriters
+    - guid: 01.0f.af.e6.b2.34.33.12.00.00.00.00|0.0.1.3
+    participant: TypeIntrospectionExample_Participant_Publisher
+    topic: TypeIntrospectionTopic [HelloWorld_TypeIntrospectionExample]
 
 * ``topics``
 
-.. figure:: /rst/figures/example_usage/spy_topics.png
-    :align: center
-    :scale: 75 %
+.. code-block:: bash
 
-* ``print <topic>
+    Insert a command for Fast DDS Spy:
+    >> topics
+    - name: TypeIntrospectionTopic
+    type: HelloWorld_TypeIntrospectionExample
+    datawriters: 1
+    datareaders: 0
+    rate: 2.00787 Hz
 
-.. figure:: /rst/figures/example_usage/spy_square.png
-    :align: center
-    :scale: 75 %
-
-In order to know all the possible arguments supported by this tool, use the command:
+* ``print <topic>``
 
 .. code-block:: bash
 
-    fastdds_spy --help
+    Insert a command for Fast DDS Spy:
+    >> print TypeIntrospectionTopic
+    ---
+    index: 605
+    message: Hello World
+    ---
+
+    ---
+    index: 606
+    message: Hello World
+    ---
+
+    ---
+    index: 607
+    message: Hello World
+    ---
+
+* ``help``
+
+.. code-block:: bash
+
+    Insert a command for Fast DDS Spy:
+    >> help
+    Fast DDS Spy is an interactive CLI that allow to instrospect DDS networks.
+    Each command shows data related with the network in Yaml format.
+    Commands available and the information they show:
+        help                   : this help.
+        version                : tool version.
+        quit                   : exit interactive CLI and close program.
+        participants           : DomainParticipants discovered in the network.
+        participants verbose   : verbose information about DomainParticipants discovered in the network.
+        participants <Guid>    : verbose information related with a specific DomainParticipant.
+        writers                : DataWriters discovered in the network.
+        writers verbose        : verbose information about DataWriters discovered in the network.
+        writers <Guid>         : verbose information related with a specific DataWriter.
+        reader                 : DataReaders discovered in the network.
+        reader verbose         : verbose information about DataReaders discovered in the network.
+        reader <Guid>          : verbose information related with a specific DataReader.
+        topics                 : Topics discovered in the network.
+        topics verbose         : verbose information about Topics discovered in the network.
+        topics <name>          : verbose information related with a specific Topic.
+        show <name>            : data of a specific Topic (Data Type must be discovered).
+        show <name> verbose    : data with additional source info of a specific Topic.
+        show all               : verbose data of all topics (only those whose Data Type is discovered).
+
+    Notes and comments:
+        To exit from data printing, press enter.
+        Each command is accessible by using its first letter (h/v/q/p/w/r/t/s).
+
+    For more information about these commands and formats, please refer to the documentation:
+    https://fast-dds-spy.readthedocs.io/en/latest/
 
 Stop |espy| typing ``exit``.
 
 Next Steps
 ==========
+
+.. TODO add
 
 .. note::
     This page is under maintenance and will be updated soon.
