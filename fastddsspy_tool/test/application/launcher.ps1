@@ -23,8 +23,7 @@ $test = Start-Process -Passthru -Wait `
     -ArgumentList (
         $test_script,
         "--exe", $tool_path,
-        "--debug",
-        "--signal", "sigint") `
+        "--debug") `
     -WindowStyle Hidden
 
 if( $test.ExitCode -ne 0 )

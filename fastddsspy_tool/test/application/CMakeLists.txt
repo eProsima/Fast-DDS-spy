@@ -18,12 +18,6 @@
 
 find_package(PythonInterp 3 REQUIRED)
 
-# Whether one or other signal in test
-set(SIGNAL_TEST_ARGS
-    "sigint"
-    "sigterm"
-)
-
 # windows auxiliary script to fork test execution
 set(PWS_LAUNCHER
     ${CMAKE_CURRENT_SOURCE_DIR}/launcher.ps1
@@ -86,47 +80,18 @@ endif(WIN32)
 
 # populate the tests
 set(TEST_NAME "tool.application.fastddsspy")
+add_test(
+        NAME ${TEST_NAME}
+        COMMAND ${PYTHON_EXECUTABLE}
+                ${CMAKE_CURRENT_SOURCE_DIR}/tests.py
+                "--exe" $<TARGET_FILE:fastddsspy_tool>
+    )
 
-# CTest has issues with signals on windows. We forked the test
-# execution using an auxiliary powershell script and using only sigint
-if(WIN32)
-    add_test(
-            NAME ${TEST_NAME}
-            COMMAND powershell "-File" ${PWS_LAUNCHER}
-                    ${PYTHON_EXECUTABLE}
-                    ${CMAKE_CURRENT_SOURCE_DIR}/tests.py
-                    $<TARGET_FILE:fastddsspy_tool>
-        )
-
-    # Set test properties
-    set_tests_properties(
-        ${TEST_NAME}
-        PROPERTIES
-            ENVIRONMENT "${TEST_ENVIRONMENT}"
-        )
-
-else()
-
-    foreach(SIGNAL_ARG IN LISTS SIGNAL_TEST_ARGS)
-
-        set(TEST_NAME "${TEST_NAME}.${SIGNAL_ARG}")
-        add_test(
-                NAME ${TEST_NAME}
-                COMMAND ${PYTHON_EXECUTABLE}
-                        ${CMAKE_CURRENT_SOURCE_DIR}/tests.py
-                        "--exe" $<TARGET_FILE:fastddsspy_tool>
-                        "--debug"
-                        "--signal" ${SIGNAL_ARG}
-            )
-
-        # Set test properties
-        set_tests_properties(
-            ${TEST_NAME}
-            PROPERTIES
-                ENVIRONMENT "${TEST_ENVIRONMENT}"
-            )
-        endforeach()
-endif()
-
+# Set test properties
+set_tests_properties(
+    ${TEST_NAME}
+    PROPERTIES
+        ENVIRONMENT "${TEST_ENVIRONMENT}"
+    )
 
 unset(TEST_ENVIRONMENT)

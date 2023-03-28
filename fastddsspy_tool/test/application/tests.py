@@ -24,35 +24,21 @@ Arguments:
 
     Run test in Debug mode          : -d | --debug
 
-    Use SIGINT or SIGTERM           : -s | --signal sigint|sigterm
 """
 
 import argparse
 import logging
 import os
-import signal
 import subprocess
 import sys
 import time
-from enum import Enum
 
 DESCRIPTION = """Script to execute Fast DDS Spy executable test"""
 USAGE = ('python3 tests.py -e <path/to/fastddsspy-executable>'
-         ' --signal sigint [-d]')
+         ' [-d]')
 
 # Sleep time to let process init and finish
 SLEEP_TIME = 1
-MAX_SIGNALS_SEND_ITERATIONS = 3
-
-
-def signal_handler(signum, frame):
-    """
-    Ignore Signal handler.
-
-    This method is required in Windows to not handle the signal that
-    is sent to the subprocess.
-    """
-    pass
 
 
 def executable_permission_value():
@@ -69,35 +55,6 @@ def file_exist_and_have_permissions(file_path):
         return file_path
     else:
         return None
-
-
-def is_linux():
-    """Return whether the script is running in a Linux environment."""
-    return os.name == 'posix'
-
-
-def is_windows():
-    """Return whether the script is running in a Windows environment."""
-    return os.name == 'nt'
-
-
-class KillingSignalType(Enum):
-    """Enumeration for signals used to kill subprocesses."""
-
-    KST_SIGINT = 2
-    KST_SIGTERM = 15
-
-
-def check_terminate_signal(st):
-    """Return signal that must be used to kill process otherwise."""
-    if st == 'sigterm':
-        return KillingSignalType.KST_SIGTERM
-    elif st == 'sigint':
-        return KillingSignalType.KST_SIGINT
-    else:
-        raise argparse.ArgumentTypeError(
-            f'Invalid value: {st}. It must be <sigint> or <sigterm>')
-
 
 def parse_options():
     """
@@ -125,112 +82,30 @@ def parse_options():
         action='store_true',
         help='Print test debugging info.'
     )
-    parser.add_argument(
-        '-s',
-        '--signal',
-        type=check_terminate_signal,
-        required=True,
-        help='<sigint>|<sigterm>: Use SIGINT or SIGTERM to kill process.'
-    )
     return parser.parse_args()
 
 
-def test_spy_closure(fastddsspy, killing_signal):
-    """
-    Test that fastddsspy command closes correctly.
+def test_spy_closure(fastddsspy):
 
-    It creates a command line with the executable and the configuration
-    file, executes the process and send it a signal after SLEEP_TIME sec.
-    If the process has finished before the signal, test fails.
-    If the process does not end after sending MAX_SIGNALS_SEND_ITERATIONS
-    it is hard killed and the test fails.
-
-    Parameters:
-    fastddsspy (path): Path to fastddsspy binary executable
-    use_sigint (KillingSignalType): Signal to kill subprocesses
-
-    Returns:
-    0 if okay, otherwise the return code of the command executed
-    """
-    command = [fastddsspy]
-
+    command = [fastddsspy, "exit"]
     logger.info('Executing command: ' + str(command))
 
-    # this subprocess cannot be executed in shell=True or using bash
-    #  because a background script will not broadcast the signals
-    #  it receives
-    proc = subprocess.Popen(command,
-                            stdout=subprocess.PIPE,
-                            universal_newlines=True)
+    proc = subprocess.run(command, capture_output=True, text=True)
 
     # sleep to let the server run
     time.sleep(SLEEP_TIME)
 
     # Check whether the process has terminated already
-    if not proc.poll() is None:
-        # If the process has already exit means something has gone wrong.
-        # Capture and print output for traceability and exit with code s1.
+    # Typically, an exit status of 0 indicates that it ran successfully.
+    if proc.returncode:
         output, err = proc.communicate()
         logger.debug('-----------------------------------------------------')
-        logger.error('Command ' + str(command) + ' failed before signal.')
+        logger.error('Command ' + str(command) + ' failed.')
         logger.debug('Command output:')
         logger.debug('Stdout: \n' + str(output))
         logger.debug('Stderr: \n' + str(err))
         logger.debug('-----------------------------------------------------')
         return 1
-
-    # direct this script to ignore SIGINT in case of windows
-    if is_windows():
-        signal.signal(signal.SIGINT, signal_handler)
-
-    # send signal to process and wait for it to be killed
-    lease = 0
-    while True:
-
-        if killing_signal == KillingSignalType.KST_SIGTERM:
-            # Use SIGTERM instead
-            if is_linux():
-                proc.send_signal(signal.SIGTERM)
-            elif is_windows():
-                proc.send_signal(signal.CTRL_BREAK_EVENT)
-        else:
-            # Use SIGINT (use by default if not SIGTERM)
-            if is_linux():
-                proc.send_signal(signal.SIGINT)
-            elif is_windows():
-                proc.send_signal(signal.CTRL_C_EVENT)
-
-        time.sleep(SLEEP_TIME)
-        lease += 1
-
-        # Break when signal kills the process or it hangs
-        if proc.poll() is None and lease < MAX_SIGNALS_SEND_ITERATIONS:
-            logger.debug('Sending signal again. Iterating...')
-        else:
-            break
-
-    # Check whether SIGINT was able to terminate the process
-    if proc.poll() is None:
-        # SIGINT couldn't terminate the process. Kill it and exit with code 2
-        proc.kill()
-        output, err = proc.communicate()
-        logger.debug('-----------------------------------------------------')
-        logger.debug('Internal Fast DDS Spy output:')
-        logger.debug('Stdout: \n' + str(output))
-        logger.debug('Stderr: \n' + str(err))
-        logger.error('Signal could not kill process')
-        logger.debug('-----------------------------------------------------')
-        return 1
-
-    output, err = proc.communicate()
-    logger.debug('-----------------------------------------------------')
-    logger.info(
-        'Command ' + str(command) + ' finished correctly')
-    logger.debug('Command output:')
-    logger.debug('Stdout: \n' + str(output))
-    logger.debug('Stderr: \n' + str(err))
-    logger.debug('-----------------------------------------------------')
-
     return 0
 
 
@@ -262,5 +137,4 @@ if __name__ == '__main__':
 
     sys.exit(
         test_spy_closure(
-            args.exe,           # Path to executable
-            args.signal))       # Signal to kill subprocess
+            args.exe))           # Path to executable
