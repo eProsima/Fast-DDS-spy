@@ -26,6 +26,17 @@
    Docker Image </rst/installation/docker.rst>
 
 
+.. _index_spy_application:
+
+.. toctree::
+   :caption: Getting Started
+   :maxdepth: 2
+   :numbered: 5
+   :hidden:
+
+   /rst/interactive_application/getting_started/project_overview
+   /rst/interactive_application/getting_started/usage_example
+
 .. _index_developer_manual:
 
 .. toctree::
