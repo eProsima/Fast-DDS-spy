@@ -20,10 +20,15 @@ find_package(PythonInterp 3 REQUIRED)
 
 # Name of files to test
 set(TEST_LIST
-    exit
-    participants
-    topics
-    datawriters
+    one_shot_trivial
+    one_shot_help
+    one_shot_datareader
+    one_shot_datawriter
+    one_shot_participants
+    one_shot_quit
+    one_shot_show
+    one_shot_topics
+    one_shot_version
 )
 
 # windows auxiliary script to fork test execution
@@ -88,12 +93,13 @@ endif(WIN32)
 
 # populate the tests
 foreach(TEST IN LISTS TEST_LIST)
-    set(TEST_NAME "tool.application.fastddsspy.${TEST}")
+    set(TEST_NAME "tool.application.fastddsspy.test.${TEST}")
     add_test(
             NAME ${TEST_NAME}
             COMMAND ${PYTHON_EXECUTABLE}
-                    ${CMAKE_CURRENT_SOURCE_DIR}/${TEST}.py
+                    ${CMAKE_CURRENT_SOURCE_DIR}/test.py
                     "--exe" $<TARGET_FILE:fastddsspy_tool>
+                    "--test" ${TEST}
         )
 
     # Set test properties

@@ -18,13 +18,13 @@ class TestCase_instance (test_class.TestCase):
 
     def __init__(self):
         super().__init__(
-            name = "HelpCommand",
+            name = "TrivialCommand",
             one_shot = True,
             command = [],
             dds = False,
-            arguments = "help"
+            arguments = ""
         )
 
-
+    # @override
     def valid_output_tool(self, stderr):
         super().valid_output_tool(stderr)

@@ -18,11 +18,11 @@ class TestCase_instance (test_class.TestCase):
 
     def __init__(self):
         super().__init__(
-            name = "HelpCommand",
+            name = "VersionCommand",
             one_shot = True,
             command = [],
             dds = False,
-            arguments = "help"
+            arguments = "version"
         )
 
 
