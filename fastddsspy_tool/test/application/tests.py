@@ -31,6 +31,7 @@ import logging
 import os
 import subprocess
 import sys
+import time
 
 DESCRIPTION = """Script to execute Fast DDS Spy executable test"""
 USAGE = ('python3 tests.py -e <path/to/fastddsspy-executable>'
@@ -87,14 +88,21 @@ def parse_options():
 
 def test_spy_closure(fastddsspy):
 
-    command = [fastddsspy, 'exit']
+    command = [fastddsspy]
     logger.info('Executing command: ' + str(command))
 
     proc = subprocess.Popen(command,
+                            stdin=subprocess.PIPE,
                             stdout=subprocess.PIPE,
+                            stderr=subprocess.PIPE,
                             universal_newlines=True)
+
+    # sleep to let the server run
+    time.sleep(SLEEP_TIME)
+
     try:
         proc.communicate(input='exit', timeout=2)
+        proc.kill()
         logger.debug('-----------------------------------------------------')
         logger.debug('Command ' + str(command) + ' worked.')
         logger.debug('-----------------------------------------------------')
