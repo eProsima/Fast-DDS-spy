@@ -3,9 +3,9 @@
 
 .. _user_manual_command_topic:
 
-############
+#####
 Topic
-############
+#####
 
 **Topic** is a command that retrieves information of the :term:`Topics <Topic>` with at least one endpoint currently active in the network.
 
@@ -23,7 +23,8 @@ Arguments
 *No argument*
 -------------
 
-When no arguments are given to this command, the information shown is a **list** with every :term:`DomainParticipant <DomainParticipant>` currently active in the network, giving their :term:`Guid` and names.
+When no arguments are given to this command, the information shown is a **list** with every topic with at least one endpoint currently active in the network.
+The information shown is the topic name, data type name, number of writers and readers and the subscription rate measured in samples per second.
 The output format is as follows: :ref:`user_manual_command_topic_output_simple`.
 
 Verbose
