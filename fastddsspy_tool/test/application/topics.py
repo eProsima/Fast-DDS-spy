@@ -12,7 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import logging
+import sys
+import time
 from utils import *
+
+# Sleep time to let process init and finish
+SLEEP_TIME = 2
 
 
 if __name__ == '__main__':
@@ -42,6 +48,9 @@ if __name__ == '__main__':
         sys.exit(1)
 
     spy = test_spy_start(args.exe, logger)
+
+    # sleep to let the spy run
+    time.sleep(SLEEP_TIME)
 
     sys.exit(
         test_spy_command(

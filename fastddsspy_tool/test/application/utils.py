@@ -27,19 +27,12 @@ Arguments:
 """
 
 import argparse
-import logging
 import os
 import subprocess
-import sys
-import time
 
 DESCRIPTION = """Script to execute Fast DDS Spy executable test"""
 USAGE = ('python3 tests.py -e <path/to/fastddsspy-executable>'
          ' [-d]')
-
-# Sleep time to let process init and finish
-SLEEP_TIME = 2
-
 
 def executable_permission_value():
     """Return executable permissions value depending on the OS."""
@@ -103,7 +96,7 @@ def test_spy_command(proc, command, logger):
 
     try:
         proc.communicate(input=command, timeout=5)
-        proc.kill()
+        # proc.kill()
         logger.debug('-----------------------------------------------------')
         logger.debug('Command ' + str(command) + ' worked.')
         logger.debug('-----------------------------------------------------')
