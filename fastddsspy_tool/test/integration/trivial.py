@@ -33,7 +33,7 @@ from enum import Enum
 
 DESCRIPTION = """Script to validate talkers output"""
 USAGE = ('python3 publisher_participant.py -e <path/to/fastddsspy-executable>'
-         ' [-d] [--samples]')
+         ' [-d]')
 
 # Sleep time to let process init and finish
 SLEEP_TIME = 1
@@ -79,7 +79,6 @@ class KillingSignalType(Enum):
     """Enumeration for signals used to kill subprocesses."""
 
     KST_SIGINT = 2
-    KST_SIGTERM = 15
 
 
 def check_terminate_signal():
@@ -112,18 +111,13 @@ def parse_options():
         action='store_true',
         help='Print test debugging info.'
     )
-    parser.add_argument(
-        '-s',
-        '--samples',
-        type=int,
-        default=1,
-        help='Samples to receive.'
-    )
     return parser.parse_args()
 
-def start_spy(fastddsspy, entities):
-    command = [fastddsspy + entities]
-
+def start_spy(fastddsspy, entities = None):
+    if not entities is None:
+        command = [fastddsspy + entities]
+    else:
+        command = [fastddsspy]
     logger.info('Executing command: ' + str(command))
 
     # this subprocess cannot be executed in shell=True or using bash
@@ -163,7 +157,6 @@ def close_spy(fastddsspy,  proc):
     Returns:
     0 if okay, otherwise the return code of the command executed
     """
-
 
     # direct this script to ignore SIGINT in case of windows
     if is_windows():

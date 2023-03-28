@@ -121,7 +121,7 @@ foreach(TEST IN LISTS TEST_LIST)
                         ${CMAKE_CURRENT_SOURCE_DIR}/${TEST}.py
                         "--exe" $<TARGET_FILE:fastddsspy_tool>
                         "--debug"
-                        "--samples"
+                        # "--samples"
             )
 
         # Set test properties
@@ -135,3 +135,5 @@ endforeach()
 
 
 unset(TEST_ENVIRONMENT)
+
+add_subdirectory(dds/AdvancedConfigurationExample) # Source directory

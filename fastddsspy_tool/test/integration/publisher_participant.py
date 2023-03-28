@@ -24,30 +24,36 @@ Arguments:
 import argparse
 import logging
 import os
-import signal
 import subprocess
 import sys
 import time
 import re
-from enum import Enum
+import unittest
+import yaml
+
+# class TestStringMethods(unittest.TestCase):
+
+#     def test_upper(self):
+#         self.assertEqual('foo'.upper(), 'FOO')
+
+#     def test_isupper(self):
+#         self.assertTrue('FOO'.isupper())
+#         self.assertFalse('Foo'.isupper())
+
+#     def test_split(self):
+#         s = 'hello world'
+#         self.assertEqual(s.split(), ['hello', 'world'])
+#         # check that s.split fails when the separator is not a string
+#         with self.assertRaises(TypeError):
+#             s.split(2)
 
 DESCRIPTION = """Script to validate talkers output"""
 USAGE = ('python3 publisher_participant.py -e <path/to/fastddsspy-executable>'
-         ' [-d] [--samples]')
+         ' [-d]')
 
 # Sleep time to let process init and finish
 SLEEP_TIME = 1
 MAX_SIGNALS_SEND_ITERATIONS = 3
-
-
-def signal_handler(signum, frame):
-    """
-    Ignore Signal handler.
-    This method is required in Windows to not handle the signal that
-    is sent to the subprocess.
-    """
-    pass
-
 
 def executable_permission_value():
     """Return executable permissions value depending on the OS."""
@@ -63,29 +69,6 @@ def file_exist_and_have_permissions(file_path):
         return file_path
     else:
         return None
-
-
-def is_linux():
-    """Return whether the script is running in a Linux environment."""
-    return os.name == 'posix'
-
-
-def is_windows():
-    """Return whether the script is running in a Windows environment."""
-    return os.name == 'nt'
-
-
-class KillingSignalType(Enum):
-    """Enumeration for signals used to kill subprocesses."""
-
-    KST_SIGINT = 2
-    KST_SIGTERM = 15
-
-
-def check_terminate_signal():
-    """Return signal that must be used to kill process otherwise."""
-    return KillingSignalType.KST_SIGINT
-
 
 def parse_options():
     """
@@ -112,37 +95,27 @@ def parse_options():
         action='store_true',
         help='Print test debugging info.'
     )
-    parser.add_argument(
-        '-s',
-        '--samples',
-        type=int,
-        default=1,
-        help='Samples to receive.'
-    )
     return parser.parse_args()
 
-def start_spy(fastddsspy, entities):
-    command = [fastddsspy + entities]
 
+def start_spy(fastddsspy, entities = None):
+    if not entities is None:
+        command = [fastddsspy, entities]
+    else:
+        command = [fastddsspy]
     logger.info('Executing command: ' + str(command))
 
-    # this subprocess cannot be executed in shell=True or using bash
-    #  because a background script will not broadcast the signals
-    #  it receives
-    proc = subprocess.Popen(command,
-                            stdout=subprocess.PIPE,
-                            universal_newlines=True)
+    proc = subprocess.run(command, capture_output=True, text=True)
 
     # sleep to let the server run
     time.sleep(SLEEP_TIME)
 
     # Check whether the process has terminated already
-    if not proc.poll() is None:
-        # If the process has already exit means something has gone wrong.
-        # Capture and print output for traceability and exit with code s1.
+    # Typically, an exit status of 0 indicates that it ran successfully.
+    if proc.returncode:
         output, err = proc.communicate()
         logger.debug('-----------------------------------------------------')
-        logger.error('Command ' + str(command) + ' failed before signal.')
+        logger.error('Command ' + str(command) + ' failed.')
         logger.debug('Command output:')
         logger.debug('Stdout: \n' + str(output))
         logger.debug('Stderr: \n' + str(err))
@@ -150,42 +123,30 @@ def start_spy(fastddsspy, entities):
         return 1
     return proc
 
-def close_spy(fastddsspy,  proc):
+
+def start_publisher(args):
     """
-    Test that fastddsspy command closes correctly.
-    It creates a command line with the executable and the configuration
-    file, executes the process and send it a signal after SLEEP_TIME sec.
-    If the process has finished before the signal, test fails.
-    If the process does not end after sending MAX_SIGNALS_SEND_ITERATIONS
-    it is hard killed and the test fails.
-    Parameters:
-    fastddsspy (path): Path to fastddsspy binary executable
-    Returns:
-    0 if okay, otherwise the return code of the command executed
+    Build the command to execute the publisher.
+
+    :param args: Arguments parsed
+    :return: Command to execute the publisher
     """
+    exec_publisher = args.exe.replace(
+        "/fastddsspy_tool/fastddsspy",
+        "/fastddsspy_tool/test/integration/dds/AdvancedConfigurationExample/AdvancedConfigurationExample")
+
+    command = [
+        exec_publisher,
+        'publisher']
+
+    proc = subprocess.Popen(command,
+                            stdout=subprocess.PIPE,
+                            universal_newlines=True)
+
+    return proc
 
 
-    # direct this script to ignore SIGINT in case of windows
-    if is_windows():
-        signal.signal(signal.SIGINT, signal_handler)
-
-    # send signal to process and wait for it to be killed
-    lease = 0
-    while True:
-        # Use SIGINT
-        if is_linux():
-            proc.send_signal(signal.SIGINT)
-        elif is_windows():
-            proc.send_signal(signal.CTRL_C_EVENT)
-
-        time.sleep(SLEEP_TIME)
-        lease += 1
-
-        # Break when signal kills the process or it hangs
-        if proc.poll() is None and lease < MAX_SIGNALS_SEND_ITERATIONS:
-            logger.debug('Sending signal again. Iterating...')
-        else:
-            break
+def stop_publisher(proc):
 
     # Check whether SIGINT was able to terminate the process
     if proc.poll() is None:
@@ -203,7 +164,7 @@ def close_spy(fastddsspy,  proc):
     output, err = proc.communicate()
     logger.debug('-----------------------------------------------------')
     logger.info(
-        'Command ' + str([fastddsspy]) + ' finished correctly')
+        'Command finished correctly')
     logger.debug('Command output:')
     logger.debug('Stdout: \n' + str(output))
     logger.debug('Stderr: \n' + str(err))
@@ -211,61 +172,14 @@ def close_spy(fastddsspy,  proc):
 
     return 0
 
-def _publisher_command(args):
-    """
-    Build the command to execute the publisher.
 
-    :param args: Arguments parsed
-    :return: Command to execute the publisher
-    """
-    command = [
-        args.exe,
-        'publisher']
-
-    command += args.args.split(' ')
-
-    return command
-
-
-def _publisher_parse_output(stdout, stderr):
-    """
-    Transform the output of the program in a list of received messages.
-
-    :param data: Process stdout
-    :return: List of received messages
-    """
-    regex = re.compile('^Message\sHelloWorld\s+\d+\sRECEIVED$')
-    lines = stdout.splitlines()
-    filtered_data = [line for line in lines if regex.match(line)]
-
-    return filtered_data, stderr
-
-
-def _publisher_validate(
-        stdout_parsed,
-        stderr_parsed,
-        samples,
-        duplicates_allow,
-        transient):
-
-    # Check default validator
-    ret_code = validation.validate_default(stdout_parsed, stderr_parsed)
-
-    if duplicates_allow != -1:
-        duplicated_n = len(find_duplicates(stdout_parsed))
-        if duplicated_n > duplicates_allow:
-            log.logger.error(
-                f'{duplicated_n} duplicated messages found. '
-                f'Maximum allowed {duplicates_allow}.')
-            return validation.ReturnCode.NOT_VALID_MESSAGES
-
-    if len(stdout_parsed) != samples:
-        log.logger.error(f'Number of messages received: {len(stdout_parsed)}. '
-                         f'Expected {samples}')
-        return validation.ReturnCode.NOT_VALID_MESSAGES
-
-    return ret_code
-
+def check_information(expected_info, result):
+    """Validate any data as correct."""
+    name = "Participant_pub"
+    guid = "01.0f.af.e6.4f.f7.7c.9b.00.00.00.00|0.0.1.c1"
+    if not name.__eq__("Participant_pub"):
+        print('s1 and s3 are not equal')
+        sys.exit(1)
 
 if __name__ == '__main__':
 
@@ -293,26 +207,22 @@ if __name__ == '__main__':
             'executable permissions.')
         sys.exit(1)
 
-    # command_publisher = _publisher_command(args)
+    publisher = start_publisher(args)
 
-    # validate_func = (lambda stdout_parsed, stderr_parsed: (
-    #     _publisher_validate(
-    #         stdout_parsed=stdout_parsed,
-    #         stderr_parsed=stderr_parsed,
-    #         samples=args.samples,
-    #         duplicates_allow=args.allow_duplicates,
-    #         transient=args.transient)))
+    spy = start_spy(args.exe, "participants")
 
-    # ret_code = validation.run_and_validate(
-    #     command=command_publisher,
-    #     timeout=args.timeout,
-    #     delay=args.delay,
-    #     parse_output_function=_publisher_parse_output,
-    #     validate_output_function=validate_func)
+    print(spy.stdout)
+    # result = yaml.safe_load(spy.stdout)
+    # result = yaml.dump(spy.stdout)
+    result = yaml.load(spy.stdout)
 
-    proc = start_spy(args.exe)
+    print("testingggg")
+    name = result['name']
+    print(name)
+    # assert result['name'] == 'John'
 
-    sys.exit(
-        close_spy(
-            args.exe,           # Path to executable
-            proc))       # Signal to kill subprocess
+    stop_publisher(publisher)
+
+    check_information("hello", spy.stdout)
+
+    sys.exit(0)       # Signal to kill subprocess
