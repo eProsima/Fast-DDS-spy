@@ -67,10 +67,11 @@ Try out all the commands DDS Spy has to offer:
 
 .. code-block:: output
 
-    Insert a command for Fast DDS Spy:
-    >> participants
-    - name: TypeIntrospectionExample_Participant_Publisher
-      guid: 01.0f.af.e6.b2.34.33.12.00.00.00.00|0.0.1.c1
+    - name: Fast DDS ShapesDemo Participant
+      guid: 01.0f.44.59.21.58.14.d2.00.00.00.00|0.0.1.c1
+    - name: Fast DDS ShapesDemo Participant
+      guid: 01.0f.44.59.da.57.de.ec.00.00.00.00|0.0.1.c1
+    - ...
 
 * ``datawriters``
 
