@@ -31,29 +31,12 @@ import re
 import unittest
 import yaml
 
-# class TestStringMethods(unittest.TestCase):
-
-#     def test_upper(self):
-#         self.assertEqual('foo'.upper(), 'FOO')
-
-#     def test_isupper(self):
-#         self.assertTrue('FOO'.isupper())
-#         self.assertFalse('Foo'.isupper())
-
-#     def test_split(self):
-#         s = 'hello world'
-#         self.assertEqual(s.split(), ['hello', 'world'])
-#         # check that s.split fails when the separator is not a string
-#         with self.assertRaises(TypeError):
-#             s.split(2)
-
 DESCRIPTION = """Script to validate talkers output"""
 USAGE = ('python3 publisher_participant.py -e <path/to/fastddsspy-executable>'
          ' [-d]')
 
 # Sleep time to let process init and finish
 SLEEP_TIME = 1
-MAX_SIGNALS_SEND_ITERATIONS = 3
 
 def executable_permission_value():
     """Return executable permissions value depending on the OS."""
@@ -113,12 +96,8 @@ def start_spy(fastddsspy, entities = None):
     # Check whether the process has terminated already
     # Typically, an exit status of 0 indicates that it ran successfully.
     if proc.returncode:
-        output, err = proc.communicate()
         logger.debug('-----------------------------------------------------')
         logger.error('Command ' + str(command) + ' failed.')
-        logger.debug('Command output:')
-        logger.debug('Stdout: \n' + str(output))
-        logger.debug('Stderr: \n' + str(err))
         logger.debug('-----------------------------------------------------')
         return 1
     return proc
