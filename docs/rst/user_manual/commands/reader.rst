@@ -24,7 +24,7 @@ Arguments
 -------------
 
 When no arguments are given to this command, the information shown is a **list** with every DataReader currently active in the network, giving their :term:`Guid`,
-the name of their respective :term:`DomainParticipants <DomainParticipants>`, and the topic name and topic data type name.
+the name of their respective :term:`DomainParticipants <DomainParticipant>`, and the topic name and topic data type name.
 The output format is as follows: :ref:`user_manual_command_reader_output_simple`.
 
 Verbose

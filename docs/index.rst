@@ -34,10 +34,11 @@
    :numbered: 5
    :hidden:
 
-   /rst/user_manual/getting_started/usage_example
+   /rst/user_manual/usage_example.rst
    /rst/user_manual/tool.rst
    /rst/user_manual/configuration.rst
    /rst/user_manual/commands/commands.rst
+..    /rst/user_manual/project_overview.rst
 
 .. _index_developer_manual:
 

@@ -1,4 +1,6 @@
-.. include:: ../../exports/alias.include
+.. include:: ../exports/alias.include
+
+:orphan:
 
 .. _getting_started_project_overview:
 
