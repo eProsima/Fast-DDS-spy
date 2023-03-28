@@ -23,14 +23,14 @@ Arguments
 *No argument*
 -------------
 
-When no arguments are given to this command, the information shown is a **list** with every DomainParticipant currently active in the network, giving their Guid and names.
+When no arguments are given to this command, the information shown is a **list** with every participant currently active in the network, giving their :term:`Guid` and names.
 The output format is as follows: :ref:`user_manual_command_participant_output_simple`.
 
 Verbose
 -------
 
 This argument queries for more complete information about each of the DomainParticipants in the network.
-It adds the information about endpoints and the topics they communicate in of each of the Participants.
+It adds the information about endpoints and the topics they communicate in of each of the participants.
 The output got is a **list** of data with :ref:`verbose information <user_manual_command_participant_output_verbose>`.
 Check the :ref:`verbose <user_manual_commands_input_verbose>` section in order to know which key-words are available for this argument.
 

@@ -10,14 +10,14 @@ Glossary
 
     CLI
         **Command Line Interface**
-        This is a channel of communication between an application and a user using the Command Line, so-called Terminal.
+        This is a channel of communication between application and user using the Command Line, so-called Terminal.
 
     DDS
         **Data Distribution Service** protocol.
         Specification: `<https://www.omg.org/spec/DDS/>`_.
 
     YAML
-        **YAML Ain Markup Language** human-friendly data serialization language.
+        **YAML Ain't Markup Language** human-friendly data serialization language.
         Specification: `<https://yaml.org/>`_.
 
 
@@ -30,7 +30,7 @@ DDS nomenclature
         DDS element that subscribes to a specific Topic.
         It belong to one and only one Participant, and it is uniquely identified by a Guid.
 
-        See `Fast DDS documentation <https://fast-dds.docs.eprosima.com/en/v2.4.1/fastdds/dds_layer/subscriber/subscriber.html>`__
+        See `Fast DDS documentation <https://fast-dds.docs.eprosima.com/en/v2.4.1/fastdds/dds_layer/subscriber/dataReader/dataReader.html>`__
         for further information.
 
     DataWriter

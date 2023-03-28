@@ -31,7 +31,7 @@ This value allow to keep using the same YAML file using an old configuration for
 DDS Configurations
 ==================
 
-The YAML Configuration supports a ``dds`` **optional** tag that contains certain DDS configurations.
+The YAML Configuration supports a ``dds`` **optional** tag that contains certain :term:`DDS` configurations.
 The values available to configure are:
 
 DDS Domain Id
@@ -43,11 +43,11 @@ Topic Filtering
 ---------------
 
 |spy| includes a mechanism to automatically detect which topics are being used in a DDS network.
-By automatically detecting these topics, a |spy| creates internal :term:`Readers<DataReader>` for each topic and for each Participant in order to read data published on each discovered topic.
+By automatically detecting these topics, a |spy| creates internal :term:`Readers<DataReader>` for each topic and for each participant in order to read data published on each discovered topic.
 
 .. note::
 
-    |spy| entities are created with the QoS of the first Subscriber found in this Topic.
+    |spy| entities are created with the QoS of the first subscriber found in this topic.
 
 |spy| allows filtering of DDS :term:`Topics<Topic>`, that is, it allows to define which DDS Topics are going to be
 relayed by the application.
@@ -57,7 +57,7 @@ forward.
 It is not mandatory to define such set of rules in the configuration file. In this case, a |spy| will read all
 the data published under the topics that it automatically discovers within the DDS network to which it connects.
 
-To define these data filtering rules based on the Topics to which they belong, two lists are available:
+To define these data filtering rules based on the topics to which they belong, two lists are available:
 
 * Allowed topics list (``allowlist``)
 * Block topics list (``blocklist``)
@@ -65,12 +65,12 @@ To define these data filtering rules based on the Topics to which they belong, t
 These two lists of topics listed above are defined by a tag in the *YAML* configuration file, which defines a
 *YAML* vector (``[]``).
 This vector contains the list of topics for each filtering rule.
-Each Topic is determined by its entries ``name`` and ``type``, strings referring the Topic name and Topic Data Type name.
+Each topic is determined by its entries ``name`` and ``type``, strings referring the topic name and topic data type name.
 
 .. note::
 
     Placing quotation marks around values in a YAML file is generally optional. However, values containing wildcard
-    characters must be enclosed by single or double quotation marks.
+    characters must be enclosed in single or double quotes.
 
 Allow topic list (``allowlist``)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -102,7 +102,7 @@ Number of Threads
 
 ``specs`` supports a ``threads`` **optional** value that allows the user to set a maximum number of threads for the internal :code:`ThreadPool`.
 This ThreadPool allows to limit the number of threads spawned by the application.
-This improves the performance of the data transmission between Participants.
+This improves the performance of the data transmission between participants.
 
 This value should be set by each user depending on each system characteristics.
 By default, this value is ``12``.

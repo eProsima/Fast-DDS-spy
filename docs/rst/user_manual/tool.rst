@@ -93,7 +93,7 @@ It shows the usage information of the application.
 Version Argument
 ----------------
 
-It shows the current version of the DDS Router and the hash of the last commit of the compiled code.
+It shows the current version of the |spy| and the hash of the last commit of the compiled code.
 
 .. _user_manual_user_interface_configuration_file_argument:
 

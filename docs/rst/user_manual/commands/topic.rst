@@ -23,14 +23,14 @@ Arguments
 *No argument*
 -------------
 
-When no arguments are given to this command, the information shown is a **list** with every Topic with at least one endpoint currently active in the network, giving information
-The output format is as follows: :ref:`user_manual_command_topic_output_simple`... _user_manual_command_arguments_verbose:
+When no arguments are given to this command, the information shown is a **list** with every :term:`DomainParticipant <DomainParticipant>` currently active in the network, giving their :term:`Guid` and names.
+The output format is as follows: :ref:`user_manual_command_topic_output_simple`.
 
 Verbose
 -------
 
-This argument queries for more complete information about each of the Topics in the network.
-It adds the Guid of each endpoint on the Topic and the whether the type has been discovered.
+This argument queries for more complete information about each of the topics in the network.
+It adds the Guid of each endpoint on the topic and the whether the type has been discovered.
 The output is a **list** of data with :ref:`verbose information <user_manual_command_topic_output_verbose>`.
 Check the :ref:`verbose <user_manual_commands_input_verbose>` section in order to know which key-words are available for this argument.
 

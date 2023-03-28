@@ -7,7 +7,10 @@
 Commands
 ########
 
-Each
+These are the commands supported so far by |spy|.
+Every command explained in this section is available from the :ref:`user_manual_user_interface_interactive_app` and from the :ref:`user_manual_user_interface_one_shot`.
+Most of the commands and arguments available have shortcuts and other names related.
+Thus, multiple words execute the same commands (e.g. `participant` = `participants` = `p`).
 
 Entity Commands
 ===============

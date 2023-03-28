@@ -24,7 +24,7 @@ These are the key-words recognize as this command:
 Data Type discovered
 ====================
 
-In order for a :term:`Topic` to be printable by the application, the |spy| requires to know the Data Type of such Topic.
+In order for a :term:`Topic` to be printable by the application, the |spy| requires to know the data type of such topic.
 The information whether the topic data type is already discovered be the application can be shown by using :ref:`user_manual_command_topic` command.
 
 Arguments
