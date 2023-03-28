@@ -18,6 +18,14 @@
 
 find_package(PythonInterp 3 REQUIRED)
 
+# Name of files to test
+set(TEST_LIST
+    exit
+    participants
+    topics
+    datawriters
+)
+
 # windows auxiliary script to fork test execution
 set(PWS_LAUNCHER
     ${CMAKE_CURRENT_SOURCE_DIR}/launcher.ps1
@@ -79,19 +87,21 @@ if(WIN32)
 endif(WIN32)
 
 # populate the tests
-set(TEST_NAME "tool.application.fastddsspy")
-add_test(
-        NAME ${TEST_NAME}
-        COMMAND ${PYTHON_EXECUTABLE}
-                ${CMAKE_CURRENT_SOURCE_DIR}/tests.py
-                "--exe" $<TARGET_FILE:fastddsspy_tool>
-    )
+foreach(TEST IN LISTS TEST_LIST)
+    set(TEST_NAME "tool.application.fastddsspy.${TEST}")
+    add_test(
+            NAME ${TEST_NAME}
+            COMMAND ${PYTHON_EXECUTABLE}
+                    ${CMAKE_CURRENT_SOURCE_DIR}/${TEST}.py
+                    "--exe" $<TARGET_FILE:fastddsspy_tool>
+        )
 
-# Set test properties
-set_tests_properties(
-    ${TEST_NAME}
-    PROPERTIES
-        ENVIRONMENT "${TEST_ENVIRONMENT}"
-    )
+    # Set test properties
+    set_tests_properties(
+        ${TEST_NAME}
+        PROPERTIES
+            ENVIRONMENT "${TEST_ENVIRONMENT}"
+        )
+endforeach()
 
 unset(TEST_ENVIRONMENT)
