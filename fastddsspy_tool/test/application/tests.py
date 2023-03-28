@@ -31,7 +31,6 @@ import logging
 import os
 import subprocess
 import sys
-import time
 
 DESCRIPTION = """Script to execute Fast DDS Spy executable test"""
 USAGE = ('python3 tests.py -e <path/to/fastddsspy-executable>'
@@ -91,18 +90,21 @@ def test_spy_closure(fastddsspy):
     command = [fastddsspy, 'exit']
     logger.info('Executing command: ' + str(command))
 
-    proc = subprocess.run(command, capture_output=True, text=True)
-
-    # sleep to let the server run
-    time.sleep(SLEEP_TIME)
-
-    # Check whether the process has terminated already
-    # Typically, an exit status of 0 indicates that it ran successfully.
-    if proc.returncode:
+    proc = subprocess.Popen(command,
+                            stdout=subprocess.PIPE,
+                            universal_newlines=True)
+    try:
+        proc.communicate(input='exit', timeout=2)
         logger.debug('-----------------------------------------------------')
+        logger.debug('Command ' + str(command) + ' worked.')
+        logger.debug('-----------------------------------------------------')
+    except subprocess.TimeoutExpired:
+        proc.kill()
+        logger.error('-----------------------------------------------------')
         logger.error('Command ' + str(command) + ' failed.')
-        logger.debug('-----------------------------------------------------')
+        logger.error('-----------------------------------------------------')
         return 1
+
     return 0
 
 
