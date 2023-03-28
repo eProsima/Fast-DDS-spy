@@ -65,59 +65,54 @@ Try out all the commands DDS Spy has to offer:
 
 * ``participants``
 
-.. code-block:: bash
+.. code-block:: output
 
     Insert a command for Fast DDS Spy:
     >> participants
     - name: TypeIntrospectionExample_Participant_Publisher
-    guid: 01.0f.af.e6.b2.34.33.12.00.00.00.00|0.0.1.c1
+      guid: 01.0f.af.e6.b2.34.33.12.00.00.00.00|0.0.1.c1
 
 * ``datawriters``
 
-.. code-block:: bash
+.. code-block:: output
 
-    Insert a command for Fast DDS Spy:
-    >> datawriters
-    - guid: 01.0f.af.e6.b2.34.33.12.00.00.00.00|0.0.1.3
-    participant: TypeIntrospectionExample_Participant_Publisher
-    topic: TypeIntrospectionTopic [HelloWorld_TypeIntrospectionExample]
+    - name: Fast DDS ShapesDemo Participant
+      guid: 01.0f.44.59.21.58.14.d2.00.00.00.00|0.0.1.c1
+    - name: Fast DDS ShapesDemo Participant
+      guid: 01.0f.44.59.da.57.de.ec.00.00.00.00|0.0.1.c1
+    - ...
 
 * ``topics``
 
-.. code-block:: bash
+.. code-block:: output
 
-    Insert a command for Fast DDS Spy:
-    >> topics
-    - name: TypeIntrospectionTopic
-    type: HelloWorld_TypeIntrospectionExample
-    datawriters: 1
-    datareaders: 0
-    rate: 2.00787 Hz
+    - name: Circle
+      type: ShapeType
+      datawriters: 2
+      datareaders: 2
+      rate: 13.0298 Hz
+    - name: Square
+      type: ShapeType
+      datawriters: 3
+      datareaders: 2
+      rate: 26.6975 Hz
 
-* ``print <topic>``
+* ``topics Square``
 
-.. code-block:: bash
+.. code-block:: output
 
-    Insert a command for Fast DDS Spy:
-    >> print TypeIntrospectionTopic
-    ---
-    index: 605
-    message: Hello World
-    ---
-
-    ---
-    index: 606
-    message: Hello World
-    ---
-
-    ---
-    index: 607
-    message: Hello World
-    ---
+    name: Circle
+    type: ShapeType
+    datawriters:
+      - 01.0f.44.59.da.57.de.ec.00.00.00.00|0.0.6.2
+    datareaders:
+      - 01.0f.44.59.c9.65.78.e5.00.00.00.00|0.0.2.7
+    rate: 13.0418 Hz
+    dynamic_type_discovered: true
 
 * ``help``
 
-.. code-block:: bash
+.. code-block:: output
 
     Insert a command for Fast DDS Spy:
     >> help
