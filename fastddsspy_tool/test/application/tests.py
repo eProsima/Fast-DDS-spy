@@ -56,6 +56,7 @@ def file_exist_and_have_permissions(file_path):
     else:
         return None
 
+
 def parse_options():
     """
     Parse arguments.
@@ -87,7 +88,7 @@ def parse_options():
 
 def test_spy_closure(fastddsspy):
 
-    command = [fastddsspy, "exit"]
+    command = [fastddsspy, 'exit']
     logger.info('Executing command: ' + str(command))
 
     proc = subprocess.run(command, capture_output=True, text=True)
@@ -98,12 +99,8 @@ def test_spy_closure(fastddsspy):
     # Check whether the process has terminated already
     # Typically, an exit status of 0 indicates that it ran successfully.
     if proc.returncode:
-        output, err = proc.communicate()
         logger.debug('-----------------------------------------------------')
         logger.error('Command ' + str(command) + ' failed.')
-        logger.debug('Command output:')
-        logger.debug('Stdout: \n' + str(output))
-        logger.debug('Stderr: \n' + str(err))
         logger.debug('-----------------------------------------------------')
         return 1
     return 0
