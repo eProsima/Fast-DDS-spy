@@ -1,4 +1,4 @@
-.. include:: ../../exports/alias.include
+.. include:: ../exports/alias.include
 
 .. _getting_started_usage_example:
 

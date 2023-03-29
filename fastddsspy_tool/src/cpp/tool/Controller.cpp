@@ -189,7 +189,10 @@ bool Controller::all_argument_(
 {
     return (
         (argument == "all")
-        || (argument == "a"));
+        || (argument == "a")
+        || (argument == "-a")
+        || (argument == "--a")
+        || (argument == "A"));
 }
 
 void Controller::participants_command_(
