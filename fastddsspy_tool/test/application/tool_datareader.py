@@ -19,9 +19,9 @@ class TestCase_instance (test_class.TestCase):
 
     def __init__(self):
         super().__init__(
-            name='ParticipantsCommand',
-            one_shot=True,
+            name='ToolDatareaderCommand',
+            one_shot=False,
             command=[],
             dds=False,
-            arguments='participants'
+            arguments='datareader'
         )

@@ -28,12 +28,14 @@ Arguments:
 
 import argparse
 import os
-import ast
 import importlib
+import time
+import sys
 
 DESCRIPTION = """Script to execute Fast DDS Spy executable test"""
 USAGE = ('python3 tests.py -e <path/to/fastddsspy-executable>'
          ' [-d]')
+
 
 def executable_permission_value():
     """Return executable permissions value depending on the OS."""
@@ -49,6 +51,7 @@ def file_exist_and_have_permissions(file_path):
         return file_path
     else:
         return None
+
 
 def parse_options():
     """
@@ -85,6 +88,7 @@ def parse_options():
     )
     return parser.parse_args()
 
+
 def main():
 
     args = parse_options()
@@ -96,11 +100,22 @@ def main():
 
     result = test_function.run()
 
-    if not result:
-        return 1
+    if(test_function.one_shot):
+        if not test_function.is_stop_tool(result):
+            sys.exit(1)
+        if not test_function.valid_output_tool(result.stderr):
+            sys.exit(1)
+    else:
+        if test_function.is_stop_tool(result):
+            sys.exit(1)
 
-    if not test_function.valid_output_tool(result.stderr):
-        return 1
+        test_function.send_command_tool(result)
+
+        test_function.stop_tool(result)
+        # not working:
+        # if(not test_function.is_stop_tool(result)):
+        #     print("not stop")
+        #     sys.exit(1)
 
     return 0
 

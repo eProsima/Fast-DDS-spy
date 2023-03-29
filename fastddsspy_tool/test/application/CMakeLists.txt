@@ -20,7 +20,6 @@ find_package(PythonInterp 3 REQUIRED)
 
 # Name of files to test
 set(TEST_LIST
-    one_shot_trivial
     one_shot_help
     one_shot_datareader
     one_shot_datawriter
@@ -29,6 +28,12 @@ set(TEST_LIST
     one_shot_show
     one_shot_topics
     one_shot_version
+    tool_datareader
+    tool_datawriter
+    tool_help
+    tool_participants
+    tool_show
+    tool_topics
 )
 
 # windows auxiliary script to fork test execution

@@ -28,10 +28,12 @@ Arguments:
 
 import logging
 import subprocess
+import time
 
 DESCRIPTION = """Script to execute Fast DDS Spy executable test"""
 USAGE = ('python3 tests.py -e <path/to/fastddsspy-executable>'
          ' [-d]')
+
 
 class TestCase():
 
@@ -41,7 +43,7 @@ class TestCase():
         self.command = command
         self.dds = dds
         self.arguments = arguments
-        self.exec_spy = ""
+        self.exec_spy = ''
 
         # Create a custom logger
         self.logger = logging.getLogger('SYS_TEST')
@@ -71,10 +73,29 @@ class TestCase():
         proc = subprocess.Popen(self.command,
                                 stdin=subprocess.PIPE,
                                 stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE,
-                                universal_newlines=True)
+                                stderr=subprocess.PIPE)
+
+        if (self.one_shot):
+            proc.wait(timeout=2)
 
         return proc
+
+    def is_stop_tool(self, proc):
+        return_code = proc.poll()
+
+        if(return_code == None):
+            return False
+        return True
+
+    def send_command_tool(self, proc):
+        proc.stdin.write(bytes(self.arguments, 'utf-8'))
+        if (self.dds):
+            output = proc.stdout.read()
+            error = proc.stderr.read()
+            self.valid_output_tool(error)
+
+    def stop_tool(self, proc):
+        proc.stdin.write(b'exit')
 
     def run_dds(self):
         self.logger.info('Run dds')
@@ -82,4 +103,4 @@ class TestCase():
         # proc.communicate(self.command)
 
     def valid_output_tool(self, stderr):
-        return stderr == ""
+        return (len(stderr.read()) == 0)

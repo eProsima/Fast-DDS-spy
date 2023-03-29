@@ -14,17 +14,14 @@
 
 import test_class
 
+
 class TestCase_instance (test_class.TestCase):
 
     def __init__(self):
         super().__init__(
-            name = "DatawriterCommand",
-            one_shot = True,
-            command = [],
-            dds = False,
-            arguments = "datawriter"
+            name='DatawriterCommand',
+            one_shot=True,
+            command=[],
+            dds=False,
+            arguments='datawriter'
         )
-
-
-    def valid_output_tool(self, stderr):
-        super().valid_output_tool(stderr)
