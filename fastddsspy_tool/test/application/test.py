@@ -97,26 +97,43 @@ def main():
 
     test_function.exec_spy = args.exe
 
-    result = test_function.run()
+    spy, dds = test_function.run()
+    # if (test_function.dds):
+    #     dds = test_function.run_dds()
 
     if test_function.one_shot:
-        if not test_function.is_stop_tool(result):
+        if not test_function.is_stop(spy):
             sys.exit(1)
-        if not test_function.valid_output_tool(result.returncode):
+        if not test_function.valid_output_tool(spy.returncode, 0):
             sys.exit(1)
+
+        if (test_function.dds):
+            test_function.stop_dds(dds)
+            if not test_function.is_stop(dds):
+                sys.exit(1)
+
+            if not test_function.valid_output_tool(dds.returncode, 1):
+                sys.exit(1)
     else:
-        if test_function.is_stop_tool(result):
+        if test_function.is_stop(spy):
             sys.exit(1)
 
-        test_function.send_command_tool(result)
+        test_function.send_command_tool(spy)
 
-        test_function.stop_tool(result)
+        test_function.stop(spy, dds)
 
-        if not test_function.is_stop_tool(result):
+        if not test_function.is_stop(spy):
             sys.exit(1)
 
-        if not test_function.valid_output_tool(result.returncode):
+        if not test_function.valid_output_tool(spy.returncode, 0):
             sys.exit(1)
+
+        if (test_function.dds):
+            if not test_function.is_stop(dds):
+                sys.exit(1)
+
+            if not test_function.valid_output_tool(dds.returncode, 1):
+                sys.exit(1)
 
     return 0
 

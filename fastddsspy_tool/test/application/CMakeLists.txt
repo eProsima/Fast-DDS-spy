@@ -21,13 +21,21 @@ find_package(PythonInterp 3 REQUIRED)
 # Name of files to test
 set(TEST_LIST
     one_shot_help
+    one_shot_help_dds
     one_shot_datareader
+    one_shot_datareader_dds
     one_shot_datawriter
+    one_shot_datawriter_dds
     one_shot_participants
+    one_shot_participants_dds
     one_shot_quit
+    one_shot_quit_dds
     one_shot_show
+    one_shot_show_dds
     one_shot_topics
+    one_shot_topics_dds
     one_shot_version
+    one_shot_version_dds
     tool_datareader
     tool_datawriter
     tool_help

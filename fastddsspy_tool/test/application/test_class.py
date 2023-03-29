@@ -28,6 +28,8 @@ Arguments:
 
 import logging
 import subprocess
+import os
+import signal
 
 DESCRIPTION = """Script to execute Fast DDS Spy executable test"""
 USAGE = ('python3 tests.py -e <path/to/fastddsspy-executable>'
@@ -56,9 +58,10 @@ class TestCase():
         self.logger.addHandler(l_handler)
 
     def run(self):
+        dds = None
         if (self.dds):
-            self.run_dds()
-        return self.run_tool()
+            dds = self.run_dds()
+        return self.run_tool(), dds
 
     def run_tool(self):
         self.logger.info('Run tool')
@@ -76,14 +79,20 @@ class TestCase():
 
         if (self.one_shot):
             try:
-                output_bytes, error_bytes = proc.communicate(timeout=5)
+                proc.communicate(timeout=5)
             except subprocess.TimeoutExpired:
                 proc.kill()
-                output_bytes, error_bytes = proc.communicate()
+                proc.communicate()
 
         return proc
 
-    def is_stop_tool(self, proc):
+    def stop(self, spy, dds):
+        self.stop_tool(spy)
+        if (self.dds):
+            self.stop_dds(dds)
+
+
+    def is_stop(self, proc):
         return_code = proc.poll()
 
         if (return_code is None):
@@ -104,24 +113,32 @@ class TestCase():
 
     def stop_tool(self, proc):
         try:
-            output_bytes, error_bytes = proc.communicate(input=b'exit\n', timeout=5)
+            proc.communicate(input=b'exit\n', timeout=5)
         except subprocess.TimeoutExpired:
             proc.kill()
-            output_bytes, error_bytes = proc.communicate()
+            proc.communicate()
 
     def run_dds(self):
-        self.logger.info('Run dds')
-        # proc = Popen(f"example {self.dds}")
-        # proc.communicate(self.command)
+        self.logger.info('Run tool')
+        self.command = ["/home/irenebm/eprosima/annapurna/DDS-Spy/build/fastddsspy_tool/test/integration/dds/AdvancedConfigurationExample/AdvancedConfigurationExample"]
 
-    def valid_output_tool(self, returncode):
-        # -9: corresponds to the SIGKILL signal
-        # 0: Successful termination
-        # 1: General error
-        # 2: Misuse of shell builtins
-        # 126: Command invoked cannot execute
-        # 127: Command not found
-        # 128: Invalid argument to exit
-        # 130: Terminated by Ctrl-C
-        # 255: Exit status out of range
-        return (returncode == 0)
+        self.logger.info('Executing command: ' + str(self.command))
+
+        proc = subprocess.Popen(self.command,
+                                stdin=subprocess.PIPE,
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
+
+        return proc
+
+    def stop_dds(self, proc):
+        # send a ctrl+c signal to the subprocess
+        proc.send_signal(signal.SIGINT)
+        try:
+            proc.communicate(timeout=5)
+        except subprocess.TimeoutExpired:
+            proc.send_signal(signal.SIGINT)
+            proc.communicate()
+
+    def valid_output_tool(self, returncode, expected):
+        return (returncode == expected)
