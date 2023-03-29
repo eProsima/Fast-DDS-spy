@@ -29,7 +29,6 @@ Arguments:
 import argparse
 import os
 import importlib
-import time
 import sys
 
 DESCRIPTION = """Script to execute Fast DDS Spy executable test"""
@@ -100,10 +99,10 @@ def main():
 
     result = test_function.run()
 
-    if(test_function.one_shot):
+    if test_function.one_shot:
         if not test_function.is_stop_tool(result):
             sys.exit(1)
-        if not test_function.valid_output_tool(result.stderr):
+        if not test_function.valid_output_tool(result.returncode):
             sys.exit(1)
     else:
         if test_function.is_stop_tool(result):
@@ -112,10 +111,12 @@ def main():
         test_function.send_command_tool(result)
 
         test_function.stop_tool(result)
-        # not working:
-        # if(not test_function.is_stop_tool(result)):
-        #     print("not stop")
-        #     sys.exit(1)
+
+        if not test_function.is_stop_tool(result):
+            sys.exit(1)
+
+        if not test_function.valid_output_tool(result.returncode):
+            sys.exit(1)
 
     return 0
 

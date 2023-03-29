@@ -19,9 +19,9 @@ class TestCase_instance (test_class.TestCase):
 
     def __init__(self):
         super().__init__(
-            name='ToolHelpCommand',
+            name='ToolShowCommand',
             one_shot=False,
             command=[],
             dds=False,
-            arguments='show all'
+            arguments='show topic'
         )

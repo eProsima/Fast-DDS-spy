@@ -28,7 +28,6 @@ Arguments:
 
 import logging
 import subprocess
-import time
 
 DESCRIPTION = """Script to execute Fast DDS Spy executable test"""
 USAGE = ('python3 tests.py -e <path/to/fastddsspy-executable>'
@@ -76,31 +75,53 @@ class TestCase():
                                 stderr=subprocess.PIPE)
 
         if (self.one_shot):
-            proc.wait(timeout=2)
+            try:
+                output_bytes, error_bytes = proc.communicate(timeout=5)
+            except subprocess.TimeoutExpired:
+                proc.kill()
+                output_bytes, error_bytes = proc.communicate()
 
         return proc
 
     def is_stop_tool(self, proc):
         return_code = proc.poll()
 
-        if(return_code == None):
+        if (return_code is None):
             return False
         return True
 
     def send_command_tool(self, proc):
-        proc.stdin.write(bytes(self.arguments, 'utf-8'))
-        if (self.dds):
-            output = proc.stdout.read()
+        proc.stdin.write(('self.arguments'+'\n').encode('utf-8'))
+        if self.dds:
+            # proc.stdin.close()
+            # proc.stdout.read()
+            # proc.stderr.read()
+            # proc.stdout.close()
+            # proc.stderr.close()
+            # output = proc.stdout.read()
             error = proc.stderr.read()
             self.valid_output_tool(error)
 
     def stop_tool(self, proc):
-        proc.stdin.write(b'exit')
+        try:
+            output_bytes, error_bytes = proc.communicate(input=b'exit\n', timeout=5)
+        except subprocess.TimeoutExpired:
+            proc.kill()
+            output_bytes, error_bytes = proc.communicate()
 
     def run_dds(self):
         self.logger.info('Run dds')
         # proc = Popen(f"example {self.dds}")
         # proc.communicate(self.command)
 
-    def valid_output_tool(self, stderr):
-        return (len(stderr.read()) == 0)
+    def valid_output_tool(self, returncode):
+        # -9: corresponds to the SIGKILL signal
+        # 0: Successful termination
+        # 1: General error
+        # 2: Misuse of shell builtins
+        # 126: Command invoked cannot execute
+        # 127: Command not found
+        # 128: Invalid argument to exit
+        # 130: Terminated by Ctrl-C
+        # 255: Exit status out of range
+        return (returncode == 0)
