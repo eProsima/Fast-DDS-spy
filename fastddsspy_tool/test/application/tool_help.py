@@ -24,7 +24,8 @@ class TestCase_instance (test_class.TestCase):
             command=[],
             dds=False,
             arguments='help',
-            output=""">> \x1b[0mFast DDS Spy is an interactive CLI that allow to instrospect DDS networks.
+            output=
+""">> \x1b[0mFast DDS Spy is an interactive CLI that allow to instrospect DDS networks.
 
 Each command shows data related with the network in Yaml format.
 

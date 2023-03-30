@@ -109,7 +109,7 @@ def main():
     if not test_function.one_shot:
         if test_function.is_stop(spy):
             sys.exit(1)
-
+        print("send command")
         output = test_function.send_command_tool(spy)
 
         if not test_function.valid_output(output):

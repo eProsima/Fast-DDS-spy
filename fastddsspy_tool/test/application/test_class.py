@@ -29,7 +29,6 @@ Arguments:
 import logging
 import subprocess
 import signal
-import time
 import re
 
 DESCRIPTION = """Script to execute Fast DDS Spy executable test"""
@@ -83,12 +82,12 @@ class TestCase():
         if (self.one_shot):
 
             try:
-                output, error = proc.communicate(timeout=5)
+                output = proc.communicate(timeout=5)[0]
             except subprocess.TimeoutExpired:
                 proc.kill()
-                output, error = proc.communicate()
+                output = proc.communicate()[0]
 
-            if not self.valid_output(output.decode("utf-8")):
+            if not self.valid_output(output.decode('utf-8')):
                 return ('wrong output')
 
         else:
@@ -113,11 +112,9 @@ class TestCase():
         return output
 
     def send_command_tool(self, proc):
-        proc.stdin.write((self.arguments+'\n').encode('utf-8'))
+        proc.stdin.write((self.arguments + '\n').encode('utf-8'))
         proc.stdin.flush()
         output = self.read_output(proc)
-        print("output:")
-        print(output)
         return (output)
 
     def stop_tool(self, proc):
@@ -168,7 +165,7 @@ class TestCase():
         if expected_output == output:
             return True
         for i in range(len(lines_expected_output)):
-            if "guid:" in lines_expected_output[i]:
+            if 'guid:' in lines_expected_output[i]:
                 return self.valid_guid(lines_expected_output[i])
 
         return False
