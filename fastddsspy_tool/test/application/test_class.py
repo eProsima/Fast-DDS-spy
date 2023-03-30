@@ -28,7 +28,6 @@ Arguments:
 
 import logging
 import subprocess
-import os
 import signal
 
 DESCRIPTION = """Script to execute Fast DDS Spy executable test"""
@@ -45,6 +44,7 @@ class TestCase():
         self.dds = dds
         self.arguments = arguments
         self.exec_spy = ''
+        self.exec_dds = ''
 
         # Create a custom logger
         self.logger = logging.getLogger('SYS_TEST')
@@ -91,7 +91,6 @@ class TestCase():
         if (self.dds):
             self.stop_dds(dds)
 
-
     def is_stop(self, proc):
         return_code = proc.poll()
 
@@ -120,7 +119,7 @@ class TestCase():
 
     def run_dds(self):
         self.logger.info('Run tool')
-        self.command = ["/home/irenebm/eprosima/annapurna/DDS-Spy/build/fastddsspy_tool/test/integration/dds/AdvancedConfigurationExample/AdvancedConfigurationExample"]
+        self.command = [self.exec_dds]
 
         self.logger.info('Executing command: ' + str(self.command))
 

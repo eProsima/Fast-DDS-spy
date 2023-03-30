@@ -97,9 +97,10 @@ def main():
 
     test_function.exec_spy = args.exe
 
+    local_dds = "fastddsspy_tool/test/application/dds/AdvancedConfigurationExample/AdvancedConfigurationExample"
+    test_function.exec_dds = args.exe.replace("fastddsspy_tool/fastddsspy", local_dds)
+
     spy, dds = test_function.run()
-    # if (test_function.dds):
-    #     dds = test_function.run_dds()
 
     if test_function.one_shot:
         if not test_function.is_stop(spy):

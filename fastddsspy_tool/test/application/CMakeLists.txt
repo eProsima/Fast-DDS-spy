@@ -124,3 +124,5 @@ foreach(TEST IN LISTS TEST_LIST)
 endforeach()
 
 unset(TEST_ENVIRONMENT)
+
+add_subdirectory(dds/AdvancedConfigurationExample)
