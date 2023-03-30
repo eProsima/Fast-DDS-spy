@@ -115,7 +115,7 @@ def main():
     if not test_function.is_stop(spy):
         sys.exit(1)
 
-    if not test_function.valid_output_tool(spy.returncode):
+    if not test_function.valid_returncode(spy.returncode):
         sys.exit(1)
 
     if (test_function.dds):
@@ -124,7 +124,7 @@ def main():
         if not test_function.is_stop(dds):
             sys.exit(1)
 
-        if not test_function.valid_output_tool(dds.returncode):
+        if not test_function.valid_returncode(dds.returncode):
             sys.exit(1)
 
     return 0

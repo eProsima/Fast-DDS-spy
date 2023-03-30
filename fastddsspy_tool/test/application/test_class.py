@@ -29,7 +29,6 @@ Arguments:
 import logging
 import subprocess
 import signal
-import time
 
 DESCRIPTION = """Script to execute Fast DDS Spy executable test"""
 USAGE = ('python3 tests.py -e <path/to/fastddsspy-executable>'
@@ -146,5 +145,5 @@ class TestCase():
             proc.send_signal(signal.SIGINT)
             proc.communicate()
 
-    def valid_output_tool(self, returncode):
+    def valid_returncode(self, returncode):
         return (returncode == 0)
