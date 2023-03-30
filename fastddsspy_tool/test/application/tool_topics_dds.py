@@ -23,5 +23,10 @@ class TestCase_instance (test_class.TestCase):
             one_shot=False,
             command=[],
             dds=True,
-            arguments='topics'
+            arguments='topics',
+            output='''>> \x1b[0m
+
+
+
+'''
         )

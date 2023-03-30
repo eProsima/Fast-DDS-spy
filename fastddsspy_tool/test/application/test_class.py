@@ -29,6 +29,7 @@ Arguments:
 import logging
 import subprocess
 import signal
+import difflib
 
 DESCRIPTION = """Script to execute Fast DDS Spy executable test"""
 USAGE = ('python3 tests.py -e <path/to/fastddsspy-executable>'
@@ -37,12 +38,13 @@ USAGE = ('python3 tests.py -e <path/to/fastddsspy-executable>'
 
 class TestCase():
 
-    def __init__(self, name, one_shot, command, dds, arguments):
+    def __init__(self, name, one_shot, command, dds, arguments, output):
         self.name = name
         self.one_shot = one_shot
         self.command = command
         self.dds = dds
         self.arguments = arguments
+        self.output = output
         self.exec_spy = ''
         self.exec_dds = ''
 
@@ -77,9 +79,11 @@ class TestCase():
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE)
 
-        self.read_output(proc)
+        output = self.read_output(proc)
 
         if (self.one_shot):
+            if not self.valid_output(output):
+                return("wrong output")
             try:
                 proc.communicate(timeout=5)
             except subprocess.TimeoutExpired:
@@ -96,18 +100,19 @@ class TestCase():
         return True
 
     def read_output(self, proc):
-        output = ""
+        output = ''
         while True:
             if (self.one_shot):
-                line = proc.stdout.readline().decode()
-                if ("" in line):
+                line = proc.stdout.readline().decode('utf-8')
+                if ('' in line):
                     break
-                output = output + f"{line}\n"
+                output = output + f'{line}\n'
             else:
-                line = proc.stdout.readline().decode()
-                if ("Insert a command for Fast DDS Spy:" in line):
+                line = proc.stdout.readline().decode('utf-8')
+                if ('Insert a command for Fast DDS Spy:' in line):
                     break
-                output = output + f"{line}\n"
+                output = output + f'{line}\n'
+
         return output
 
     def send_command_tool(self, proc):
@@ -147,3 +152,20 @@ class TestCase():
 
     def valid_returncode(self, returncode):
         return (returncode == 0)
+
+    def output_command(self):
+        return(self.output)
+
+
+
+    def valid_output(self, output):
+        expected_output = self.output_command()
+        matcher = difflib.SequenceMatcher(None, expected_output, output)
+        for tag, i1, i2, j1, j2 in matcher.get_opcodes():
+            if tag == 'replace':
+                print(f"Replace {bytes(expected_output[i1:i2], 'utf-8')} with {bytes(output[j1:j2], 'utf-8')}")
+            elif tag == 'delete':
+                print(f"Delete {bytes(expected_output[i1:i2], 'utf-8')}")
+            elif tag == 'insert':
+                print(f"Insert {bytes(output[j1:j2], 'utf-8')}")
+        return(expected_output == output)

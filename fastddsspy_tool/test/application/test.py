@@ -103,12 +103,17 @@ def main():
 
     spy, dds = test_function.run()
 
+    if (spy == "wrong output"):
+        sys.exit(1)
 
     if not test_function.one_shot:
         if test_function.is_stop(spy):
             sys.exit(1)
 
         output = test_function.send_command_tool(spy)
+
+        if not test_function.valid_output(output):
+                sys.exit(1)
 
         test_function.stop_tool(spy)
 

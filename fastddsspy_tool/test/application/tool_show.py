@@ -23,5 +23,10 @@ class TestCase_instance (test_class.TestCase):
             one_shot=False,
             command=[],
             dds=False,
-            arguments='show topic'
+            arguments='show topic',
+            output='''>> \x1b[0m\x1b[1;31mTopic <topic> does not exist.\x1b[0m
+
+
+
+'''
         )

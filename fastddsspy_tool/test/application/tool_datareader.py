@@ -23,5 +23,10 @@ class TestCase_instance (test_class.TestCase):
             one_shot=False,
             command=[],
             dds=False,
-            arguments='datareader'
+            arguments='datareader',
+            output='''>> \x1b[0m
+
+
+
+'''
         )

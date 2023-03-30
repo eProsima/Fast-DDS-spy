@@ -23,5 +23,6 @@ class TestCase_instance (test_class.TestCase):
             one_shot=True,
             command=[],
             dds=True,
-            arguments='version'
+            arguments='version',
+            output=''
         )
