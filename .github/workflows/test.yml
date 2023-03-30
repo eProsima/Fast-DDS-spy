@@ -101,7 +101,7 @@ jobs:
           dependencies_artifact_postfix: ${{ github.event.inputs.dependencies_artifact_postfix || env.default_dependencies_artifact_postfix }}
 
       - name: Compile and run tests
-        uses: jparisu/eProsima-CI/ubuntu/colcon_build_test@main
+        uses: jparisu/eProsima-CI/multiplatform/colcon_build_test@main
         with:
           packages_names: ${{ env.code_packages_names }}
           cmake_args: -DBUILD_TESTS=ON -DCMAKE_BUILD_TYPE=${{ matrix.cmake-config }}
@@ -128,7 +128,7 @@ jobs:
           dependencies_artifact_postfix: ${{ github.event.inputs.dependencies_artifact_postfix || env.default_dependencies_artifact_postfix }}
 
       - name: Compile and run tests
-        uses: jparisu/eProsima-CI/ubuntu/asan_build_test@main
+        uses: jparisu/eProsima-CI/multiplatform/asan_build_test@main
         with:
           packages_names: ${{ env.code_packages_names }}
           workspace_dependencies: './install'
@@ -153,7 +153,7 @@ jobs:
           dependencies_artifact_postfix: ${{ github.event.inputs.dependencies_artifact_postfix || env.default_dependencies_artifact_postfix }}
 
       - name: Compile and run tests
-        uses: jparisu/eProsima-CI/ubuntu/tsan_build_test@main
+        uses: jparisu/eProsima-CI/multiplatform/tsan_build_test@main
         with:
           packages_names: ${{ env.code_packages_names }}
           workspace_dependencies: './install'
@@ -178,7 +178,7 @@ jobs:
           dependencies_artifact_postfix: ${{ github.event.inputs.dependencies_artifact_postfix || env.default_dependencies_artifact_postfix }}
 
       - name: Compile and run tests
-        uses: jparisu/eProsima-CI/ubuntu/clang_build_test@main
+        uses: jparisu/eProsima-CI/multiplatform/clang_build_test@main
         with:
           packages_names: ${{ env.code_packages_names }}
           workspace_dependencies: './install'
@@ -232,7 +232,7 @@ jobs:
           dependencies_artifact_postfix: ${{ github.event.inputs.dependencies_artifact_postfix || env.default_dependencies_artifact_postfix }}
 
       - name: Compile and run tests
-        uses: jparisu/eProsima-CI/ubuntu/colcon_build_test_flaky@main
+        uses: jparisu/eProsima-CI/multiplatform/colcon_build_test_flaky@main
         with:
           packages_names: ${{ env.code_packages_names }}
           workspace_dependencies: './install'
