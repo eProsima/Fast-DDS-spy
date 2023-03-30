@@ -19,7 +19,7 @@ class TestCase_instance (test_class.TestCase):
 
     def __init__(self):
         super().__init__(
-            name='ToolParticipantsCommand',
+            name='ToolTopicsCommand',
             one_shot=False,
             command=[],
             dds=False,

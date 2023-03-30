@@ -97,44 +97,35 @@ def main():
 
     test_function.exec_spy = args.exe
 
-    local_dds = "fastddsspy_tool/test/application/dds/AdvancedConfigurationExample/AdvancedConfigurationExample"
-    test_function.exec_dds = args.exe.replace("fastddsspy_tool/fastddsspy", local_dds)
+    local_path_dds = 'fastddsspy_tool/test/application/dds/AdvancedConfigurationExample/'
+    local_dds = local_path_dds + 'AdvancedConfigurationExample'
+    test_function.exec_dds = args.exe.replace('fastddsspy_tool/fastddsspy', local_dds)
 
     spy, dds = test_function.run()
 
-    if test_function.one_shot:
-        if not test_function.is_stop(spy):
-            sys.exit(1)
-        if not test_function.valid_output_tool(spy.returncode, 0):
-            sys.exit(1)
 
-        if (test_function.dds):
-            test_function.stop_dds(dds)
-            if not test_function.is_stop(dds):
-                sys.exit(1)
-
-            if not test_function.valid_output_tool(dds.returncode, 1):
-                sys.exit(1)
-    else:
+    if not test_function.one_shot:
         if test_function.is_stop(spy):
             sys.exit(1)
 
-        test_function.send_command_tool(spy)
+        output = test_function.send_command_tool(spy)
 
-        test_function.stop(spy, dds)
+        test_function.stop_tool(spy)
 
-        if not test_function.is_stop(spy):
+    if not test_function.is_stop(spy):
+        sys.exit(1)
+
+    if not test_function.valid_output_tool(spy.returncode):
+        sys.exit(1)
+
+    if (test_function.dds):
+        test_function.stop_dds(dds)
+
+        if not test_function.is_stop(dds):
             sys.exit(1)
 
-        if not test_function.valid_output_tool(spy.returncode, 0):
+        if not test_function.valid_output_tool(dds.returncode):
             sys.exit(1)
-
-        if (test_function.dds):
-            if not test_function.is_stop(dds):
-                sys.exit(1)
-
-            if not test_function.valid_output_tool(dds.returncode, 1):
-                sys.exit(1)
 
     return 0
 

@@ -37,11 +37,17 @@ set(TEST_LIST
     one_shot_version
     one_shot_version_dds
     tool_datareader
+    tool_datareader_dds
     tool_datawriter
+    tool_datawriter_dds
     tool_help
+    tool_help_dds
     tool_participants
+    tool_participants_dds
     tool_show
+    tool_show_dds
     tool_topics
+    tool_topics_dds
 )
 
 # windows auxiliary script to fork test execution

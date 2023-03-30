@@ -19,9 +19,9 @@ class TestCase_instance (test_class.TestCase):
 
     def __init__(self):
         super().__init__(
-            name='ShowDDSCommand',
-            one_shot=True,
+            name='ToolDatawriterDDSCommand',
+            one_shot=False,
             command=[],
             dds=True,
-            arguments='show all'
+            arguments='datawriter'
         )

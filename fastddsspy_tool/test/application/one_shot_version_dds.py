@@ -22,6 +22,6 @@ class TestCase_instance (test_class.TestCase):
             name='VersionDDSCommand',
             one_shot=True,
             command=[],
-            dds=False,
+            dds=True,
             arguments='version'
         )

@@ -29,6 +29,7 @@ Arguments:
 import logging
 import subprocess
 import signal
+import time
 
 DESCRIPTION = """Script to execute Fast DDS Spy executable test"""
 USAGE = ('python3 tests.py -e <path/to/fastddsspy-executable>'
@@ -77,6 +78,8 @@ class TestCase():
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE)
 
+        self.read_output(proc)
+
         if (self.one_shot):
             try:
                 proc.communicate(timeout=5)
@@ -86,11 +89,6 @@ class TestCase():
 
         return proc
 
-    def stop(self, spy, dds):
-        self.stop_tool(spy)
-        if (self.dds):
-            self.stop_dds(dds)
-
     def is_stop(self, proc):
         return_code = proc.poll()
 
@@ -98,17 +96,26 @@ class TestCase():
             return False
         return True
 
+    def read_output(self, proc):
+        output = ""
+        while True:
+            if (self.one_shot):
+                line = proc.stdout.readline().decode()
+                if ("" in line):
+                    break
+                output = output + f"{line}\n"
+            else:
+                line = proc.stdout.readline().decode()
+                if ("Insert a command for Fast DDS Spy:" in line):
+                    break
+                output = output + f"{line}\n"
+        return output
+
     def send_command_tool(self, proc):
-        proc.stdin.write(('self.arguments'+'\n').encode('utf-8'))
-        if self.dds:
-            # proc.stdin.close()
-            # proc.stdout.read()
-            # proc.stderr.read()
-            # proc.stdout.close()
-            # proc.stderr.close()
-            # output = proc.stdout.read()
-            error = proc.stderr.read()
-            self.valid_output_tool(error)
+        proc.stdin.write((self.arguments+'\n').encode('utf-8'))
+        proc.stdin.flush()
+        output = self.read_output(proc)
+        return(output)
 
     def stop_tool(self, proc):
         try:
@@ -119,7 +126,7 @@ class TestCase():
 
     def run_dds(self):
         self.logger.info('Run tool')
-        self.command = [self.exec_dds]
+        self.command = [self.exec_dds, 'publisher']
 
         self.logger.info('Executing command: ' + str(self.command))
 
@@ -139,5 +146,5 @@ class TestCase():
             proc.send_signal(signal.SIGINT)
             proc.communicate()
 
-    def valid_output_tool(self, returncode, expected):
-        return (returncode == expected)
+    def valid_output_tool(self, returncode):
+        return (returncode == 0)
