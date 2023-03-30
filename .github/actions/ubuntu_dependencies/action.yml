@@ -29,7 +29,7 @@ runs:
 
     # In DDS Pipe artifact they are included Fast DDS and dev-utils
     - name: Download dependencies artifact
-      uses: jparisu/eProsima-CI/ubuntu/download_dependency@main
+      uses: jparisu/eProsima-CI/multiplatform/download_dependency@main
       with:
         artifact_name: built_ddspipe_${{ inputs.ubuntu_version }}${{ inputs.dependencies_artifact_postfix }}
         workflow_source: build_ddspipe.yml
