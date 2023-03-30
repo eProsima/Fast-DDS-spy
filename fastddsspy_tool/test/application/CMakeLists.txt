@@ -19,31 +19,34 @@
 find_package(PythonInterp 3 REQUIRED)
 
 # Name of files to test
+set(TEST_LIST_DDS
+    one_shot_help_dds
+    one_shot_datareader_dds
+    one_shot_datawriter_dds
+    one_shot_participants_dds
+    one_shot_quit_dds
+    one_shot_topics_dds
+    tool_datareader_dds
+    tool_datawriter_dds
+    tool_help_dds
+    tool_participants_dds
+    tool_show_dds
+    tool_topics_dds
+)
+
 set(TEST_LIST
     one_shot_help
-    one_shot_help_dds
     one_shot_datareader
-    one_shot_datareader_dds
     one_shot_datawriter
-    one_shot_datawriter_dds
     one_shot_participants
-    one_shot_participants_dds
     one_shot_quit
-    one_shot_quit_dds
     one_shot_topics
-    one_shot_topics_dds
     tool_datareader
-    tool_datareader_dds
     tool_datawriter
-    tool_datawriter_dds
     tool_help
-    tool_help_dds
     tool_participants
-    tool_participants_dds
     tool_show
-    tool_show_dds
     tool_topics
-    tool_topics_dds
 )
 
 # windows auxiliary script to fork test execution
@@ -123,6 +126,29 @@ foreach(TEST IN LISTS TEST_LIST)
         PROPERTIES
             ENVIRONMENT "${TEST_ENVIRONMENT}"
         )
+
+endforeach()
+
+foreach(TEST IN LISTS TEST_LIST_DDS)
+    set(TEST_NAME "tool.application.fastddsspy.test.${TEST}")
+    add_test(
+            NAME ${TEST_NAME}
+            COMMAND ${PYTHON_EXECUTABLE}
+                    ${CMAKE_CURRENT_SOURCE_DIR}/test.py
+                    "--exe" $<TARGET_FILE:fastddsspy_tool>
+                    "--test" ${TEST}
+        )
+
+    # Set test properties
+    set_tests_properties(
+        ${TEST_NAME}
+        PROPERTIES
+            ENVIRONMENT "${TEST_ENVIRONMENT}"
+        )
+
+    # TSAN captures and handles raised signals, thus these tests cannot succeed
+    add_xtsan_label(${CMAKE_CURRENT_SOURCE_DIR}/${TEST_NAME})
+
 endforeach()
 
 unset(TEST_ENVIRONMENT)
