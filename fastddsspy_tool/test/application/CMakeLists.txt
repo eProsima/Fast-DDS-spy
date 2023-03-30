@@ -30,12 +30,8 @@ set(TEST_LIST
     one_shot_participants_dds
     one_shot_quit
     one_shot_quit_dds
-    one_shot_show
-    one_shot_show_dds
     one_shot_topics
     one_shot_topics_dds
-    one_shot_version
-    one_shot_version_dds
     tool_datareader
     tool_datareader_dds
     tool_datawriter

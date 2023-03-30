@@ -24,5 +24,5 @@ class TestCase_instance (test_class.TestCase):
             command=[],
             dds=True,
             arguments='datareader',
-            output=''
+            output='\n'
         )

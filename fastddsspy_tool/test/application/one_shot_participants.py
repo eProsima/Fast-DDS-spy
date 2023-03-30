@@ -24,5 +24,5 @@ class TestCase_instance (test_class.TestCase):
             command=[],
             dds=False,
             arguments='participants',
-            output=''
+            output='\n'
         )

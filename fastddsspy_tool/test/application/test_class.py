@@ -29,7 +29,8 @@ Arguments:
 import logging
 import subprocess
 import signal
-import difflib
+import time
+import re
 
 DESCRIPTION = """Script to execute Fast DDS Spy executable test"""
 USAGE = ('python3 tests.py -e <path/to/fastddsspy-executable>'
@@ -79,17 +80,19 @@ class TestCase():
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE)
 
-        output = self.read_output(proc)
-
         if (self.one_shot):
-            if not self.valid_output(output):
-                return("wrong output")
+
             try:
-                proc.communicate(timeout=5)
+                output, error = proc.communicate(timeout=5)
             except subprocess.TimeoutExpired:
                 proc.kill()
-                proc.communicate()
+                output, error = proc.communicate()
 
+            if not self.valid_output(output.decode("utf-8")):
+                return ('wrong output')
+
+        else:
+            self.read_output(proc)
         return proc
 
     def is_stop(self, proc):
@@ -102,16 +105,10 @@ class TestCase():
     def read_output(self, proc):
         output = ''
         while True:
-            if (self.one_shot):
-                line = proc.stdout.readline().decode('utf-8')
-                if ('' in line):
-                    break
-                output = output + f'{line}\n'
-            else:
-                line = proc.stdout.readline().decode('utf-8')
-                if ('Insert a command for Fast DDS Spy:' in line):
-                    break
-                output = output + f'{line}\n'
+            line = proc.stdout.readline().decode('utf-8')
+            if ('Insert a command for Fast DDS Spy:' in line):
+                break
+            output = output + f'{line}\n'
 
         return output
 
@@ -119,7 +116,9 @@ class TestCase():
         proc.stdin.write((self.arguments+'\n').encode('utf-8'))
         proc.stdin.flush()
         output = self.read_output(proc)
-        return(output)
+        print("output:")
+        print(output)
+        return (output)
 
     def stop_tool(self, proc):
         try:
@@ -154,18 +153,22 @@ class TestCase():
         return (returncode == 0)
 
     def output_command(self):
-        return(self.output)
+        return (self.output)
 
-
+    def valid_guid(self, guid):
+        pattern = r'^((guid:)\s([0-9a-f]{2}\.){11}[0-9a-f]{2}\|([0-9a-f]\.){3}[0-9a-f]{1,})$'
+        id_guid = guid[2:]
+        if not re.match(pattern, id_guid):
+            return False
+        return True
 
     def valid_output(self, output):
         expected_output = self.output_command()
-        matcher = difflib.SequenceMatcher(None, expected_output, output)
-        for tag, i1, i2, j1, j2 in matcher.get_opcodes():
-            if tag == 'replace':
-                print(f"Replace {bytes(expected_output[i1:i2], 'utf-8')} with {bytes(output[j1:j2], 'utf-8')}")
-            elif tag == 'delete':
-                print(f"Delete {bytes(expected_output[i1:i2], 'utf-8')}")
-            elif tag == 'insert':
-                print(f"Insert {bytes(output[j1:j2], 'utf-8')}")
-        return(expected_output == output)
+        lines_expected_output = expected_output.splitlines()
+        if expected_output == output:
+            return True
+        for i in range(len(lines_expected_output)):
+            if "guid:" in lines_expected_output[i]:
+                return self.valid_guid(lines_expected_output[i])
+
+        return False

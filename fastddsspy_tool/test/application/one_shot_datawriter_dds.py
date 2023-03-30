@@ -24,5 +24,8 @@ class TestCase_instance (test_class.TestCase):
             command=[],
             dds=True,
             arguments='datawriter',
-            output=''
+            output="""- guid: 01.0f.cd.6f.98.9d.4f.19.00.00.00.00|0.0.1.3
+  participant: Participant_pub
+  topic: HelloWorldTopic [HelloWorld]
+"""
         )

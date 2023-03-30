@@ -24,9 +24,9 @@ class TestCase_instance (test_class.TestCase):
             command=[],
             dds=True,
             arguments='datareader',
-            output='''>> \x1b[0m
+            output=""">> \x1b[0m
 
 
 
-'''
+"""
         )

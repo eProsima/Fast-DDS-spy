@@ -24,5 +24,7 @@ class TestCase_instance (test_class.TestCase):
             command=[],
             dds=True,
             arguments='participants',
-            output=''
+            output="""- name: Participant_pub
+  guid: 01.0f.cd.6f.47.88.19.6b.00.00.00.00|0.0.1.c1
+"""
         )
