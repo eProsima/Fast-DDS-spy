@@ -104,44 +104,44 @@ def main():
     spy, dds = test_function.run()
 
     if (spy == 'wrong output'):
-        print("ERROR: Wrong output")
+        print('ERROR: Wrong output')
         sys.exit(1)
 
     if (test_function.dds):
         if test_function.is_stop(dds):
-            print("ERROR: DDS Publisher not running")
+            print('ERROR: DDS Publisher not running')
             sys.exit(1)
 
     if not test_function.one_shot:
         if test_function.is_stop(spy):
-            print("ERROR: Fast DDS Spy not running")
+            print('ERROR: Fast DDS Spy not running')
             sys.exit(1)
 
         output = test_function.send_command_tool(spy)
 
         if not test_function.valid_output(output):
-            print("ERROR: Output command not valid")
+            print('ERROR: Output command not valid')
             sys.exit(1)
 
         test_function.stop_tool(spy)
 
     if not test_function.is_stop(spy):
-        print("ERROR: Fast DDS Spy still running")
+        print('ERROR: Fast DDS Spy still running')
         sys.exit(1)
 
     if not test_function.valid_returncode(spy.returncode):
-        print("ERROR: Wrong Fast DDS Spy return code")
+        print('ERROR: Wrong Fast DDS Spy return code')
         sys.exit(1)
 
     if (test_function.dds):
         test_function.stop_dds(dds)
 
         if not test_function.is_stop(dds):
-            print("ERROR: DDS Publisher still running")
+            print('ERROR: DDS Publisher still running')
             sys.exit(1)
 
         if not test_function.valid_returncode(dds.returncode):
-            print("ERROR: Wrong DDS Publisher return code")
+            print('ERROR: Wrong DDS Publisher return code')
             sys.exit(1)
 
     return 0

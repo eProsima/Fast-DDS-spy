@@ -30,6 +30,7 @@ import logging
 import subprocess
 import signal
 import re
+import time
 
 DESCRIPTION = """Script to execute Fast DDS Spy executable test"""
 USAGE = ('python3 tests.py -e <path/to/fastddsspy-executable>'
@@ -77,7 +78,8 @@ class TestCase():
         proc = subprocess.Popen(self.command,
                                 stdin=subprocess.PIPE,
                                 stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE)
+                                stderr=subprocess.PIPE,
+                                encoding='utf8')
 
         if (self.one_shot):
 
@@ -86,8 +88,7 @@ class TestCase():
             except subprocess.TimeoutExpired:
                 proc.kill()
                 output = proc.communicate()[0]
-
-            if not self.valid_output(output.decode('utf-8')):
+            if not self.valid_output(output):
                 return ('wrong output')
 
         else:
@@ -104,22 +105,23 @@ class TestCase():
     def read_output(self, proc):
         output = ''
         while True:
-            line = proc.stdout.readline().decode('utf-8')
+            line = proc.stdout.readline()
             if ('Insert a command for Fast DDS Spy:' in line):
                 break
             output = output + f'{line}\n'
-
         return output
 
     def send_command_tool(self, proc):
-        proc.stdin.write((self.arguments + '\n').encode('utf-8'))
+        # give time to start publishing
+        time.sleep(0.5)
+        proc.stdin.write((self.arguments+'\n'))
         proc.stdin.flush()
         output = self.read_output(proc)
         return (output)
 
     def stop_tool(self, proc):
         try:
-            proc.communicate(input=b'exit\n', timeout=5)
+            proc.communicate(input='exit\n', timeout=5)[0]
         except subprocess.TimeoutExpired:
             proc.kill()
             proc.communicate()
@@ -134,7 +136,6 @@ class TestCase():
                                 stdin=subprocess.PIPE,
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE)
-
         return proc
 
     def stop_dds(self, proc):
@@ -154,14 +155,14 @@ class TestCase():
 
     def valid_guid(self, guid):
         pattern = r'^((guid:)\s([0-9a-f]{2}\.){11}[0-9a-f]{2}\|([0-9a-f]\.){3}[0-9a-f]{1,})$'
-        id_guid = guid[2:]
+        id_guid = guid[guid.find("guid:"):]
         if not re.match(pattern, id_guid):
             return False
         return True
 
     def valid_rate(self, rate):
         pattern = r'^((rate:)\s\d{1,}\s(Hz))$'
-        id_rate = rate[2:]
+        id_rate = rate[rate.find("rate:"):]
         if not re.match(pattern, id_rate):
             return False
         return True
@@ -169,12 +170,17 @@ class TestCase():
     def valid_output(self, output):
         expected_output = self.output_command()
         lines_expected_output = expected_output.splitlines()
+        lines_output = output.splitlines()
         if expected_output == output:
             return True
+        guid = True
+        rate = True
         for i in range(len(lines_expected_output)):
             if 'guid:' in lines_expected_output[i]:
-                return self.valid_guid(lines_expected_output[i])
-            if 'rate:' in lines_expected_output[i]:
-                return self.valid_rate(lines_expected_output[i])
+                guid = self.valid_guid(lines_expected_output[i])
+            elif 'rate:' in lines_expected_output[i]:
+                rate = self.valid_rate(lines_expected_output[i])
+            elif lines_expected_output[i] != lines_output[i]:
+                return False
 
-        return False
+        return (guid and rate)
