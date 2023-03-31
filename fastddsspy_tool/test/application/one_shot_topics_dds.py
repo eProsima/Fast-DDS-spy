@@ -24,10 +24,10 @@ class TestCase_instance (test_class.TestCase):
             command=[],
             dds=True,
             arguments='topics',
-            output='''- name: HelloWorldTopic
+            output="""- name: HelloWorldTopic
   type: HelloWorld
   datawriters: 1
   datareaders: 0
   rate: 10 Hz
-'''
+"""
         )

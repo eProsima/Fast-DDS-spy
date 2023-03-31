@@ -159,6 +159,13 @@ class TestCase():
             return False
         return True
 
+    def valid_rate(self, rate):
+        pattern = r'^((rate:)\s\d{1,}\s(Hz))$'
+        id_rate = rate[2:]
+        if not re.match(pattern, id_rate):
+            return False
+        return True
+
     def valid_output(self, output):
         expected_output = self.output_command()
         lines_expected_output = expected_output.splitlines()
@@ -167,5 +174,7 @@ class TestCase():
         for i in range(len(lines_expected_output)):
             if 'guid:' in lines_expected_output[i]:
                 return self.valid_guid(lines_expected_output[i])
+            if 'rate:' in lines_expected_output[i]:
+                return self.valid_rate(lines_expected_output[i])
 
         return False
