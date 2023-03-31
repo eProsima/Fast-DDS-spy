@@ -3,8 +3,12 @@ description: Common first step for all Fast DDS Spy jobs. Checkout repository, d
 
 inputs:
 
-  ubuntu_version:
+  os:
     description: Specify runs-on machine to download specific artifact
+    required: true
+
+  cmake_build_type:
+    description: Specify cmake_build_type option to download specific artifact
     required: true
 
   dependencies_artifact_postfix:
@@ -22,16 +26,19 @@ runs:
   steps:
 
     - name: Install Fast DDS dependencies
-      uses: jparisu/eProsima-CI/ubuntu/install_fast_dependencies@main
+      uses: jparisu/eProsima-CI/multiplatform/install_fast_dependencies@main
 
     - name: Install yaml cpp dependency
-      uses: jparisu/eProsima-CI/ubuntu/install_yamlcpp@main
+      uses: jparisu/eProsima-CI/multiplatform/install_yamlcpp@main
+      with:
+        cmake_build_type: ${{ inputs.cmake_build_type }}
+
 
     # In DDS Pipe artifact they are included Fast DDS and dev-utils
     - name: Download dependencies artifact
       uses: jparisu/eProsima-CI/multiplatform/download_dependency@main
       with:
-        artifact_name: built_ddspipe_${{ inputs.ubuntu_version }}${{ inputs.dependencies_artifact_postfix }}
+        artifact_name: built_ddspipe_${{ inputs.os }}_${{ inputs.cmake_build_type }}${{ inputs.dependencies_artifact_postfix }}
         workflow_source: build_ddspipe.yml
         workflow_source_repository: jparisu/eProsima-CI
         target_workspace: ${{ inputs.target_workspace }}
