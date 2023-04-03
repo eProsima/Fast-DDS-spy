@@ -42,3 +42,6 @@ set(MODULE_THIRDPARTY_HEADERONLY
 
 set(MODULE_TARGET_NAME
     "fastddsspy")
+
+set(MODULE_CPP_VERSION
+    C++11)

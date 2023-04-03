@@ -34,3 +34,6 @@ set(fastrtps_MINIMUM_VERSION "2.8")
 set(MODULE_DEPENDENCIES
     $<$<BOOL:${WIN32}>:iphlpapi$<SEMICOLON>Shlwapi>
     ${MODULE_FIND_PACKAGES})
+
+set(MODULE_CPP_VERSION
+    C++11)
