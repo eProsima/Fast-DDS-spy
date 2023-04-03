@@ -44,4 +44,4 @@ set(MODULE_TARGET_NAME
     "fastddsspy")
 
 set(MODULE_CPP_VERSION
-    C++11)
+    C++14)
