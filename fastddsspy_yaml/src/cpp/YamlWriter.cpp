@@ -23,6 +23,7 @@
 #include <fastddsspy_participants/visualization/parser_data.hpp>
 
 #include <fastddsspy_yaml/yaml_configuration_tags.hpp>
+#include <fastddsspy_yaml/YamlWriter.hpp>
 
 namespace eprosima {
 namespace ddspipe {

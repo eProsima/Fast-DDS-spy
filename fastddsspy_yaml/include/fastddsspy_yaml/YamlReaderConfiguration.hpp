@@ -42,14 +42,18 @@ class Configuration : ddspipe::core::IConfiguration
 {
 public:
 
+    FASTDDSSPY_YAML_DllAPI
     Configuration();
 
+    FASTDDSSPY_YAML_DllAPI
     Configuration(
             const Yaml& yml);
 
+    FASTDDSSPY_YAML_DllAPI
     Configuration(
             const std::string& file_path);
 
+    FASTDDSSPY_YAML_DllAPI
     virtual bool is_valid(
             utils::Formatter& error_msg) const noexcept override;
 

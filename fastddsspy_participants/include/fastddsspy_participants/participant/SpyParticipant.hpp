@@ -18,6 +18,7 @@
 
 #include <ddspipe_participants/participant/dynamic_types/SchemaParticipant.hpp>
 
+#include <fastddsspy_participants/library/library_dll.h>
 #include <fastddsspy_participants/types/ParticipantInfo.hpp>
 #include <fastddsspy_participants/writer/InternalWriter.hpp>
 #include <fastddsspy_participants/model/SpyModel.hpp>
@@ -34,6 +35,7 @@ class SpyParticipant : public ddspipe::participants::SchemaParticipant
 public:
 
     // TODO comment
+    FASTDDSSPY_PARTICIPANTS_DllAPI
     SpyParticipant(
             const std::shared_ptr<ddspipe::participants::ParticipantConfiguration>& participant_configuration,
             const std::shared_ptr<ddspipe::core::PayloadPool>& payload_pool,
@@ -41,6 +43,7 @@ public:
             const std::shared_ptr<SpyModel>& model_);
 
     //! Override create_writer_() IParticipant method
+    FASTDDSSPY_PARTICIPANTS_DllAPI
     std::shared_ptr<ddspipe::core::IWriter> create_writer(
             const ddspipe::core::ITopic& topic) override;
 
