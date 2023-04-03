@@ -21,6 +21,7 @@
 #include <ddspipe_core/types/topic/dds/DdsTopic.hpp>
 #include <ddspipe_core/types/dds/Payload.hpp>
 
+#include <fastddsspy_participants/library/library_dll.h>
 #include <ddspipe_participants/participant/dynamic_types/ISchemaHandler.hpp>
 
 namespace eprosima {
@@ -34,12 +35,14 @@ class TopicRateCalculator : public ddspipe::participants::ISchemaHandler
 {
 public:
 
+    FASTDDSSPY_PARTICIPANTS_DllAPI
     void add_data(
             const ddspipe::core::types::DdsTopic& topic,
             ddspipe::core::types::RtpsPayloadData& data) override;
 
     using RateType = float;
 
+    FASTDDSSPY_PARTICIPANTS_DllAPI
     RateType get_topic_rate(
             const ddspipe::core::types::DdsTopic& topic) const noexcept;
 

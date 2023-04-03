@@ -17,6 +17,7 @@
 #include <ddspipe_participants/participant/dynamic_types/DynTypesParticipant.hpp>
 #include <ddspipe_core/types/dds/Endpoint.hpp>
 
+#include <fastddsspy_participants/library/library_dll.h>
 #include <fastddsspy_participants/types/ParticipantInfo.hpp>
 #include <fastddsspy_participants/types/EndpointInfo.hpp>
 
@@ -31,25 +32,31 @@ class SpyDdsParticipant : public ddspipe::participants::DynTypesParticipant
 {
 public:
 
+    FASTDDSSPY_PARTICIPANTS_DllAPI
     SpyDdsParticipant(
             const std::shared_ptr<ddspipe::participants::SimpleParticipantConfiguration>& participant_configuration,
             const std::shared_ptr<ddspipe::core::PayloadPool>& payload_pool,
             const std::shared_ptr<ddspipe::core::DiscoveryDatabase>& discovery_database);
 
+    FASTDDSSPY_PARTICIPANTS_DllAPI
     ~SpyDdsParticipant() = default;
 
     //! Override create_reader_() IParticipant method
+    FASTDDSSPY_PARTICIPANTS_DllAPI
     std::shared_ptr<ddspipe::core::IReader> create_reader(
             const ddspipe::core::ITopic& topic) override;
 
+    FASTDDSSPY_PARTICIPANTS_DllAPI
     virtual void on_participant_discovery(
             fastdds::dds::DomainParticipant* participant,
             fastrtps::rtps::ParticipantDiscoveryInfo&& info) override;
 
+    FASTDDSSPY_PARTICIPANTS_DllAPI
     virtual void on_subscriber_discovery(
             fastdds::dds::DomainParticipant* participant,
             fastrtps::rtps::ReaderDiscoveryInfo&& info);
 
+    FASTDDSSPY_PARTICIPANTS_DllAPI
     virtual void on_publisher_discovery(
             fastdds::dds::DomainParticipant* participant,
             fastrtps::rtps::WriterDiscoveryInfo&& info);
