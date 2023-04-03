@@ -10,7 +10,7 @@
 # JOBS:
 #
 #   - ubuntu
-#     - [ ubuntu-22.04 | ubuntu-20.04 ]
+#     - [ ubuntu-22.04 | ubuntu-20.04 | windows-2019 | windows-2022 ]
 #     - [ Debug | Release ]
 #     - execute tests in different versions of ubuntu with different build types
 #
@@ -76,17 +76,24 @@ jobs:
 #####################################################################
 # UBUNTU TEST
 
-  ubuntu:
-    runs-on: ${{ matrix.ubuntu-version }}
+  multiplatform-tests:
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        cmake-config:
-          - 'Release'
-          - 'Debug'
-        ubuntu-version:
-          - 'ubuntu-20.04'
-          - 'ubuntu-22.04'
+        cmake_build_type:
+          - Release
+          - Debug
+        os:
+          - ubuntu-20.04
+          - ubuntu-22.04
+          # TODO add windows
+        exclude:
+          - os: ubuntu-20.04
+            cmake_build_type: Debug
+          - os: ubuntu-22.04
+            cmake_build_type: Debug
+
     steps:
 
       - name: Sync repository
@@ -95,18 +102,20 @@ jobs:
           path: src
 
       - name: Download dependencies and install requirements
-        uses: ./src/.github/actions/ubuntu_dependencies
+        uses: ./src/.github/actions/project_dependencies
         with:
-          ubuntu_version: ${{ matrix.ubuntu-version }}
+          os: ${{ matrix.os }}
+          cmake_build_type: ${{ matrix.cmake_build_type }}
           dependencies_artifact_postfix: ${{ github.event.inputs.dependencies_artifact_postfix || env.default_dependencies_artifact_postfix }}
 
       - name: Compile and run tests
         uses: jparisu/eProsima-CI/multiplatform/colcon_build_test@main
         with:
           packages_names: ${{ env.code_packages_names }}
-          cmake_args: -DBUILD_TESTS=ON -DCMAKE_BUILD_TYPE=${{ matrix.cmake-config }}
+          cmake_args: -DBUILD_TESTS=ON -DCMAKE_BUILD_TYPE=${{ matrix.cmake_build_type }}
           workspace_dependencies: './install'
           ctest_args: --label-exclude "xfail"
+          colcon_meta_file: ./src/.github/workflows/configurations/${{ runner.os }}/colcon.meta
 
 
 #####################################################################
@@ -122,9 +131,10 @@ jobs:
           path: src
 
       - name: Download dependencies and install requirements
-        uses: ./src/.github/actions/ubuntu_dependencies
+        uses: ./src/.github/actions/project_dependencies
         with:
-          ubuntu_version: ubuntu-22.04
+          os: ubuntu-22.04
+          cmake_build_type: Release
           dependencies_artifact_postfix: ${{ github.event.inputs.dependencies_artifact_postfix || env.default_dependencies_artifact_postfix }}
 
       - name: Compile and run tests
@@ -147,9 +157,10 @@ jobs:
           path: src
 
       - name: Download dependencies and install requirements
-        uses: ./src/.github/actions/ubuntu_dependencies
+        uses: ./src/.github/actions/project_dependencies
         with:
-          ubuntu_version: ubuntu-22.04
+          os: ubuntu-22.04
+          cmake_build_type: Release
           dependencies_artifact_postfix: ${{ github.event.inputs.dependencies_artifact_postfix || env.default_dependencies_artifact_postfix }}
 
       - name: Compile and run tests
@@ -172,9 +183,10 @@ jobs:
           path: src
 
       - name: Download dependencies and install requirements
-        uses: ./src/.github/actions/ubuntu_dependencies
+        uses: ./src/.github/actions/project_dependencies
         with:
-          ubuntu_version: ubuntu-22.04
+          os: ubuntu-22.04
+          cmake_build_type: Release
           dependencies_artifact_postfix: ${{ github.event.inputs.dependencies_artifact_postfix || env.default_dependencies_artifact_postfix }}
 
       - name: Compile and run tests
@@ -199,9 +211,10 @@ jobs:
           path: src
 
       - name: Download dependencies and install requirements
-        uses: ./src/.github/actions/ubuntu_dependencies
+        uses: ./src/.github/actions/project_dependencies
         with:
-          ubuntu_version: ubuntu-22.04
+          os: ubuntu-22.04
+          cmake_build_type: Release
           dependencies_artifact_postfix: ${{ github.event.inputs.dependencies_artifact_postfix || env.default_dependencies_artifact_postfix }}
 
       - name: Compile and run tests
@@ -226,9 +239,10 @@ jobs:
           path: src
 
       - name: Download dependencies and install requirements
-        uses: ./src/.github/actions/ubuntu_dependencies
+        uses: ./src/.github/actions/project_dependencies
         with:
-          ubuntu_version: ubuntu-22.04
+          os: ubuntu-22.04
+          cmake_build_type: Release
           dependencies_artifact_postfix: ${{ github.event.inputs.dependencies_artifact_postfix || env.default_dependencies_artifact_postfix }}
 
       - name: Compile and run tests
