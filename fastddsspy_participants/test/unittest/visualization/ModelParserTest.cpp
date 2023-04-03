@@ -15,43 +15,22 @@
 #include <cpp_utils/testing/gtest_aux.hpp>
 #include <gtest/gtest.h>
 
-#include <ddspipe_core/testing/random_values.hpp>
+#include <fastddsspy_participants/testing/random_values.hpp>
 
 #include <fastddsspy_participants/visualization/ModelParser.hpp>
 
 using namespace eprosima;
 
-void random_participant_info(
-        spy::participants::ParticipantInfo& participant_data,
-        bool active = true,
-        unsigned int seed = 0)
-{
-    participant_data.name = ddspipe::core::testing::random_participant_id();
-    participant_data.active = active;
-    participant_data.guid = ddspipe::core::testing::random_guid(seed);
-}
-
-void random_endpoint_info(
-        spy::participants::EndpointInfo& endpoint_data,
-        ddspipe::core::types::EndpointKind kind,
-        bool active = true,
-        unsigned int seed = 0,
-        ddspipe::core::types::DdsTopic topic = ddspipe::core::testing::random_dds_topic(rand() % 15))
-{
-    endpoint_data.active = active;
-    endpoint_data.kind = kind;
-    endpoint_data.guid = ddspipe::core::testing::random_guid(seed);
-    endpoint_data.topic = topic;
-    endpoint_data.discoverer_participant_id = ddspipe::core::testing::random_participant_id(seed);
-}
-
+/**
+ * TODO
+ */
 TEST(ModelParserTest, simple_participant)
 {
     // Create model
     spy::participants::SpyModel model;
     // Fill model
     spy::participants::ParticipantInfo participant;
-    random_participant_info(participant);
+    spy::participants::random_participant_info(participant);
     model.participant_database_.add(participant.guid, participant);
 
     // Obtain information from model
@@ -67,25 +46,23 @@ TEST(ModelParserTest, simple_participant)
     ASSERT_EQ(result[0].guid, expected_result[0].guid);
 }
 
-TEST(ModelParserTest, simple_participant_two_participants)
+/**
+ * TODO
+ */
+TEST(ModelParserTest, simple_participant_n_participants)
 {
     // Create model
     spy::participants::SpyModel model;
+    int N = 3;
     // Fill model
-    ddspipe::core::types::Guid guid_data1 = ddspipe::core::testing::random_guid();
-    spy::participants::ParticipantInfo participant1 = {
-        "hello1",
-        guid_data1,
-        true
-    };
-    model.participant_database_.add(guid_data1, participant1);
-    ddspipe::core::types::Guid guid_data2 = ddspipe::core::testing::random_guid();
-    spy::participants::ParticipantInfo participant2 = {
-        "hello2",
-        guid_data2,
-        true
-    };
-    model.participant_database_.add(guid_data2, participant2);
+    std::vector<spy::participants::ParticipantInfo> participants;
+    for (int i = 0; i < N; i++)
+    {
+        spy::participants::ParticipantInfo participant;
+        spy::participants::random_participant_info(participant);
+        model.participant_database_.add(participant.guid, participant);
+        participants.push_back(participant);
+    }
 
     // Obtain information from model
     std::vector<spy::participants::SimpleParticipantData> result;
@@ -93,8 +70,10 @@ TEST(ModelParserTest, simple_participant_two_participants)
 
     // Create expected return
     std::vector<spy::participants::SimpleParticipantData> expected_result;
-    expected_result.push_back({"hello1", guid_data1});
-    expected_result.push_back({"hello2", guid_data2});
+    for (int i = 0; i < N; i++)
+    {
+        expected_result.push_back({participants[i].name, participants[i].guid});
+    }
 
     // Check information
     for (unsigned int i = 0; i++; model.participant_database_.size())
@@ -105,6 +84,9 @@ TEST(ModelParserTest, simple_participant_two_participants)
 
 }
 
+/**
+ * TODO
+ */
 TEST(ModelParserTest, participants_verbose)
 {
     // Create model
@@ -112,15 +94,15 @@ TEST(ModelParserTest, participants_verbose)
     // Fill model
     // Participant
     spy::participants::ParticipantInfo participant;
-    random_participant_info(participant);
+    spy::participants::random_participant_info(participant);
     model.participant_database_.add(participant.guid, participant);
     // Endpoints
     spy::participants::EndpointInfo endpoint_writer;
-    random_endpoint_info(endpoint_writer, ddspipe::core::types::EndpointKind::writer, true, 2);
+    spy::participants::random_endpoint_info(endpoint_writer, ddspipe::core::types::EndpointKind::writer, true, 2);
     model.endpoint_database_.add(endpoint_writer.guid, endpoint_writer);
 
     spy::participants::EndpointInfo endpoint_reader;
-    random_endpoint_info(endpoint_reader, ddspipe::core::types::EndpointKind::reader, true, 3);
+    spy::participants::random_endpoint_info(endpoint_reader, ddspipe::core::types::EndpointKind::reader, true, 3);
     model.endpoint_database_.add(endpoint_reader.guid, endpoint_reader);
 
     // Obtain information from model
@@ -174,7 +156,9 @@ TEST(ModelParserTest, participants_verbose)
     ASSERT_EQ(model.endpoint_database_.size(), 2);
 }
 
-
+/**
+ * TODO
+ */
 TEST(ModelParserTest, complex_participant)
 {
     // Create model
@@ -182,15 +166,15 @@ TEST(ModelParserTest, complex_participant)
     // Fill model
     // Participant
     spy::participants::ParticipantInfo participant;
-    random_participant_info(participant);
+    spy::participants::random_participant_info(participant);
     model.participant_database_.add(participant.guid, participant);
     // Endpoints
     spy::participants::EndpointInfo endpoint_writer;
-    random_endpoint_info(endpoint_writer, ddspipe::core::types::EndpointKind::writer, true, 2);
+    spy::participants::random_endpoint_info(endpoint_writer, ddspipe::core::types::EndpointKind::writer, true, 2);
     model.endpoint_database_.add(endpoint_writer.guid, endpoint_writer);
 
     spy::participants::EndpointInfo endpoint_reader;
-    random_endpoint_info(endpoint_reader, ddspipe::core::types::EndpointKind::reader, true, 3);
+    spy::participants::random_endpoint_info(endpoint_reader, ddspipe::core::types::EndpointKind::reader, true, 3);
     model.endpoint_database_.add(endpoint_reader.guid, endpoint_reader);
 
     // Obtain information from model
@@ -238,13 +222,16 @@ TEST(ModelParserTest, complex_participant)
 
 }
 
+/**
+ * TODO
+ */
 TEST(ModelParserTest, simple_endpoint_writer)
 {
     // Create model
     spy::participants::SpyModel model;
     // Fill model
     spy::participants::EndpointInfo endpoint;
-    random_endpoint_info(endpoint, ddspipe::core::types::EndpointKind::writer, true, 2);
+    spy::participants::random_endpoint_info(endpoint, ddspipe::core::types::EndpointKind::writer, true, 2);
     model.endpoint_database_.add(endpoint.guid, endpoint);
 
     // Obtain information from model
@@ -269,13 +256,16 @@ TEST(ModelParserTest, simple_endpoint_writer)
     ASSERT_EQ(result[0].topic.topic_type, expected_result[0].topic.topic_type);
 }
 
+/**
+ * TODO
+ */
 TEST(ModelParserTest, simple_endpoint_reader)
 {
     // Create model
     spy::participants::SpyModel model;
     // Fill model
     spy::participants::EndpointInfo endpoint;
-    random_endpoint_info(endpoint, ddspipe::core::types::EndpointKind::reader, true, 2);
+    spy::participants::random_endpoint_info(endpoint, ddspipe::core::types::EndpointKind::reader, true, 2);
     model.endpoint_database_.add(endpoint.guid, endpoint);
 
     // Obtain information from model
@@ -299,13 +289,16 @@ TEST(ModelParserTest, simple_endpoint_reader)
     ASSERT_EQ(result[0].topic.topic_type, expected_result[0].topic.topic_type);
 }
 
+/**
+ * TODO
+ */
 TEST(ModelParserTest, simple_endpoint_writer_readers)
 {
     // Create model
     spy::participants::SpyModel model;
     // Fill model
     spy::participants::EndpointInfo endpoint;
-    random_endpoint_info(endpoint, ddspipe::core::types::EndpointKind::writer, true, 2);
+    spy::participants::random_endpoint_info(endpoint, ddspipe::core::types::EndpointKind::writer, true, 2);
     model.endpoint_database_.add(endpoint.guid, endpoint);
 
     // Obtain information from model
@@ -317,13 +310,16 @@ TEST(ModelParserTest, simple_endpoint_writer_readers)
     ASSERT_EQ(model.endpoint_database_.size(), 1);
 }
 
+/**
+ * TODO
+ */
 TEST(ModelParserTest, simple_endpoint_reader_writers)
 {
     // Create model
     spy::participants::SpyModel model;
     // Fill model
     spy::participants::EndpointInfo endpoint;
-    random_endpoint_info(endpoint, ddspipe::core::types::EndpointKind::reader, true, 2);
+    spy::participants::random_endpoint_info(endpoint, ddspipe::core::types::EndpointKind::reader, true, 2);
     model.endpoint_database_.add(endpoint.guid, endpoint);
 
     // Obtain information from model
@@ -335,17 +331,20 @@ TEST(ModelParserTest, simple_endpoint_reader_writers)
     ASSERT_EQ(model.endpoint_database_.size(), 1);
 }
 
+/**
+ * TODO
+ */
 TEST(ModelParserTest, endpoint_reader_verbose)
 {
     // Create model
     spy::participants::SpyModel model;
     // Fill model
     spy::participants::ParticipantInfo participant;
-    random_participant_info(participant);
+    spy::participants::random_participant_info(participant);
     model.participant_database_.add(participant.guid, participant);
 
     spy::participants::EndpointInfo endpoint;
-    random_endpoint_info(endpoint, ddspipe::core::types::EndpointKind::reader, true, 2);
+    spy::participants::random_endpoint_info(endpoint, ddspipe::core::types::EndpointKind::reader, true, 2);
     model.endpoint_database_.add(endpoint.guid, endpoint);
 
     // Obtain information from model
@@ -379,17 +378,20 @@ TEST(ModelParserTest, endpoint_reader_verbose)
 
 }
 
+/**
+ * TODO
+ */
 TEST(ModelParserTest, endpoint_writer_verbose)
 {
     // Create model
     spy::participants::SpyModel model;
     // Fill model
     spy::participants::ParticipantInfo participant;
-    random_participant_info(participant);
+    spy::participants::random_participant_info(participant);
     model.participant_database_.add(participant.guid, participant);
 
     spy::participants::EndpointInfo endpoint;
-    random_endpoint_info(endpoint, ddspipe::core::types::EndpointKind::writer, true, 2);
+    spy::participants::random_endpoint_info(endpoint, ddspipe::core::types::EndpointKind::writer, true, 2);
     model.endpoint_database_.add(endpoint.guid, endpoint);
 
     // Obtain information from model
@@ -423,6 +425,9 @@ TEST(ModelParserTest, endpoint_writer_verbose)
 
 }
 
+/**
+ * TODO
+ */
 TEST(ModelParserTest, complex_endpoint_writer)
 {
 
@@ -430,11 +435,11 @@ TEST(ModelParserTest, complex_endpoint_writer)
     spy::participants::SpyModel model;
     // Fill model
     spy::participants::ParticipantInfo participant;
-    random_participant_info(participant);
+    spy::participants::random_participant_info(participant);
     model.participant_database_.add(participant.guid, participant);
 
     spy::participants::EndpointInfo endpoint;
-    random_endpoint_info(endpoint, ddspipe::core::types::EndpointKind::writer, true, 2);
+    spy::participants::random_endpoint_info(endpoint, ddspipe::core::types::EndpointKind::writer, true, 2);
     model.endpoint_database_.add(endpoint.guid, endpoint);
 
     // Obtain information from model
@@ -459,6 +464,9 @@ TEST(ModelParserTest, complex_endpoint_writer)
     ASSERT_EQ(result.qos.reliability, expected_result.qos.reliability);
 }
 
+/**
+ * TODO
+ */
 TEST(ModelParserTest, complex_endpoint_reader)
 {
 
@@ -466,12 +474,12 @@ TEST(ModelParserTest, complex_endpoint_reader)
     spy::participants::SpyModel model;
     // Fill model
     spy::participants::ParticipantInfo participant;
-    random_participant_info(participant);
+    spy::participants::random_participant_info(participant);
     model.participant_database_.add(participant.guid, participant);
 
 
     spy::participants::EndpointInfo endpoint;
-    random_endpoint_info(endpoint, ddspipe::core::types::EndpointKind::reader, true, 2);
+    spy::participants::random_endpoint_info(endpoint, ddspipe::core::types::EndpointKind::reader, true, 2);
     model.endpoint_database_.add(endpoint.guid, endpoint);
 
     // Obtain information from model
@@ -496,6 +504,9 @@ TEST(ModelParserTest, complex_endpoint_reader)
     ASSERT_EQ(result.qos.reliability, expected_result.qos.reliability);
 }
 
+/**
+ * TODO
+ */
 TEST(ModelParserTest, simple_topic)
 {
     // Create model
@@ -504,13 +515,13 @@ TEST(ModelParserTest, simple_topic)
     ddspipe::core::types::DdsTopic topic;
     topic = ddspipe::core::testing::random_dds_topic();
     spy::participants::EndpointInfo endpoint_writer_1;
-    random_endpoint_info(endpoint_writer_1, ddspipe::core::types::EndpointKind::writer, true, 1, topic);
+    spy::participants::random_endpoint_info(endpoint_writer_1, ddspipe::core::types::EndpointKind::writer, true, 1, topic);
     model.endpoint_database_.add(endpoint_writer_1.guid, endpoint_writer_1);
     spy::participants::EndpointInfo endpoint_writer_2;
-    random_endpoint_info(endpoint_writer_2, ddspipe::core::types::EndpointKind::writer, true, 2, topic);
+    spy::participants::random_endpoint_info(endpoint_writer_2, ddspipe::core::types::EndpointKind::writer, true, 2, topic);
     model.endpoint_database_.add(endpoint_writer_2.guid, endpoint_writer_2);
     spy::participants::EndpointInfo endpoint_reader;
-    random_endpoint_info(endpoint_reader, ddspipe::core::types::EndpointKind::reader, true, 3, topic);
+    spy::participants::random_endpoint_info(endpoint_reader, ddspipe::core::types::EndpointKind::reader, true, 3, topic);
     model.endpoint_database_.add(endpoint_reader.guid, endpoint_reader);
 
     // Obtain information from model
@@ -538,6 +549,9 @@ TEST(ModelParserTest, simple_topic)
     // TODO test Rate
 }
 
+/**
+ * TODO
+ */
 TEST(ModelParserTest, topics_verbose)
 {
     // Create model
@@ -546,13 +560,13 @@ TEST(ModelParserTest, topics_verbose)
     ddspipe::core::types::DdsTopic topic;
     topic = ddspipe::core::testing::random_dds_topic();
     spy::participants::EndpointInfo endpoint_writer_1;
-    random_endpoint_info(endpoint_writer_1, ddspipe::core::types::EndpointKind::writer, true, 1, topic);
+    spy::participants::random_endpoint_info(endpoint_writer_1, ddspipe::core::types::EndpointKind::writer, true, 1, topic);
     model.endpoint_database_.add(endpoint_writer_1.guid, endpoint_writer_1);
     spy::participants::EndpointInfo endpoint_writer_2;
-    random_endpoint_info(endpoint_writer_2, ddspipe::core::types::EndpointKind::writer, true, 2, topic);
+    spy::participants::random_endpoint_info(endpoint_writer_2, ddspipe::core::types::EndpointKind::writer, true, 2, topic);
     model.endpoint_database_.add(endpoint_writer_2.guid, endpoint_writer_2);
     spy::participants::EndpointInfo endpoint_reader;
-    random_endpoint_info(endpoint_reader, ddspipe::core::types::EndpointKind::reader, true, 3, topic);
+    spy::participants::random_endpoint_info(endpoint_reader, ddspipe::core::types::EndpointKind::reader, true, 3, topic);
     model.endpoint_database_.add(endpoint_reader.guid, endpoint_reader);
 
     // Obtain information from model
@@ -592,13 +606,15 @@ TEST(ModelParserTest, topics_verbose)
             ASSERT_EQ(datareader.guid, expected_result[i].datareaders[l].guid);
             l++;
         }
-        // ASSERT_EQ(it.discovered, expected_result[i].discovered); // fail???
         // TODO test Rate
         i++;
     }
 
 }
 
+/**
+ * TODO
+ */
 TEST(ModelParserTest, complex_topic)
 {
     // Create model
@@ -607,13 +623,13 @@ TEST(ModelParserTest, complex_topic)
     ddspipe::core::types::DdsTopic topic;
     topic = ddspipe::core::testing::random_dds_topic();
     spy::participants::EndpointInfo endpoint_writer_1;
-    random_endpoint_info(endpoint_writer_1, ddspipe::core::types::EndpointKind::writer, true, 1, topic);
+    spy::participants::random_endpoint_info(endpoint_writer_1, ddspipe::core::types::EndpointKind::writer, true, 1, topic);
     model.endpoint_database_.add(endpoint_writer_1.guid, endpoint_writer_1);
     spy::participants::EndpointInfo endpoint_writer_2;
-    random_endpoint_info(endpoint_writer_2, ddspipe::core::types::EndpointKind::writer, true, 2, topic);
+    spy::participants::random_endpoint_info(endpoint_writer_2, ddspipe::core::types::EndpointKind::writer, true, 2, topic);
     model.endpoint_database_.add(endpoint_writer_2.guid, endpoint_writer_2);
     spy::participants::EndpointInfo endpoint_reader;
-    random_endpoint_info(endpoint_reader, ddspipe::core::types::EndpointKind::reader, true, 3, topic);
+    spy::participants::random_endpoint_info(endpoint_reader, ddspipe::core::types::EndpointKind::reader, true, 3, topic);
     model.endpoint_database_.add(endpoint_reader.guid, endpoint_reader);
 
     // Obtain information from model
