@@ -88,6 +88,11 @@ jobs:
           - ubuntu-20.04
           - ubuntu-22.04
           # TODO add windows
+        exclude:
+          - os: ubuntu-20.04
+            cmake_build_type: Debug
+          - os: ubuntu-22.04
+            cmake_build_type: Debug
 
     steps:
 
