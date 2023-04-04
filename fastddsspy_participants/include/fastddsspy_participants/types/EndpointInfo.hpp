@@ -14,12 +14,13 @@
 
 #pragma once
 
-#include <ddspipe_core/library/library_dll.h>
 #include <ddspipe_core/types/dds/Guid.hpp>
 #include <ddspipe_core/interface/IRoutingData.hpp>
 #include <ddspipe_core/types/topic/TopicInternalTypeDiscriminator.hpp>
 #include <ddspipe_core/types/topic/dds/DdsTopic.hpp>
 #include <ddspipe_core/types/dds/Endpoint.hpp>
+
+#include <fastddsspy_participants/library/library_dll.h>
 
 namespace eprosima {
 namespace spy {
@@ -41,7 +42,7 @@ struct EndpointInfoData : public ddspipe::core::IRoutingData
 
 ddspipe::core::types::DdsTopic endpoint_info_topic() noexcept;
 
-DDSPIPE_CORE_DllAPI
+FASTDDSSPY_PARTICIPANTS_DllAPI
 bool is_endpoint_info_topic(
         const ddspipe::core::ITopic& topic) noexcept;
 

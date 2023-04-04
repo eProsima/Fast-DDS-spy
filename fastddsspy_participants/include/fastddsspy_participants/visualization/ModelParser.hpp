@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include <fastddsspy_participants/library/library_dll.h>
 #include <fastddsspy_participants/model/SpyModel.hpp>
 #include <fastddsspy_participants/visualization/parser_data.hpp>
 
@@ -26,38 +27,51 @@ namespace participants {
  */
 struct ModelParser
 {
+    FASTDDSSPY_PARTICIPANTS_DllAPI
     static std::vector<SimpleParticipantData> participants(
             const SpyModel& model);
+    FASTDDSSPY_PARTICIPANTS_DllAPI
     static std::vector<ComplexParticipantData> participants_verbose(
             const SpyModel& model);
+    FASTDDSSPY_PARTICIPANTS_DllAPI
     static ComplexParticipantData participants(
             const SpyModel& model,
             const ddspipe::core::types::Guid& guid);
 
+    FASTDDSSPY_PARTICIPANTS_DllAPI
     static std::vector<SimpleEndpointData> writers(
             const SpyModel& model);
+    FASTDDSSPY_PARTICIPANTS_DllAPI
     static std::vector<ComplexEndpointData> writers_verbose(
             const SpyModel& model);
+    FASTDDSSPY_PARTICIPANTS_DllAPI
     static ComplexEndpointData writers(
             const SpyModel& model,
             const ddspipe::core::types::Guid& guid);
 
+    FASTDDSSPY_PARTICIPANTS_DllAPI
     static std::vector<SimpleEndpointData> readers(
             const SpyModel& model);
+    FASTDDSSPY_PARTICIPANTS_DllAPI
     static std::vector<ComplexEndpointData> readers_verbose(
             const SpyModel& model);
+    FASTDDSSPY_PARTICIPANTS_DllAPI
     static ComplexEndpointData readers(
             const SpyModel& model,
             const ddspipe::core::types::Guid& guid);
 
+    FASTDDSSPY_PARTICIPANTS_DllAPI
     static ddspipe::core::types::DdsTopic get_topic(
             const SpyModel& model,
             std::string topic_name);
 
+    FASTDDSSPY_PARTICIPANTS_DllAPI
     static std::vector<SimpleTopicData> topics(
             const SpyModel& model);
+    FASTDDSSPY_PARTICIPANTS_DllAPI
     static std::vector<ComplexTopicData> topics_verbose(
             const SpyModel& model);
+    FASTDDSSPY_PARTICIPANTS_DllAPI
     static ComplexTopicData topics(
             const SpyModel& model,
             const std::string& topic_name);

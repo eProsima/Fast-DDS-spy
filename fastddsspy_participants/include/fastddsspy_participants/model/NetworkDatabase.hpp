@@ -19,6 +19,7 @@
 #include <cpp_utils/collection/database/SafeDatabase.hpp>
 #include <cpp_utils/types/Atomicable.hpp>
 
+#include <fastddsspy_participants/library/library_dll.h>
 #include <fastddsspy_participants/types/ParticipantInfo.hpp>
 #include <fastddsspy_participants/types/EndpointInfo.hpp>
 
@@ -37,6 +38,7 @@ public:
 
     utils::SafeDatabase<ddspipe::core::types::Guid, EndpointInfo> endpoint_database_;
 
+    FASTDDSSPY_PARTICIPANTS_DllAPI
     bool get_topic(
             const std::string& topic_name,
             ddspipe::core::types::DdsTopic& topic) const noexcept;

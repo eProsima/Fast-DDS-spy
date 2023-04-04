@@ -87,7 +87,8 @@ jobs:
         os:
           - ubuntu-20.04
           - ubuntu-22.04
-          # TODO add windows
+          - windows-2019
+          - windows-2022
         exclude:
           - os: ubuntu-20.04
             cmake_build_type: Debug
@@ -107,6 +108,7 @@ jobs:
           os: ${{ matrix.os }}
           cmake_build_type: ${{ matrix.cmake_build_type }}
           dependencies_artifact_postfix: ${{ github.event.inputs.dependencies_artifact_postfix || env.default_dependencies_artifact_postfix }}
+          secret_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Compile and run tests
         uses: jparisu/eProsima-CI/multiplatform/colcon_build_test@main
@@ -136,6 +138,7 @@ jobs:
           os: ubuntu-22.04
           cmake_build_type: Release
           dependencies_artifact_postfix: ${{ github.event.inputs.dependencies_artifact_postfix || env.default_dependencies_artifact_postfix }}
+          secret_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Compile and run tests
         uses: jparisu/eProsima-CI/multiplatform/asan_build_test@main
@@ -162,6 +165,7 @@ jobs:
           os: ubuntu-22.04
           cmake_build_type: Release
           dependencies_artifact_postfix: ${{ github.event.inputs.dependencies_artifact_postfix || env.default_dependencies_artifact_postfix }}
+          secret_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Compile and run tests
         uses: jparisu/eProsima-CI/multiplatform/tsan_build_test@main
@@ -188,6 +192,7 @@ jobs:
           os: ubuntu-22.04
           cmake_build_type: Release
           dependencies_artifact_postfix: ${{ github.event.inputs.dependencies_artifact_postfix || env.default_dependencies_artifact_postfix }}
+          secret_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Compile and run tests
         uses: jparisu/eProsima-CI/multiplatform/clang_build_test@main
@@ -216,6 +221,7 @@ jobs:
           os: ubuntu-22.04
           cmake_build_type: Release
           dependencies_artifact_postfix: ${{ github.event.inputs.dependencies_artifact_postfix || env.default_dependencies_artifact_postfix }}
+          secret_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Compile and run tests
         uses: jparisu/eProsima-CI/ubuntu/coverage_build_test_upload@main
@@ -244,6 +250,7 @@ jobs:
           os: ubuntu-22.04
           cmake_build_type: Release
           dependencies_artifact_postfix: ${{ github.event.inputs.dependencies_artifact_postfix || env.default_dependencies_artifact_postfix }}
+          secret_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Compile and run tests
         uses: jparisu/eProsima-CI/multiplatform/colcon_build_test_flaky@main

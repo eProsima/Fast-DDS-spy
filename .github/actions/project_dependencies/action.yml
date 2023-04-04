@@ -21,12 +21,22 @@ inputs:
     required: false
     default: './install'
 
+  # This must be passed as an argument because actions do not access to workflow secrets:
+  # Unrecognized named-value: 'secrets'. https://github.com/orgs/community/discussions/27054
+  # Pass argument {{ secrets.GITHUB_TOKEN }} from workflow
+  secret_token:
+    description: 'Secret token to authenticate the WebRequest so it not get a rate limit error.'
+    required: false
+    default: ''
+
 runs:
   using: composite
   steps:
 
     - name: Install Fast DDS dependencies
       uses: jparisu/eProsima-CI/multiplatform/install_fast_dependencies@main
+      with:
+        cmake_build_type: ${{ inputs.cmake_build_type }}
 
     - name: Install yaml cpp dependency
       uses: jparisu/eProsima-CI/multiplatform/install_yamlcpp@main
@@ -42,3 +52,4 @@ runs:
         workflow_source: build_ddspipe.yml
         workflow_source_repository: jparisu/eProsima-CI
         target_workspace: ${{ inputs.target_workspace }}
+        secret_token: ${{ inputs.secret_token }}

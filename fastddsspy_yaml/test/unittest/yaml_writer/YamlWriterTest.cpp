@@ -15,9 +15,9 @@
 #include <cpp_utils/testing/gtest_aux.hpp>
 #include <gtest/gtest.h>
 
-#include <ddspipe_yaml/YamlWriter.hpp>
-
 #include <fastddsspy_participants/visualization/parser_data.hpp>
+
+#include <fastddsspy_yaml/YamlWriter.hpp>
 
 using namespace eprosima;
 using namespace eprosima::ddspipe::yaml;

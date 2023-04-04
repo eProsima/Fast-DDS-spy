@@ -23,6 +23,7 @@
 #include <ddspipe_core/types/topic/dds/DdsTopic.hpp>
 #include <ddspipe_core/types/dds/Payload.hpp>
 
+#include <fastddsspy_participants/library/library_dll.h>
 #include <fastddsspy_participants/model/TopicRateCalculator.hpp>
 
 namespace eprosima {
@@ -41,22 +42,28 @@ public:
                         const fastrtps::types::DynamicType_ptr&,
                         const ddspipe::core::types::RtpsPayloadData&)>;
 
+    FASTDDSSPY_PARTICIPANTS_DllAPI
     bool activate_all(
             const std::shared_ptr<CallbackType>& callback);
 
+    FASTDDSSPY_PARTICIPANTS_DllAPI
     bool activate(
             const ddspipe::core::types::DdsTopic& topic_to_activate,
             const std::shared_ptr<CallbackType>& callback);
 
+    FASTDDSSPY_PARTICIPANTS_DllAPI
     void deactivate();
 
+    FASTDDSSPY_PARTICIPANTS_DllAPI
     void add_schema(
             const fastrtps::types::DynamicType_ptr& dynamic_type) override;
 
+    FASTDDSSPY_PARTICIPANTS_DllAPI
     void add_data(
             const ddspipe::core::types::DdsTopic& topic,
             ddspipe::core::types::RtpsPayloadData& data) override;
 
+    FASTDDSSPY_PARTICIPANTS_DllAPI
     bool is_topic_type_discovered(
             const ddspipe::core::types::DdsTopic& topic_to_activate) const noexcept;
 
