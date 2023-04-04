@@ -187,12 +187,12 @@ TEST(ModelParserTest, participants_verbose)
 
     for (const auto& it : participants)
     {
-        expected_result.push_back({
-            it.name,
-            it.guid,
-            writers,
-            readers
-        });
+        spy::participants::ComplexParticipantData fill_expected_result;
+        fill_expected_result.guid = it.guid;
+        fill_expected_result.name = it.name;
+        fill_expected_result.readers = readers;
+        fill_expected_result.writers = writers;
+        expected_result.push_back(fill_expected_result);
     }
 
     // Check information
