@@ -33,7 +33,7 @@ void random_participant_info(
         bool active /* = true */,
         unsigned int seed /* = 0 */)
 {
-    participant_data.name = ddspipe::core::testing::random_participant_id();
+    participant_data.name = ddspipe::core::testing::random_participant_id(seed);
     participant_data.active = active;
     participant_data.guid = random_guid_same_prefix(seed);
 }
@@ -43,7 +43,7 @@ void random_endpoint_info(
         ddspipe::core::types::EndpointKind kind,
         bool active /* = true */,
         unsigned int seed /* = 0 */,
-        ddspipe::core::types::DdsTopic topic /* = ddspipe::core::testing::random_dds_topic(rand() % 15) */)
+        ddspipe::core::types::DdsTopic topic /* = ddspipe::core::testing::random_dds_topic() */)
 {
     endpoint_data.active = active;
     endpoint_data.kind = kind;

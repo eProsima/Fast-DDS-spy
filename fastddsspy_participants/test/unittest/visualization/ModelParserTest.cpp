@@ -41,7 +41,7 @@ std::vector<spy::participants::EndpointInfo> fill_database_endpoints(
         spy::participants::SpyModel& model,
         int n_readers,
         int n_writers,
-        ddspipe::core::types::DdsTopic topic = ddspipe::core::testing::random_dds_topic(rand() % 15))
+        ddspipe::core::types::DdsTopic topic = ddspipe::core::testing::random_dds_topic())
 {
     // Fill model
     std::vector<spy::participants::EndpointInfo> endpoints;
@@ -71,10 +71,11 @@ std::vector<spy::participants::EndpointInfo> fill_database_endpoints(
 /**
  * Test the functions of ModelParser.cpp adding elements to the database
  * and check if the functions return the correct information.
+ * TODO: extend for multiple participants and getting multiple entities of a kind
  */
 
 /**
- * Add a participant to the database and eexecute participants()
+ * Add a participant to the database and execute participants()
  * Check the result guid and name of the participant.
  */
 TEST(ModelParserTest, simple_participant)
@@ -636,7 +637,7 @@ TEST(ModelParserTest, simple_topic)
     ASSERT_EQ(result[0].type, expected_result[0].type);
     ASSERT_EQ(result[0].datawriters, expected_result[0].datawriters);
     ASSERT_EQ(result[0].datareaders, expected_result[0].datareaders);
-    // TODO test Rate
+    ASSERT_FALSE(result[0].rate.rate);
 }
 
 /**
@@ -700,7 +701,8 @@ TEST(ModelParserTest, topics_verbose)
             ASSERT_EQ(datareader.guid, expected_result[i].datareaders[l].guid);
             l++;
         }
-        // TODO test Rate
+        ASSERT_FALSE(it.rate.rate);
+        ASSERT_FALSE(it.discovered);
         i++;
     }
 
@@ -762,7 +764,8 @@ TEST(ModelParserTest, complex_topic)
         ASSERT_EQ(datareader.guid, expected_result.datareaders[i].guid);
         i++;
     }
-    // TODO test Rate
+    ASSERT_FALSE(result.rate.rate);
+    ASSERT_FALSE(result.discovered);
 }
 
 int main(

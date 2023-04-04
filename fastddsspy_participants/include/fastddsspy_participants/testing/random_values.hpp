@@ -35,7 +35,7 @@ void random_endpoint_info(
         ddspipe::core::types::EndpointKind kind,
         bool active = true,
         unsigned int seed = 1,
-        ddspipe::core::types::DdsTopic topic = ddspipe::core::testing::random_dds_topic(rand() % 15));
+        ddspipe::core::types::DdsTopic topic = ddspipe::core::testing::random_dds_topic());
 
 } /* namespace participants */
 } /* namespace spy */
