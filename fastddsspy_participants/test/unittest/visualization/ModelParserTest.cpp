@@ -22,8 +22,8 @@
 using namespace eprosima;
 
 std::vector<spy::participants::ParticipantInfo> fill_database_participants(
-    spy::participants::SpyModel& model,
-    int n_participants)
+        spy::participants::SpyModel& model,
+        int n_participants)
 {
     // Fill model
     std::vector<spy::participants::ParticipantInfo> participants;
@@ -38,17 +38,18 @@ std::vector<spy::participants::ParticipantInfo> fill_database_participants(
 }
 
 std::vector<spy::participants::EndpointInfo> fill_database_endpoints(
-    spy::participants::SpyModel& model,
-    int n_readers,
-    int n_writers,
-    ddspipe::core::types::DdsTopic topic = ddspipe::core::testing::random_dds_topic(rand() % 15) )
+        spy::participants::SpyModel& model,
+        int n_readers,
+        int n_writers,
+        ddspipe::core::types::DdsTopic topic = ddspipe::core::testing::random_dds_topic(rand() % 15))
 {
     // Fill model
     std::vector<spy::participants::EndpointInfo> endpoints;
     for (int i = 0; i < n_readers; i++)
     {
         spy::participants::EndpointInfo endpoint_reader;
-        spy::participants::random_endpoint_info(endpoint_reader, ddspipe::core::types::EndpointKind::reader, true, i, topic);
+        spy::participants::random_endpoint_info(endpoint_reader, ddspipe::core::types::EndpointKind::reader, true, i,
+                topic);
         model.endpoint_database_.add(endpoint_reader.guid, endpoint_reader);
         endpoints.push_back(endpoint_reader);
     }
@@ -56,7 +57,8 @@ std::vector<spy::participants::EndpointInfo> fill_database_endpoints(
     for (int i = 0; i < n_writers; i++)
     {
         spy::participants::EndpointInfo endpoint_writer;
-        spy::participants::random_endpoint_info(endpoint_writer, ddspipe::core::types::EndpointKind::writer, true, n_readers+i, topic);
+        spy::participants::random_endpoint_info(endpoint_writer, ddspipe::core::types::EndpointKind::writer, true,
+                n_readers + i, topic);
         model.endpoint_database_.add(endpoint_writer.guid, endpoint_writer);
         endpoints.push_back(endpoint_writer);
     }
@@ -186,11 +188,11 @@ TEST(ModelParserTest, participants_verbose)
     for (const auto& it : participants)
     {
         expected_result.push_back({
-                                    it.name,
-                                    it.guid,
-                                    writers,
-                                    readers
-                                });
+            it.name,
+            it.guid,
+            writers,
+            readers
+        });
     }
 
     // Check information
@@ -273,11 +275,11 @@ TEST(ModelParserTest, complex_participant)
     for (const auto& it : participants)
     {
         expected_result = {
-                            it.name,
-                            it.guid,
-                            writers,
-                            readers
-                        };
+            it.name,
+            it.guid,
+            writers,
+            readers
+        };
     }
 
     // Check information
