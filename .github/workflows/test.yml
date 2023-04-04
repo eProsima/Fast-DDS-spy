@@ -55,7 +55,6 @@ on:
     inputs:
 
       dependencies_artifact_postfix:
-          secret_token: ${{ secrets.GITHUB_TOKEN }}
         description: 'Postfix name to add to artifact name to download dependencies. This is use to download a specific artifact version from eProsima-CI.'
         required: true
         default: '_nightly'
@@ -70,7 +69,6 @@ on:
 env:
   code_packages_names: 'fastddsspy_participants fastddsspy_yaml fastddsspy_tool'
   default_dependencies_artifact_postfix: '_nightly'
-          secret_token: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
 
