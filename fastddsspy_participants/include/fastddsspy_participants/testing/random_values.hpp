@@ -22,16 +22,19 @@ namespace eprosima {
 namespace spy {
 namespace participants {
 
+ddspipe::core::types::Guid random_guid_same_prefix(
+        unsigned int seed = 1);
+
 void random_participant_info(
         spy::participants::ParticipantInfo& participant_data,
         bool active = true,
-        unsigned int seed = 0);
+        unsigned int seed = 1);
 
 void random_endpoint_info(
     spy::participants::EndpointInfo& endpoint_data,
     ddspipe::core::types::EndpointKind kind,
     bool active = true,
-    unsigned int seed = 0,
+    unsigned int seed = 1,
     ddspipe::core::types::DdsTopic topic = ddspipe::core::testing::random_dds_topic(rand() % 15));
 
 } /* namespace participants */

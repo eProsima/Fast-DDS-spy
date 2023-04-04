@@ -18,6 +18,16 @@ namespace eprosima {
 namespace spy {
 namespace participants {
 
+ddspipe::core::types::Guid random_guid_same_prefix(
+        unsigned int seed /* = 1 */)
+{
+    ddspipe::core::types::Guid guid;
+    guid.entityId.value[3] = static_cast<eprosima::fastrtps::rtps::octet>(seed);
+    guid.guidPrefix.value[0] = 0x01;
+    guid.guidPrefix.value[1] = 0x0f;
+    return guid;
+}
+
 void random_participant_info(
         spy::participants::ParticipantInfo& participant_data,
         bool active /* = true */,
@@ -25,7 +35,7 @@ void random_participant_info(
 {
     participant_data.name = ddspipe::core::testing::random_participant_id();
     participant_data.active = active;
-    participant_data.guid = ddspipe::core::testing::random_guid(seed);
+    participant_data.guid = random_guid_same_prefix(seed);
 }
 
 void random_endpoint_info(
@@ -37,7 +47,7 @@ void random_endpoint_info(
 {
     endpoint_data.active = active;
     endpoint_data.kind = kind;
-    endpoint_data.guid = ddspipe::core::testing::random_guid(seed);
+    endpoint_data.guid = random_guid_same_prefix(seed);
     endpoint_data.topic = topic;
     endpoint_data.discoverer_participant_id = ddspipe::core::testing::random_participant_id(seed);
 }
