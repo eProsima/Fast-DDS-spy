@@ -274,12 +274,10 @@ TEST(ModelParserTest, complex_participant)
     }
     for (const auto& it : participants)
     {
-        expected_result = {
-            it.name,
-            it.guid,
-            writers,
-            readers
-        };
+        expected_result.guid = it.guid;
+        expected_result.name = it.name;
+        expected_result.readers = readers;
+        expected_result.writers = writers;
     }
 
     // Check information
