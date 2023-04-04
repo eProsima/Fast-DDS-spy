@@ -22,8 +22,8 @@
 #include <fastddsspy_participants/configuration/SpyParticipantConfiguration.hpp>
 #include <fastddsspy_participants/visualization/parser_data.hpp>
 
+#include <fastddsspy_yaml/library/library_dll.h>
 #include <fastddsspy_yaml/yaml_configuration_tags.hpp>
-#include <fastddsspy_yaml/YamlWriter.hpp>
 
 namespace eprosima {
 namespace ddspipe {
@@ -32,6 +32,7 @@ namespace yaml {
 using namespace eprosima::spy::participants;
 
 template <>
+FASTDDSSPY_YAML_DllAPI
 void set(
         Yaml& yml,
         const ddspipe::core::types::Guid& value)
@@ -40,6 +41,7 @@ void set(
 }
 
 template <>
+FASTDDSSPY_YAML_DllAPI
 void set(
         Yaml& yml,
         const TimestampData& value)
@@ -56,6 +58,7 @@ void set(
 }
 
 template <>
+FASTDDSSPY_YAML_DllAPI
 void set(
         Yaml& yml,
         const SimpleParticipantData& value)
@@ -65,6 +68,7 @@ void set(
 }
 
 template <>
+FASTDDSSPY_YAML_DllAPI
 void set(
         Yaml& yml,
         const ComplexParticipantData::Endpoint& value)
@@ -75,6 +79,7 @@ void set(
 }
 
 template <>
+FASTDDSSPY_YAML_DllAPI
 void set(
         Yaml& yml,
         const ComplexParticipantData& value)
@@ -86,6 +91,7 @@ void set(
 }
 
 template <>
+FASTDDSSPY_YAML_DllAPI
 void set(
         Yaml& yml,
         const SimpleEndpointData::Topic& value)
@@ -96,6 +102,7 @@ void set(
 }
 
 template <>
+FASTDDSSPY_YAML_DllAPI
 void set(
         Yaml& yml,
         const SimpleEndpointData& value)
@@ -106,6 +113,7 @@ void set(
 }
 
 template <>
+FASTDDSSPY_YAML_DllAPI
 void set(
         Yaml& yml,
         const ComplexEndpointData::ExtendedTopic& value)
@@ -115,6 +123,7 @@ void set(
 }
 
 template <>
+FASTDDSSPY_YAML_DllAPI
 void set(
         Yaml& yml,
         const ComplexEndpointData::QoS& value)
@@ -139,6 +148,7 @@ void set(
 }
 
 template <>
+FASTDDSSPY_YAML_DllAPI
 void set(
         Yaml& yml,
         const ComplexEndpointData& value)
@@ -150,6 +160,7 @@ void set(
 }
 
 template <>
+FASTDDSSPY_YAML_DllAPI
 void set(
         Yaml& yml,
         const SimpleTopicData::Rate& value)
@@ -160,6 +171,7 @@ void set(
 }
 
 template <>
+FASTDDSSPY_YAML_DllAPI
 void set(
         Yaml& yml,
         const SimpleTopicData& value)
@@ -172,6 +184,7 @@ void set(
 }
 
 template <>
+FASTDDSSPY_YAML_DllAPI
 void set(
         Yaml& yml,
         const ComplexTopicData::Endpoint& value)
@@ -180,6 +193,7 @@ void set(
 }
 
 template <>
+FASTDDSSPY_YAML_DllAPI
 void set(
         Yaml& yml,
         const ComplexTopicData& value)
@@ -193,6 +207,7 @@ void set(
 }
 
 template <>
+FASTDDSSPY_YAML_DllAPI
 void set(
         Yaml& yml,
         const DdsDataData& value)
