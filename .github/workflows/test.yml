@@ -55,6 +55,7 @@ on:
     inputs:
 
       dependencies_artifact_postfix:
+          secret_token: ${{ secrets.GITHUB_TOKEN }}
         description: 'Postfix name to add to artifact name to download dependencies. This is use to download a specific artifact version from eProsima-CI.'
         required: true
         default: '_nightly'
@@ -69,6 +70,7 @@ on:
 env:
   code_packages_names: 'fastddsspy_participants fastddsspy_yaml fastddsspy_tool'
   default_dependencies_artifact_postfix: '_nightly'
+          secret_token: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
 
@@ -108,6 +110,7 @@ jobs:
           os: ${{ matrix.os }}
           cmake_build_type: ${{ matrix.cmake_build_type }}
           dependencies_artifact_postfix: ${{ github.event.inputs.dependencies_artifact_postfix || env.default_dependencies_artifact_postfix }}
+          secret_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Compile and run tests
         uses: jparisu/eProsima-CI/multiplatform/colcon_build_test@main
@@ -137,6 +140,7 @@ jobs:
           os: ubuntu-22.04
           cmake_build_type: Release
           dependencies_artifact_postfix: ${{ github.event.inputs.dependencies_artifact_postfix || env.default_dependencies_artifact_postfix }}
+          secret_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Compile and run tests
         uses: jparisu/eProsima-CI/multiplatform/asan_build_test@main
@@ -163,6 +167,7 @@ jobs:
           os: ubuntu-22.04
           cmake_build_type: Release
           dependencies_artifact_postfix: ${{ github.event.inputs.dependencies_artifact_postfix || env.default_dependencies_artifact_postfix }}
+          secret_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Compile and run tests
         uses: jparisu/eProsima-CI/multiplatform/tsan_build_test@main
@@ -189,6 +194,7 @@ jobs:
           os: ubuntu-22.04
           cmake_build_type: Release
           dependencies_artifact_postfix: ${{ github.event.inputs.dependencies_artifact_postfix || env.default_dependencies_artifact_postfix }}
+          secret_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Compile and run tests
         uses: jparisu/eProsima-CI/multiplatform/clang_build_test@main
@@ -217,6 +223,7 @@ jobs:
           os: ubuntu-22.04
           cmake_build_type: Release
           dependencies_artifact_postfix: ${{ github.event.inputs.dependencies_artifact_postfix || env.default_dependencies_artifact_postfix }}
+          secret_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Compile and run tests
         uses: jparisu/eProsima-CI/ubuntu/coverage_build_test_upload@main
@@ -245,6 +252,7 @@ jobs:
           os: ubuntu-22.04
           cmake_build_type: Release
           dependencies_artifact_postfix: ${{ github.event.inputs.dependencies_artifact_postfix || env.default_dependencies_artifact_postfix }}
+          secret_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Compile and run tests
         uses: jparisu/eProsima-CI/multiplatform/colcon_build_test_flaky@main
