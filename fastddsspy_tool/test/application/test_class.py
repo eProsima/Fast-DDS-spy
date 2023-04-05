@@ -31,6 +31,7 @@ import subprocess
 import signal
 import re
 import time
+import os
 
 DESCRIPTION = """Script to execute Fast DDS Spy executable test"""
 USAGE = ('python3 tests.py -e <path/to/fastddsspy-executable>'
@@ -138,13 +139,27 @@ class TestCase():
                                 stderr=subprocess.PIPE)
         return proc
 
+    def is_linux(self):
+        """Return whether the script is running in a Linux environment."""
+        return os.name == 'posix'
+
+    def is_windows(self):
+        """Return whether the script is running in a Windows environment."""
+        return os.name == 'nt'
+
     def stop_dds(self, proc):
         # send a ctrl+c signal to the subprocess
-        proc.send_signal(signal.SIGINT)
+        if self.is_linux():
+            proc.send_signal(signal.SIGINT)
+        elif self.is_windows():
+            proc.send_signal(signal.CTRL_C_EVENT)
         try:
             proc.communicate(timeout=5)
         except subprocess.TimeoutExpired:
-            proc.send_signal(signal.SIGINT)
+            if self.is_linux():
+                proc.send_signal(signal.SIGINT)
+            elif self.is_windows():
+                proc.send_signal(signal.CTRL_C_EVENT)
             proc.communicate()
 
     def valid_returncode(self, returncode):
