@@ -13,7 +13,7 @@ Key-words
 =========
 
 These are the key-words recognize as this command:
-``reader`` ``readers`` ``datareader`` ``datareaders`` ``subscription`` ``subscriptions`` ``w`` ``W``.
+``reader`` ``readers`` ``datareader`` ``datareaders`` ``subscription`` ``subscriptions`` ``r`` ``R``.
 
 Arguments
 =========
@@ -41,6 +41,10 @@ Guid
 This argument requires a string with :ref:`Guid format <user_manual_commands_input_guid>`.
 This command queries the database for a **single DataReader** and retrieves its :ref:`verbose information <user_manual_command_reader_output_verbose>`.
 This Guid must exist inside the DDS network.
+
+.. note::
+
+    If you are using |espy| as one-shot application, you will need to put GUID in quotes.
 
 Output Format
 =============
