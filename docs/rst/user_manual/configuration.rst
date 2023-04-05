@@ -28,6 +28,8 @@ This value allow to keep using the same YAML file using an old configuration for
         - ``v1.0``
         - *v0.1.0*
 
+.. _user_manual_configuration_dds:
+
 DDS Configurations
 ==================
 
@@ -90,6 +92,8 @@ filters specified in the ``blocklist`` will be discarded by the |spy| and theref
 This list takes precedence over the ``allowlist``.
 If a topic matches an expression both in the ``allowlist`` and in the ``blocklist``, the ``blocklist`` takes precedence,
 causing the data under this topic to be discarded.
+
+.. _user_manual_configuration_specs:
 
 Specs Configurations
 ====================

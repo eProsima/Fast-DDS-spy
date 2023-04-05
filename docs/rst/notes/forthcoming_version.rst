@@ -1,10 +1,8 @@
 
 .. add orphan tag when new info added to this file
 
-.. :orphan:
+:orphan:
 
 ###################
 Forthcoming Version
 ###################
-
-First release of *eProsima Fast DDS Spy*.
