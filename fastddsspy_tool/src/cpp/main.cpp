@@ -135,6 +135,9 @@ int main(
 
         if (file_path != "")
         {
+            logInfo(
+                FASTDDSSPY_TOOL,
+                "Loading configuration from file '" << file_path << "' .");
             configuration = eprosima::spy::yaml::Configuration(file_path);
         }
 

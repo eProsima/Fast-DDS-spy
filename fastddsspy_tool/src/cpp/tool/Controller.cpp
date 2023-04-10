@@ -39,6 +39,7 @@ Controller::Controller(
         const yaml::Configuration& configuration)
     : backend_(configuration)
     , model_(backend_.model())
+    , configuration_(configuration)
 {
     // Do nothing
 }
