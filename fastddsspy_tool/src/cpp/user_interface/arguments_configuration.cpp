@@ -235,7 +235,7 @@ ProcessReturnCode parse_arguments(
                 break;
 
             case optionIndex::ACTIVATE_DEBUG:
-                log_filter = "FOXGLOVEWS";
+                log_filter = "FASTDDSSPY";
                 log_verbosity = eprosima::fastdds::dds::Log::Kind::Info;
                 break;
 

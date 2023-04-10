@@ -41,6 +41,10 @@ This argument requires a string with :ref:`Guid format <user_manual_commands_inp
 This command queries the database for a **single DomainParticipant** and retrieves its :ref:`verbose information <user_manual_command_participant_output_verbose>`.
 This Guid must exist inside the DDS network.
 
+.. note::
+
+    If you are using |espy| as one-shot application, you will need to put GUID in quotes.
+
 Output Format
 =============
 
