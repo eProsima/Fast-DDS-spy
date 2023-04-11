@@ -9,7 +9,7 @@
 #
 # JOBS:
 #
-#   - ubuntu
+#   - multiplatform-tests
 #     - [ ubuntu-22.04 | ubuntu-20.04 | windows-2019 | windows-2022 ]
 #     - [ Debug | Release ]
 #     - execute tests in different versions of ubuntu with different build types
@@ -89,11 +89,6 @@ jobs:
           - ubuntu-22.04
           - windows-2019
           - windows-2022
-        exclude:
-          - os: ubuntu-20.04
-            cmake_build_type: Debug
-          - os: ubuntu-22.04
-            cmake_build_type: Debug
 
     steps:
 
@@ -111,7 +106,7 @@ jobs:
           secret_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Compile and run tests
-        uses: jparisu/eProsima-CI/multiplatform/colcon_build_test@main
+        uses: eProsima/eProsima-CI/multiplatform/colcon_build_test@feature/annapurna-workflows
         with:
           packages_names: ${{ env.code_packages_names }}
           cmake_args: -DBUILD_TESTS=ON -DCMAKE_BUILD_TYPE=${{ matrix.cmake_build_type }}
@@ -141,7 +136,7 @@ jobs:
           secret_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Compile and run tests
-        uses: jparisu/eProsima-CI/multiplatform/asan_build_test@main
+        uses: eProsima/eProsima-CI/multiplatform/asan_build_test@feature/annapurna-workflows
         with:
           packages_names: ${{ env.code_packages_names }}
           workspace_dependencies: './install'
@@ -168,7 +163,7 @@ jobs:
           secret_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Compile and run tests
-        uses: jparisu/eProsima-CI/multiplatform/tsan_build_test@main
+        uses: eProsima/eProsima-CI/multiplatform/tsan_build_test@feature/annapurna-workflows
         with:
           packages_names: ${{ env.code_packages_names }}
           workspace_dependencies: './install'
@@ -195,7 +190,7 @@ jobs:
           secret_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Compile and run tests
-        uses: jparisu/eProsima-CI/multiplatform/clang_build_test@main
+        uses: eProsima/eProsima-CI/multiplatform/clang_build_test@feature/annapurna-workflows
         with:
           packages_names: ${{ env.code_packages_names }}
           workspace_dependencies: './install'
@@ -224,7 +219,7 @@ jobs:
           secret_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Compile and run tests
-        uses: jparisu/eProsima-CI/ubuntu/coverage_build_test_upload@main
+        uses: eProsima/eProsima-CI/ubuntu/coverage_build_test_upload@feature/annapurna-workflows
         with:
           packages_names: ${{ env.code_packages_names }}
           workspace_dependencies: './install'
@@ -253,7 +248,7 @@ jobs:
           secret_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Compile and run tests
-        uses: jparisu/eProsima-CI/multiplatform/colcon_build_test_flaky@main
+        uses: eProsima/eProsima-CI/multiplatform/colcon_build_test_flaky@feature/annapurna-workflows
         with:
           packages_names: ${{ env.code_packages_names }}
           workspace_dependencies: './install'
@@ -266,7 +261,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Build and test documentation
-        uses: jparisu/eProsima-CI/actions/sphinx_docs@main
+        uses: eProsima/eProsima-CI/ubuntu/sphinx_docs@feature/annapurna-workflows
         with:
           docs_subpackage_name: fastddsspy_docs
 
@@ -279,7 +274,7 @@ jobs:
     steps:
 
       - name: Uncrustify
-        uses: jparisu/eProsima-CI/actions/uncrustify@main
+        uses: eProsima/eProsima-CI/ubuntu-22.04/uncrustify@feature/annapurna-workflows
 
 
 #####################################################################
@@ -290,4 +285,4 @@ jobs:
     steps:
 
       - name: Python Linter
-        uses: jparisu/eProsima-CI/actions/python_linter@main
+        uses: eProsima/eProsima-CI/ubuntu/python_linter@feature/annapurna-workflows
