@@ -21,7 +21,7 @@ class TestCase_instance (test_class.TestCase):
             one_shot=True,
             command=[],
             dds=False,
-            configuration='',
+            config='',
             arguments_dds=[],
             arguments_spy=['--version'],
             output="""Fast DDS Spy v0.1.0

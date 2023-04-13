@@ -23,7 +23,7 @@ class TestCase_instance (test_class.TestCase):
             one_shot=True,
             command=[],
             dds=False,
-            configuration='',
+            config='',
             arguments_dds=[],
             arguments_spy=['show'],
             output="""\x1b[1;31mCommand <show> requires at least one argument.\x1b[0m

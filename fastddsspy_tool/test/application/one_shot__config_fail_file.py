@@ -22,8 +22,8 @@ class TestCase_instance (test_class.TestCase):
             name='--configFailCommand',
             one_shot=True,
             command=[],
-            dds=True,
-            configuration='hello',
+            dds=False,
+            config='hello',
             arguments_dds=[],
             arguments_spy=['--config-path', 'configuration'],
             output="""Usage: Fast DDS Spy \n""" \

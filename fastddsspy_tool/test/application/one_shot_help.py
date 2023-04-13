@@ -23,7 +23,7 @@ class TestCase_instance (test_class.TestCase):
             one_shot=True,
             command=[],
             dds=False,
-            configuration='',
+            config='',
             arguments_dds=[],
             arguments_spy=['help'],
             output="""Fast DDS Spy is an interactive CLI that allow to instrospect DDS networks.

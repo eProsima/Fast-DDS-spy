@@ -23,7 +23,7 @@ class TestCase_instance (test_class.TestCase):
             one_shot=True,
             command=[],
             dds=False,
-            configuration='',
+            config='',
             arguments_dds=[],
             arguments_spy=['nullarg'],
             output='\x1b[1;31m<nullarg> is not a known command. Use <help> command to see valid commands and arguments.\x1b[0m\n'

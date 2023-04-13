@@ -23,7 +23,7 @@ class TestCase_instance (test_class.TestCase):
             one_shot=True,
             command=[],
             dds=True,
-            configuration='',
+            config='',
             arguments_dds=[],
             arguments_spy=['datawriter', '01.0f.d8.74.d5.a0.cf.f4.00.00.00.00|0.0.1.3'],
             output="""\x1b[1;31m01.0f.d8.74.d5.a0.cf.f4.00.00.00.00|0.0.1.3 does not match with any known writer.\x1b[0m

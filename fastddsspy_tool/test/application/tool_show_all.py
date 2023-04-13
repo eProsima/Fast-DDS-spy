@@ -23,7 +23,7 @@ class TestCase_instance (test_class.TestCase):
             one_shot=False,
             command=[],
             dds=False,
-            configuration='',
+            config='',
             arguments_dds=[],
             arguments_spy=['show all \n'],
             output=""">> \x1b[0m

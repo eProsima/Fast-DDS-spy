@@ -23,7 +23,7 @@ class TestCase_instance (test_class.TestCase):
             one_shot=True,
             command=[],
             dds=True,
-            configuration='fastddsspy_tool/test/application/configuration/configuration_basic.yaml',
+            config='fastddsspy_tool/test/application/configuration/configuration_basic.yaml',
             arguments_dds=[],
             arguments_spy=['--config-path', 'configuration', 'participants'],
             output='\n'

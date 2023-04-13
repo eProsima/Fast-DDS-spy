@@ -23,7 +23,7 @@ class TestCase_instance (test_class.TestCase):
             one_shot=False,
             command=[],
             dds=True,
-            configuration='',
+            config='',
             arguments_dds=[],
             arguments_spy=['show HelloWorldTopic'],
             output=""">> \x1b[0m\x1b[1;31mTopic Type <HelloWorld> has not been discovered, and thus cannot print its data.\x1b[0m

@@ -41,12 +41,12 @@ USAGE = ('python3 tests.py -e <path/to/fastddsspy-executable>'
 
 class TestCase():
 
-    def __init__(self, name, one_shot, command, dds, configuration, arguments_dds, arguments_spy, output):
+    def __init__(self, name, one_shot, command, dds, config, arguments_dds, arguments_spy, output):
         self.name = name
         self.one_shot = one_shot
         self.command = command
         self.dds = dds
-        self.configuration = configuration
+        self.configuration = config
         self.arguments_dds = arguments_dds
         self.arguments_spy = arguments_spy
         self.output = output
@@ -166,7 +166,11 @@ class TestCase():
             proc.communicate()
 
     def valid_returncode(self, returncode):
-        if self.name == '--NullCommand' or self.name == '--configFailCommand' or self.name == '--log-verbosityFailCommand':
+        if self.name == '--NullCommand':
+            return (returncode != 0)
+        if self.name == '--configFailCommand':
+            return (returncode != 0)
+        if self.name == '--log-verbosityFailCommand':
             return (returncode != 0)
         if self.name == '--reloadFailCommand':
             return (returncode != 0)

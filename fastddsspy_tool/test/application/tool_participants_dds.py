@@ -23,7 +23,7 @@ class TestCase_instance (test_class.TestCase):
             one_shot=False,
             command=[],
             dds=True,
-            configuration='',
+            config='',
             arguments_dds=[],
             arguments_spy=['participants'],
             output=""">> \x1b[0m- name: Participant_pub

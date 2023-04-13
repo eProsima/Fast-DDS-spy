@@ -23,7 +23,7 @@ class TestCase_instance (test_class.TestCase):
             one_shot=True,
             command=[],
             dds=False,
-            configuration='',
+            config='',
             arguments_dds=[],
             arguments_spy=['topics', 'hello'],
             output="""\x1b[1;31m<hello> topic does not exist in the DDS network.\x1b[0m

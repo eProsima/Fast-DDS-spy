@@ -23,7 +23,7 @@ class TestCase_instance (test_class.TestCase):
             one_shot=True,
             command=[],
             dds=True,
-            configuration='',
+            config='',
             arguments_dds=[],
             arguments_spy=['datawriter'],
             output="""- guid: 01.0f.cd.6f.98.9d.4f.19.00.00.00.00|0.0.1.3

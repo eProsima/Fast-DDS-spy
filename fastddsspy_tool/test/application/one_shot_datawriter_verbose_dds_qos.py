@@ -23,7 +23,7 @@ class TestCase_instance (test_class.TestCase):
             one_shot=True,
             command=[],
             dds=True,
-            configuration='',
+            config='',
             arguments_dds=['--reliable', '--transient'],
             arguments_spy=['datawriter', 'verbose'],
             output="""- guid: 01.0f.d8.74.d5.a0.cf.f4.00.00.00.00|0.0.1.3
