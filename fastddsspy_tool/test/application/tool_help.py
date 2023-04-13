@@ -23,7 +23,9 @@ class TestCase_instance (test_class.TestCase):
             one_shot=False,
             command=[],
             dds=False,
-            arguments='help',
+            configuration='',
+            arguments_dds=[],
+            arguments_spy=['help'],
             output=
 """>> \x1b[0mFast DDS Spy is an interactive CLI that allow to instrospect DDS networks.
 

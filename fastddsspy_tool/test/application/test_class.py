@@ -32,6 +32,7 @@ import signal
 import re
 import time
 import os
+import difflib
 
 DESCRIPTION = """Script to execute Fast DDS Spy executable test"""
 USAGE = ('python3 tests.py -e <path/to/fastddsspy-executable>'
@@ -40,12 +41,14 @@ USAGE = ('python3 tests.py -e <path/to/fastddsspy-executable>'
 
 class TestCase():
 
-    def __init__(self, name, one_shot, command, dds, arguments, output):
+    def __init__(self, name, one_shot, command, dds, configuration, arguments_dds, arguments_spy, output):
         self.name = name
         self.one_shot = one_shot
         self.command = command
         self.dds = dds
-        self.arguments = arguments
+        self.configuration = configuration
+        self.arguments_dds = arguments_dds
+        self.arguments_spy = arguments_spy
         self.output = output
         self.exec_spy = ''
         self.exec_dds = ''
@@ -70,7 +73,7 @@ class TestCase():
     def run_tool(self):
         self.logger.info('Run tool')
         if (self.one_shot):
-            self.command = [self.exec_spy, self.arguments]
+            self.command = [self.exec_spy] + self.arguments_spy
         else:
             self.command = [self.exec_spy]
 
@@ -115,7 +118,7 @@ class TestCase():
     def send_command_tool(self, proc):
         # give time to start publishing
         time.sleep(0.5)
-        proc.stdin.write((self.arguments+'\n'))
+        proc.stdin.write((self.arguments_spy[0]+'\n'))
         proc.stdin.flush()
         output = self.read_output(proc)
         return (output)
@@ -129,7 +132,7 @@ class TestCase():
 
     def run_dds(self):
         self.logger.info('Run tool')
-        self.command = [self.exec_dds, 'publisher']
+        self.command = [self.exec_dds, 'publisher'] + self.arguments_dds
 
         self.logger.info('Executing command: ' + str(self.command))
 
@@ -163,6 +166,16 @@ class TestCase():
             proc.communicate()
 
     def valid_returncode(self, returncode):
+        if self.name == '--NullCommand' or self.name == '--configFailCommand' or self.name == '--log-verbosityFailCommand':
+            return (returncode != 0)
+        if self.name == '--reloadFailCommand':
+            return (returncode != 0)
+        if self.name == '--configFailTypeCommand':
+            return (returncode != 0)
+        if self.name == '--configFailArgCommand':
+            return (returncode != 0)
+        if self.name == '--log-filterFailCommand':
+            return (returncode != 0)
         return (returncode == 0)
 
     def output_command(self):
@@ -195,7 +208,16 @@ class TestCase():
                 guid = self.valid_guid(lines_expected_output[i])
             elif 'rate:' in lines_expected_output[i]:
                 rate = self.valid_rate(lines_expected_output[i])
+            elif 'commit hash:' in lines_expected_output[i]:
+                pass
+            elif '--nullarg is not a valid argument.' in lines_expected_output[i]:
+                pass
+            elif '\x1b[34;1m -> Function \x1b[36m' in lines_expected_output[i]:
+                pass
+            elif '\x1b[31;1m[\x1b[37;1mFASTDDSSPY_TOOL\x1b[31;1m Error]' in lines_expected_output[i]:
+                pass
+            elif '- 01.0f' in lines_expected_output[i]:
+                pass
             elif lines_expected_output[i] != lines_output[i]:
                 return False
-
         return (guid and rate)

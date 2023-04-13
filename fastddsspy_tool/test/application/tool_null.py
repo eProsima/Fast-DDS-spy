@@ -19,12 +19,14 @@ class TestCase_instance (test_class.TestCase):
 
     def __init__(self):
         super().__init__(
-            name='ToolShowCommand',
+            name='ToolDatareaderCommand',
             one_shot=False,
             command=[],
             dds=False,
-            arguments='show topic',
-            output=""">> \x1b[0m\x1b[1;31mTopic <topic> does not exist.\x1b[0m
+            configuration='',
+            arguments_dds=[],
+            arguments_spy=['null'],
+            output=""">> \x1b[0m\x1b[1;31m<null> is not a known command. Use <help> command to see valid commands and arguments.\x1b[0m
 
 
 

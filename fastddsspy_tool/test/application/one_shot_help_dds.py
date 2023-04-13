@@ -23,7 +23,9 @@ class TestCase_instance (test_class.TestCase):
             one_shot=True,
             command=[],
             dds=True,
-            arguments='help',
+            configuration='',
+            arguments_dds=[],
+            arguments_spy=['help'],
             output="""Fast DDS Spy is an interactive CLI that allow to instrospect DDS networks.
 Each command shows data related with the network in Yaml format.
 Commands available and the information they show:

@@ -101,6 +101,10 @@ def main():
     local_dds = local_path_dds + 'AdvancedConfigurationExample'
     test_function.exec_dds = args.exe.replace('fastddsspy_tool/fastddsspy', local_dds)
 
+    if test_function.configuration != '':
+        index = test_function.arguments_spy.index('configuration')
+        test_function.arguments_spy[index] = args.exe.replace('fastddsspy_tool/fastddsspy', test_function.configuration)
+
     spy, dds = test_function.run()
 
     if (spy == 'wrong output'):

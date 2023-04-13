@@ -23,6 +23,8 @@ class TestCase_instance (test_class.TestCase):
             one_shot=True,
             command=[],
             dds=False,
-            arguments='topics',
+            configuration='',
+            arguments_dds=[],
+            arguments_spy=['topics'],
             output='\n'
         )

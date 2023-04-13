@@ -23,7 +23,9 @@ class TestCase_instance (test_class.TestCase):
             one_shot=False,
             command=[],
             dds=True,
-            arguments='datareader',
+            configuration='',
+            arguments_dds=[],
+            arguments_spy=['datareader'],
             output=""">> \x1b[0m
 
 

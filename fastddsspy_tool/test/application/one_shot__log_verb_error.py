@@ -19,14 +19,12 @@ class TestCase_instance (test_class.TestCase):
 
     def __init__(self):
         super().__init__(
-            name='ToolShowDDSCommand',
-            one_shot=False,
+            name='--log-verbosityCommand',
+            one_shot=True,
             command=[],
-            dds=True,
-            arguments='show HelloWorldTopic',
-            output=""">> \x1b[0m\x1b[1;31mTopic Type <HelloWorld> has not been discovered, and thus cannot print its data.\x1b[0m
-
-
-
-"""
+            dds=False,
+            configuration='',
+            arguments_dds=[],
+            arguments_spy=['--log-verbosity', 'error', 'exit'],
+            output=''
         )

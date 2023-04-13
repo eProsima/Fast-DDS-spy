@@ -23,7 +23,9 @@ class TestCase_instance (test_class.TestCase):
             one_shot=True,
             command=[],
             dds=True,
-            arguments='participants',
+            configuration='',
+            arguments_dds=[],
+            arguments_spy=['participants'],
             output="""- name: Participant_pub
   guid: 01.0f.cd.6f.47.88.19.6b.00.00.00.00|0.0.1.c1
 """

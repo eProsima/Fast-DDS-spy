@@ -23,7 +23,9 @@ class TestCase_instance (test_class.TestCase):
             one_shot=False,
             command=[],
             dds=False,
-            arguments='topics',
+            configuration='',
+            arguments_dds=[],
+            arguments_spy=['topics'],
             output=""">> \x1b[0m
 
 

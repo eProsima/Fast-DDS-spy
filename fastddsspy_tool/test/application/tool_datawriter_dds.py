@@ -23,7 +23,9 @@ class TestCase_instance (test_class.TestCase):
             one_shot=False,
             command=[],
             dds=True,
-            arguments='datawriter',
+            configuration='',
+            arguments_dds=[],
+            arguments_spy=['datawriter'],
             output=""">> \x1b[0m- guid: 01.0f.d8.74.51.14.0a.a3.00.00.00.00|0.0.1.3
 
   participant: Participant_pub
