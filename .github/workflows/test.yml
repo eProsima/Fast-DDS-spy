@@ -35,6 +35,8 @@
 #     - execute flaky tests
 #
 #   - docs
+#     - ubuntu-22.04
+#     - execute docs compile and tests
 #
 #   - uncrustify
 #     - ubuntu-22.04
@@ -97,10 +99,10 @@ jobs:
       - name: Sync repository
         uses: actions/checkout@v3
         with:
-          path: src
+          path: ${{ github.workspace }}/src
 
       - name: Download dependencies and install requirements
-        uses: ./src/.github/actions/project_dependencies
+        uses: ${{ github.workspace }}/src/.github/actions/project_dependencies
         with:
           os: ${{ matrix.os }}
           cmake_build_type: ${{ matrix.cmake_build_type }}
@@ -112,9 +114,9 @@ jobs:
         with:
           packages_names: ${{ env.code_packages_names }}
           cmake_args: -DBUILD_TESTS=ON -DCMAKE_BUILD_TYPE=${{ matrix.cmake_build_type }}
-          workspace_dependencies: './install'
+          workspace_dependencies: ${{ github.workspace }}/install
           ctest_args: --label-exclude "xfail"
-          colcon_meta_file: ./src/.github/workflows/configurations/${{ runner.os }}/colcon.meta
+          colcon_meta_file: ${{ github.workspace }}/src/.github/workflows/configurations/${{ runner.os }}/colcon.meta
 
 
 #####################################################################
@@ -127,10 +129,10 @@ jobs:
       - name: Sync repository
         uses: actions/checkout@v3
         with:
-          path: src
+          path: ${{ github.workspace }}/src
 
       - name: Download dependencies and install requirements
-        uses: ./src/.github/actions/project_dependencies
+        uses: ${{ github.workspace }}/src/.github/actions/project_dependencies
         with:
           os: ubuntu-22.04
           cmake_build_type: Release
@@ -141,7 +143,7 @@ jobs:
         uses: eProsima/eProsima-CI/multiplatform/asan_build_test@feature/annapurna-workflows
         with:
           packages_names: ${{ env.code_packages_names }}
-          workspace_dependencies: './install'
+          workspace_dependencies: ${{ github.workspace }}/install
 
 
 #####################################################################
@@ -154,10 +156,10 @@ jobs:
       - name: Sync repository
         uses: actions/checkout@v3
         with:
-          path: src
+          path: ${{ github.workspace }}/src
 
       - name: Download dependencies and install requirements
-        uses: ./src/.github/actions/project_dependencies
+        uses: ${{ github.workspace }}/src/.github/actions/project_dependencies
         with:
           os: ubuntu-22.04
           cmake_build_type: Release
@@ -168,7 +170,7 @@ jobs:
         uses: eProsima/eProsima-CI/multiplatform/tsan_build_test@feature/annapurna-workflows
         with:
           packages_names: ${{ env.code_packages_names }}
-          workspace_dependencies: './install'
+          workspace_dependencies: ${{ github.workspace }}/install
 
 
 #####################################################################
@@ -181,10 +183,10 @@ jobs:
       - name: Sync repository
         uses: actions/checkout@v3
         with:
-          path: src
+          path: ${{ github.workspace }}/src
 
       - name: Download dependencies and install requirements
-        uses: ./src/.github/actions/project_dependencies
+        uses: ${{ github.workspace }}/src/.github/actions/project_dependencies
         with:
           os: ubuntu-22.04
           cmake_build_type: Release
@@ -195,7 +197,7 @@ jobs:
         uses: eProsima/eProsima-CI/multiplatform/clang_build_test@feature/annapurna-workflows
         with:
           packages_names: ${{ env.code_packages_names }}
-          workspace_dependencies: './install'
+          workspace_dependencies: ${{ github.workspace }}/install
 
 
 #####################################################################
@@ -210,10 +212,10 @@ jobs:
       - name: Sync repository
         uses: actions/checkout@v3
         with:
-          path: src
+          path: ${{ github.workspace }}/src
 
       - name: Download dependencies and install requirements
-        uses: ./src/.github/actions/project_dependencies
+        uses: ${{ github.workspace }}/src/.github/actions/project_dependencies
         with:
           os: ubuntu-22.04
           cmake_build_type: Release
@@ -224,9 +226,9 @@ jobs:
         uses: eProsima/eProsima-CI/ubuntu/coverage_build_test_upload@feature/annapurna-workflows
         with:
           packages_names: ${{ env.code_packages_names }}
-          workspace_dependencies: './install'
+          workspace_dependencies: ${{ github.workspace }}/install
           codecov_token: ${{ secrets.CODECOV_TOKEN }}
-          codecov_file_path: ./src/codecov.yml
+          codecov_fix_file_path: ${{ github.workspace }}/src/codecov.yml
 
 
 #####################################################################
@@ -239,10 +241,10 @@ jobs:
       - name: Sync repository
         uses: actions/checkout@v3
         with:
-          path: src
+          path: ${{ github.workspace }}/src
 
       - name: Download dependencies and install requirements
-        uses: ./src/.github/actions/project_dependencies
+        uses: ${{ github.workspace }}/src/.github/actions/project_dependencies
         with:
           os: ubuntu-22.04
           cmake_build_type: Release
@@ -253,7 +255,7 @@ jobs:
         uses: eProsima/eProsima-CI/multiplatform/colcon_build_test_flaky@feature/annapurna-workflows
         with:
           packages_names: ${{ env.code_packages_names }}
-          workspace_dependencies: './install'
+          workspace_dependencies: ${{ github.workspace }}/install
 
 
 #####################################################################

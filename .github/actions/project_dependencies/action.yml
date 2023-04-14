@@ -19,7 +19,7 @@ inputs:
   target_workspace:
     description: Specify directory to download dependencies
     required: false
-    default: './install'
+    default: ${{ github.workspace }}/install
 
   # This must be passed as an argument because actions do not access to workflow secrets:
   # Unrecognized named-value: 'secrets'. https://github.com/orgs/community/discussions/27054
