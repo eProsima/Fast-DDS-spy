@@ -12,12 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""Tests for the fastddsspy executable."""
+
 import test_class
 
 
 class TestCase_instance (test_class.TestCase):
+    """TODO."""
 
     def __init__(self):
+        """TODO."""
         super().__init__(
             name='TopicsCommand',
             one_shot=True,

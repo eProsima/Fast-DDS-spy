@@ -12,12 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""Tests for the fastddsspy executable."""
+
 import test_class
 
 
 class TestCase_instance (test_class.TestCase):
+    """TODO."""
 
     def __init__(self):
+        """TODO."""
         super().__init__(
             name='ToolVersionCommand',
             one_shot=False,
@@ -26,10 +30,7 @@ class TestCase_instance (test_class.TestCase):
             config='',
             arguments_dds=[],
             arguments_spy=['version'],
-            output=
-""">> \x1b[0mFast DDS Spy v0.1.0
-
-commit hash: 16ed7e8c93d7481d8b426746af9ec3ffa323f451
-
-"""
+            output=""">> \x1b[0mFast DDS Spy v0.1.0\n\
+\n\
+commit hash: 16ed7e8c93d7481d8b426746af9ec3ffa323f451\n\n"""
         )

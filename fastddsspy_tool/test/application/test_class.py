@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 """
 Tests for the fastddsspy executable.
 
@@ -19,29 +20,44 @@ Contains a package of system test for fastddsspy tool
 Usage: test.py -e <binary_path>
 
 Arguments:
-
     Fast DDS Spy binary path          : -e | --exe binary_path
-
     Run test in Debug mode          : -d | --debug
-
 """
 
 import logging
-import subprocess
-import signal
-import re
-import time
 import os
-import difflib
-
-DESCRIPTION = """Script to execute Fast DDS Spy executable test"""
-USAGE = ('python3 tests.py -e <path/to/fastddsspy-executable>'
-         ' [-d]')
+import re
+import signal
+import subprocess
+import time
 
 
 class TestCase():
+    """Test class."""
 
     def __init__(self, name, one_shot, command, dds, config, arguments_dds, arguments_spy, output):
+        """
+        TODO.
+
+        Parameters
+        ----------
+        name : int
+            TODO.
+        one_shot  : bool
+            TODO.
+        command  : str
+            TODO.
+        dds : bool
+            TODO.
+        config : str
+            TODO.
+        arguments_dds : list
+            TODO.
+        arguments_spy : list
+            TODO.
+        output : str
+            TODO.
+        """
         self.name = name
         self.one_shot = one_shot
         self.command = command
@@ -65,12 +81,14 @@ class TestCase():
         self.logger.addHandler(l_handler)
 
     def run(self):
+        """TODO."""
         dds = None
         if (self.dds):
             dds = self.run_dds()
         return self.run_tool(), dds
 
     def run_tool(self):
+        """TODO."""
         self.logger.info('Run tool')
         if (self.one_shot):
             self.command = [self.exec_spy] + self.arguments_spy
@@ -100,6 +118,7 @@ class TestCase():
         return proc
 
     def is_stop(self, proc):
+        """TODO."""
         return_code = proc.poll()
 
         if (return_code is None):
@@ -107,6 +126,7 @@ class TestCase():
         return True
 
     def read_output(self, proc):
+        """TODO."""
         output = ''
         while True:
             line = proc.stdout.readline()
@@ -116,6 +136,7 @@ class TestCase():
         return output
 
     def send_command_tool(self, proc):
+        """TODO."""
         # give time to start publishing
         time.sleep(0.5)
         proc.stdin.write((self.arguments_spy[0]+'\n'))
@@ -124,6 +145,7 @@ class TestCase():
         return (output)
 
     def stop_tool(self, proc):
+        """TODO."""
         try:
             proc.communicate(input='exit\n', timeout=5)[0]
         except subprocess.TimeoutExpired:
@@ -131,6 +153,7 @@ class TestCase():
             proc.communicate()
 
     def run_dds(self):
+        """TODO."""
         self.logger.info('Run tool')
         self.command = [self.exec_dds, 'publisher'] + self.arguments_dds
 
@@ -151,7 +174,7 @@ class TestCase():
         return os.name == 'nt'
 
     def stop_dds(self, proc):
-        # send a ctrl+c signal to the subprocess
+        """Send a ctrl+c signal to the subprocess."""
         if self.is_linux():
             proc.send_signal(signal.SIGINT)
         elif self.is_windows():
@@ -166,6 +189,7 @@ class TestCase():
             proc.communicate()
 
     def valid_returncode(self, returncode):
+        """TODO."""
         if self.name == '--NullCommand':
             return (returncode != 0)
         if self.name == '--configFailCommand':
@@ -183,23 +207,27 @@ class TestCase():
         return (returncode == 0)
 
     def output_command(self):
+        """TODO."""
         return (self.output)
 
     def valid_guid(self, guid):
+        """TODO."""
         pattern = r'^((guid:)\s([0-9a-f]{2}\.){11}[0-9a-f]{2}\|([0-9a-f]\.){3}[0-9a-f]{1,})$'
-        id_guid = guid[guid.find("guid:"):]
+        id_guid = guid[guid.find('guid:'):]
         if not re.match(pattern, id_guid):
             return False
         return True
 
     def valid_rate(self, rate):
+        """TODO."""
         pattern = r'^((rate:)\s\d{1,}\s(Hz))$'
-        id_rate = rate[rate.find("rate:"):]
+        id_rate = rate[rate.find('rate:'):]
         if not re.match(pattern, id_rate):
             return False
         return True
 
     def valid_output(self, output):
+        """TODO."""
         expected_output = self.output_command()
         lines_expected_output = expected_output.splitlines()
         lines_output = output.splitlines()
@@ -207,20 +235,17 @@ class TestCase():
             return True
         guid = True
         rate = True
+        ignore_msgs = ['commit hash:', '- 01.0f', '\x1b[34;1m -> Function \x1b[36m',
+                       '\x1b[31;1m[\x1b[37;1mFASTDDSSPY_TOOL\x1b[31;1m Err']
         for i in range(len(lines_expected_output)):
             if 'guid:' in lines_expected_output[i]:
                 guid = self.valid_guid(lines_expected_output[i])
             elif 'rate:' in lines_expected_output[i]:
                 rate = self.valid_rate(lines_expected_output[i])
-            elif 'commit hash:' in lines_expected_output[i]:
-                pass
-            elif '--nullarg is not a valid argument.' in lines_expected_output[i]:
-                pass
-            elif '\x1b[34;1m -> Function \x1b[36m' in lines_expected_output[i]:
-                pass
-            elif '\x1b[31;1m[\x1b[37;1mFASTDDSSPY_TOOL\x1b[31;1m Error]' in lines_expected_output[i]:
-                pass
-            elif '- 01.0f' in lines_expected_output[i]:
+            elif ((ignore_msgs[0] in lines_expected_output[i]) or
+                  (ignore_msgs[1] in lines_expected_output[i]) or
+                  (ignore_msgs[2] in lines_expected_output[i]) or
+                  (ignore_msgs[3] in lines_expected_output[i])):
                 pass
             elif lines_expected_output[i] != lines_output[i]:
                 return False

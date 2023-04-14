@@ -12,18 +12,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""Tests for the fastddsspy executable."""
+
 import test_class
 
 
 class TestCase_instance (test_class.TestCase):
+    """TODO."""
 
     def __init__(self):
+        """TODO."""
         super().__init__(
             name='--configCommand',
             one_shot=True,
             command=[],
             dds=True,
-            config='fastddsspy_tool/test/application/configuration/configuration_basic.yaml',
+            config="""fastddsspy_tool/test/application/configuration/\
+configuration_basic.yaml""",
             arguments_dds=[],
             arguments_spy=['--config-path', 'configuration', 'participants'],
             output='\n'

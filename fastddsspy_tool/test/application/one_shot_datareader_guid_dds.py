@@ -12,12 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""Tests for the fastddsspy executable."""
+
 import test_class
 
 
 class TestCase_instance (test_class.TestCase):
+    """TODO."""
 
     def __init__(self):
+        """TODO."""
         super().__init__(
             name='DataReaderCommand',
             one_shot=True,
@@ -26,6 +30,6 @@ class TestCase_instance (test_class.TestCase):
             config='',
             arguments_dds=[],
             arguments_spy=['datareader', '01.0f.d8.74.d5.a0.cf.f4.00.00.00.00|0.0.1.3'],
-            output="""\x1b[1;31m01.0f.d8.74.d5.a0.cf.f4.00.00.00.00|0.0.1.3 does not match with any known reader.\x1b[0m
-"""
+            output="""\x1b[1;31m01.0f.d8.74.d5.a0.cf.f4.00.00.00.00|0.0.1.3 \
+does not match with any known reader.\x1b[0m\n"""
         )

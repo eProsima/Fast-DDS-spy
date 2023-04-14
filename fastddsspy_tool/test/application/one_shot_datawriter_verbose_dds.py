@@ -12,12 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""Tests for the fastddsspy executable."""
+
 import test_class
 
 
 class TestCase_instance (test_class.TestCase):
+    """TODO."""
 
     def __init__(self):
+        """TODO."""
         super().__init__(
             name='DatawriterCommand',
             one_shot=True,
@@ -26,13 +30,12 @@ class TestCase_instance (test_class.TestCase):
             config='',
             arguments_dds=[],
             arguments_spy=['datawriter', 'verbose'],
-            output="""- guid: 01.0f.d8.74.d5.a0.cf.f4.00.00.00.00|0.0.1.3
-  participant: Participant_pub
-  topic:
-    name: HelloWorldTopic
-    type: HelloWorld
-  qos:
-    durability: volatile
-    reliability: best-effort
-"""
+            output="""- guid: 01.0f.d8.74.d5.a0.cf.f4.00.00.00.00|0.0.1.3\n\
+  participant: Participant_pub\n\
+  topic:\n\
+    name: HelloWorldTopic\n\
+    type: HelloWorld\n\
+  qos:\n\
+    durability: volatile\n\
+    reliability: best-effort\n"""
         )

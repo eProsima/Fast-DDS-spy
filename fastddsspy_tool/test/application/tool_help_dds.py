@@ -12,12 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""Tests for the fastddsspy executable."""
+
 import test_class
 
 
 class TestCase_instance (test_class.TestCase):
+    """TODO."""
 
     def __init__(self):
+        """TODO."""
         super().__init__(
             name='ToolHelpDDSCommand',
             one_shot=False,
@@ -26,66 +30,37 @@ class TestCase_instance (test_class.TestCase):
             config='',
             arguments_dds=[],
             arguments_spy=['help'],
-            output=
-""">> \x1b[0mFast DDS Spy is an interactive CLI that allow to instrospect DDS networks.
-
-Each command shows data related with the network in Yaml format.
-
-Commands available and the information they show:
-
-\thelp                   : this help.
-
-\tversion                : tool version.
-
-\tquit                   : exit interactive CLI and close program.
-
-\tparticipants           : DomainParticipants discovered in the network.
-
-\tparticipants verbose   : verbose information about DomainParticipants discovered in the network.
-
-\tparticipants <Guid>    : verbose information related with a specific DomainParticipant.
-
-\twriters                : DataWriters discovered in the network.
-
-\twriters verbose        : verbose information about DataWriters discovered in the network.
-
-\twriters <Guid>         : verbose information related with a specific DataWriter.
-
-\treader                 : DataReaders discovered in the network.
-
-\treader verbose         : verbose information about DataReaders discovered in the network.
-
-\treader <Guid>          : verbose information related with a specific DataReader.
-
-\ttopics                 : Topics discovered in the network.
-
-\ttopics verbose         : verbose information about Topics discovered in the network.
-
-\ttopics <name>          : verbose information related with a specific Topic.
-
-\tshow <name>            : data of a specific Topic (Data Type must be discovered).
-
-\tshow <name> verbose    : data with additional source info of a specific Topic.
-
-\tshow all               : verbose data of all topics (only those whose Data Type is discovered).
-
-
-
-Notes and comments:
-
-\tTo exit from data printing, press enter.
-
-\tEach command is accessible by using its first letter (h/v/q/p/w/r/t/s).
-
-
-
-For more information about these commands and formats, please refer to the documentation:
-
-https://fast-dds-spy.readthedocs.io/en/latest/
-
-
-
-
-
-"""
+            output=""">> \x1b[0mFast DDS Spy is an interactive CLI that allow to instrospect\
+ DDS networks.\n\n\
+Each command shows data related with the network in Yaml format.\n\n\
+Commands available and the information they show:\n\n\
+\thelp                   : this help.\n\n\
+\tversion                : tool version.\n\n\
+\tquit                   : exit interactive CLI and close program.\n\n\
+\tparticipants           : DomainParticipants discovered in the network.\n\n\
+\tparticipants verbose   : verbose information about DomainParticipants discovered in \
+the network.\n\n\
+\tparticipants <Guid>    : verbose information related with a specific DomainParticipant.\n\n\
+\twriters                : DataWriters discovered in the network.\n\n\
+\twriters verbose        : verbose information about DataWriters discovered in the network.\n\n\
+\twriters <Guid>         : verbose information related with a specific DataWriter.\n\n\
+\treader                 : DataReaders discovered in the network.\n\n\
+\treader verbose         : verbose information about DataReaders discovered in the network.\n\n\
+\treader <Guid>          : verbose information related with a specific DataReader.\n\n\
+\ttopics                 : Topics discovered in the network.\n\n\
+\ttopics verbose         : verbose information about Topics discovered in the network.\n\n\
+\ttopics <name>          : verbose information related with a specific Topic.\n\n\
+\tshow <name>            : data of a specific Topic (Data Type must be discovered).\n\n\
+\tshow <name> verbose    : data with additional source info of a specific Topic.\n\n\
+\tshow all               : verbose data of all topics (only those whose Data Type is\
+ discovered).\n\n\
+\n\
+\n\
+Notes and comments:\n\n\
+\tTo exit from data printing, press enter.\n\n\
+\tEach command is accessible by using its first letter (h/v/q/p/w/r/t/s).\n\n\
+\n\
+\n\
+For more information about these commands and formats, please refer to the documentation:\n\n\
+https://fast-dds-spy.readthedocs.io/en/latest/\n\n\n\n\n\n"""
         )

@@ -12,12 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""Tests for the fastddsspy executable."""
+
 import test_class
 
 
 class TestCase_instance (test_class.TestCase):
+    """TODO."""
 
     def __init__(self):
+        """TODO."""
         super().__init__(
             name='ToolShowCommand',
             one_shot=False,
@@ -26,9 +30,6 @@ class TestCase_instance (test_class.TestCase):
             config='',
             arguments_dds=[],
             arguments_spy=['show topic'],
-            output=""">> \x1b[0m\x1b[1;31mTopic <topic> does not exist.\x1b[0m
-
-
-
-"""
+            output=""">> \x1b[0m\x1b[1;31mTopic <topic> \
+does not exist.\x1b[0m\n\n\n\n"""
         )

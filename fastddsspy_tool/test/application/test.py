@@ -19,16 +19,12 @@ Contains a package of system test for fastddsspy tool
 Usage: test.py -e <binary_path>
 
 Arguments:
-
     Fast DDS Spy binary path          : -e | --exe binary_path
-
     Run test in Debug mode          : -t | --test
-
 """
-
 import argparse
-import os
 import importlib
+import os
 import sys
 
 DESCRIPTION = """Script to execute Fast DDS Spy executable test"""
@@ -89,7 +85,7 @@ def parse_options():
 
 
 def main():
-
+    """TODO."""
     args = parse_options()
 
     module = importlib.import_module(args.test)
@@ -103,7 +99,8 @@ def main():
 
     if test_function.configuration != '':
         index = test_function.arguments_spy.index('configuration')
-        test_function.arguments_spy[index] = args.exe.replace('fastddsspy_tool/fastddsspy', test_function.configuration)
+        test_function.arguments_spy[index] = \
+            args.exe.replace('fastddsspy_tool/fastddsspy', test_function.configuration)
 
     spy, dds = test_function.run()
 
