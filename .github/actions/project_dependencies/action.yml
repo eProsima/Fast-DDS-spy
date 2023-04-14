@@ -50,6 +50,6 @@ runs:
       with:
         artifact_name: built_ddspipe_${{ inputs.os }}_${{ inputs.cmake_build_type }}${{ inputs.dependencies_artifact_postfix }}
         workflow_source: build_ddspipe.yml
-        workflow_source_repository: eProsima/eProsima-CI
+        workflow_source_repository: jparisu/eProsima-CI
         target_workspace: ${{ inputs.target_workspace }}
         secret_token: ${{ inputs.secret_token }}
