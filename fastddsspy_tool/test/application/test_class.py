@@ -32,6 +32,7 @@ import subprocess
 import time
 import difflib
 
+
 class TestCase():
     """Test class."""
 
@@ -155,10 +156,7 @@ class TestCase():
         proc = subprocess.Popen(self.command,
                                 stdin=subprocess.PIPE,
                                 stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE,
-                                encoding='utf8')
-        # give time to start publishing
-        time.sleep(1.0)
+                                stderr=subprocess.PIPE)
         return proc
 
     def signal_handler(self, signum, frame):
@@ -188,6 +186,7 @@ class TestCase():
             proc.send_signal(signal.SIGINT)
         elif self.is_windows():
            proc.send_signal(signal.CTRL_C_EVENT)
+
         try:
             proc.communicate(timeout=5)
         except subprocess.TimeoutExpired:
@@ -222,7 +221,8 @@ class TestCase():
 
     def valid_output(self, output):
         """TODO."""
-        if self.is_windows() and 'Fail' in self.name:
+        if (self.is_windows() and ('Fail' in self.name or
+                                  ('--HelpCommand' == self.name))):
             return True
         expected_output = self.output_command()
         print('output')

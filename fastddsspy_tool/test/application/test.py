@@ -26,6 +26,7 @@ import argparse
 import importlib
 import os
 import sys
+import time
 
 DESCRIPTION = """Script to execute Fast DDS Spy executable test"""
 USAGE = ('python3 tests.py -e <path/to/fastddsspy-executable>'
@@ -120,6 +121,8 @@ def main():
         if test_function.is_stop(dds):
             print('ERROR: DDS Publisher not running')
             sys.exit(1)
+        # give time to start publishing
+        time.sleep(1.0)
 
     spy = test_function.run_tool()
 
