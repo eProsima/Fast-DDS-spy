@@ -30,7 +30,6 @@ import re
 import signal
 import subprocess
 import time
-import difflib
 
 
 class TestCase():
@@ -144,7 +143,7 @@ class TestCase():
     def send_command_tool(self, proc):
         """TODO."""
         # give time to start publishing
-        time.sleep(0.5)
+        time.sleep(1.0)
         proc.stdin.write((self.arguments_spy[0]+'\n'))
         proc.stdin.flush()
         output = self.read_output(proc)
@@ -186,19 +185,6 @@ class TestCase():
            ('--HelpCommand' == self.name))):
             return True
         expected_output = self.output_command()
-        print('output')
-        print(output)
-        print('expected output')
-        print(expected_output)
-
-        matcher = difflib.SequenceMatcher(None, expected_output, output)
-        for tag, i1, i2, j1, j2 in matcher.get_opcodes():
-            if tag == 'replace':
-                print(f"Replace {bytes(expected_output[i1:i2], 'utf-8')} with {bytes(output[j1:j2], 'utf-8')}")
-            elif tag == 'delete':
-                print(f"Delete {bytes(expected_output[i1:i2], 'utf-8')}")
-            elif tag == 'insert':
-                print(f"Insert {bytes(output[j1:j2], 'utf-8')}")
         lines_expected_output = expected_output.splitlines()
         lines_output = output.splitlines()
         if expected_output == output:

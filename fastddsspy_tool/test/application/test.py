@@ -113,6 +113,8 @@ def main():
             test_function.arguments_spy[index] = \
                 args.exe.replace('fastddsspy_tool/Debug/fastddsspy.exe',
                                  test_function.config)
+    print("arguments spy")
+    print(test_function.arguments_spy)
 
     if (test_function.dds):
         dds = test_function.run_dds()
@@ -120,7 +122,7 @@ def main():
             print('ERROR: DDS Publisher not running')
             sys.exit(1)
         # give time to start publishing
-        time.sleep(4.0)
+        time.sleep(5.0)
 
     spy = test_function.run_tool()
 
