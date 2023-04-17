@@ -115,17 +115,17 @@ def main():
                 test_function.arguments_spy[index] = \
                     args.exe.replace('fastddsspy_tool/Debug/fastddsspy.exe', test_function.configuration)
 
-    spy = test_function.run_tool()
-
-    if (spy == 'wrong output'):
-        print('ERROR: Wrong output')
-        sys.exit(1)
-
     if (test_function.dds):
         dds = test_function.run_dds()
         if test_function.is_stop(dds):
             print('ERROR: DDS Publisher not running')
             sys.exit(1)
+
+    spy = test_function.run_tool()
+
+    if (spy == 'wrong output'):
+        print('ERROR: Wrong output')
+        sys.exit(1)
 
     if not test_function.one_shot:
         if test_function.is_stop(spy):
