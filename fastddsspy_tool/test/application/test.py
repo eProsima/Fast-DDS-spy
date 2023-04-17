@@ -92,9 +92,9 @@ def main():
     test_function = module.TestCase_instance()
 
     test_function.exec_spy = args.exe
+    local_path_dds = 'fastddsspy_tool/test/application/dds/AdvancedConfigurationExample/'
 
     if test_function.is_linux():
-        local_path_dds = 'fastddsspy_tool/test/application/dds/AdvancedConfigurationExample/'
         local_dds = local_path_dds + 'AdvancedConfigurationExample'
         test_function.exec_dds = args.exe.replace('fastddsspy_tool/fastddsspy', local_dds)
 

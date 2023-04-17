@@ -231,13 +231,13 @@ class TestCase():
         print(expected_output)
 
         matcher = difflib.SequenceMatcher(None, expected_output, output)
-                for tag, i1, i2, j1, j2 in matcher.get_opcodes():
-                    if tag == 'replace':
-                        print(f"Replace {bytes(expected_output[i1:i2], 'utf-8')} with {bytes(output[j1:j2], 'utf-8')}")
-                    elif tag == 'delete':
-                        print(f"Delete {bytes(expected_output[i1:i2], 'utf-8')}")
-                    elif tag == 'insert':
-                        print(f"Insert {bytes(output[j1:j2], 'utf-8')}")
+        for tag, i1, i2, j1, j2 in matcher.get_opcodes():
+            if tag == 'replace':
+                print(f"Replace {bytes(expected_output[i1:i2], 'utf-8')} with {bytes(output[j1:j2], 'utf-8')}")
+            elif tag == 'delete':
+                print(f"Delete {bytes(expected_output[i1:i2], 'utf-8')}")
+            elif tag == 'insert':
+                print(f"Insert {bytes(output[j1:j2], 'utf-8')}")
         lines_expected_output = expected_output.splitlines()
         lines_output = output.splitlines()
         if expected_output == output:
