@@ -59,7 +59,6 @@ Notes and comments:\n\
 \tEach command is accessible by using its first letter (h/v/q/p/w/r/t/s).\n\
 \n\
 For more information about these commands and formats, please refer to the documentation:\n\
-https://fast-dds-spy.readthedocs.io/en/latest/\n\
-
+https://fast-dds-spy.readthedocs.io/en/latest/\n
 """
         )

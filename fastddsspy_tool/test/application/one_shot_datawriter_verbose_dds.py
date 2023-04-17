@@ -23,7 +23,7 @@ class TestCase_instance (test_class.TestCase):
     def __init__(self):
         """TODO."""
         super().__init__(
-            name='DatawriterCommand',
+            name='DatawriterVerboseDDSCommand',
             one_shot=True,
             command=[],
             dds=True,

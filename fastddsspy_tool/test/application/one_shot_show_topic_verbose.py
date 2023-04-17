@@ -23,7 +23,7 @@ class TestCase_instance (test_class.TestCase):
     def __init__(self):
         """TODO."""
         super().__init__(
-            name='TopicsCommand',
+            name='ShowTopicCommandVerbose',
             one_shot=True,
             command=[],
             dds=False,

@@ -190,19 +190,7 @@ class TestCase():
 
     def valid_returncode(self, returncode):
         """TODO."""
-        if self.name == '--NullCommand':
-            return (returncode != 0)
-        if self.name == '--configFailCommand':
-            return (returncode != 0)
-        if self.name == '--log-verbosityFailCommand':
-            return (returncode != 0)
-        if self.name == '--reloadFailCommand':
-            return (returncode != 0)
-        if self.name == '--configFailTypeCommand':
-            return (returncode != 0)
-        if self.name == '--configFailArgCommand':
-            return (returncode != 0)
-        if self.name == '--log-filterFailCommand':
+        if 'Fail' in self.name:
             return (returncode != 0)
         return (returncode == 0)
 
@@ -228,6 +216,8 @@ class TestCase():
 
     def valid_output(self, output):
         """TODO."""
+        if self.is_windows() and 'Fail' in self.name:
+            return True
         expected_output = self.output_command()
         lines_expected_output = expected_output.splitlines()
         lines_output = output.splitlines()

@@ -57,6 +57,5 @@ log entries. [Default = "(DDSPIPE|FASTDDSSPY)"]. \n\
 \n\
 \x1b[37;1m2023-04-12 14:29:23.337 \x1b[31;1m[\x1b[37;1mFOXGLOVEWS_ARGS\x1b[31;1m Error] \
 \x1b[37mOption '--reload-time' requires a numeric argument.\
-\x1b[34;1m -> Function \x1b[36mValid_Options\x1b[m\
-"""
+\x1b[34;1m -> Function \x1b[36mValid_Options\x1b[m"""
         )
