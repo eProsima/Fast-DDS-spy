@@ -122,7 +122,7 @@ def main():
             print('ERROR: DDS Publisher not running')
             sys.exit(1)
         # give time to start publishing
-        time.sleep(1.0)
+        time.sleep(2.0)
 
     spy = test_function.run_tool()
 
@@ -162,7 +162,7 @@ def main():
         #     print('ERROR: Wrong DDS Publisher return code')
         #     sys.exit(1)
 
-    return 0
+    sys.exit(0)
 
 
 if __name__ == '__main__':

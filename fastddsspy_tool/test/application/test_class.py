@@ -81,6 +81,36 @@ class TestCase():
         # Add handlers to the logger
         self.logger.addHandler(l_handler)
 
+    def signal_handler(self, signum, frame):
+        """
+        Ignore Signal handler.
+
+        This method is required in Windows to not handle the signal that
+        is sent to the subprocess.
+        """
+        pass
+
+    def is_linux(self):
+        """Return whether the script is running in a Linux environment."""
+        return os.name == 'posix'
+
+    def is_windows(self):
+        """Return whether the script is running in a Windows environment."""
+        return os.name == 'nt'
+
+    def run_dds(self):
+        """TODO."""
+        self.logger.info('Run tool')
+        self.command = [self.exec_dds, 'publisher'] + self.arguments_dds
+
+        self.logger.info('Executing command: ' + str(self.command))
+
+        proc = subprocess.Popen(self.command,
+                                stdin=subprocess.PIPE,
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
+        return proc
+
     def run_tool(self):
         """TODO."""
         self.logger.info('Run tool')
@@ -111,13 +141,14 @@ class TestCase():
             self.read_output(proc)
         return proc
 
-    def is_stop(self, proc):
+    def send_command_tool(self, proc):
         """TODO."""
-        return_code = proc.poll()
-
-        if (return_code is None):
-            return False
-        return True
+        # give time to start publishing
+        time.sleep(0.5)
+        proc.stdin.write((self.arguments_spy[0]+'\n'))
+        proc.stdin.flush()
+        output = self.read_output(proc)
+        return (output)
 
     def read_output(self, proc):
         """TODO."""
@@ -128,76 +159,6 @@ class TestCase():
                 break
             output = output + f'{line}\n'
         return output
-
-    def send_command_tool(self, proc):
-        """TODO."""
-        # give time to start publishing
-        time.sleep(0.5)
-        proc.stdin.write((self.arguments_spy[0]+'\n'))
-        proc.stdin.flush()
-        output = self.read_output(proc)
-        return (output)
-
-    def stop_tool(self, proc):
-        """TODO."""
-        try:
-            proc.communicate(input='exit\n', timeout=5)[0]
-        except subprocess.TimeoutExpired:
-            proc.kill()
-            proc.communicate()
-
-    def run_dds(self):
-        """TODO."""
-        self.logger.info('Run tool')
-        self.command = [self.exec_dds, 'publisher'] + self.arguments_dds
-
-        self.logger.info('Executing command: ' + str(self.command))
-
-        proc = subprocess.Popen(self.command,
-                                stdin=subprocess.PIPE,
-                                stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE)
-        return proc
-
-    def signal_handler(self, signum, frame):
-        """
-        Ignore Signal handler.
-
-        This method is required in Windows to not handle the signal that
-        is sent to the subprocess.
-        """
-        pass
-
-    def is_linux(self):
-        """Return whether the script is running in a Linux environment."""
-        return os.name == 'posix'
-
-    def is_windows(self):
-        """Return whether the script is running in a Windows environment."""
-        return os.name == 'nt'
-
-    def stop_dds(self, proc):
-        """Send a ctrl+c signal to the subprocess."""
-        # direct this script to ignore SIGINT in case of windows
-        if self.is_windows():
-            signal.signal(signal.SIGINT, self.signal_handler)
-
-        if self.is_linux():
-            proc.send_signal(signal.SIGINT)
-        elif self.is_windows():
-           proc.send_signal(signal.CTRL_C_EVENT)
-
-        try:
-            proc.communicate(timeout=5)
-        except subprocess.TimeoutExpired:
-            proc.kill()
-            proc.communicate()
-
-    def valid_returncode(self, returncode):
-        """TODO."""
-        if 'Fail' in self.name:
-            return (returncode != 0)
-        return (returncode == 0)
 
     def output_command(self):
         """TODO."""
@@ -259,3 +220,42 @@ class TestCase():
             elif lines_expected_output[i] != lines_output[i]:
                 return False
         return (guid and rate)
+
+    def stop_tool(self, proc):
+        """TODO."""
+        try:
+            proc.communicate(input='exit\n', timeout=5)[0]
+        except subprocess.TimeoutExpired:
+            proc.kill()
+            proc.communicate()
+
+    def stop_dds(self, proc):
+        """Send a ctrl+c signal to the subprocess."""
+        # direct this script to ignore SIGINT in case of windows
+        if self.is_windows():
+            signal.signal(signal.SIGINT, self.signal_handler)
+
+        if self.is_linux():
+            proc.send_signal(signal.SIGINT)
+        elif self.is_windows():
+            proc.send_signal(signal.CTRL_C_EVENT)
+
+        try:
+            proc.communicate(timeout=5)
+        except subprocess.TimeoutExpired:
+            proc.kill()
+            proc.communicate()
+
+    def is_stop(self, proc):
+        """TODO."""
+        return_code = proc.poll()
+
+        if (return_code is None):
+            return False
+        return True
+
+    def valid_returncode(self, returncode):
+        """TODO."""
+        if 'Fail' in self.name:
+            return (returncode != 0)
+        return (returncode == 0)
