@@ -129,7 +129,7 @@ class TestCase():
         if (self.one_shot):
 
             try:
-                output = proc.communicate(timeout=8)[0]
+                output = proc.communicate(timeout=10)[0]
             except subprocess.TimeoutExpired:
                 proc.kill()
                 output = proc.communicate()[0]
@@ -137,13 +137,13 @@ class TestCase():
                 return ('wrong output')
 
         else:
+            # give time to run tool
+            time.sleep(5.0)
             self.read_output(proc)
         return proc
 
     def send_command_tool(self, proc):
         """TODO."""
-        # give time to start publishing
-        time.sleep(1.0)
         proc.stdin.write((self.arguments_spy[0]+'\n'))
         proc.stdin.flush()
         output = self.read_output(proc)
