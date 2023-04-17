@@ -30,7 +30,7 @@ import re
 import signal
 import subprocess
 import time
-
+import difflib
 
 class TestCase():
     """Test class."""
@@ -161,6 +161,15 @@ class TestCase():
         time.sleep(1.0)
         return proc
 
+    def signal_handler(self, signum, frame):
+        """
+        Ignore Signal handler.
+
+        This method is required in Windows to not handle the signal that
+        is sent to the subprocess.
+        """
+        pass
+
     def is_linux(self):
         """Return whether the script is running in a Linux environment."""
         return os.name == 'posix'
@@ -171,12 +180,16 @@ class TestCase():
 
     def stop_dds(self, proc):
         """Send a ctrl+c signal to the subprocess."""
+        # direct this script to ignore SIGINT in case of windows
+        if self.is_windows():
+            signal.signal(signal.SIGINT, self.signal_handler)
+
         if self.is_linux():
             proc.send_signal(signal.SIGINT)
-        # elif self.is_windows():
-        #    proc.send_signal(signal.CTRL_BREAK_EVENT)
+        elif self.is_windows():
+           proc.send_signal(signal.CTRL_C_EVENT)
         try:
-            proc.communicate(timeout=2)
+            proc.communicate(timeout=5)
         except subprocess.TimeoutExpired:
             proc.kill()
             proc.communicate()
@@ -212,6 +225,19 @@ class TestCase():
         if self.is_windows() and 'Fail' in self.name:
             return True
         expected_output = self.output_command()
+        print('output')
+        print(output)
+        print('expected output')
+        print(expected_output)
+
+        matcher = difflib.SequenceMatcher(None, expected_output, output)
+                for tag, i1, i2, j1, j2 in matcher.get_opcodes():
+                    if tag == 'replace':
+                        print(f"Replace {bytes(expected_output[i1:i2], 'utf-8')} with {bytes(output[j1:j2], 'utf-8')}")
+                    elif tag == 'delete':
+                        print(f"Delete {bytes(expected_output[i1:i2], 'utf-8')}")
+                    elif tag == 'insert':
+                        print(f"Insert {bytes(output[j1:j2], 'utf-8')}")
         lines_expected_output = expected_output.splitlines()
         lines_output = output.splitlines()
         if expected_output == output:
