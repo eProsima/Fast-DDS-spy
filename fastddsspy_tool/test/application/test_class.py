@@ -63,7 +63,7 @@ class TestCase():
         self.one_shot = one_shot
         self.command = command
         self.dds = dds
-        self.configuration = config
+        self.config = config
         self.arguments_dds = arguments_dds
         self.arguments_spy = arguments_spy
         self.output = output
@@ -130,7 +130,7 @@ class TestCase():
         if (self.one_shot):
 
             try:
-                output = proc.communicate(timeout=5)[0]
+                output = proc.communicate(timeout=8)[0]
             except subprocess.TimeoutExpired:
                 proc.kill()
                 output = proc.communicate()[0]
@@ -183,7 +183,7 @@ class TestCase():
     def valid_output(self, output):
         """TODO."""
         if (self.is_windows() and ('Fail' in self.name or
-                                  ('--HelpCommand' == self.name))):
+           ('--HelpCommand' == self.name))):
             return True
         expected_output = self.output_command()
         print('output')

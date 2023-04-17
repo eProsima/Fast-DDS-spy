@@ -27,10 +27,10 @@ class TestCase_instance (test_class.TestCase):
             one_shot=True,
             command=[],
             dds=False,
-            config="""fastddsspy_tool/test/application/configuration/\
-configuration_wrong_empty_arg.yaml""",
+            config='fastddsspy_tool/test/application/configuration/\
+configuration_wrong_empty_arg.yaml',
             arguments_dds=[],
-            arguments_spy=['--config-path', 'configuration', 'participants'],
+            arguments_spy=['--config-path', 'configuration', 'datareaders'],
             output="""\x1b[37;1m2023-04-13 11:52:11.327 \
 \x1b[31;1m[\x1b[37;1mFASTDDSSPY_TOOL\x1b[31;1m Error] \
 \x1b[37mError Loading Fast DDS Spy Configuration from file \
