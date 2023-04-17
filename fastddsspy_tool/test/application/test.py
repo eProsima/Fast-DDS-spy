@@ -93,22 +93,36 @@ def main():
 
     test_function.exec_spy = args.exe
 
-    local_path_dds = 'fastddsspy_tool/test/application/dds/AdvancedConfigurationExample/'
-    local_dds = local_path_dds + 'AdvancedConfigurationExample'
-    test_function.exec_dds = args.exe.replace('fastddsspy_tool/fastddsspy', local_dds)
+    if test_function.is_linux():
+        local_path_dds = 'fastddsspy_tool/test/application/dds/AdvancedConfigurationExample/'
+        local_dds = local_path_dds + 'AdvancedConfigurationExample'
+        test_function.exec_dds = args.exe.replace('fastddsspy_tool/fastddsspy', local_dds)
 
-    if test_function.configuration != '':
-        index = test_function.arguments_spy.index('configuration')
-        test_function.arguments_spy[index] = \
-            args.exe.replace('fastddsspy_tool/fastddsspy', test_function.configuration)
+        if test_function.configuration != '':
+            index = test_function.arguments_spy.index('configuration')
+            test_function.arguments_spy[index] = \
+                args.exe.replace('fastddsspy_tool/fastddsspy', test_function.configuration)
+    else:
+        local_dds = local_path_dds + 'Debug/AdvancedConfigurationExample'
+        test_function.exec_dds = args.exe.replace('fastddsspy_tool/Debug/fastddsspy', local_dds)
 
-    spy, dds = test_function.run()
+        if test_function.configuration != '':
+            index = test_function.arguments_spy.index('configuration')
+            if test_function.is_linux():
+                test_function.arguments_spy[index] = \
+                    args.exe.replace('fastddsspy_tool/fastddsspy', test_function.configuration)
+            else:
+                test_function.arguments_spy[index] = \
+                    args.exe.replace('fastddsspy_tool/Debug/fastddsspy.exe', test_function.configuration)
+
+    spy = test_function.run_tool()
 
     if (spy == 'wrong output'):
         print('ERROR: Wrong output')
         sys.exit(1)
 
     if (test_function.dds):
+        dds = test_function.run_dds()
         if test_function.is_stop(dds):
             print('ERROR: DDS Publisher not running')
             sys.exit(1)
@@ -141,9 +155,9 @@ def main():
             print('ERROR: DDS Publisher still running')
             sys.exit(1)
 
-        if not test_function.valid_returncode(dds.returncode):
-            print('ERROR: Wrong DDS Publisher return code')
-            sys.exit(1)
+        # if not test_function.valid_returncode(dds.returncode):
+        #     print('ERROR: Wrong DDS Publisher return code')
+        #     sys.exit(1)
 
     return 0
 

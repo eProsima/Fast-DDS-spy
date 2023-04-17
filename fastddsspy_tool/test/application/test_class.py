@@ -80,13 +80,6 @@ class TestCase():
         # Add handlers to the logger
         self.logger.addHandler(l_handler)
 
-    def run(self):
-        """TODO."""
-        dds = None
-        if (self.dds):
-            dds = self.run_dds()
-        return self.run_tool(), dds
-
     def run_tool(self):
         """TODO."""
         self.logger.info('Run tool')
@@ -162,7 +155,10 @@ class TestCase():
         proc = subprocess.Popen(self.command,
                                 stdin=subprocess.PIPE,
                                 stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE)
+                                stderr=subprocess.PIPE,
+                                encoding='utf8')
+        # give time to start publishing
+        time.sleep(1.0)
         return proc
 
     def is_linux(self):
@@ -177,15 +173,12 @@ class TestCase():
         """Send a ctrl+c signal to the subprocess."""
         if self.is_linux():
             proc.send_signal(signal.SIGINT)
-        elif self.is_windows():
-            proc.send_signal(signal.CTRL_C_EVENT)
+        # elif self.is_windows():
+        #    proc.send_signal(signal.CTRL_BREAK_EVENT)
         try:
-            proc.communicate(timeout=5)
+            proc.communicate(timeout=2)
         except subprocess.TimeoutExpired:
-            if self.is_linux():
-                proc.send_signal(signal.SIGINT)
-            elif self.is_windows():
-                proc.send_signal(signal.CTRL_C_EVENT)
+            proc.kill()
             proc.communicate()
 
     def valid_returncode(self, returncode):
