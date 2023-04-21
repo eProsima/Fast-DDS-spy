@@ -108,6 +108,7 @@ class TestCase():
                                 stdin=subprocess.PIPE,
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE)
+
         return proc
 
     def run_tool(self):
@@ -129,21 +130,20 @@ class TestCase():
         if (self.one_shot):
 
             try:
-                output = proc.communicate(timeout=10)[0]
+                output = proc.communicate(timeout=5)[0]
             except subprocess.TimeoutExpired:
                 proc.kill()
-                output = proc.communicate()[0]
             if not self.valid_output(output):
                 return ('wrong output')
 
         else:
-            # give time to run tool
-            time.sleep(5.0)
             self.read_output(proc)
         return proc
 
     def send_command_tool(self, proc):
         """TODO."""
+        # give time
+        time.sleep(0.5)
         proc.stdin.write((self.arguments_spy[0]+'\n'))
         proc.stdin.flush()
         output = self.read_output(proc)
@@ -181,7 +181,7 @@ class TestCase():
 
     def valid_output(self, output):
         """TODO."""
-        if (self.is_windows() and ('Fail' in self.name or
+        if ('Fail' in self.name or (self.is_windows() and
            ('--HelpCommand' == self.name))):
             return True
         expected_output = self.output_command()
@@ -213,24 +213,14 @@ class TestCase():
             proc.communicate(input='exit\n', timeout=5)[0]
         except subprocess.TimeoutExpired:
             proc.kill()
-            proc.communicate()
 
     def stop_dds(self, proc):
-        """Send a ctrl+c signal to the subprocess."""
-        # direct this script to ignore SIGINT in case of windows
-        if self.is_windows():
-            signal.signal(signal.SIGINT, self.signal_handler)
-
-        if self.is_linux():
-            proc.send_signal(signal.SIGINT)
-        elif self.is_windows():
-            proc.send_signal(signal.CTRL_C_EVENT)
-
+        """TODO."""
         try:
-            proc.communicate(timeout=5)
+            proc.terminate()
+            proc.wait(timeout=5)
         except subprocess.TimeoutExpired:
             proc.kill()
-            proc.communicate()
 
     def is_stop(self, proc):
         """TODO."""

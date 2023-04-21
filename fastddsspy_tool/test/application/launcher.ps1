@@ -15,7 +15,13 @@ Param(
     [ValidateScript({Test-Path $_ -PathType Leaf -IsValid })]
     [String]
     # fastddsspy creation binary full qualified path
-    $tool_path
+    $tool_path,
+
+    [Parameter(Position=3, Mandatory=$true)]
+    [ValidateScript({Test-Path $_ -PathType Leaf -IsValid })]
+    [String]
+    # fastddsspy test
+    $test_path
 )
 
 $test = Start-Process -Passthru -Wait `
@@ -23,7 +29,7 @@ $test = Start-Process -Passthru -Wait `
     -ArgumentList (
         $test_script,
         "--exe", $tool_path,
-        "--debug") `
+        "--test", $test_path) `
     -WindowStyle Hidden
 
 if( $test.ExitCode -ne 0 )
