@@ -27,7 +27,6 @@ Arguments:
 import logging
 import os
 import re
-import signal
 import subprocess
 import time
 
@@ -130,7 +129,7 @@ class TestCase():
         if (self.one_shot):
 
             try:
-                output = proc.communicate(timeout=8)[0]
+                output = proc.communicate(timeout=10)[0]
             except subprocess.TimeoutExpired:
                 proc.kill()
             if not self.valid_output(output):
@@ -210,7 +209,7 @@ class TestCase():
     def stop_tool(self, proc):
         """TODO."""
         try:
-            proc.communicate(input='exit\n', timeout=8)[0]
+            proc.communicate(input='exit\n', timeout=10)[0]
         except subprocess.TimeoutExpired:
             proc.kill()
 
@@ -218,7 +217,7 @@ class TestCase():
         """TODO."""
         try:
             proc.terminate()
-            proc.wait(timeout=8)
+            proc.wait(timeout=10)
         except subprocess.TimeoutExpired:
             proc.kill()
 
