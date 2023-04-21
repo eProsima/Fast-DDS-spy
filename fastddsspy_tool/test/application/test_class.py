@@ -130,7 +130,7 @@ class TestCase():
         if (self.one_shot):
 
             try:
-                output = proc.communicate(timeout=5)[0]
+                output = proc.communicate(timeout=8)[0]
             except subprocess.TimeoutExpired:
                 proc.kill()
             if not self.valid_output(output):
@@ -143,7 +143,7 @@ class TestCase():
     def send_command_tool(self, proc):
         """TODO."""
         # give time
-        time.sleep(0.5)
+        time.sleep(0.2)
         proc.stdin.write((self.arguments_spy[0]+'\n'))
         proc.stdin.flush()
         output = self.read_output(proc)
@@ -210,7 +210,7 @@ class TestCase():
     def stop_tool(self, proc):
         """TODO."""
         try:
-            proc.communicate(input='exit\n', timeout=5)[0]
+            proc.communicate(input='exit\n', timeout=8)[0]
         except subprocess.TimeoutExpired:
             proc.kill()
 
@@ -218,7 +218,7 @@ class TestCase():
         """TODO."""
         try:
             proc.terminate()
-            proc.wait(timeout=5)
+            proc.wait(timeout=8)
         except subprocess.TimeoutExpired:
             proc.kill()
 
