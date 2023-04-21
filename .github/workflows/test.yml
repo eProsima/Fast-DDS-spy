@@ -9,7 +9,7 @@
 #
 # JOBS:
 #
-#   - ubuntu
+#   - multiplatform-tests
 #     - [ ubuntu-22.04 | ubuntu-20.04 | windows-2019 | windows-2022 ]
 #     - [ Debug | Release ]
 #     - execute tests in different versions of ubuntu with different build types
@@ -68,6 +68,7 @@ on:
 
 env:
   code_packages_names: 'fastddsspy_participants fastddsspy_yaml fastddsspy_tool'
+  docs_packages_names: 'fastddsspy_docs'
   default_dependencies_artifact_postfix: '_nightly'
 
 jobs:
@@ -89,11 +90,6 @@ jobs:
           - ubuntu-22.04
           - windows-2019
           - windows-2022
-        exclude:
-          - os: ubuntu-20.04
-            cmake_build_type: Debug
-          - os: ubuntu-22.04
-            cmake_build_type: Debug
 
     steps:
 
@@ -266,9 +262,10 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Build and test documentation
-        uses: jparisu/eProsima-CI/actions/sphinx_docs@main
+        uses: jparisu/eProsima-CI/ubuntu/sphinx_docs@main
         with:
-          docs_subpackage_name: fastddsspy_docs
+          docs_subpackage_name: ${{ env.docs_packages_names }}
+          secret_token: ${{ secrets.GITHUB_TOKEN }}
 
 
 #####################################################################
@@ -279,7 +276,7 @@ jobs:
     steps:
 
       - name: Uncrustify
-        uses: jparisu/eProsima-CI/actions/uncrustify@main
+        uses: jparisu/eProsima-CI/ubuntu-22.04/uncrustify@main
 
 
 #####################################################################
@@ -290,4 +287,4 @@ jobs:
     steps:
 
       - name: Python Linter
-        uses: jparisu/eProsima-CI/actions/python_linter@main
+        uses: jparisu/eProsima-CI/ubuntu/python_linter@main
