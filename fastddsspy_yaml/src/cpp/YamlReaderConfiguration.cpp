@@ -67,6 +67,15 @@ void Configuration::load_configuration_(
         YamlReaderVersion version = LATEST;
 
         /////
+        // Get optional specs configuration options
+        // WARNING: Parse builtin topics (dds tag) AFTER specs, as some topic-specific default values are set there
+        if (YamlReader::is_tag_present(yml, SPECS_TAG))
+        {
+            auto specs_yml = YamlReader::get_value_in_tag(yml, SPECS_TAG);
+            load_specs_configuration_(specs_yml, version);
+        }
+
+        /////
         // Get optional DDS configuration options
         if (YamlReader::is_tag_present(yml, DDS_TAG))
         {
@@ -74,13 +83,20 @@ void Configuration::load_configuration_(
             load_dds_configuration_(dds_yml, version);
         }
 
-        /////
-        // Get optional specs configuration options
-        if (YamlReader::is_tag_present(yml, SPECS_TAG))
-        {
-            auto specs_yml = YamlReader::get_value_in_tag(yml, SPECS_TAG);
-            load_specs_configuration_(specs_yml, version);
-        }
+        // Block ROS 2 services (RPC) topics
+        // RATIONALE:
+        // At the time of this writting, services in ROS 2 behave in the following manner: a ROS 2 service
+        // client awaits to discover a server, and it is then when a request is sent to this (and only this) server,
+        // from which a reply is expected.
+        // Hence, if these topics are not blocked, the client would wrongly believe Fast-DDS-spy is a server, thus
+        // sending a request for which a reply will not be received.
+        types::WildcardDdsFilterTopic rpc_request_topic, rpc_reply_topic;
+        rpc_request_topic.type_name.set_value("rq/*");
+        rpc_reply_topic.type_name.set_value("rr/*");
+        blocklist.insert(
+            utils::Heritable<types::WildcardDdsFilterTopic>::make_heritable(rpc_request_topic));
+        blocklist.insert(
+            utils::Heritable<types::WildcardDdsFilterTopic>::make_heritable(rpc_reply_topic));
 
     }
     catch (const std::exception& e)
@@ -120,6 +136,7 @@ void Configuration::load_dds_configuration_(
     // Get optional builtin topics
     if (YamlReader::is_tag_present(yml, BUILTIN_TAG))
     {
+        // WARNING: Parse builtin topics AFTER specs, as some topic-specific default values are set there
         builtin_topics = YamlReader::get_set<utils::Heritable<ddspipe::core::types::DistributedTopic>>(yml, BUILTIN_TAG,
                         version);
     }
