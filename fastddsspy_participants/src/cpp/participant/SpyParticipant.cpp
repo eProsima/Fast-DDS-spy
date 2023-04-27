@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <ddspipe_participants/participant/rtps/CommonParticipant.hpp>
+
 #include <fastddsspy_participants/participant/SpyParticipant.hpp>
 #include <fastddsspy_participants/types/ParticipantInfo.hpp>
 #include <fastddsspy_participants/types/EndpointInfo.hpp>
@@ -47,12 +49,12 @@ SpyParticipant::SpyParticipant(
 
     // Simulate that there is a reader of participants to force this track creation
     discovery_database_->add_endpoint(
-        simulate_endpoint_(participant_info_topic())
+        ddspipe::participants::rtps::CommonParticipant::simulate_endpoint(participant_info_topic(), this->id())
         );
 
     // Simulate that there is a reader of endpoints to force this track creation
     discovery_database_->add_endpoint(
-        simulate_endpoint_(endpoint_info_topic())
+        ddspipe::participants::rtps::CommonParticipant::simulate_endpoint(endpoint_info_topic(), this->id())
         );
 }
 
