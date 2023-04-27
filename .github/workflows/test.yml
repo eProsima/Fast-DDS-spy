@@ -276,7 +276,7 @@ jobs:
     steps:
 
       - name: Uncrustify
-        uses: jparisu/eProsima-CI/ubuntu-22.04/uncrustify@main
+        uses: jparisu/eProsima-CI/ubuntu/uncrustify@main
 
 
 #####################################################################
