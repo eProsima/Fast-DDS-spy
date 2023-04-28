@@ -127,7 +127,7 @@ class TestCase():
                                 encoding='utf8')
 
         if (self.one_shot):
-
+            output = ''
             try:
                 output = proc.communicate(timeout=20)[0]
             except subprocess.TimeoutExpired:
@@ -213,6 +213,12 @@ class TestCase():
         except subprocess.TimeoutExpired:
             proc.kill()
 
+        if not self.is_stop(proc):
+            print('ERROR: Fast DDS Spy still running')
+            return 1
+
+        return 0
+
     def stop_dds(self, proc):
         """TODO."""
         try:
@@ -220,6 +226,13 @@ class TestCase():
             proc.wait(timeout=20)
         except subprocess.TimeoutExpired:
             proc.kill()
+
+        if not self.is_stop(proc):
+            print('ERROR: DDS Publisher still running')
+            return 1
+
+        return 0
+
 
     def is_stop(self, proc):
         """TODO."""
