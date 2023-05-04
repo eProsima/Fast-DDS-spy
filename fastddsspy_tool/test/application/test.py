@@ -102,14 +102,19 @@ def main():
                 args.exe.replace('fastddsspy_tool/fastddsspy',
                                  test_function.config)
     else:
-        local_dds = local_path_dds + 'Debug/AdvancedConfigurationExample'
-        test_function.exec_dds = args.exe.replace('fastddsspy_tool/Debug/fastddsspy', local_dds)
+        if 'Debug' in args.exe:
+            build_type = 'Debug'
+        else:
+            build_type = 'Release'
+
+        local_dds = local_path_dds + build_type + '/AdvancedConfigurationExample'
+        test_function.exec_dds = args.exe.replace('fastddsspy_tool/' + build_type + '/fastddsspy', local_dds)
 
         if test_function.config != '':
-            index = test_function.arguments_spy.index('configuration')
-            test_function.arguments_spy[index] = \
-                args.exe.replace('fastddsspy_tool/Debug/fastddsspy.exe',
-                                 test_function.config)
+                    index = test_function.arguments_spy.index('configuration')
+                    test_function.arguments_spy[index] = \
+                        args.exe.replace('fastddsspy_tool/' + build_type + '/fastddsspy.exe',
+                                        test_function.config)
 
     if (test_function.dds):
         dds = test_function.run_dds()
