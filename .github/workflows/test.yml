@@ -225,7 +225,7 @@ jobs:
           packages_names: ${{ env.code_packages_names }}
           workspace_dependencies: './install'
           codecov_token: ${{ secrets.CODECOV_TOKEN }}
-          codecov_file_path: ./src/codecov.yml
+          codecov_fix_file_path: ./src/codecov.yml
 
 
 #####################################################################
