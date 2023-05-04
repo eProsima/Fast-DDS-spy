@@ -94,7 +94,7 @@ jobs:
     steps:
 
       - name: Sync repository
-        uses: eProsima/eProsima-CI/external/checkout@v3
+        uses: eProsima/eProsima-CI/external/checkout@feature/some-fixes
         with:
           path: src
 
@@ -107,7 +107,7 @@ jobs:
           secret_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Compile and run tests
-        uses: eProsima/eProsima-CI/multiplatform/colcon_build_test@v0
+        uses: eProsima/eProsima-CI/multiplatform/colcon_build_test@feature/some-fixes
         with:
           packages_names: ${{ env.code_packages_names }}
           cmake_args: -DBUILD_TESTS=ON -DCMAKE_BUILD_TYPE=${{ matrix.cmake_build_type }}
@@ -124,7 +124,7 @@ jobs:
     steps:
 
       - name: Sync repository
-        uses: eProsima/eProsima-CI/external/checkout@v3
+        uses: eProsima/eProsima-CI/external/checkout@feature/some-fixes
         with:
           path: src
 
@@ -137,7 +137,7 @@ jobs:
           secret_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Compile and run tests
-        uses: eProsima/eProsima-CI/multiplatform/asan_build_test@v0
+        uses: eProsima/eProsima-CI/multiplatform/asan_build_test@feature/some-fixes
         with:
           packages_names: ${{ env.code_packages_names }}
           workspace_dependencies: './install'
@@ -151,7 +151,7 @@ jobs:
     steps:
 
       - name: Sync repository
-        uses: eProsima/eProsima-CI/external/checkout@v3
+        uses: eProsima/eProsima-CI/external/checkout@feature/some-fixes
         with:
           path: src
 
@@ -164,7 +164,7 @@ jobs:
           secret_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Compile and run tests
-        uses: eProsima/eProsima-CI/multiplatform/tsan_build_test@v0
+        uses: eProsima/eProsima-CI/multiplatform/tsan_build_test@feature/some-fixes
         with:
           packages_names: ${{ env.code_packages_names }}
           workspace_dependencies: './install'
@@ -178,7 +178,7 @@ jobs:
     steps:
 
       - name: Sync repository
-        uses: eProsima/eProsima-CI/external/checkout@v3
+        uses: eProsima/eProsima-CI/external/checkout@feature/some-fixes
         with:
           path: src
 
@@ -191,7 +191,7 @@ jobs:
           secret_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Compile and run tests
-        uses: eProsima/eProsima-CI/multiplatform/clang_build_test@v0
+        uses: eProsima/eProsima-CI/multiplatform/clang_build_test@feature/some-fixes
         with:
           packages_names: ${{ env.code_packages_names }}
           workspace_dependencies: './install'
@@ -207,7 +207,7 @@ jobs:
     steps:
 
       - name: Sync repository
-        uses: eProsima/eProsima-CI/external/checkout@v3
+        uses: eProsima/eProsima-CI/external/checkout@feature/some-fixes
         with:
           path: src
 
@@ -220,7 +220,7 @@ jobs:
           secret_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Compile and run tests
-        uses: eProsima/eProsima-CI/ubuntu/coverage_build_test_upload@v0
+        uses: eProsima/eProsima-CI/ubuntu/coverage_build_test_upload@feature/some-fixes
         with:
           packages_names: ${{ env.code_packages_names }}
           workspace_dependencies: './install'
@@ -236,7 +236,7 @@ jobs:
     steps:
 
       - name: Sync repository
-        uses: eProsima/eProsima-CI/external/checkout@v3
+        uses: eProsima/eProsima-CI/external/checkout@feature/some-fixes
         with:
           path: src
 
@@ -249,7 +249,7 @@ jobs:
           secret_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Compile and run tests
-        uses: eProsima/eProsima-CI/multiplatform/colcon_build_test_flaky@v0
+        uses: eProsima/eProsima-CI/multiplatform/colcon_build_test_flaky@feature/some-fixes
         with:
           packages_names: ${{ env.code_packages_names }}
           workspace_dependencies: './install'
@@ -262,7 +262,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Build and test documentation
-        uses: eProsima/eProsima-CI/ubuntu/sphinx_docs@v0
+        uses: eProsima/eProsima-CI/ubuntu/sphinx_docs@feature/some-fixes
         with:
           docs_subpackage_name: ${{ env.docs_packages_names }}
           secret_token: ${{ secrets.GITHUB_TOKEN }}
@@ -276,7 +276,7 @@ jobs:
     steps:
 
       - name: Uncrustify
-        uses: eProsima/eProsima-CI/ubuntu/uncrustify@v0
+        uses: eProsima/eProsima-CI/ubuntu/uncrustify@feature/some-fixes
 
 
 #####################################################################
@@ -287,4 +287,4 @@ jobs:
     steps:
 
       - name: Python Linter
-        uses: eProsima/eProsima-CI/ubuntu/python_linter@v0
+        uses: eProsima/eProsima-CI/ubuntu/python_linter@feature/some-fixes
