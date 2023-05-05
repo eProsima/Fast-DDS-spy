@@ -91,8 +91,8 @@ void Configuration::load_configuration_(
         // Hence, if these topics are not blocked, the client would wrongly believe Fast-DDS-spy is a server, thus
         // sending a request for which a response will not be received.
         types::WildcardDdsFilterTopic rpc_request_topic, rpc_response_topic;
-        rpc_request_topic.type_name.set_value("rq/*");
-        rpc_response_topic.type_name.set_value("rr/*");
+        rpc_request_topic.topic_name.set_value("rq/*");
+        rpc_response_topic.topic_name.set_value("rr/*");
         blocklist.insert(
             utils::Heritable<types::WildcardDdsFilterTopic>::make_heritable(rpc_request_topic));
         blocklist.insert(
