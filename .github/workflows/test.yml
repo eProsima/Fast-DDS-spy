@@ -301,7 +301,8 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
 
-      - name: Python Linter
+      - name: Version updated
+        if: "! contains(github.event.pull_request.labels.*.name, 'no version update required')"
         uses: eProsima/eProsima-CI/ubuntu/check_version_update@feature/versions-update
         with:
           version-file-path: docs/rst/notes/forthcoming_version.rst
