@@ -42,6 +42,10 @@
 #     - ubuntu-22.04
 #     - test python linter
 #
+#   - update-version
+#     - ubuntu-22.04
+#     - check version have been updated
+#
 # TODO: when merge CI in eprosima-CI repository, the jparisu fork must change for eProsima in actions.
 #
 # TODO: Add Windows CI
@@ -288,3 +292,16 @@ jobs:
 
       - name: Python Linter
         uses: eProsima/eProsima-CI/ubuntu/python_linter@v0
+
+
+#####################################################################
+# UPDATE VERSION
+
+  update-version:
+    runs-on: ubuntu-22.04
+    steps:
+
+      - name: Python Linter
+        uses: eProsima/eProsima-CI/ubuntu/check_version_update@feature/versions-update
+        with:
+          version-file-path: docs/rst/notes/forthcoming_version.rst
