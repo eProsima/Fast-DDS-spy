@@ -8,7 +8,9 @@
 [![Stars](https://img.shields.io/github/stars/eProsima/Fast-DDS-spy.svg)](https://github.com/eProsima/Fast-DDS-spy/stargazers)
 [![test](https://github.com/eProsima/Fast-DDS-spy/actions/workflows/test.yml/badge.svg)](https://github.com/eProsima/Fast-DDS-spy/actions/workflows/test.yml)
 
-*eProsima Fast DDS Spy*...
+*eProsima Fast DDS Spy* is a CLI interactive tool that allows to introspect a DDS network in human readable format.
+It is possible to query the network about the DomainParticipants connected, their endpoints (DataWriters and DataReaders) and the topics they communicate in.
+It is also possible to see the user data sent through network topics in a schematic format in run time.
 
 
 ## Documentation
