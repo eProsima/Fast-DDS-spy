@@ -236,7 +236,7 @@ class TestCase():
     def is_stop(self, proc):
         """TODO."""
         # give time
-        time.sleep(0.2)
+        time.sleep(0.5)
 
         return_code = proc.poll()
 
