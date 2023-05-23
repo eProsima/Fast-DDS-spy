@@ -129,7 +129,7 @@ class TestCase():
         if (self.one_shot):
             output = ''
             try:
-                output = proc.communicate(timeout=10)[0]
+                output = proc.communicate(timeout=5)[0]
             except subprocess.TimeoutExpired:
                 proc.kill()
             if not self.valid_output(output):
@@ -209,7 +209,7 @@ class TestCase():
     def stop_tool(self, proc):
         """TODO."""
         try:
-            proc.communicate(input='exit\n', timeout=10)[0]
+            proc.communicate(input='exit\n', timeout=5)[0]
         except subprocess.TimeoutExpired:
             proc.kill()
 
@@ -221,12 +221,7 @@ class TestCase():
 
     def stop_dds(self, proc):
         """TODO."""
-        try:
-            # proc.terminate()
-            # proc.wait(timeout=12)
-            proc.communicate(timeout=15)
-        except subprocess.TimeoutExpired:
-            proc.kill()
+        proc.kill()
 
         if not self.is_stop(proc):
             print('ERROR: DDS Publisher still running')
