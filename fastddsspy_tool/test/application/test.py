@@ -85,23 +85,17 @@ def parse_options():
     return parser.parse_args()
 
 
-def main():
+def get_exec_dds_arguments_spy(test_class, args):
     """TODO."""
-    args = parse_options()
-
-    module = importlib.import_module(args.test)
-    test_function = module.TestCase_instance()
-    test_function.exec_spy = args.exe
-
     local_path_dds = 'fastddsspy_tool/test/application/dds/AdvancedConfigurationExample/'
-    if test_function.is_linux():
+    if test_class.is_linux():
         local_dds = local_path_dds + 'AdvancedConfigurationExample'
-        test_function.exec_dds = args.exe.replace('fastddsspy_tool/fastddsspy', local_dds)
-        if test_function.config != '':
-            index = test_function.arguments_spy.index('configuration')
-            test_function.arguments_spy[index] = \
+        test_class.exec_dds = args.exe.replace('fastddsspy_tool/fastddsspy', local_dds)
+        if test_class.config != '':
+            index = test_class.arguments_spy.index('configuration')
+            test_class.arguments_spy[index] = \
                 args.exe.replace('fastddsspy_tool/fastddsspy',
-                                 test_function.config)
+                                 test_class.config)
     else:
 
         if 'Debug' in args.exe:
@@ -110,42 +104,49 @@ def main():
             build_type = 'Release'
 
         local_dds = local_path_dds + build_type + '/AdvancedConfigurationExample'
-        test_function.exec_dds = args.exe.replace('fastddsspy_tool/' + build_type + '/fastddsspy',
-                                                  local_dds)
+        test_class.exec_dds = args.exe.replace('fastddsspy_tool/' + build_type + '/fastddsspy',
+                                               local_dds)
 
-        if test_function.config != '':
-            index = test_function.arguments_spy.index('configuration')
-            test_function.arguments_spy[index] = \
+        if test_class.config != '':
+            index = test_class.arguments_spy.index('configuration')
+            test_class.arguments_spy[index] = \
                 args.exe.replace('fastddsspy_tool/' + build_type + '/fastddsspy.exe',
-                                 test_function.config)
+                                 test_class.config)
 
-    if (test_function.dds):
-        dds = test_function.run_dds()
 
-    spy = test_function.run_tool()
+def main():
+    """TODO."""
+    args = parse_options()
+
+    module = importlib.import_module(args.test)
+    test_class = module.TestCase_instance()
+    test_class.exec_spy = args.exe
+
+    get_exec_dds_arguments_spy(test_class, args)
+
+    dds = test_class.run_dds()
+
+    spy = test_class.run_tool()
 
     if (spy == 'wrong output'):
         print('ERROR: Wrong output')
-        if (test_function.dds):
-            test_function.stop_dds(dds)
+        test_class.stop_dds(dds)
         sys.exit(1)
 
-    if not test_function.one_shot:
+    if not test_class.one_shot:
 
-        output = test_function.send_command_tool(spy)
+        output = test_class.send_command_tool(spy)
 
-        if test_function.stop_tool(spy):
-            if (test_function.dds):
-                test_function.stop_dds(dds)
+        if not test_class.stop_tool(spy):
+            test_class.stop_dds(dds)
             sys.exit(1)
 
-        if not test_function.valid_output(output):
+        if not test_class.valid_output(output):
             print('ERROR: Output command not valid')
             sys.exit(1)
 
-    if (test_function.dds):
-        if test_function.stop_dds(dds):
-            sys.exit(1)
+    if not test_class.stop_dds(dds):
+        sys.exit(1)
 
     sys.exit(0)
 

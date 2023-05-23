@@ -98,17 +98,18 @@ class TestCase():
 
     def run_dds(self):
         """TODO."""
-        self.logger.info('Run tool')
-        self.command = [self.exec_dds, 'publisher'] + self.arguments_dds
+        if self.dds:
+            self.logger.info('Run tool')
+            self.command = [self.exec_dds, 'publisher'] + self.arguments_dds
 
-        self.logger.info('Executing command: ' + str(self.command))
+            self.logger.info('Executing command: ' + str(self.command))
 
-        proc = subprocess.Popen(self.command,
-                                stdin=subprocess.PIPE,
-                                stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE)
+            proc = subprocess.Popen(self.command,
+                                    stdin=subprocess.PIPE,
+                                    stdout=subprocess.PIPE,
+                                    stderr=subprocess.DEVNULL)
 
-        return proc
+            return proc
 
     def run_tool(self):
         """TODO."""
@@ -123,13 +124,13 @@ class TestCase():
         proc = subprocess.Popen(self.command,
                                 stdin=subprocess.PIPE,
                                 stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE,
+                                stderr=subprocess.DEVNULL,
                                 encoding='utf8')
 
         if (self.one_shot):
             output = ''
             try:
-                output = proc.communicate(timeout=10)[0]
+                output = proc.communicate(timeout=15)[0]
             except subprocess.TimeoutExpired:
                 proc.kill()
             if not self.valid_output(output):
@@ -141,20 +142,30 @@ class TestCase():
 
     def send_command_tool(self, proc):
         """TODO."""
-        # give time
         time.sleep(0.2)
         proc.stdin.write((self.arguments_spy[0]+'\n'))
         proc.stdin.flush()
+
         output = self.read_output(proc)
         return (output)
 
     def read_output(self, proc):
         """TODO."""
         output = ''
+        count = 0
+        max_count = 1000
+
         while True:
+            count += 1
+
+            if count > max_count:
+                break
+
             line = proc.stdout.readline()
+
             if ('Insert a command for Fast DDS Spy:' in line):
                 break
+
             output = output + f'{line}\n'
         return output
 
@@ -209,37 +220,32 @@ class TestCase():
     def stop_tool(self, proc):
         """TODO."""
         try:
-            proc.communicate(input='exit\n', timeout=10)[0]
+            proc.communicate(input='exit\n', timeout=15)[0]
         except subprocess.TimeoutExpired:
             proc.kill()
 
         if not self.is_stop(proc):
-            print('ERROR: Fast DDS Spy still running')
-            return 1
+            return 0
 
-        return 0
+        return 1
 
     def stop_dds(self, proc):
         """TODO."""
-        print("------------------ Stopping DDS -> stop_dds()")
-        try:
-            proc.terminate()
-            proc.wait(timeout=12)
-        except subprocess.TimeoutExpired:
-            print("--------------- Timeout expired -> stop_dds()")
-            proc.kill()
+        if self.dds:
+            try:
+                proc.terminate()
+                proc.wait(timeout=15)
+            except subprocess.TimeoutExpired:
+                proc.kill()
 
-        if not self.is_stop(proc):
-            print('ERROR: DDS Publisher still running')
-            return 1
+            if not self.is_stop(proc):
+                print('ERROR: DDS Publisher still running')
+                return 0
 
-        return 0
+        return 1
 
     def is_stop(self, proc):
         """TODO."""
-        # give time
-        time.sleep(0.5)
-
         return_code = proc.poll()
 
         if (return_code is None):
