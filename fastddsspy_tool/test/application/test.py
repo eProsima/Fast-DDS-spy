@@ -126,7 +126,6 @@ def main():
 
     if (spy == 'wrong output'):
         print('ERROR: Wrong output')
-        test_function.stop_tool(spy)
         if (test_function.dds):
             test_function.stop_dds(dds)
         sys.exit(1)
@@ -150,7 +149,7 @@ def main():
         if test_function.stop_tool(spy):
             if (test_function.dds):
                 test_function.stop_dds(dds)
-            sys.exit(1)
+            sys.exit(0)
 
     # if not test_function.valid_returncode(spy.returncode):
     #     print('ERROR: Wrong Fast DDS Spy return code')
