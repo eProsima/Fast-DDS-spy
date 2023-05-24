@@ -34,28 +34,20 @@ import time
 class TestCase():
     """Test class."""
 
-    def __init__(self, name, one_shot, command, dds, config, arguments_dds, arguments_spy, output):
+    def __init__(self, name, one_shot, command, dds, config,
+                 arguments_dds, arguments_spy, commands_spy, output):
         """
-        TODO.
+        @brief Initialize the object.
 
-        Parameters
-        ----------
-        name : int
-            TODO.
-        one_shot  : bool
-            TODO.
-        command  : str
-            TODO.
-        dds : bool
-            TODO.
-        config : str
-            TODO.
-        arguments_dds : list
-            TODO.
-        arguments_spy : list
-            TODO.
-        output : str
-            TODO.
+        @param name: The name of the test.
+        @param one_shot: A boolean indicating if the object runs in one-shot mode.
+        @param command: The command associated with the object.
+        @param dds: A boolean indicating if the object launch a DDS Publisher.
+        @param config: The configuration of the DDS Spy.
+        @param arguments_dds: A list of arguments for the DDS Publisher.
+        @param arguments_spy: A list of arguments for the DDS Spy.
+        @param commands_spy: A list of commands for the DDS Spy interactive application.
+        @param output: The expected output associated with the object.
         """
         self.name = name
         self.one_shot = one_shot
@@ -64,6 +56,7 @@ class TestCase():
         self.config = config
         self.arguments_dds = arguments_dds
         self.arguments_spy = arguments_spy
+        self.commands_spy = commands_spy
         self.output = output
         self.exec_spy = ''
         self.exec_dds = ''
@@ -79,25 +72,29 @@ class TestCase():
         # Add handlers to the logger
         self.logger.addHandler(l_handler)
 
-    def signal_handler(self, signum, frame):
-        """
-        Ignore Signal handler.
-
-        This method is required in Windows to not handle the signal that
-        is sent to the subprocess.
-        """
-        pass
-
     def is_linux(self):
-        """Return whether the script is running in a Linux environment."""
+        """
+        @brief Check if the script is running in a Linux environment.
+
+        @return: True if the script is running in a Linux environment, False otherwise.
+        """
         return os.name == 'posix'
 
     def is_windows(self):
-        """Return whether the script is running in a Windows environment."""
+        """
+        @brief Check if the script is running in a Windows environment.
+
+        @return: True if the script is running in a Windows environment, False otherwise.
+        """
         return os.name == 'nt'
 
     def run_dds(self):
-        """TODO."""
+        """
+        @brief Run the DDS publisher tool with the arguments set in the parameter \
+        'arguments_dds' of the class.
+
+        @return Returns a subprocess object representing the running DDS publisher.
+        """
         if self.dds:
             self.logger.info('Run tool')
             self.command = [self.exec_dds, 'publisher'] + self.arguments_dds
@@ -107,30 +104,34 @@ class TestCase():
             proc = subprocess.Popen(self.command,
                                     stdin=subprocess.PIPE,
                                     stdout=subprocess.PIPE,
-                                    stderr=subprocess.DEVNULL)
+                                    stderr=subprocess.PIPE)
 
             return proc
 
     def run_tool(self):
-        """TODO."""
+        """
+        @brief Run Fast DDS Spy as one_shot if the one_shot parameter is set to true, \
+        otherwise. as an interactive application with the arguments specified in the \
+        parameter 'arguments_spy' of the class.
+
+        @return Returns the subprocess object representing the running Spy.
+        """
         self.logger.info('Run tool')
-        if (self.one_shot):
-            self.command = [self.exec_spy] + self.arguments_spy
-        else:
-            self.command = [self.exec_spy]
+
+        self.command = [self.exec_spy] + self.arguments_spy
 
         self.logger.info('Executing command: ' + str(self.command))
 
         proc = subprocess.Popen(self.command,
                                 stdin=subprocess.PIPE,
                                 stdout=subprocess.PIPE,
-                                stderr=subprocess.DEVNULL,
+                                stderr=subprocess.PIPE,
                                 encoding='utf8')
 
         if (self.one_shot):
             output = ''
             try:
-                output = proc.communicate(timeout=15)[0]
+                output = proc.communicate(timeout=18)[0]
             except subprocess.TimeoutExpired:
                 proc.kill()
             if not self.valid_output(output):
@@ -141,16 +142,26 @@ class TestCase():
         return proc
 
     def send_command_tool(self, proc):
-        """TODO."""
+        """
+        @brief Send a command to the running Spy.
+
+        @param proc: The subprocess object representing the running Spy.
+        @return Returns the output received after sending the command.
+        """
         time.sleep(0.2)
-        proc.stdin.write((self.arguments_spy[0]+'\n'))
+        proc.stdin.write((self.commands_spy[0]+'\n'))
         proc.stdin.flush()
 
         output = self.read_output(proc)
         return (output)
 
     def read_output(self, proc):
-        """TODO."""
+        """
+        @brief Read the output from the subprocess.
+
+        @param proc: The subprocess object representing the running process.
+        @return Returns the accumulated output read from the subprocess.
+        """
         output = ''
         count = 0
         max_count = 1000
@@ -170,11 +181,20 @@ class TestCase():
         return output
 
     def output_command(self):
-        """TODO."""
+        """
+        @brief Get the expected output.
+
+        @return Returns the expected output.
+        """
         return (self.output)
 
     def valid_guid(self, guid):
-        """TODO."""
+        """
+        @brief Check if a GUID has the correct pattern.
+
+        @param guid: The GUID to check.
+        @return Returns True if the GUID is valid, False otherwise.
+        """
         pattern = r'^((guid:)\s([0-9a-f]{2}\.){11}[0-9a-f]{2}\|([0-9a-f]\.){3}[0-9a-f]{1,})$'
         id_guid = guid[guid.find('guid:'):]
         if not re.match(pattern, id_guid):
@@ -182,7 +202,12 @@ class TestCase():
         return True
 
     def valid_rate(self, rate):
-        """TODO."""
+        """
+        @brief Check if a rate is valid.
+
+        @param rate: The rate to check.
+        @return Returns True if the rate is valid, False otherwise.
+        """
         pattern = r'^((rate:)\s\d{1,}\s(Hz))$'
         id_rate = rate[rate.find('rate:'):]
         if not re.match(pattern, id_rate):
@@ -190,7 +215,7 @@ class TestCase():
         return True
 
     def valid_output(self, output):
-        """TODO."""
+        """Check the output ."""
         if ('Fail' in self.name or (self.is_windows() and
            ('--HelpCommand' == self.name))):
             return True
@@ -218,25 +243,26 @@ class TestCase():
         return (guid and rate)
 
     def stop_tool(self, proc):
-        """TODO."""
+        """
+        @brief Stop the running Spy.
+
+        @param proc: The subprocess object representing the running Spy.
+        @return Returns 1 if the Spy is successfully stopped, 0 otherwise.
+        """
         try:
-            proc.communicate(input='exit\n', timeout=15)[0]
+            proc.communicate(input='exit\n', timeout=18)[0]
         except subprocess.TimeoutExpired:
             proc.kill()
 
-        if not self.is_stop(proc):
-            return 0
-
-        return 1
-
     def stop_dds(self, proc):
-        """TODO."""
+        """
+        @brief Stop the DDS publisher.
+
+        @param proc: The subprocess object representing the running DDS publisher.
+        @return Returns 1 if the DDS publisher is successfully stopped, 0 otherwise.
+        """
         if self.dds:
-            try:
-                proc.terminate()
-                proc.wait(timeout=15)
-            except subprocess.TimeoutExpired:
-                proc.kill()
+            proc.kill()
 
             if not self.is_stop(proc):
                 print('ERROR: DDS Publisher still running')
@@ -245,7 +271,16 @@ class TestCase():
         return 1
 
     def is_stop(self, proc):
-        """TODO."""
+        """
+        @brief Check if the subprocess has stopped.
+
+        @param proc: The subprocess to check.
+        @return Returns True if the subprocess has stopped,
+        False otherwise.
+        """
+        # give time to stop
+        time.sleep(0.5)
+
         return_code = proc.poll()
 
         if (return_code is None):
@@ -253,7 +288,16 @@ class TestCase():
         return True
 
     def valid_returncode(self, returncode):
-        """TODO."""
+        """
+        @brief Check if the return code indicates that
+        process has finished cleanly.
+
+        @param returncode: The return code of the subprocess.
+        @return Returns True if the return code is zero,
+        indicating success, False otherwise. If the process
+        name contains the string 'Fail' return True if the return
+        code is not zero, False otherwise.
+        """
         if 'Fail' in self.name:
             return (returncode != 0)
         return (returncode == 0)

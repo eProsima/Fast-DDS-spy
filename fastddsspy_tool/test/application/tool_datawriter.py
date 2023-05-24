@@ -18,10 +18,16 @@ import test_class
 
 
 class TestCase_instance (test_class.TestCase):
-    """TODO."""
+    """@brief A subclass of `test_class.TestCase` representing a specific test case."""
 
     def __init__(self):
-        """TODO."""
+        """
+        @brief Initialize the TestCase_instance object.
+
+        This test launch:
+            fastddsspy
+            >> datawriter
+        """
         super().__init__(
             name='ToolDatawriterCommand',
             one_shot=False,
@@ -29,6 +35,7 @@ class TestCase_instance (test_class.TestCase):
             dds=False,
             config='',
             arguments_dds=[],
-            arguments_spy=['datawriter'],
+            arguments_spy=[],
+            commands_spy=['datawriter'],
             output=""">> \x1b[0m\n\n\n\n"""
         )

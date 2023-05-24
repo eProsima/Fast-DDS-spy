@@ -18,18 +18,28 @@ import test_class
 
 
 class TestCase_instance (test_class.TestCase):
-    """TODO."""
+    """@brief A subclass of `test_class.TestCase` representing a specific test case."""
 
     def __init__(self):
-        """TODO."""
+        """
+        @brief Initialize the TestCase_instance object.
+
+        This test launch:
+            fastddsspy --config-path fastddsspy_tool/test/application/configuration/\
+                configuration_discovery_time.yaml
+            >> participants
+            AdvancedConfigurationExample publisher
+        """
         super().__init__(
             name='ToolParticipantsDDSCommand',
             one_shot=False,
             command=[],
             dds=True,
-            config='',
+            config='fastddsspy_tool/test/application/configuration/\
+configuration_discovery_time.yaml',
             arguments_dds=[],
-            arguments_spy=['participants'],
+            arguments_spy=['--config-path', 'configuration'],
+            commands_spy=['participants'],
             output=""">> \x1b[0m- name: Participant_pub\n\
 \n\
   guid: 01.0f.d8.74.09.0b.fa.ae.00.00.00.00|0.0.1.c1\n"""

@@ -18,10 +18,16 @@ import test_class
 
 
 class TestCase_instance (test_class.TestCase):
-    """TODO."""
+    """@brief A subclass of `test_class.TestCase` representing a specific test case."""
 
     def __init__(self):
-        """TODO."""
+        """
+        @brief Initialize the TestCase_instance object.
+
+        This test launch:
+            fastddsspy
+            >> version
+        """
         super().__init__(
             name='ToolVersionCommand',
             one_shot=False,
@@ -29,7 +35,8 @@ class TestCase_instance (test_class.TestCase):
             dds=False,
             config='',
             arguments_dds=[],
-            arguments_spy=['version'],
+            arguments_spy=[],
+            commands_spy=['version'],
             output=""">> \x1b[0mFast DDS Spy v0.1.0\n\
 \n\
 commit hash: 16ed7e8c93d7481d8b426746af9ec3ffa323f451\n\n"""

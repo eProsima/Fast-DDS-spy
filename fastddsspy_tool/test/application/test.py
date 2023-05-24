@@ -34,7 +34,11 @@ USAGE = ('python3 tests.py -e <path/to/fastddsspy-executable>'
 
 
 def executable_permission_value():
-    """Return executable permissions value depending on the OS."""
+    """
+    @brief Return the executable permission value depending on the operating system.
+
+    @return: The executable permission value.
+    """
     if os.name == 'nt':
         return os.X_OK  # windows
     else:
@@ -42,7 +46,12 @@ def executable_permission_value():
 
 
 def file_exist_and_have_permissions(file_path):
-    """Check if a file exists and have executable permissions."""
+    """
+    @brief Check if a file exists and has executable permissions.
+
+    @param file_path: The path of the file to check.
+    @return: The file path if it exists and has executable permissions, otherwise None.
+    """
     if os.access(file_path, executable_permission_value()):
         return file_path
     else:
@@ -51,9 +60,9 @@ def file_exist_and_have_permissions(file_path):
 
 def parse_options():
     """
-    Parse arguments.
+    @brief Parse command-line arguments.
 
-    :return: The arguments parsed.
+    @return: The parsed arguments.
     """
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
@@ -86,7 +95,12 @@ def parse_options():
 
 
 def get_exec_dds_arguments_spy(test_class, args):
-    """TODO."""
+    """
+    @brief Get the DDS Publisher executable and the arguments for the publisher and the Spy.
+
+    @param test_class: The test class object.
+    @param args: The command-line arguments.
+    """
     local_path_dds = 'fastddsspy_tool/test/application/dds/AdvancedConfigurationExample/'
     if test_class.is_linux():
         local_dds = local_path_dds + 'AdvancedConfigurationExample'
@@ -115,7 +129,7 @@ def get_exec_dds_arguments_spy(test_class, args):
 
 
 def main():
-    """TODO."""
+    """@brief The main entry point of the program."""
     args = parse_options()
 
     module = importlib.import_module(args.test)
@@ -137,15 +151,19 @@ def main():
 
         output = test_class.send_command_tool(spy)
 
-        if not test_class.stop_tool(spy):
-            test_class.stop_dds(dds)
-            sys.exit(1)
-
         if not test_class.valid_output(output):
+            test_class.stop_tool(spy)
+            test_class.stop_dds(dds)
             print('ERROR: Output command not valid')
             sys.exit(1)
 
+        test_class.stop_tool(spy)
+
     if not test_class.stop_dds(dds):
+        sys.exit(1)
+
+    if not test_class.is_stop(spy):
+        print('ERROR: DDS Spy still running')
         sys.exit(1)
 
     sys.exit(0)

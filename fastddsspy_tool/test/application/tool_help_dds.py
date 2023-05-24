@@ -18,18 +18,28 @@ import test_class
 
 
 class TestCase_instance (test_class.TestCase):
-    """TODO."""
+    """@brief A subclass of `test_class.TestCase` representing a specific test case."""
 
     def __init__(self):
-        """TODO."""
+        """
+        @brief Initialize the TestCase_instance object.
+
+        This test launch:
+            fastddsspy --config-path fastddsspy_tool/test/application/configuration/\
+                configuration_discovery_time.yaml
+            >> help
+            AdvancedConfigurationExample publisher
+        """
         super().__init__(
             name='ToolHelpDDSCommand',
             one_shot=False,
             command=[],
             dds=True,
-            config='',
+            config='fastddsspy_tool/test/application/configuration/\
+configuration_discovery_time.yaml',
             arguments_dds=[],
-            arguments_spy=['help'],
+            arguments_spy=['--config-path', 'configuration'],
+            commands_spy=['help'],
             output=""">> \x1b[0mFast DDS Spy is an interactive CLI that allow to instrospect\
  DDS networks.\n\n\
 Each command shows data related with the network in Yaml format.\n\n\

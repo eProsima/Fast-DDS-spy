@@ -18,10 +18,15 @@ import test_class
 
 
 class TestCase_instance (test_class.TestCase):
-    """TODO."""
+    """@brief A subclass of `test_class.TestCase` representing a specific test case."""
 
     def __init__(self):
-        """TODO."""
+        """
+        @brief Initialize the TestCase_instance object.
+
+        This test launch:
+            fastddsspy datareader verbose
+        """
         super().__init__(
             name='DatareaderVerboseCommand',
             one_shot=True,
@@ -30,5 +35,6 @@ class TestCase_instance (test_class.TestCase):
             config='',
             arguments_dds=[],
             arguments_spy=['datareader', 'verbose'],
+            commands_spy=[],
             output='\n'
         )

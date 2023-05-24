@@ -12,8 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Add subdirectory with labels for tests
-add_subdirectory(labels)
+# Set list of tests that can fail
+# set_test_label_file(${CMAKE_CURRENT_SOURCE_DIR}/XFAIL.list "xfail")
+# Set list of tests that can fail using TSAN
+set_test_label_file(${CMAKE_CURRENT_SOURCE_DIR}/XTSAN.list "xtsan")
 
-# Add subdirectory with tests
-add_subdirectory(application)
+# Set list of tests that can fail in windows
+# if (WIN32)
+#     set_test_label_file(${CMAKE_CURRENT_SOURCE_DIR}/WINDOWS_TEST_XFAIL.list "xfail")
+# endif()

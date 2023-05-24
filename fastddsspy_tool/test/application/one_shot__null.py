@@ -18,10 +18,15 @@ import test_class
 
 
 class TestCase_instance (test_class.TestCase):
-    """TODO."""
+    """@brief A subclass of `test_class.TestCase` representing a specific test case."""
 
     def __init__(self):
-        """TODO."""
+        """
+        @brief Initialize the TestCase_instance object.
+
+        This test launch:
+            fastddsspy --nullarg
+        """
         super().__init__(
             name='--FailCommand',
             one_shot=True,
@@ -30,6 +35,7 @@ class TestCase_instance (test_class.TestCase):
             config='',
             arguments_dds=[],
             arguments_spy=['--nullarg'],
+            commands_spy=[],
             output="""Usage: Fast DDS Spy \n\
 Start an interactive CLI to introspect a DDS network.\n\
 General options:\n\

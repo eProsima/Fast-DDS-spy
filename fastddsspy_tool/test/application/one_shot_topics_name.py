@@ -18,10 +18,15 @@ import test_class
 
 
 class TestCase_instance (test_class.TestCase):
-    """TODO."""
+    """@brief A subclass of `test_class.TestCase` representing a specific test case."""
 
     def __init__(self):
-        """TODO."""
+        """
+        @brief Initialize the TestCase_instance object.
+
+        This test launch:
+            fastddsspy topics hello
+        """
         super().__init__(
             name='TopicsNameCommand',
             one_shot=True,
@@ -30,6 +35,7 @@ class TestCase_instance (test_class.TestCase):
             config='',
             arguments_dds=[],
             arguments_spy=['topics', 'hello'],
+            commands_spy=[],
             output="""\x1b[1;31m<hello> topic does not exist \
 in the DDS network.\x1b[0m\n"""
         )

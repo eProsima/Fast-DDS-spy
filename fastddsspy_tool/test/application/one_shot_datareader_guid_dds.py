@@ -18,18 +18,29 @@ import test_class
 
 
 class TestCase_instance (test_class.TestCase):
-    """TODO."""
+    """@brief A subclass of `test_class.TestCase` representing a specific test case."""
 
     def __init__(self):
-        """TODO."""
+        """
+        @brief Initialize the TestCase_instance object.
+
+        This test launch:
+            fastddsspy --config-path fastddsspy_tool/test/application/configuration/\
+                configuration_discovery_time.yaml datareader \
+                    01.0f.d8.74.d5.a0.cf.f4.00.00.00.00|0.0.1.3
+            AdvancedConfigurationExample publisher
+        """
         super().__init__(
             name='DataReaderGuidDDSCommand',
             one_shot=True,
             command=[],
             dds=True,
-            config='',
+            config='fastddsspy_tool/test/application/configuration/\
+configuration_discovery_time.yaml',
             arguments_dds=[],
-            arguments_spy=['datareader', '01.0f.d8.74.d5.a0.cf.f4.00.00.00.00|0.0.1.3'],
+            arguments_spy=['--config-path', 'configuration', 'datareader',
+                           '01.0f.d8.74.d5.a0.cf.f4.00.00.00.00|0.0.1.3'],
+            commands_spy=[],
             output="""\x1b[1;31m01.0f.d8.74.d5.a0.cf.f4.00.00.00.00|0.0.1.3 \
 does not match with any known reader.\x1b[0m\n"""
         )

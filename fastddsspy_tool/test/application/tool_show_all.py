@@ -18,10 +18,16 @@ import test_class
 
 
 class TestCase_instance (test_class.TestCase):
-    """TODO."""
+    """@brief A subclass of `test_class.TestCase` representing a specific test case."""
 
     def __init__(self):
-        """TODO."""
+        r"""
+        @brief Initialize the TestCase_instance object.
+
+        This test launch:
+            fastddsspy
+            >> show all \n
+        """
         super().__init__(
             name='ToolShowAllCommand',
             one_shot=False,
@@ -29,6 +35,7 @@ class TestCase_instance (test_class.TestCase):
             dds=False,
             config='',
             arguments_dds=[],
-            arguments_spy=['show all \n'],
+            arguments_spy=[],
+            commands_spy=['show all \n'],
             output=""">> \x1b[0m\n\n"""
         )

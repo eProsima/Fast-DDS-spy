@@ -148,6 +148,7 @@ set(TEST_NEEDED_SOURCES
         configuration/configuration_basic.yaml
         configuration/configuration_wrong_empty_arg.yaml
         configuration/configuration_wrong_type.yaml
+        configuration/configuration_discovery_time.yaml
     )
 
 foreach(NEEDED_SOURCE ${TEST_NEEDED_SOURCES})
@@ -159,6 +160,7 @@ endforeach()
 # populate the tests
 foreach(TEST IN LISTS TEST_LIST)
     set(TEST_NAME "tool.application.fastddsspy.test.${TEST}")
+
     if(WIN32)
         add_test(
             NAME ${TEST_NAME}
@@ -180,6 +182,9 @@ foreach(TEST IN LISTS TEST_LIST)
             )
 
     endif()
+
+    # Add labels to tests
+    set_test_labels(${TEST_NAME})
 
     # Set test properties
     set_tests_properties(
