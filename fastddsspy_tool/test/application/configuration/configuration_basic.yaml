@@ -8,4 +8,4 @@ dds:
 specs:
   threads: 12
   max-history-depth: 5000
-  discovery-time: 1000
+  discovery-time: 2000

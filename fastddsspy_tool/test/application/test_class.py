@@ -131,7 +131,7 @@ class TestCase():
         if (self.one_shot):
             output = ''
             try:
-                output = proc.communicate(timeout=18)[0]
+                output = proc.communicate(timeout=10)[0]
             except subprocess.TimeoutExpired:
                 proc.kill()
             if not self.valid_output(output):
@@ -164,7 +164,7 @@ class TestCase():
         """
         output = ''
         count = 0
-        max_count = 1000
+        max_count = 500
 
         while True:
             count += 1
@@ -250,9 +250,15 @@ class TestCase():
         @return Returns 1 if the Spy is successfully stopped, 0 otherwise.
         """
         try:
-            proc.communicate(input='exit\n', timeout=18)[0]
+            proc.communicate(input='exit\n', timeout=10)[0]
         except subprocess.TimeoutExpired:
             proc.kill()
+
+        time.sleep(0.2)
+
+        if not self.is_stop(proc):
+            print('ERROR: DDS Spy still running')
+            return 0
 
     def stop_dds(self, proc):
         """
@@ -262,7 +268,13 @@ class TestCase():
         @return Returns 1 if the DDS publisher is successfully stopped, 0 otherwise.
         """
         if self.dds:
-            proc.kill()
+            try:
+                proc.terminate()
+                proc.communicate(timeout=15)
+            except subprocess.TimeoutExpired:
+                proc.kill()
+
+            time.sleep(0.2)
 
             if not self.is_stop(proc):
                 print('ERROR: DDS Publisher still running')
@@ -278,9 +290,6 @@ class TestCase():
         @return Returns True if the subprocess has stopped,
         False otherwise.
         """
-        # give time to stop
-        time.sleep(0.5)
-
         return_code = proc.poll()
 
         if (return_code is None):
@@ -289,7 +298,7 @@ class TestCase():
 
     def valid_returncode(self, returncode):
         """
-        @brief Check if the return code indicates that
+        @brief Check if the return code indicates that \
         process has finished cleanly.
 
         @param returncode: The return code of the subprocess.

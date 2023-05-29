@@ -34,6 +34,6 @@ $test = Start-Process -Passthru -Wait `
 
 if( $test.ExitCode -ne 0 )
 {
-    $error_message = "Test: $test_name failed with exit code $($test.ExitCode)."
+    $error_message = "Test: $test_path failed with exit code $($test.ExitCode)."
     throw $error_message
 }

@@ -1,4 +1,4 @@
 version: 1.0
 
 specs:
-  discovery-time: 1000
+  discovery-time: 2000

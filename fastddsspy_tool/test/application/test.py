@@ -157,14 +157,11 @@ def main():
             print('ERROR: Output command not valid')
             sys.exit(1)
 
-        test_class.stop_tool(spy)
-
     if not test_class.stop_dds(dds):
         sys.exit(1)
 
-    if not test_class.is_stop(spy):
-        print('ERROR: DDS Spy still running')
-        sys.exit(1)
+    if not test_class.one_shot:
+        test_class.stop_tool(spy)
 
     sys.exit(0)
 

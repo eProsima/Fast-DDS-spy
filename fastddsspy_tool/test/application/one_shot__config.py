@@ -33,7 +33,7 @@ class TestCase_instance (test_class.TestCase):
             name='--configCommand',
             one_shot=True,
             command=[],
-            dds=True,
+            dds=False,
             config='fastddsspy_tool/test/application/configuration/\
 configuration_basic.yaml',
             arguments_dds=[],

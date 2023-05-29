@@ -20,27 +20,6 @@ find_package(PythonInterp 3 REQUIRED)
 
 # Name of files to test
 set(TEST_LIST
-    one_shot_help_dds
-    one_shot_datareader_dds
-    one_shot_datareader_guid_dds
-    one_shot_datareader_verbose_dds
-    one_shot_datawriter_dds
-    one_shot_datawriter_verbose_dds_qos
-    one_shot_datawriter_guid_dds_fail
-    one_shot_datawriter_verbose_dds
-    one_shot_participants_dds
-    one_shot_participants_guid_dds
-    one_shot_participants_verbose_dds
-    one_shot_quit_dds
-    one_shot_topics_dds
-    one_shot_topics_name_dds
-    one_shot_topics_verbose_dds
-    tool_datareader_dds
-    tool_datawriter_dds
-    tool_help_dds
-    tool_participants_dds
-    tool_show_topic_dds
-    tool_topics_dds
     one_shot__config
     one_shot__config_fail_file
     one_shot__config_fail_type
@@ -82,6 +61,27 @@ set(TEST_LIST
     tool_show_topic
     tool_topics
     tool_version
+    one_shot_datareader_dds
+    one_shot_datareader_guid_dds
+    one_shot_datareader_verbose_dds
+    one_shot_datawriter_dds
+    one_shot_datawriter_verbose_dds_qos
+    one_shot_datawriter_guid_dds_fail
+    one_shot_datawriter_verbose_dds
+    one_shot_help_dds
+    one_shot_participants_dds
+    one_shot_participants_guid_dds
+    one_shot_participants_verbose_dds
+    one_shot_quit_dds
+    one_shot_topics_dds
+    one_shot_topics_name_dds
+    one_shot_topics_verbose_dds
+    tool_datareader_dds
+    tool_datawriter_dds
+    tool_help_dds
+    tool_participants_dds
+    tool_show_topic_dds
+    tool_topics_dds
 )
 
 # windows auxiliary script to fork test execution
