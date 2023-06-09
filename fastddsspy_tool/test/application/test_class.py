@@ -12,23 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""
-Tests for the fastddsspy executable.
+"""Contains a test class for fastddsspy tool tests."""
 
-Contains a package of system test for fastddsspy tool
-
-Usage: test.py -e <binary_path>
-
-Arguments:
-    Fast DDS Spy binary path          : -e | --exe binary_path
-    Run test in Debug mode          : -d | --debug
-"""
-
-import logging
-import os
 import re
 import subprocess
 import time
+
+
+SLEEP_TIME = 0.2
 
 
 class TestCase():
@@ -61,33 +52,6 @@ class TestCase():
         self.exec_spy = ''
         self.exec_dds = ''
 
-        # Create a custom logger
-        self.logger = logging.getLogger('SYS_TEST')
-        # Create handlers
-        l_handler = logging.StreamHandler()
-        # Create formatters and add it to handlers
-        l_format = '[%(asctime)s][%(name)s][%(levelname)s] %(message)s'
-        l_format = logging.Formatter(l_format)
-        l_handler.setFormatter(l_format)
-        # Add handlers to the logger
-        self.logger.addHandler(l_handler)
-
-    def is_linux(self):
-        """
-        @brief Check if the script is running in a Linux environment.
-
-        @return: True if the script is running in a Linux environment, False otherwise.
-        """
-        return os.name == 'posix'
-
-    def is_windows(self):
-        """
-        @brief Check if the script is running in a Windows environment.
-
-        @return: True if the script is running in a Windows environment, False otherwise.
-        """
-        return os.name == 'nt'
-
     def run_dds(self):
         """
         @brief Run the DDS publisher tool with the arguments set in the parameter \
@@ -96,10 +60,7 @@ class TestCase():
         @return Returns a subprocess object representing the running DDS publisher.
         """
         if self.dds:
-            self.logger.info('Run tool')
             self.command = [self.exec_dds, 'publisher'] + self.arguments_dds
-
-            self.logger.info('Executing command: ' + str(self.command))
 
             proc = subprocess.Popen(self.command,
                                     stdin=subprocess.PIPE,
@@ -116,11 +77,7 @@ class TestCase():
 
         @return Returns the subprocess object representing the running Spy.
         """
-        self.logger.info('Run tool')
-
         self.command = [self.exec_spy] + self.arguments_spy
-
-        self.logger.info('Executing command: ' + str(self.command))
 
         proc = subprocess.Popen(self.command,
                                 stdin=subprocess.PIPE,
@@ -135,7 +92,7 @@ class TestCase():
             except subprocess.TimeoutExpired:
                 proc.kill()
             if not self.valid_output(output):
-                return ('wrong output')
+                return None
 
         else:
             self.read_output(proc)
@@ -148,7 +105,7 @@ class TestCase():
         @param proc: The subprocess object representing the running Spy.
         @return Returns the output received after sending the command.
         """
-        time.sleep(0.2)
+        time.sleep(SLEEP_TIME)
         proc.stdin.write((self.commands_spy[0]+'\n'))
         proc.stdin.flush()
 
@@ -188,7 +145,7 @@ class TestCase():
         """
         return (self.output)
 
-    def valid_guid(self, guid):
+    def valid_guid(self, guid) -> bool:
         """
         @brief Check if a GUID has the correct pattern.
 
@@ -198,51 +155,74 @@ class TestCase():
         pattern = r'^((guid:)\s([0-9a-f]{2}\.){11}[0-9a-f]{2}\|([0-9a-f]\.){3}[0-9a-f]{1,})$'
         id_guid = guid[guid.find('guid:'):]
         if not re.match(pattern, id_guid):
+            print('Not valid guid: ')
+            print(guid)
             return False
         return True
 
-    def valid_rate(self, rate):
+    def valid_rate(self, rate) -> bool:
         """
         @brief Check if a rate is valid.
 
         @param rate: The rate to check.
         @return Returns True if the rate is valid, False otherwise.
         """
-        pattern = r'^((rate:)\s\d{1,}\s(Hz))$'
+        pattern_1 = r'^((rate:)\s\d*\.?\d*\s(Hz))$'     # rate: 10.5 Hz
+        pattern_2 = r'^((rate:)\s(inf)\s(Hz))$'         # rate: inf Hz
         id_rate = rate[rate.find('rate:'):]
-        if not re.match(pattern, id_rate):
-            return False
-        return True
-
-    def valid_output(self, output):
-        """Check the output ."""
-        if ('Fail' in self.name or (self.is_windows() and
-           ('--HelpCommand' == self.name))):
+        if re.match(pattern_1, id_rate):
             return True
+        if re.match(pattern_2, id_rate):
+            return True
+        print('Not valid rate: ')
+        print(rate)
+        return False
+
+    def valid_output(self, output) -> bool:
+        """
+        @brief Check the validity of the output against the expected output.
+
+        @param output: The actual output obtained from executing a command.
+        @return Returns True if the output matches the expected output or \
+        satisfies specific conditions for lines containing '%%guid%%' or '%%rate%%', \
+        False otherwise.
+
+        The function compares the provided 'output' with the expected output.
+        It checks each line of the 'output' and 'expected_output' to determine their validity.
+
+        If the entire 'output' matches the 'expected_output', the function returns True.
+        Otherwise, it iterates over each line and performs the following checks:
+        - If a line in 'expected_output' contains '%%guid%%', it calls the 'valid_guid()'.
+        - If a line in 'expected_output' contains '%%rate%%', it calls the 'valid_rate()'.
+        - If a line does not contain '%%guid%%' or '%%rate%%', it compares the corresponding \
+            lines in 'output' and 'expected_output' for equality.
+
+        If any line does not meet the expected conditions, the function returns False and prints \
+        the 'output' and 'expected_output' for debugging purposes.
+
+        """
         expected_output = self.output_command()
-        lines_expected_output = expected_output.splitlines()
-        lines_output = output.splitlines()
         if expected_output == output:
             return True
+
+        lines_expected_output = expected_output.splitlines()
+        lines_output = output.splitlines()
         guid = True
         rate = True
-        ignore_msgs = ['commit hash:', '- 01.0f', '\x1b[34;1m -> Function \x1b[36m',
-                       '\x1b[31;1m[\x1b[37;1mFASTDDSSPY_TOOL\x1b[31;1m Err']
         for i in range(len(lines_expected_output)):
-            if 'guid:' in lines_expected_output[i]:
-                guid = self.valid_guid(lines_expected_output[i])
-            elif 'rate:' in lines_expected_output[i]:
-                rate = self.valid_rate(lines_expected_output[i])
-            elif ((ignore_msgs[0] in lines_expected_output[i]) or
-                  (ignore_msgs[1] in lines_expected_output[i]) or
-                  (ignore_msgs[2] in lines_expected_output[i]) or
-                  (ignore_msgs[3] in lines_expected_output[i])):
-                pass
+            if '%%guid%%' in lines_expected_output[i]:
+                guid = self.valid_guid(lines_output[i])
+            elif '%%rate%%' in lines_expected_output[i]:
+                rate = self.valid_rate(lines_output[i])
             elif lines_expected_output[i] != lines_output[i]:
+                print('Output: ')
+                print(output)
+                print('Expected output: ')
+                print(expected_output)
                 return False
         return (guid and rate)
 
-    def stop_tool(self, proc):
+    def stop_tool(self, proc) -> int:
         """
         @brief Stop the running Spy.
 
@@ -254,13 +234,15 @@ class TestCase():
         except subprocess.TimeoutExpired:
             proc.kill()
 
-        time.sleep(0.2)
+        time.sleep(SLEEP_TIME)
 
         if not self.is_stop(proc):
             print('ERROR: DDS Spy still running')
             return 0
 
-    def stop_dds(self, proc):
+        return 1
+
+    def stop_dds(self, proc) -> int:
         """
         @brief Stop the DDS publisher.
 
@@ -274,7 +256,7 @@ class TestCase():
             except subprocess.TimeoutExpired:
                 proc.kill()
 
-            time.sleep(0.2)
+            time.sleep(SLEEP_TIME)
 
             if not self.is_stop(proc):
                 print('ERROR: DDS Publisher still running')
@@ -282,7 +264,7 @@ class TestCase():
 
         return 1
 
-    def is_stop(self, proc):
+    def is_stop(self, proc) -> bool:
         """
         @brief Check if the subprocess has stopped.
 
@@ -295,18 +277,3 @@ class TestCase():
         if (return_code is None):
             return False
         return True
-
-    def valid_returncode(self, returncode):
-        """
-        @brief Check if the return code indicates that \
-        process has finished cleanly.
-
-        @param returncode: The return code of the subprocess.
-        @return Returns True if the return code is zero,
-        indicating success, False otherwise. If the process
-        name contains the string 'Fail' return True if the return
-        code is not zero, False otherwise.
-        """
-        if 'Fail' in self.name:
-            return (returncode != 0)
-        return (returncode == 0)

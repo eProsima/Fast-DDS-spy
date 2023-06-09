@@ -26,23 +26,19 @@ class TestCase_instance (test_class.TestCase):
 
         This test launch:
             fastddsspy --config-path fastddsspy_tool/test/application/configuration/\
-                configuration_discovery_time.yaml
-            >> datawriter
+                configuration_discovery_time.yaml participants
             AdvancedConfigurationExample publisher
         """
         super().__init__(
-            name='ToolDatawriterDDSCommand',
-            one_shot=False,
+            name='ParticipantsDDSCommand',
+            one_shot=True,
             command=[],
             dds=True,
             config='fastddsspy_tool/test/application/configuration/\
 configuration_discovery_time.yaml',
             arguments_dds=[],
-            arguments_spy=['--config-path', 'configuration'],
-            commands_spy=['datawriter'],
-            output=""">> \x1b[0m- guid: 01.0f.d8.74.51.14.0a.a3.00.00.00.00|0.0.1.3\n\
-\n\
-  participant: Participant_pub\n\
-\n\
-  topic: HelloWorldTopic [HelloWorld]\n"""
+            arguments_spy=['--config-path', 'configuration', 'participants'],
+            commands_spy=[],
+            output="""- name: Participant_pub\n\
+guid: %%guid%%\n"""
         )

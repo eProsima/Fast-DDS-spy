@@ -26,23 +26,35 @@ class TestCase_instance (test_class.TestCase):
 
         This test launch:
             fastddsspy --config-path fastddsspy_tool/test/application/configuration/\
-                configuration_discovery_time.yaml topics HelloWorldTopic
-            AdvancedConfigurationExample publisher
+                configuration_wrong_type.yaml datareaders
         """
         super().__init__(
-            name='TopicsNameDDSCommand',
+            name='--configFailTypeCommand',
             one_shot=True,
             command=[],
-            dds=True,
+            dds=False,
             config='fastddsspy_tool/test/application/configuration/\
-configuration_discovery_time.yaml',
+configuration_wrong_type.yaml',
             arguments_dds=[],
-            arguments_spy=['--config-path', 'configuration', 'topics', 'HelloWorldTopic'],
+            arguments_spy=['--config-path', 'configuration', 'datareaders'],
             commands_spy=[],
-            output="""name: HelloWorldTopic\n\
-type: HelloWorld\n\
-datawriters:\n\
-- 01.0f.d8.74.8b.fc.26.98.00.00.00.00|0.0.1.3\n\
-rate: 10 Hz\n\
-dynamic_type_discovered: false\n"""
+            output="""\x1b[37;1m2023-04-13 11:36:09.453 \
+\x1b[31;1m[\x1b[37;1mFASTDDSSPY_TOOL\x1b[31;1m Error] \
+\x1b[37mError Loading Fast DDS Spy Configuration from file \
+/home/user/DDS-Spy/build/fastddsspy_tool\
+/test/application/configuration/configuration_wrong_type.yaml. \
+Error message:\n Error loading DDS Router configuration from yaml:\n \
+Error getting required value of type <N8eprosima7ddspipe4core5types8\
+DomainIdE> in tag <domain> :\n Incorrect format for primitive value, \
+expected <j>:\n yaml-cpp: error at line 4, column 11: bad conversion\
+\x1b[34;1m -> Function \x1b[36mmain\x1b[m\n"""
         )
+
+    def valid_output(self, output):
+        """
+        @brief Validate the output.
+
+        @param output: The actual output obtained from executing a command.
+        @return Always returns True.
+        """
+        return True

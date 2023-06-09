@@ -42,5 +42,5 @@ configuration_discovery_time.yaml',
             commands_spy=['participants'],
             output=""">> \x1b[0m- name: Participant_pub\n\
 \n\
-  guid: 01.0f.d8.74.09.0b.fa.ae.00.00.00.00|0.0.1.c1\n"""
+  guid: %%guid%%\n"""
         )

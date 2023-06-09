@@ -19,72 +19,28 @@
 find_package(PythonInterp 3 REQUIRED)
 
 # Name of files to test
-set(TEST_LIST
-    one_shot__config
-    one_shot__config_fail_file
-    one_shot__config_fail_type
-    one_shot__config_fail_empty_arg
-    one_shot__log_filter
-    one_shot__log_filter_fail
-    one_shot__log_verb_fail
-    one_shot__log_verb_info
-    one_shot__log_verb_warning
-    one_shot__log_verb_error
-    one_shot__reload_time
-    one_shot__reload_time_fail
-    one_shot__debug
-    one_shot_help
-    one_shot__help
-    one_shot_null
-    one_shot__null
-    one_shot__version
-    one_shot_datareader
-    one_shot_datareader_verbose
-    one_shot_datawriter
-    one_shot_datawriter_verbose
-    one_shot_participants
-    one_shot_participants_verbose
-    one_shot_quit
-    one_shot_show_all
-    one_shot_show_fail
-    one_shot_show_topic
-    one_shot_show_topic_verbose
-    one_shot_topics
-    one_shot_topics_name
-    one_shot_topics_verbose
-    tool_datareader
-    tool_datawriter
-    tool_help
-    tool_null
-    tool_participants
-    tool_show_all
-    tool_show_topic
-    tool_topics
-    tool_version
-    one_shot_datareader_dds
-    one_shot_datareader_guid_dds
-    one_shot_datareader_verbose_dds
-    one_shot_datawriter_dds
-    one_shot_datawriter_verbose_dds_qos
-    one_shot_datawriter_guid_dds_fail
-    one_shot_datawriter_verbose_dds
-    one_shot_help_dds
-    one_shot_participants_dds
-    one_shot_participants_guid_dds
-    one_shot_participants_verbose_dds
-    one_shot_quit_dds
-    one_shot_topics_dds
-    one_shot_topics_name_dds
-    one_shot_topics_verbose_dds
-    tool_datareader_dds
-    tool_datawriter_dds
-    tool_help_dds
-    tool_participants_dds
-    tool_show_topic_dds
-    tool_topics_dds
+
+function(GET_FILENAMES_WITHOUT_PARENT PATH_LIST RESULT_VARIABLE)
+    set(FILENAMES "")
+
+    foreach(PATH ${${PATH_LIST}})
+        get_filename_component(FILENAME ${PATH} NAME)
+        string(REGEX REPLACE "\\.[^.]*$" "" fileNameWithoutExtension ${FILENAME})
+        list(APPEND FILENAMES ${fileNameWithoutExtension})
+    endforeach()
+
+    set(${RESULT_VARIABLE} ${FILENAMES} PARENT_SCOPE)
+endfunction()
+
+file(
+    GLOB_RECURSE TEST_PATH
+    "test_cases/*.py"
 )
 
-# windows auxiliary script to fork test execution
+GET_FILENAMES_WITHOUT_PARENT(TEST_PATH TEST_FILENAMES)
+
+message(STATUS "TEST FILES NAME: ${TEST_FILENAMES}")
+
 set(PWS_LAUNCHER
     ${CMAKE_CURRENT_SOURCE_DIR}/launcher.ps1
 )
@@ -144,6 +100,9 @@ if(WIN32)
 
 endif(WIN32)
 
+# compile AdvanceConfigurationExample needed for tests
+add_subdirectory(dds/AdvancedConfigurationExample)
+
 set(TEST_NEEDED_SOURCES
         configuration/configuration_basic.yaml
         configuration/configuration_wrong_empty_arg.yaml
@@ -158,8 +117,8 @@ foreach(NEEDED_SOURCE ${TEST_NEEDED_SOURCES})
 endforeach()
 
 # populate the tests
-foreach(TEST IN LISTS TEST_LIST)
-    set(TEST_NAME "tool.application.fastddsspy.test.${TEST}")
+foreach(TEST IN LISTS TEST_FILENAMES)
+    set(TEST_NAME "tool.application.fastddsspy.test.test_cases.${TEST}")
 
     if(WIN32)
         add_test(
@@ -168,6 +127,7 @@ foreach(TEST IN LISTS TEST_LIST)
                     ${PYTHON_EXECUTABLE}
                     ${CMAKE_CURRENT_SOURCE_DIR}/test.py
                     $<TARGET_FILE:fastddsspy_tool>
+                    $<TARGET_FILE:AdvancedConfigurationExample>
                     ${TEST}
         )
 
@@ -178,12 +138,14 @@ foreach(TEST IN LISTS TEST_LIST)
                 COMMAND ${PYTHON_EXECUTABLE}
                         ${CMAKE_CURRENT_SOURCE_DIR}/test.py
                         "--exe" $<TARGET_FILE:fastddsspy_tool>
+                        "--pub" $<TARGET_FILE:AdvancedConfigurationExample>
                         "--test" ${TEST}
             )
 
     endif()
 
     # Add labels to tests
+    # TODO use cmake_utils
     set_test_labels(${TEST_NAME})
 
     # Set test properties
@@ -196,5 +158,3 @@ foreach(TEST IN LISTS TEST_LIST)
 endforeach()
 
 unset(TEST_ENVIRONMENT)
-
-add_subdirectory(dds/AdvancedConfigurationExample)

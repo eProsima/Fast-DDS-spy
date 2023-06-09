@@ -25,17 +25,24 @@ class TestCase_instance (test_class.TestCase):
         @brief Initialize the TestCase_instance object.
 
         This test launch:
-            fastddsspy --version
+            fastddsspy --config-path fastddsspy_tool/test/application/configuration/\
+                configuration_discovery_time.yaml
+            >> datawriter
+            AdvancedConfigurationExample publisher
         """
         super().__init__(
-            name='--VersionCommand',
-            one_shot=True,
+            name='ToolDatawriterDDSCommand',
+            one_shot=False,
             command=[],
-            dds=False,
-            config='',
+            dds=True,
+            config='fastddsspy_tool/test/application/configuration/\
+configuration_discovery_time.yaml',
             arguments_dds=[],
-            arguments_spy=['--version'],
-            commands_spy=[],
-            output="""Fast DDS Spy v0.1.0\
-commit hash: 16ed7e8c93d7481d8b426746af9ec3ffa323f451\n"""
+            arguments_spy=['--config-path', 'configuration'],
+            commands_spy=['datawriter'],
+            output=""">> \x1b[0m- guid: %%guid%%\n\
+\n\
+  participant: Participant_pub\n\
+\n\
+  topic: HelloWorldTopic [HelloWorld]\n"""
         )

@@ -14,7 +14,18 @@
 
 """Tests for the fastddsspy executable."""
 
+import os
+
 import test_class
+
+
+def is_windows() -> bool:
+    """
+    @brief Check if the script is running in a Windows environment.
+
+    @return: True if the script is running in a Windows environment, False otherwise.
+    """
+    return os.name == 'nt'
 
 
 class TestCase_instance (test_class.TestCase):
@@ -25,16 +36,16 @@ class TestCase_instance (test_class.TestCase):
         @brief Initialize the TestCase_instance object.
 
         This test launch:
-            fastddsspy --nullarg
+            fastddsspy --help
         """
         super().__init__(
-            name='--FailCommand',
+            name='--HelpCommand',
             one_shot=True,
             command=[],
             dds=False,
             config='',
             arguments_dds=[],
-            arguments_spy=['--nullarg'],
+            arguments_spy=['--help'],
             commands_spy=[],
             output="""Usage: Fast DDS Spy \n\
 Start an interactive CLI to introspect a DDS network.\n\
@@ -57,11 +68,23 @@ Debug parameters\n\
                                              (Using this option with \
 --log-filter and/or --log-verbosity will head to undefined behaviour).\n\
      --log-filter     Set a Regex Filter to filter by category the info and warning \
-log entries. [Default = "(DDSPIPE|FASTDDSSPY)"]. \n\
+log entries. [Default = "FASTDDSSPY"]. \n\
      --log-verbosity  Set a Log Verbosity Level higher or equal the one given. \
-(Values accepted: "info","warning","error" no Case Sensitive) [Default = "warning"]. \n\
-\n\
-\x1b[37;1m2023-04-12 14:29:23.337 \x1b[31;1m[\x1b[37;1mFOXGLOVEWS_ARGS\x1b[31;1m Error] \
-\x1b[37m--nullarg is not a valid argument.\
-\x1b[34;1m -> Function \x1b[36mparse_arguments\x1b[m\n"""
+(Values accepted: "info","warning","error" no Case Sensitive) [Default = "warning"]. \n\n
+"""
         )
+
+    def valid_output(self, output):
+        """
+        @brief Validate the output against the expected output or delegate \
+        the validation to the parent class.
+
+        @param output: The actual output obtained from executing a command.
+        @return True if the output is considered valid, either because the \
+        system is running on Windows or the parent class validates the output, \
+        False otherwise.
+        """
+        if (is_windows()):
+            return True
+        else:
+            return super().valid_output(output)

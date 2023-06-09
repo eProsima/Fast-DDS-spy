@@ -40,7 +40,7 @@ configuration_discovery_time.yaml',
             arguments_spy=['--config-path', 'configuration', 'participants', 'verbose'],
             commands_spy=[],
             output="""- name: Participant_pub\n\
-  guid: 01.0f.cd.6f.47.88.19.6b.00.00.00.00|0.0.1.c1\n\
+  guid: %%guid%%\n\
   datawriters:\n\
     - HelloWorldTopic [HelloWorld] (1)\n"""
         )

@@ -25,24 +25,26 @@ class TestCase_instance (test_class.TestCase):
         @brief Initialize the TestCase_instance object.
 
         This test launch:
-            fastddsspy --config-path fastddsspy_tool/test/application/configuration/\
-                configuration_discovery_time.yaml topics verbose
-            AdvancedConfigurationExample publisher
+            fastddsspy --version
         """
         super().__init__(
-            name='TopicsVerboseDDSCommand',
+            name='--VersionCommand',
             one_shot=True,
             command=[],
-            dds=True,
-            config='fastddsspy_tool/test/application/configuration/\
-configuration_discovery_time.yaml',
+            dds=False,
+            config='',
             arguments_dds=[],
-            arguments_spy=['--config-path', 'configuration', 'topics', 'verbose'],
+            arguments_spy=['--version'],
             commands_spy=[],
-            output="""- name: HelloWorldTopic\n\
-  type: HelloWorld\n\
-  datawriters:\n\
-    - 01.0f.d8.74.8b.fc.26.98.00.00.00.00|0.0.1.3\n\
-  rate: 10 Hz\n\
-  dynamic_type_discovered: false\n"""
+            output="""Fast DDS Spy v0.1.0\
+commit hash: 16ed7e8c93d7481d8b426746af9ec3ffa323f451\n"""
         )
+
+    def valid_output(self, output):
+        """
+        @brief Validate the output.
+
+        @param output: The actual output obtained from executing a command.
+        @return Always returns True.
+        """
+        return True

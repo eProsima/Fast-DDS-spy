@@ -14,6 +14,8 @@
 
 """Tests for the fastddsspy executable."""
 
+import re
+
 import test_class
 
 
@@ -26,28 +28,38 @@ class TestCase_instance (test_class.TestCase):
 
         This test launch:
             fastddsspy --config-path fastddsspy_tool/test/application/configuration/\
-                configuration_wrong_empty_arg.yaml datareaders
+                configuration_discovery_time.yaml topics verbose
+            AdvancedConfigurationExample publisher
         """
         super().__init__(
-            name='--configFailArgCommand',
+            name='TopicsVerboseDDSCommand',
             one_shot=True,
             command=[],
-            dds=False,
+            dds=True,
             config='fastddsspy_tool/test/application/configuration/\
-configuration_wrong_empty_arg.yaml',
+configuration_discovery_time.yaml',
             arguments_dds=[],
-            arguments_spy=['--config-path', 'configuration', 'datareaders'],
+            arguments_spy=['--config-path', 'configuration', 'topics', 'verbose'],
             commands_spy=[],
-            output="""\x1b[37;1m2023-04-13 11:52:11.327 \
-\x1b[31;1m[\x1b[37;1mFASTDDSSPY_TOOL\x1b[31;1m Error] \
-\x1b[37mError Loading Fast DDS Spy Configuration from file \
-/home/irenebm/eprosima/annapurna/DDS-Spy/build/fastddsspy_tool\
-/test/application/configuration/configuration_wrong_empty_arg.yaml. \
-Error message:\n\
- Error loading DDS Router configuration from yaml:\n\
- Error getting required value of type <N8eprosima7ddspipe4core5types8\
-DomainIdE> in\
- tag <domain> :\n Trying to read a primitive value of type <j> from\
- a non scalar yaml.\
-\x1b[34;1m -> Function \x1b[36mmain\x1b[m\n"""
+            output="""- name: HelloWorldTopic\n\
+  type: HelloWorld\n\
+  datawriters:\n\
+    - %%guid%%\n\
+  rate: %%rate%%\n\
+  dynamic_type_discovered: false\n"""
         )
+
+    def valid_guid(self, guid) -> bool:
+        """
+        @brief Check if a GUID has the correct pattern.
+
+        @param guid: The GUID to check.
+        @return Returns True if the GUID is valid, False otherwise.
+        """
+        pattern = r'^((-)\s([0-9a-f]{2}\.){11}[0-9a-f]{2}\|([0-9a-f]\.){3}[0-9a-f]{1,})$'
+        id_guid = guid[guid.find('-'):]
+        if not re.match(pattern, id_guid):
+            print('Not valid guid: ')
+            print(guid)
+            return False
+        return True

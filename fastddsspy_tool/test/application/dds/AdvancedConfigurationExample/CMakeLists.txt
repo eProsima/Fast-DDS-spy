@@ -14,7 +14,9 @@
 
 cmake_minimum_required(VERSION 3.16.3)
 
-project(AdvancedConfigurationExample VERSION 1 LANGUAGES CXX)
+project(AdvancedConfigurationExample_FastDDSSpy_tool_tests VERSION 1 LANGUAGES CXX)
+
+set(EXECUTABLE_NAME "AdvancedConfigurationExample")
 
 # Find requirements
 if(NOT fastcdr_FOUND)
@@ -39,13 +41,13 @@ message(STATUS "Configuring AdvancedConfiguration example...")
 file(GLOB ADVANCED_CONFIG_EXAMPLE_SOURCES_CXX "*.cxx")
 file(GLOB ADVANCED_CONFIG_EXAMPLE_SOURCES_CPP "*.cpp")
 
-add_executable(${PROJECT_NAME} ${ADVANCED_CONFIG_EXAMPLE_SOURCES_CXX} ${ADVANCED_CONFIG_EXAMPLE_SOURCES_CPP})
-target_compile_definitions(${PROJECT_NAME} PRIVATE
+add_executable(${EXECUTABLE_NAME} ${ADVANCED_CONFIG_EXAMPLE_SOURCES_CXX} ${ADVANCED_CONFIG_EXAMPLE_SOURCES_CPP})
+target_compile_definitions(${EXECUTABLE_NAME} PRIVATE
     $<$<AND:$<NOT:$<BOOL:${WIN32}>>,$<STREQUAL:"${CMAKE_BUILD_TYPE}","Debug">>:__DEBUG>
     $<$<BOOL:${INTERNAL_DEBUG}>:__INTERNALDEBUG> # Internal debug activated.
     $<$<BOOL:${SHM_TRANSPORT_DEFAULT}>:SHM_TRANSPORT_BUILTIN> # Enable SHM as built-in transport
 )
 
-target_link_libraries(${PROJECT_NAME} fastrtps fastcdr fastdds::optionparser)
-install(TARGETS ${PROJECT_NAME}
-    RUNTIME DESTINATION examples/cpp/dds/${PROJECT_NAME}/${BIN_INSTALL_DIR})
+target_link_libraries(${EXECUTABLE_NAME} fastrtps fastcdr fastdds::optionparser)
+install(TARGETS ${EXECUTABLE_NAME}
+    RUNTIME DESTINATION examples/cpp/dds/${EXECUTABLE_NAME}/${BIN_INSTALL_DIR})

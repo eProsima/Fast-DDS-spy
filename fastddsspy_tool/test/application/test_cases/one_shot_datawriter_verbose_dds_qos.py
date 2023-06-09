@@ -26,26 +26,25 @@ class TestCase_instance (test_class.TestCase):
 
         This test launch:
             fastddsspy --config-path fastddsspy_tool/test/application/configuration/\
-                configuration_wrong_type.yaml datareaders
+                configuration_discovery_time.yaml datawriter verbose
+            AdvancedConfigurationExample publisher --reliable --transient
         """
         super().__init__(
-            name='--configFailTypeCommand',
+            name='DatawriterVerboseDDSQosCommand',
             one_shot=True,
             command=[],
-            dds=False,
+            dds=True,
             config='fastddsspy_tool/test/application/configuration/\
-configuration_wrong_type.yaml',
-            arguments_dds=[],
-            arguments_spy=['--config-path', 'configuration', 'datareaders'],
+configuration_discovery_time.yaml',
+            arguments_dds=['--reliable', '--transient'],
+            arguments_spy=['--config-path', 'configuration', 'datawriter', 'verbose'],
             commands_spy=[],
-            output="""\x1b[37;1m2023-04-13 11:36:09.453 \
-\x1b[31;1m[\x1b[37;1mFASTDDSSPY_TOOL\x1b[31;1m Error] \
-\x1b[37mError Loading Fast DDS Spy Configuration from file \
-/home/irenebm/eprosima/annapurna/DDS-Spy/build/fastddsspy_tool\
-/test/application/configuration/configuration_wrong_type.yaml. \
-Error message:\n Error loading DDS Router configuration from yaml:\n \
-Error getting required value of type <N8eprosima7ddspipe4core5types8\
-DomainIdE> in tag <domain> :\n Incorrect format for primitive value, \
-expected <j>:\n yaml-cpp: error at line 4, column 11: bad conversion\
-\x1b[34;1m -> Function \x1b[36mmain\x1b[m\n"""
+            output="""- guid: %%guid%%\n\
+  participant: Participant_pub\n\
+  topic:\n\
+    name: HelloWorldTopic\n\
+    type: HelloWorld\n\
+  qos:\n\
+    durability: transient-local\n\
+    reliability: reliable\n"""
         )

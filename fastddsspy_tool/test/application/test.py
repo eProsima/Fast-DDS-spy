@@ -16,11 +16,12 @@ Tests for the fastddsspy executable.
 
 Contains a package of system test for fastddsspy tool
 
-Usage: test.py -e <binary_path>
+Usage: test.py --exe <binary_path> --pub <publisher_path> --test <test_name>
 
 Arguments:
     Fast DDS Spy binary path          : -e | --exe binary_path
-    Run test in Debug mode          : -t | --test
+    Fast DDS publisher path           : -p | --pub publisher_path
+    Test name                         : -t | --test
 """
 import argparse
 import importlib
@@ -31,6 +32,15 @@ import sys
 DESCRIPTION = """Script to execute Fast DDS Spy executable test"""
 USAGE = ('python3 tests.py -e <path/to/fastddsspy-executable>'
          ' [-d]')
+
+
+def is_linux() -> bool:
+    """
+    @brief Check if the script is running in a Linux environment.
+
+    @return: True if the script is running in a Linux environment, False otherwise.
+    """
+    return os.name == 'posix'
 
 
 def executable_permission_value():
@@ -76,7 +86,14 @@ def parse_options():
         '--exe',
         type=file_exist_and_have_permissions,
         required=True,
-        help='Path to discovery-server executable.'
+        help='Path to DDS Spy executable.'
+    )
+    required_args.add_argument(
+        '-p',
+        '--pub',
+        type=file_exist_and_have_permissions,
+        required=True,
+        help='Path to DDS Publisher executable.'
     )
     required_args.add_argument(
         '-t',
@@ -85,64 +102,52 @@ def parse_options():
         required=True,
         help='Test to run.'
     )
-    parser.add_argument(
-        '-d',
-        '--debug',
-        action='store_true',
-        help='Print test debugging info.'
-    )
+
     return parser.parse_args()
 
 
-def get_exec_dds_arguments_spy(test_class, args):
+def get_config_path_spy(arguments_spy, exec_spy, config):
     """
-    @brief Get the DDS Publisher executable and the arguments for the publisher and the Spy.
+    @brief Get the arguments for the publisher and the Spy.
 
     @param test_class: The test class object.
     @param args: The command-line arguments.
     """
-    local_path_dds = 'fastddsspy_tool/test/application/dds/AdvancedConfigurationExample/'
-    if test_class.is_linux():
-        local_dds = local_path_dds + 'AdvancedConfigurationExample'
-        test_class.exec_dds = args.exe.replace('fastddsspy_tool/fastddsspy', local_dds)
-        if test_class.config != '':
-            index = test_class.arguments_spy.index('configuration')
-            test_class.arguments_spy[index] = \
-                args.exe.replace('fastddsspy_tool/fastddsspy',
-                                 test_class.config)
+    index = arguments_spy.index('configuration')
+    if is_linux():
+        arguments_spy[index] = \
+            exec_spy.replace('fastddsspy_tool/fastddsspy',
+                             config)
     else:
-
-        if 'Debug' in args.exe:
+        if 'Debug' in exec_spy:
             build_type = 'Debug'
         else:
             build_type = 'Release'
-
-        local_dds = local_path_dds + build_type + '/AdvancedConfigurationExample'
-        test_class.exec_dds = args.exe.replace('fastddsspy_tool/' + build_type + '/fastddsspy',
-                                               local_dds)
-
-        if test_class.config != '':
-            index = test_class.arguments_spy.index('configuration')
-            test_class.arguments_spy[index] = \
-                args.exe.replace('fastddsspy_tool/' + build_type + '/fastddsspy.exe',
-                                 test_class.config)
+        arguments_spy[index] = \
+            exec_spy.replace('fastddsspy_tool/' + build_type + '/fastddsspy.exe',
+                             config)
+    return arguments_spy
 
 
 def main():
     """@brief The main entry point of the program."""
     args = parse_options()
 
-    module = importlib.import_module(args.test)
+    module = importlib.import_module('test_cases.'+args.test)
     test_class = module.TestCase_instance()
     test_class.exec_spy = args.exe
+    test_class.exec_dds = args.pub
 
-    get_exec_dds_arguments_spy(test_class, args)
+    if test_class.config != '':
+        test_class.arguments_spy = get_config_path_spy(
+                                    test_class.arguments_spy,
+                                    test_class.exec_spy,
+                                    test_class.config)
 
     dds = test_class.run_dds()
-
     spy = test_class.run_tool()
 
-    if (spy == 'wrong output'):
+    if spy is None:
         print('ERROR: Wrong output')
         test_class.stop_dds(dds)
         sys.exit(1)

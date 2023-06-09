@@ -14,6 +14,8 @@
 
 """Tests for the fastddsspy executable."""
 
+import re
+
 import test_class
 
 
@@ -26,19 +28,38 @@ class TestCase_instance (test_class.TestCase):
 
         This test launch:
             fastddsspy --config-path fastddsspy_tool/test/application/configuration/\
-                configuration_discovery_time.yaml participants
+                configuration_discovery_time.yaml topics HelloWorldTopic
             AdvancedConfigurationExample publisher
         """
         super().__init__(
-            name='ParticipantsDDSCommand',
+            name='TopicsNameDDSCommand',
             one_shot=True,
             command=[],
             dds=True,
             config='fastddsspy_tool/test/application/configuration/\
 configuration_discovery_time.yaml',
             arguments_dds=[],
-            arguments_spy=['--config-path', 'configuration', 'participants'],
+            arguments_spy=['--config-path', 'configuration', 'topics', 'HelloWorldTopic'],
             commands_spy=[],
-            output="""- name: Participant_pub\n\
-guid: 01.0f.cd.6f.47.88.19.6b.00.00.00.00|0.0.1.c1\n"""
+            output="""name: HelloWorldTopic\n\
+type: HelloWorld\n\
+datawriters:\n\
+- %%guid%%\n\
+rate: %%rate%%\n\
+dynamic_type_discovered: false\n"""
         )
+
+    def valid_guid(self, guid) -> bool:
+        """
+        @brief Check if a GUID has the correct pattern.
+
+        @param guid: The GUID to check.
+        @return Returns True if the GUID is valid, False otherwise.
+        """
+        pattern = r'^((-)\s([0-9a-f]{2}\.){11}[0-9a-f]{2}\|([0-9a-f]\.){3}[0-9a-f]{1,})$'
+        id_guid = guid[guid.find('-'):]
+        if not re.match(pattern, id_guid):
+            print('Not valid guid: ')
+            print(guid)
+            return False
+        return True

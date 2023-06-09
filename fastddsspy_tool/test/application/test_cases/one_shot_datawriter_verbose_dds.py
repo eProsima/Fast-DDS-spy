@@ -26,22 +26,25 @@ class TestCase_instance (test_class.TestCase):
 
         This test launch:
             fastddsspy --config-path fastddsspy_tool/test/application/configuration/\
-                configuration_discovery_time.yaml topics
+                configuration_discovery_time.yaml datawriter verbose
             AdvancedConfigurationExample publisher
         """
         super().__init__(
-            name='TopicsDDSCommand',
+            name='DatawriterVerboseDDSCommand',
             one_shot=True,
             command=[],
             dds=True,
             config='fastddsspy_tool/test/application/configuration/\
 configuration_discovery_time.yaml',
             arguments_dds=[],
-            arguments_spy=['--config-path', 'configuration', 'topics'],
+            arguments_spy=['--config-path', 'configuration', 'datawriter', 'verbose'],
             commands_spy=[],
-            output="""- name: HelloWorldTopic\n\
-  type: HelloWorld\n\
-  datawriters: 1\n\
-  datareaders: 0\n\
-  rate: 10 Hz\n"""
+            output="""- guid: %%guid%%\n\
+  participant: Participant_pub\n\
+  topic:\n\
+    name: HelloWorldTopic\n\
+    type: HelloWorld\n\
+  qos:\n\
+    durability: volatile\n\
+    reliability: best-effort\n"""
         )
