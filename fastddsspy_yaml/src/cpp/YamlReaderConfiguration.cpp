@@ -32,6 +32,7 @@ namespace spy {
 namespace yaml {
 
 using namespace eprosima::ddspipe::core;
+using namespace eprosima::ddspipe::core::types;
 using namespace eprosima::ddspipe::participants;
 using namespace eprosima::ddspipe::yaml;
 
@@ -90,13 +91,13 @@ void Configuration::load_configuration_(
         // from which a response is expected.
         // Hence, if these topics are not blocked, the client would wrongly believe Fast-DDS-spy is a server, thus
         // sending a request for which a response will not be received.
-        types::WildcardDdsFilterTopic rpc_request_topic, rpc_response_topic;
+        WildcardDdsFilterTopic rpc_request_topic, rpc_response_topic;
         rpc_request_topic.topic_name.set_value("rq/*");
         rpc_response_topic.topic_name.set_value("rr/*");
         blocklist.insert(
-            utils::Heritable<types::WildcardDdsFilterTopic>::make_heritable(rpc_request_topic));
+            utils::Heritable<WildcardDdsFilterTopic>::make_heritable(rpc_request_topic));
         blocklist.insert(
-            utils::Heritable<types::WildcardDdsFilterTopic>::make_heritable(rpc_response_topic));
+            utils::Heritable<WildcardDdsFilterTopic>::make_heritable(rpc_response_topic));
 
     }
     catch (const std::exception& e)
@@ -114,21 +115,21 @@ void Configuration::load_dds_configuration_(
     // Get optional allowlist
     if (YamlReader::is_tag_present(yml, ALLOWLIST_TAG))
     {
-        allowlist = YamlReader::get_set<utils::Heritable<ddspipe::core::types::IFilterTopic>>(yml, ALLOWLIST_TAG,
+        allowlist = YamlReader::get_set<utils::Heritable<IFilterTopic>>(yml, ALLOWLIST_TAG,
                         version);
 
         // Add to allowlist always the type object topic
-        ddspipe::core::types::WildcardDdsFilterTopic internal_topic;
-        internal_topic.topic_name.set_value(ddspipe::core::types::TYPE_OBJECT_TOPIC_NAME);
+        WildcardDdsFilterTopic internal_topic;
+        internal_topic.topic_name.set_value(TYPE_OBJECT_TOPIC_NAME);
         allowlist.insert(
-            utils::Heritable<ddspipe::core::types::WildcardDdsFilterTopic>::make_heritable(internal_topic));
+            utils::Heritable<WildcardDdsFilterTopic>::make_heritable(internal_topic));
     }
 
     /////
     // Get optional blocklist
     if (YamlReader::is_tag_present(yml, BLOCKLIST_TAG))
     {
-        blocklist = YamlReader::get_set<utils::Heritable<ddspipe::core::types::IFilterTopic>>(yml, BLOCKLIST_TAG,
+        blocklist = YamlReader::get_set<utils::Heritable<IFilterTopic>>(yml, BLOCKLIST_TAG,
                         version);
     }
 
@@ -137,14 +138,14 @@ void Configuration::load_dds_configuration_(
     if (YamlReader::is_tag_present(yml, BUILTIN_TAG))
     {
         // WARNING: Parse builtin topics AFTER specs, as some topic-specific default values are set there
-        builtin_topics = YamlReader::get_set<utils::Heritable<ddspipe::core::types::DistributedTopic>>(yml, BUILTIN_TAG,
+        builtin_topics = YamlReader::get_set<utils::Heritable<DistributedTopic>>(yml, BUILTIN_TAG,
                         version);
     }
 
     // Set the domain in Simple Participant Configuration
     if (YamlReader::is_tag_present(yml, DOMAIN_ID_TAG))
     {
-        simple_configuration->domain = YamlReader::get<ddspipe::core::types::DomainId>(yml, DOMAIN_ID_TAG, version);
+        simple_configuration->domain = YamlReader::get<DomainId>(yml, DOMAIN_ID_TAG, version);
     }
 }
 
@@ -161,7 +162,7 @@ void Configuration::load_specs_configuration_(
     // Get optional maximum history depth
     if (YamlReader::is_tag_present(yml, MAX_HISTORY_DEPTH_TAG))
     {
-        ddspipe::core::types::TopicQoS::default_history_depth = YamlReader::get<unsigned int>(
+        TopicQoS::default_history_depth = YamlReader::get<unsigned int>(
             yml,
             MAX_HISTORY_DEPTH_TAG,
             version);
