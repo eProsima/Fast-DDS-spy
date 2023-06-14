@@ -55,7 +55,7 @@ int main(
     eprosima::utils::Duration_ms reload_time = 0;
 
     // Debug options
-    std::string log_filter = "(DDSPIPE|FASTDDSSPY)";
+    std::string log_filter = "FASTDDSSPY";
     eprosima::fastdds::dds::Log::Kind log_verbosity = eprosima::fastdds::dds::Log::Kind::Warning;
 
     // One shot command
