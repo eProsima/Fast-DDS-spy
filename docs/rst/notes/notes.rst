@@ -6,9 +6,8 @@
 Notes
 #####
 
-..
-    TODO uncomment when there are forthcoming notes
-    .. include:: forthcoming_version.rst
+.. TODO uncomment when there are forthcoming notes
+.. include:: forthcoming_version.rst
 
 Version v0.1.0
 ==============
