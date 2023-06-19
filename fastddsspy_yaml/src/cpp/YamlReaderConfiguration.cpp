@@ -17,6 +17,7 @@
 #include <ddspipe_core/types/topic/dds/DdsTopic.hpp>
 #include <ddspipe_core/types/topic/filter/IFilterTopic.hpp>
 #include <ddspipe_core/types/topic/filter/WildcardDdsFilterTopic.hpp>
+#include <ddspipe_participants/types/address/Address.hpp>
 
 #include <ddspipe_yaml/yaml_configuration_tags.hpp>
 #include <ddspipe_yaml/Yaml.hpp>
@@ -34,6 +35,7 @@ namespace yaml {
 using namespace eprosima::ddspipe::core;
 using namespace eprosima::ddspipe::core::types;
 using namespace eprosima::ddspipe::participants;
+using namespace eprosima::ddspipe::participants::types;
 using namespace eprosima::ddspipe::yaml;
 
 Configuration::Configuration()
@@ -146,6 +148,38 @@ void Configuration::load_dds_configuration_(
     if (YamlReader::is_tag_present(yml, DOMAIN_ID_TAG))
     {
         simple_configuration->domain = YamlReader::get<DomainId>(yml, DOMAIN_ID_TAG, version);
+    }
+
+    /////
+    // Get optional whitelist interfaces
+    if (YamlReader::is_tag_present(yml, WHITELIST_INTERFACES_TAG))
+    {
+        simple_configuration->whitelist = YamlReader::get_set<IpType>(yml, WHITELIST_INTERFACES_TAG,
+                        version);
+    }
+
+    // Optional get Transport protocol
+    if (YamlReader::is_tag_present(yml, TRANSPORT_DESCRIPTORS_TRANSPORT_TAG))
+    {
+        simple_configuration->transport = YamlReader::get<TransportDescriptors>(yml,
+                        TRANSPORT_DESCRIPTORS_TRANSPORT_TAG,
+                        version);
+    }
+    else
+    {
+        simple_configuration->transport = TransportDescriptors::builtin;
+    }
+
+    // Optional get ignore participant flags
+    if (YamlReader::is_tag_present(yml, IGNORE_PARTICIPANT_FLAGS_TAG))
+    {
+        simple_configuration->ignore_participant_flags = YamlReader::get<IgnoreParticipantFlags>(yml,
+                        IGNORE_PARTICIPANT_FLAGS_TAG,
+                        version);
+    }
+    else
+    {
+        simple_configuration->ignore_participant_flags = IgnoreParticipantFlags::no_filter;
     }
 }
 
