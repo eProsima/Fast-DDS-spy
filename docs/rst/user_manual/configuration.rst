@@ -202,15 +202,41 @@ Default Configuration
 
 This is a YAML file that uses all supported configurations and set them as default:
 
+.. warning::
+
+    This example can be used as a quick reference, but it may not be correct due to incompatibility or exclusive properties. **Do not take it as a working example**.
+
 .. code-block:: yaml
 
     version: 1.0
 
     dds:
       domain: 0
+
       allowlist:
-        - name: "*"
+        - name: "topic_name"
+          type: "topic_type"
+
       blocklist:
+        - name: "topic_name"
+          type: "topic_type"
+
+      builtin-topics:
+        - name: "HelloWorldTopic"
+          type: "HelloWorld"
+          qos:
+            reliability: true
+            durability: true
+            keyed: false
+            partitions: true
+            ownership: false
+            downsampling: 4
+            max-reception-rate: 10
+
+      ignore-participant-flags: no_filter
+      transport: builtin
+      whitelist-interfaces:
+        - "127.0.0.1"
 
     specs:
       threads: 12
