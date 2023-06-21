@@ -45,6 +45,7 @@ commit hash: 16ed7e8c93d7481d8b426746af9ec3ffa323f451\n"""
         @brief Validate the output.
 
         @param output: The actual output obtained from executing a command.
+        @todo Parse the output
         @return Always returns True.
         """
         return True

@@ -20,13 +20,13 @@ find_package(PythonInterp 3 REQUIRED)
 
 # Name of files to test
 
-function(GET_FILENAMES_WITHOUT_PARENT PATH_LIST RESULT_VARIABLE)
+function(get_filenames_without_parent PATH_LIST RESULT_VARIABLE)
     set(FILENAMES "")
 
     foreach(PATH ${${PATH_LIST}})
         get_filename_component(FILENAME ${PATH} NAME)
-        string(REGEX REPLACE "\\.[^.]*$" "" fileNameWithoutExtension ${FILENAME})
-        list(APPEND FILENAMES ${fileNameWithoutExtension})
+        string(REGEX REPLACE "\\.[^.]*$" "" FILE_NAME_WITHOUT_EXTENSION ${FILENAME})
+        list(APPEND FILENAMES ${FILE_NAME_WITHOUT_EXTENSION})
     endforeach()
 
     set(${RESULT_VARIABLE} ${FILENAMES} PARENT_SCOPE)
@@ -37,7 +37,7 @@ file(
     "test_cases/*.py"
 )
 
-GET_FILENAMES_WITHOUT_PARENT(TEST_PATH TEST_FILENAMES)
+get_filenames_without_parent(TEST_PATH TEST_FILENAMES)
 
 message(STATUS "TEST FILES NAME: ${TEST_FILENAMES}")
 

@@ -108,10 +108,11 @@ def parse_options():
 
 def get_config_path_spy(arguments_spy, exec_spy, config):
     """
-    @brief Get the arguments for the publisher and the Spy.
+    @brief Get the path of the configuration of the Spy
 
-    @param test_class: The test class object.
-    @param args: The command-line arguments.
+    @param arguments_spy: List of arguments for the DDS Spy.
+    @param exec_spy: Fastd DDS Spy executable file path.
+    @param config: Name of the configuration file.
     """
     index = arguments_spy.index('configuration')
     if is_linux():

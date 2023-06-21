@@ -95,7 +95,7 @@ class TestCase():
                 return None
 
         else:
-            self.read_output(proc)
+            self.read_command_output(proc)
         return proc
 
     def send_command_tool(self, proc):
@@ -109,10 +109,10 @@ class TestCase():
         proc.stdin.write((self.commands_spy[0]+'\n'))
         proc.stdin.flush()
 
-        output = self.read_output(proc)
+        output = self.read_command_output(proc)
         return (output)
 
-    def read_output(self, proc):
+    def read_command_output(self, proc):
         """
         @brief Read the output from the subprocess.
 
@@ -121,6 +121,7 @@ class TestCase():
         """
         output = ''
         count = 0
+        # max number of loops while can take to avoid waiting forever if something goes wrong
         max_count = 500
 
         while True:
@@ -252,7 +253,7 @@ class TestCase():
         if self.dds:
             try:
                 proc.terminate()
-                proc.communicate(timeout=15)
+                proc.communicate(timeout=13)
             except subprocess.TimeoutExpired:
                 proc.kill()
 
