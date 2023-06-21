@@ -14,8 +14,6 @@
 
 """Tests for the fastddsspy executable."""
 
-import re
-
 import test_class
 
 
@@ -48,18 +46,3 @@ configuration_discovery_time.yaml',
   rate: %%rate%%\n\
   dynamic_type_discovered: false\n"""
         )
-
-    def valid_guid(self, guid) -> bool:
-        """
-        @brief Check if a GUID has the correct pattern.
-
-        @param guid: The GUID to check.
-        @return Returns True if the GUID is valid, False otherwise.
-        """
-        pattern = r'^((-)\s([0-9a-f]{2}\.){11}[0-9a-f]{2}\|([0-9a-f]\.){3}[0-9a-f]{1,})$'
-        id_guid = guid[guid.find('-'):]
-        if not re.match(pattern, id_guid):
-            print('Not valid guid: ')
-            print(guid)
-            return False
-        return True

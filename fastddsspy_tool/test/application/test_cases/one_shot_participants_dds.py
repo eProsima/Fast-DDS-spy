@@ -40,5 +40,5 @@ configuration_discovery_time.yaml',
             arguments_spy=['--config-path', 'configuration', 'participants'],
             commands_spy=[],
             output="""- name: Participant_pub\n\
-guid: %%guid%%\n"""
+  guid: %%guid%%\n"""
         )

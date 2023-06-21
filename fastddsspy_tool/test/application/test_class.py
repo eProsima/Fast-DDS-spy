@@ -122,7 +122,7 @@ class TestCase():
         output = ''
         count = 0
         # max number of loops while can take to avoid waiting forever if something goes wrong
-        max_count = 500
+        max_count = 250
 
         while True:
             count += 1
@@ -153,9 +153,8 @@ class TestCase():
         @param guid: The GUID to check.
         @return Returns True if the GUID is valid, False otherwise.
         """
-        pattern = r'^((guid:)\s([0-9a-f]{2}\.){11}[0-9a-f]{2}\|([0-9a-f]\.){3}[0-9a-f]{1,})$'
-        id_guid = guid[guid.find('guid:'):]
-        if not re.match(pattern, id_guid):
+        pattern = r'^(([0-9a-f]{2}\.){11}[0-9a-f]{2}\|([0-9a-f]\.){3}[0-9a-f]{1,})$'
+        if not re.match(pattern, guid):
             print('Not valid guid: ')
             print(guid)
             return False
@@ -168,12 +167,11 @@ class TestCase():
         @param rate: The rate to check.
         @return Returns True if the rate is valid, False otherwise.
         """
-        pattern_1 = r'^((rate:)\s\d*\.?\d*\s(Hz))$'     # rate: 10.5 Hz
-        pattern_2 = r'^((rate:)\s(inf)\s(Hz))$'         # rate: inf Hz
-        id_rate = rate[rate.find('rate:'):]
-        if re.match(pattern_1, id_rate):
+        pattern_1 = r'^(\d*\.?\d*\s(Hz))$'     # rate: 10.5 Hz
+        pattern_2 = r'^((inf)\s(Hz))$'         # rate: inf Hz
+        if re.match(pattern_1, rate):
             return True
-        if re.match(pattern_2, id_rate):
+        if re.match(pattern_2, rate):
             return True
         print('Not valid rate: ')
         print(rate)
@@ -212,9 +210,11 @@ class TestCase():
         rate = True
         for i in range(len(lines_expected_output)):
             if '%%guid%%' in lines_expected_output[i]:
-                guid = self.valid_guid(lines_output[i])
+                start_guid_position = lines_expected_output[i].find('%%guid%%')
+                guid = self.valid_guid(lines_output[i][start_guid_position:])
             elif '%%rate%%' in lines_expected_output[i]:
-                rate = self.valid_rate(lines_output[i])
+                start_rate_position = lines_expected_output[i].find('%%rate%%')
+                rate = self.valid_rate(lines_output[i][start_rate_position:])
             elif lines_expected_output[i] != lines_output[i]:
                 print('Output: ')
                 print(output)
@@ -223,12 +223,12 @@ class TestCase():
                 return False
         return (guid and rate)
 
-    def stop_tool(self, proc) -> int:
+    def stop_tool(self, proc) -> bool:
         """
         @brief Stop the running Spy.
 
         @param proc: The subprocess object representing the running Spy.
-        @return Returns 1 if the Spy is successfully stopped, 0 otherwise.
+        @return Returns True if the Spy is successfully stopped, False otherwise.
         """
         try:
             proc.communicate(input='exit\n', timeout=10)[0]
@@ -239,16 +239,16 @@ class TestCase():
 
         if not self.is_stop(proc):
             print('ERROR: DDS Spy still running')
-            return 0
+            return False
 
-        return 1
+        return True
 
-    def stop_dds(self, proc) -> int:
+    def stop_dds(self, proc) -> bool:
         """
         @brief Stop the DDS publisher.
 
         @param proc: The subprocess object representing the running DDS publisher.
-        @return Returns 1 if the DDS publisher is successfully stopped, 0 otherwise.
+        @return Returns True if the DDS publisher is successfully stopped, False otherwise.
         """
         if self.dds:
             try:
@@ -261,9 +261,9 @@ class TestCase():
 
             if not self.is_stop(proc):
                 print('ERROR: DDS Publisher still running')
-                return 0
+                return False
 
-        return 1
+        return True
 
     def is_stop(self, proc) -> bool:
         """

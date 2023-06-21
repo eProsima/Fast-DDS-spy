@@ -111,7 +111,7 @@ def get_config_path_spy(arguments_spy, exec_spy, config):
     @brief Get the path of the configuration of the Spy
 
     @param arguments_spy: List of arguments for the DDS Spy.
-    @param exec_spy: Fastd DDS Spy executable file path.
+    @param exec_spy: Fast DDS Spy executable file path.
     @param config: Name of the configuration file.
     """
     index = arguments_spy.index('configuration')
