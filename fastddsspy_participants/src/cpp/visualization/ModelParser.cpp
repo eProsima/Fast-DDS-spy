@@ -21,7 +21,7 @@ namespace spy {
 namespace participants {
 
 std::vector<SimpleParticipantData> ModelParser::participants(
-        const SpyModel& model)
+        const SpyModel& model) noexcept
 {
     std::vector<SimpleParticipantData> result;
     for (const auto& it : model.participant_database_)
@@ -36,7 +36,7 @@ std::vector<SimpleParticipantData> ModelParser::participants(
 }
 
 std::vector<ComplexParticipantData> ModelParser::participants_verbose(
-        const SpyModel& model)
+        const SpyModel& model) noexcept
 {
     std::vector<ComplexParticipantData> result;
 
@@ -56,7 +56,7 @@ void add_endpoint_to_vector(
         std::map<std::string, int>& already_endpoints_index,
         std::vector<ComplexParticipantData::Endpoint>& endpoints,
         const std::pair<const eprosima::ddspipe::core::types::Guid,
-        eprosima::spy::participants::EndpointInfo>& endpoint)
+        eprosima::spy::participants::EndpointInfo>& endpoint) noexcept
 {
     // Check if this topic has already endpoints added
     auto it = already_endpoints_index.find(endpoint.second.topic.m_topic_name);
@@ -79,7 +79,7 @@ void add_endpoint_to_vector(
 
 ComplexParticipantData ModelParser::participants(
         const SpyModel& model,
-        const ddspipe::core::types::Guid& guid)
+        const ddspipe::core::types::Guid& guid) noexcept
 {
     ComplexParticipantData result;
 
@@ -126,7 +126,7 @@ ComplexParticipantData ModelParser::participants(
 
 std::string get_participant_name(
         const SpyModel& model,
-        const ddspipe::core::types::Guid guid)
+        const ddspipe::core::types::Guid guid) noexcept
 {
     // Look for participant name
     for (const auto& participant : model.participant_database_)
@@ -142,7 +142,7 @@ std::string get_participant_name(
 
 SimpleEndpointData fill_simple_endpoint(
         const SpyModel& model,
-        const spy::participants::EndpointInfo& endpoint)
+        const spy::participants::EndpointInfo& endpoint) noexcept
 {
     std::string participant_name = get_participant_name(model, endpoint.guid);
 
@@ -159,7 +159,7 @@ SimpleEndpointData fill_simple_endpoint(
 void fill_complex_endpoint(
         const SpyModel& model,
         ComplexEndpointData& result,
-        const spy::participants::EndpointInfo& endpoint)
+        const spy::participants::EndpointInfo& endpoint) noexcept
 {
     result.participant_name = get_participant_name(model, endpoint.guid);
 
@@ -173,7 +173,7 @@ void fill_complex_endpoint(
 void set_endpoint_simple_information(
         const SpyModel& model,
         std::vector<SimpleEndpointData>& result,
-        const ddspipe::core::types::EndpointKind kind)
+        const ddspipe::core::types::EndpointKind kind) noexcept
 {
     for (const auto& endpoint : model.endpoint_database_)
     {
@@ -188,7 +188,7 @@ void set_endpoint_complex_information(
         const SpyModel& model,
         ComplexEndpointData& result,
         const ddspipe::core::types::EndpointKind kind,
-        const eprosima::ddspipe::core::types::Guid guid)
+        const eprosima::ddspipe::core::types::Guid guid) noexcept
 {
     for (const auto& endpoint : model.endpoint_database_)
     {
@@ -202,7 +202,7 @@ void set_endpoint_complex_information(
 }
 
 std::vector<SimpleEndpointData> ModelParser::writers(
-        const SpyModel& model)
+        const SpyModel& model) noexcept
 {
     std::vector<SimpleEndpointData> result;
 
@@ -212,7 +212,7 @@ std::vector<SimpleEndpointData> ModelParser::writers(
 }
 
 std::vector<ComplexEndpointData> ModelParser::writers_verbose(
-        const SpyModel& model)
+        const SpyModel& model) noexcept
 {
     std::vector<ComplexEndpointData> result;
 
@@ -229,7 +229,7 @@ std::vector<ComplexEndpointData> ModelParser::writers_verbose(
 
 ComplexEndpointData ModelParser::writers(
         const SpyModel& model,
-        const ddspipe::core::types::Guid& guid)
+        const ddspipe::core::types::Guid& guid) noexcept
 {
     ComplexEndpointData result;
 
@@ -239,7 +239,7 @@ ComplexEndpointData ModelParser::writers(
 }
 
 std::vector<SimpleEndpointData> ModelParser::readers(
-        const SpyModel& model)
+        const SpyModel& model) noexcept
 {
     std::vector<SimpleEndpointData> result;
 
@@ -249,7 +249,7 @@ std::vector<SimpleEndpointData> ModelParser::readers(
 }
 
 std::vector<ComplexEndpointData> ModelParser::readers_verbose(
-        const SpyModel& model)
+        const SpyModel& model) noexcept
 {
     std::vector<ComplexEndpointData> result;
 
@@ -266,7 +266,7 @@ std::vector<ComplexEndpointData> ModelParser::readers_verbose(
 
 ComplexEndpointData ModelParser::readers(
         const SpyModel& model,
-        const ddspipe::core::types::Guid& guid)
+        const ddspipe::core::types::Guid& guid) noexcept
 {
     ComplexEndpointData result;
 
@@ -279,7 +279,7 @@ ComplexEndpointData ModelParser::readers(
  * This is an auxiliary function that is used to get topics endpoint database
  */
 std::set<eprosima::ddspipe::core::types::DdsTopic> get_topics(
-        const SpyModel& model)
+        const SpyModel& model) noexcept
 {
     std::set<eprosima::ddspipe::core::types::DdsTopic> result;
     for (const auto& endpoint : model.endpoint_database_)
@@ -294,7 +294,7 @@ std::set<eprosima::ddspipe::core::types::DdsTopic> get_topics(
 
 ddspipe::core::types::DdsTopic ModelParser::get_topic(
         const SpyModel& model,
-        std::string topic_name)
+        std::string topic_name) noexcept
 {
 
     for (const auto& endpoint : model.endpoint_database_)
@@ -309,7 +309,7 @@ ddspipe::core::types::DdsTopic ModelParser::get_topic(
 }
 
 std::vector<SimpleTopicData> ModelParser::topics(
-        const SpyModel& model)
+        const SpyModel& model) noexcept
 {
     std::vector<SimpleTopicData> result;
 
@@ -348,7 +348,7 @@ std::vector<SimpleTopicData> ModelParser::topics(
 }
 
 std::vector<ComplexTopicData> ModelParser::topics_verbose(
-        const SpyModel& model)
+        const SpyModel& model) noexcept
 {
     std::vector<ComplexTopicData> result;
 
@@ -363,7 +363,7 @@ std::vector<ComplexTopicData> ModelParser::topics_verbose(
 
 ComplexTopicData ModelParser::topics(
         const SpyModel& model,
-        const std::string& topic_name)
+        const std::string& topic_name) noexcept
 {
     ComplexTopicData result;
 

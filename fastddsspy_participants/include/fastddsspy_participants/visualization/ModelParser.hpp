@@ -29,52 +29,52 @@ struct ModelParser
 {
     FASTDDSSPY_PARTICIPANTS_DllAPI
     static std::vector<SimpleParticipantData> participants(
-            const SpyModel& model);
+            const SpyModel& model) noexcept;
     FASTDDSSPY_PARTICIPANTS_DllAPI
     static std::vector<ComplexParticipantData> participants_verbose(
-            const SpyModel& model);
+            const SpyModel& model) noexcept;
     FASTDDSSPY_PARTICIPANTS_DllAPI
     static ComplexParticipantData participants(
             const SpyModel& model,
-            const ddspipe::core::types::Guid& guid);
+            const ddspipe::core::types::Guid& guid) noexcept;
 
     FASTDDSSPY_PARTICIPANTS_DllAPI
     static std::vector<SimpleEndpointData> writers(
-            const SpyModel& model);
+            const SpyModel& model) noexcept;
     FASTDDSSPY_PARTICIPANTS_DllAPI
     static std::vector<ComplexEndpointData> writers_verbose(
-            const SpyModel& model);
+            const SpyModel& model) noexcept;
     FASTDDSSPY_PARTICIPANTS_DllAPI
     static ComplexEndpointData writers(
             const SpyModel& model,
-            const ddspipe::core::types::Guid& guid);
+            const ddspipe::core::types::Guid& guid) noexcept;
 
     FASTDDSSPY_PARTICIPANTS_DllAPI
     static std::vector<SimpleEndpointData> readers(
-            const SpyModel& model);
+            const SpyModel& model) noexcept;
     FASTDDSSPY_PARTICIPANTS_DllAPI
     static std::vector<ComplexEndpointData> readers_verbose(
-            const SpyModel& model);
+            const SpyModel& model) noexcept;
     FASTDDSSPY_PARTICIPANTS_DllAPI
     static ComplexEndpointData readers(
             const SpyModel& model,
-            const ddspipe::core::types::Guid& guid);
+            const ddspipe::core::types::Guid& guid) noexcept;
 
     FASTDDSSPY_PARTICIPANTS_DllAPI
     static ddspipe::core::types::DdsTopic get_topic(
             const SpyModel& model,
-            std::string topic_name);
+            std::string topic_name) noexcept;
 
     FASTDDSSPY_PARTICIPANTS_DllAPI
     static std::vector<SimpleTopicData> topics(
-            const SpyModel& model);
+            const SpyModel& model) noexcept;
     FASTDDSSPY_PARTICIPANTS_DllAPI
     static std::vector<ComplexTopicData> topics_verbose(
-            const SpyModel& model);
+            const SpyModel& model) noexcept;
     FASTDDSSPY_PARTICIPANTS_DllAPI
     static ComplexTopicData topics(
             const SpyModel& model,
-            const std::string& topic_name);
+            const std::string& topic_name) noexcept;
 };
 
 } /* namespace participants */

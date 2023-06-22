@@ -1,0 +1,11 @@
+version: 1.0
+
+dds:
+  domain: "hello"
+  allowlist:
+    - name: "*"
+
+specs:
+  threads: 12
+  max-history-depth: 5000
+  discovery-time: 2000

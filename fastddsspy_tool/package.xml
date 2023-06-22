@@ -17,7 +17,9 @@
 
   <buildtool_depend>cmake</buildtool_depend>
 
+  <depend>cmake_utils</depend>
   <depend>cpp_utils</depend>
+  <depend>py_utils</depend>
   <depend>ddspipe_core</depend>
   <depend>ddspipe_participants</depend>
   <depend>ddspipe_yaml</depend>
