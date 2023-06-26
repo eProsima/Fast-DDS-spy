@@ -14,6 +14,8 @@
 
 #include <fastdds/rtps/participant/RTPSParticipant.h>
 
+#include <ddspipe_participants/utils/utils.hpp>
+
 #include <fastddsspy_participants/participant/SpyDdsParticipant.hpp>
 #include <fastddsspy_participants/types/ParticipantInfo.hpp>
 #include <fastddsspy_participants/types/EndpointInfo.hpp>
@@ -59,7 +61,7 @@ void SpyDdsParticipant::on_participant_discovery(
         fastrtps::rtps::ParticipantDiscoveryInfo&& discovery_info)
 {
     // If comes from this participant is not interesting
-    if (come_from_this_participant_(discovery_info.info.m_guid))
+    if (ddspipe::participants::detail::come_from_same_participant_(discovery_info.info.m_guid, this->dds_participant_->guid()))
     {
         return;
     }
@@ -78,12 +80,12 @@ void SpyDdsParticipant::on_subscriber_discovery(
         fastrtps::rtps::ReaderDiscoveryInfo&& info)
 {
     // If comes from this participant is not interesting
-    if (come_from_this_participant_(info.info.guid()))
+    if (ddspipe::participants::detail::come_from_same_participant_(info.info.guid(), this->dds_participant_->guid()))
     {
         return;
     }
 
-    EndpointInfo endpoint_info = create_endpoint_from_info_(info);
+    EndpointInfo endpoint_info = ddspipe::participants::detail::create_endpoint_from_info_(info, id());
 
     // If participant left or dropped, this notification arrives as well
     endpoint_info.active = !(info.status == fastrtps::rtps::ReaderDiscoveryInfo::DISCOVERY_STATUS::REMOVED_READER);
@@ -96,12 +98,12 @@ void SpyDdsParticipant::on_publisher_discovery(
         fastrtps::rtps::WriterDiscoveryInfo&& info)
 {
     // If comes from this participant is not interesting
-    if (come_from_this_participant_(info.info.guid()))
+    if (ddspipe::participants::detail::come_from_same_participant_(info.info.guid(), this->dds_participant_->guid()))
     {
         return;
     }
 
-    EndpointInfo endpoint_info = create_endpoint_from_info_(info);
+    EndpointInfo endpoint_info = ddspipe::participants::detail::create_endpoint_from_info_(info, id());
 
     // If participant left or dropped, this notification arrives as well
     endpoint_info.active = !(info.status == fastrtps::rtps::WriterDiscoveryInfo::DISCOVERY_STATUS::REMOVED_WRITER);
@@ -129,15 +131,6 @@ void SpyDdsParticipant::internal_notify_endpoint_discovered_(
 
     // Insert new data in internal reader queue
     endpoints_reader_->simulate_data_reception(std::move(data));
-}
-
-bool SpyDdsParticipant::come_from_this_participant_(
-        const ddspipe::core::types::Guid& guid) const noexcept
-{
-    return (
-        guid.guid_prefix() == dds_participant_->guid().guidPrefix
-        || guid.guid_prefix() == rtps_participant_->getGuid().guidPrefix
-        );
 }
 
 } /* namespace participants */
