@@ -141,8 +141,8 @@ bool SpyDdsParticipant::come_from_this_participant_(
         const ddspipe::core::types::Guid& guid) const noexcept
 {
     return (ddspipe::participants::detail::come_from_same_participant_(guid, dds_participant_->guid())
-        ||  ddspipe::participants::detail::come_from_same_participant_(guid, rtps_participant_->getGuid())
-    );
+           ||  ddspipe::participants::detail::come_from_same_participant_(guid, rtps_participant_->getGuid())
+           );
 }
 
 } /* namespace participants */
