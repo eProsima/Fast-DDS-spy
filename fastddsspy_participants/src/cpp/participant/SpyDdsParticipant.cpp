@@ -61,7 +61,8 @@ void SpyDdsParticipant::on_participant_discovery(
         fastrtps::rtps::ParticipantDiscoveryInfo&& discovery_info)
 {
     // If comes from this participant is not interesting
-    if (come_from_this_participant_(discovery_info.info.m_guid))
+    if (ddspipe::participants::detail::come_from_same_participant_(discovery_info.info.m_guid,
+            this->dds_participant_->guid()))
     {
         return;
     }
@@ -80,7 +81,7 @@ void SpyDdsParticipant::on_subscriber_discovery(
         fastrtps::rtps::ReaderDiscoveryInfo&& info)
 {
     // If comes from this participant is not interesting
-    if (come_from_this_participant_(info.info.guid()))
+    if (ddspipe::participants::detail::come_from_same_participant_(info.info.guid(), this->dds_participant_->guid()))
     {
         return;
     }
@@ -98,7 +99,7 @@ void SpyDdsParticipant::on_publisher_discovery(
         fastrtps::rtps::WriterDiscoveryInfo&& info)
 {
     // If comes from this participant is not interesting
-    if (come_from_this_participant_(info.info.guid()))
+    if (ddspipe::participants::detail::come_from_same_participant_(info.info.guid(), this->dds_participant_->guid()))
     {
         return;
     }
@@ -135,13 +136,13 @@ void SpyDdsParticipant::internal_notify_endpoint_discovered_(
 
 /*
  * NOTE: this function is required apart from come_from_same_participant_
- * because this Participant has 2 participants, a RTPS and a DDS.
+ * because this participant has 2 guids, the rtps and the dds participant ones
  */
 bool SpyDdsParticipant::come_from_this_participant_(
         const ddspipe::core::types::Guid& guid) const noexcept
 {
-    return (ddspipe::participants::detail::come_from_same_participant_(guid, dds_participant_->guid())
-           ||  ddspipe::participants::detail::come_from_same_participant_(guid, rtps_participant_->getGuid())
+    return (guid.guid_prefix() == dds_participant_->guid().guidPrefix
+           ||  guid.guid_prefix() == rtps_participant_->getGuid().guidPrefix
            );
 }
 
