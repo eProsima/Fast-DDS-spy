@@ -61,8 +61,7 @@ void SpyDdsParticipant::on_participant_discovery(
         fastrtps::rtps::ParticipantDiscoveryInfo&& discovery_info)
 {
     // If comes from this participant is not interesting
-    if (ddspipe::participants::detail::come_from_same_participant_(discovery_info.info.m_guid,
-            this->dds_participant_->guid()))
+    if (come_from_this_participant_(discovery_info.info.m_guid))
     {
         return;
     }
@@ -81,7 +80,7 @@ void SpyDdsParticipant::on_subscriber_discovery(
         fastrtps::rtps::ReaderDiscoveryInfo&& info)
 {
     // If comes from this participant is not interesting
-    if (ddspipe::participants::detail::come_from_same_participant_(info.info.guid(), this->dds_participant_->guid()))
+    if (come_from_this_participant_(info.info.guid()))
     {
         return;
     }
@@ -99,7 +98,7 @@ void SpyDdsParticipant::on_publisher_discovery(
         fastrtps::rtps::WriterDiscoveryInfo&& info)
 {
     // If comes from this participant is not interesting
-    if (ddspipe::participants::detail::come_from_same_participant_(info.info.guid(), this->dds_participant_->guid()))
+    if (come_from_this_participant_(info.info.guid()))
     {
         return;
     }
