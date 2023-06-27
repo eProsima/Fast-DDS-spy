@@ -42,7 +42,11 @@ std::vector<ComplexParticipantData> ModelParser::participants_verbose(
 
     for (const auto& it : model.participant_database_)
     {
-        result.push_back(participants(model, it.second.guid));
+        // Get only active participants
+        if (it.second.active)
+        {
+            result.push_back(participants(model, it.second.guid));
+        }
     }
 
     return result;

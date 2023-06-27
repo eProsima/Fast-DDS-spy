@@ -207,8 +207,8 @@ Colcon installation (recommended)
         mkdir <path\to\user\workspace>\Fast-DDS-Spy
         cd <path\to\user\workspace>\Fast-DDS-Spy
         mkdir src
-        wget https://raw.githubusercontent.com/eProsima/Fast-DDS-Spy/main/fastddsspy.repos --output-file fastddsspy.repos
-        vcs import src --input fastddsspy.repos
+        wget https://raw.githubusercontent.com/eProsima/Fast-DDS-Spy/main/fastddsspy.repos
+        vcs import src < fastddsspy.repos
 
     .. note::
 
