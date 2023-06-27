@@ -17,10 +17,10 @@ This release includes the following **Configuration Features**:
 
 This release includes the following **Internal Changes** and **Bugfixes**:
 
-* Fix namespace ambiguities in yaml configuration.
+* Fix C++ *namespace* ambiguities in yaml configuration.
 * Change default log-filter to only show warning coming from DDS Spy source code.
 * Filter out topics associated to services (RPC).
-* Parametrize simulated endpoints.
+* Parameterize simulated endpoints.
 
 This release includes the following **Documentation Updates**:
 

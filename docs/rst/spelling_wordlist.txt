@@ -4,6 +4,7 @@ Asio
 blocklist
 Chocolatey
 CMake
+colcon
 Colcon
 cpp
 dataflow
