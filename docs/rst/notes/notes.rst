@@ -17,6 +17,7 @@ This release includes the following **Configuration Features**:
 
 This release includes the following **Internal Changes** and **Bugfixes**:
 
+* Print only active participants when using verbose mode in ``participants`` command.
 * Fix C++ *namespace* ambiguities in yaml configuration.
 * Change default log-filter to only show warning coming from DDS Spy source code.
 * Filter out topics associated to services (RPC).
