@@ -2,48 +2,38 @@
 
 .. _notes:
 
-#####
-Notes
-#####
-
 .. TODO uncomment when there are forthcoming notes
-.. include:: forthcoming_version.rst
+.. .. include:: forthcoming_version.rst
 
-Version v0.1.0
-==============
+##############
+Version v0.2.0
+##############
 
-This is the first release of |espy|.
+This release includes the following **Configuration Features**:
 
-This release includes several **features** regarding the introspection of DDS data, configuration and user interaction.
+* Support :ref:`Interface Whitelisting <user_manual_configuration_dds__interface_whitelist>`.
+* Support :ref:`Custom Transport Descriptors <user_manual_configuration_dds_custom_transport_descriptors>` (UDP or Shared Memory only).
+* Support :ref:`Ignore Participant Flags <user_manual_configuration_dds_ignore_participant_flags>`.
 
-This release includes the following **User Interface features**:
+This release includes the following **Internal Changes** and **Bugfixes**:
 
-* :ref:`Application executable arguments <user_manual_user_interface_application_arguments>`.
-* :ref:`Interactive application <user_manual_user_interface_interactive_app>`.
-* :ref:`One-shot application <user_manual_user_interface_one_shot>`.
+* Print only active participants when using verbose mode in ``participants`` command.
+* Fix C++ *namespace* ambiguities in yaml configuration.
+* Change default log-filter to only show warning coming from DDS Spy source code.
+* Filter out topics associated to services (RPC).
+* Parameterize simulated endpoints.
 
+This release includes the following **Documentation Updates**:
 
-This release includes the following **Configuration features**:
+* Update introduction section in README file.
 
-* Support :term:`YAML` :ref:`configuration file <user_manual_configuration>`.
-* Support for allow and block topic filters at execution time and in run-time.
-* Support :ref:`DDS configurations <user_manual_configuration_dds>`.
-* Support :ref:`Advanced configurations <user_manual_configuration_specs>`.
+This release includes the following change in the **Continuous Integration** process:
 
-
-This release includes the following **Introspection features**:
-
-* Get data of :term:`Domain Participants <DomainParticipant>`.
-* Get data of :term:`DataReaders <DataReader>` and :term:`DataWriters <DataWriter>`.
-* Get data of :term:`Topics <Topic>`.
-* Print real-time DDS user data in human-readable format.
+* Update CI to use `eProsima CI <https://github.com/eProsima/eProsima-CI>`__.
 
 
-This release includes the following **Documentation features**:
+#################
+Previous Versions
+#################
 
-* This same documentation.
-
-
-This release includes the following **Installation features**:
-
-* *Dockerfile* to build an image of the application ``Fast-DDS-Spy/docker``.
+.. include:: ./previous_versions/v0.1.0.rst
