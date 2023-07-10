@@ -126,7 +126,7 @@ const option::Descriptor usage[] = {
         Arg::String,
         "  \t--log-filter\t  \t" \
         "Set a Regex Filter to filter by category the info and warning log entries. " \
-        "[Default = \"(DDSPIPE|FASTDDSSPY)\"]. "
+        "[Default = \"FASTDDSSPY\"]. "
     },
 
     {
