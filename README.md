@@ -18,10 +18,8 @@ It is also possible to see the user data sent through network topics in a schema
 You can access the documentation online, which is hosted on [Read the Docs](https://fast-dds-spy.readthedocs.io).
 
 * [Introduction](https://fast-dds-spy.readthedocs.io/en/latest/rst/formalia/titlepage.html)
-* [Getting Started](https://fast-dds-spy.readthedocs.io/en/latest/rst/getting_started/project_overview.html)
-* [User Manual](https://fast-dds-spy.readthedocs.io/en/latest/rst/user_manual/user_interface.html)
-* [Examples](https://fast-dds-spy.readthedocs.io/en/latest/rst/examples/echo_example.html)
-* [Use Cases](https://fast-dds-spy.readthedocs.io/en/latest/rst/use_cases/ros_cloud.html)
+* [Installation Manual](https://fast-dds-spy.readthedocs.io/en/latest/rst/installation/linux.html)
+* [User Manual](https://fast-dds-spy.readthedocs.io/en/latest/rst/user_manual/usage_example.html)
 * [Developer Manual](https://fast-dds-spy.readthedocs.io/en/latest/rst/developer_manual/installation/sources/linux.html)
 * [Release Notes](https://fast-dds-spy.readthedocs.io/en/latest/rst/notes/notes.html)
 
