@@ -96,9 +96,10 @@ void Configuration::load_configuration_(
         WildcardDdsFilterTopic rpc_request_topic, rpc_response_topic;
         rpc_request_topic.topic_name.set_value("rq/*");
         rpc_response_topic.topic_name.set_value("rr/*");
-        blocklist.insert(
+
+        ddspipe_configuration.blocklist.insert(
             utils::Heritable<WildcardDdsFilterTopic>::make_heritable(rpc_request_topic));
-        blocklist.insert(
+        ddspipe_configuration.blocklist.insert(
             utils::Heritable<WildcardDdsFilterTopic>::make_heritable(rpc_response_topic));
 
     }
@@ -117,13 +118,13 @@ void Configuration::load_dds_configuration_(
     // Get optional allowlist
     if (YamlReader::is_tag_present(yml, ALLOWLIST_TAG))
     {
-        allowlist = YamlReader::get_set<utils::Heritable<IFilterTopic>>(yml, ALLOWLIST_TAG,
+        ddspipe_configuration.allowlist = YamlReader::get_set<utils::Heritable<IFilterTopic>>(yml, ALLOWLIST_TAG,
                         version);
 
         // Add to allowlist always the type object topic
         WildcardDdsFilterTopic internal_topic;
         internal_topic.topic_name.set_value(TYPE_OBJECT_TOPIC_NAME);
-        allowlist.insert(
+        ddspipe_configuration.allowlist.insert(
             utils::Heritable<WildcardDdsFilterTopic>::make_heritable(internal_topic));
     }
 
@@ -131,7 +132,7 @@ void Configuration::load_dds_configuration_(
     // Get optional blocklist
     if (YamlReader::is_tag_present(yml, BLOCKLIST_TAG))
     {
-        blocklist = YamlReader::get_set<utils::Heritable<IFilterTopic>>(yml, BLOCKLIST_TAG,
+        ddspipe_configuration.blocklist = YamlReader::get_set<utils::Heritable<IFilterTopic>>(yml, BLOCKLIST_TAG,
                         version);
     }
 
@@ -139,8 +140,7 @@ void Configuration::load_dds_configuration_(
     // Get optional builtin topics
     if (YamlReader::is_tag_present(yml, BUILTIN_TAG))
     {
-        // WARNING: Parse builtin topics AFTER specs, as some topic-specific default values are set there
-        builtin_topics = YamlReader::get_set<utils::Heritable<DistributedTopic>>(yml, BUILTIN_TAG,
+        ddspipe_configuration.builtin_topics = YamlReader::get_set<utils::Heritable<DistributedTopic>>(yml, BUILTIN_TAG,
                         version);
     }
 

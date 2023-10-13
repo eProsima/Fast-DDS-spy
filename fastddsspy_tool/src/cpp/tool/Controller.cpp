@@ -63,10 +63,9 @@ void Controller::one_shot_run(
     run_command_(input_.parse_as_command(args));
 }
 
-utils::ReturnCode Controller::reload_allowed_topics(
-        const std::shared_ptr<ddspipe::core::AllowedTopicList>& allowed_topics)
+utils::ReturnCode Controller::reload_configuration(const yaml::Configuration& new_configuration)
 {
-    return backend_.reload_allowed_topics(allowed_topics);
+    return backend_.reload_configuration(new_configuration);
 }
 
 void Controller::run_command_(

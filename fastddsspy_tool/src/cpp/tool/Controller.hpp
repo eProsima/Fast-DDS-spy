@@ -42,8 +42,8 @@ public:
     void one_shot_run(
             const std::vector<std::string>& args);
 
-    utils::ReturnCode reload_allowed_topics(
-            const std::shared_ptr<ddspipe::core::AllowedTopicList>& allowed_topics);
+    utils::ReturnCode reload_configuration(
+            const yaml::Configuration& new_configuration);
 
 protected:
 

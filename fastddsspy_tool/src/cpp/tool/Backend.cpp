@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <ddspipe_core/configuration/DdsPipeConfiguration.hpp>
+
 #include "Backend.hpp"
 
 namespace eprosima {
@@ -22,10 +24,6 @@ Backend::Backend(
     : configuration_(configuration)
     , payload_pool_(std::make_shared<ddspipe::core::FastPayloadPool>())
     , discovery_database_(std::make_shared<ddspipe::core::DiscoveryDatabase>())
-    , allowed_topics_(
-        std::make_shared<ddspipe::core::AllowedTopicList>(
-            configuration.allowlist,
-            configuration.blocklist))
     , thread_pool_(
         std::make_shared<utils::SlotThreadPool>(
             configuration.n_threads))
@@ -65,14 +63,14 @@ Backend::Backend(
         );
 
     // Create and initialize Pipe
+    ddspipe::core::DdsPipeConfiguration ddspipe_configuration;
+
     pipe_ = std::make_unique<ddspipe::core::DdsPipe>(
-        allowed_topics_,
+        ddspipe_configuration,
         discovery_database_,
         payload_pool_,
         participant_database_,
-        thread_pool_,
-        configuration.builtin_topics
-        );
+        thread_pool_);
 
     pipe_->enable();
 }
@@ -82,10 +80,9 @@ Backend::~Backend()
     pipe_->disable();
 }
 
-utils::ReturnCode Backend::reload_allowed_topics(
-        const std::shared_ptr<ddspipe::core::AllowedTopicList>& allowed_topics)
+utils::ReturnCode Backend::reload_configuration(const yaml::Configuration& new_configuration)
 {
-    return pipe_->reload_allowed_topics(allowed_topics);
+    return pipe_->reload_configuration(new_configuration.ddspipe_configuration);
 }
 
 std::shared_ptr<eprosima::spy::participants::SpyModel> Backend::model() const noexcept

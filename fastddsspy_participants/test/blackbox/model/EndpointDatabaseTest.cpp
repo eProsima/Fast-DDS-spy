@@ -17,6 +17,7 @@
 
 #include <fastddsspy_participants/participant/SpyParticipant.hpp>
 
+#include <ddspipe_core/configuration/DdsPipeConfiguration.hpp>
 #include <ddspipe_core/core/DdsPipe.hpp>
 #include <ddspipe_core/efficiency/payload/FastPayloadPool.hpp>
 #include <ddspipe_core/testing/random_values.hpp>
@@ -106,30 +107,24 @@ std::shared_ptr<DdsPipe> create_pipe(
         dds_participant
         );
 
-    // Create allowed topics list
-    std::set<utils::Heritable<types::IFilterTopic>> lists = {};
-    std::shared_ptr<AllowedTopicList> allowed_topics =
-            std::make_shared<AllowedTopicList>(
-        lists,
-        lists);
-
     // Create Thread Pool
     unsigned int n_threads = 12;
     std::shared_ptr<utils::SlotThreadPool> thread_pool =
             std::make_shared<utils::SlotThreadPool>(n_threads);
 
     // Create DDS Pipe
-    std::set<utils::Heritable<types::DistributedTopic>> builtin_topics = {};
+    DdsPipeConfiguration ddspipe_configuration;
+    ddspipe_configuration.init_enabled = true;
+
     std::shared_ptr<DdsPipe> pipe =
             std::make_unique<DdsPipe>(
-        allowed_topics,
+        ddspipe_configuration,
         discovery_database,
         payload_pool,
         participant_database,
-        thread_pool,
-        builtin_topics,
-        true
+        thread_pool
         );
+
     return pipe;
 }
 

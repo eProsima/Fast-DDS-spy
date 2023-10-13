@@ -19,6 +19,7 @@
 
 #include <ddspipe_core/types/topic/filter/IFilterTopic.hpp>
 #include <ddspipe_core/types/topic/dds/DistributedTopic.hpp>
+#include <ddspipe_core/configuration/DdsPipeConfiguration.hpp>
 #include <ddspipe_core/configuration/IConfiguration.hpp>
 
 #include <ddspipe_participants/configuration/SimpleParticipantConfiguration.hpp>
@@ -57,14 +58,12 @@ public:
     virtual bool is_valid(
             utils::Formatter& error_msg) const noexcept override;
 
+    //! DdsPipe configuration
+    ddspipe::core::DdsPipeConfiguration ddspipe_configuration {};
+
     // Participants configurations
     std::shared_ptr<ddspipe::participants::SimpleParticipantConfiguration> simple_configuration;
     std::shared_ptr<participants::SpyParticipantConfiguration> spy_configuration;
-
-    // Topic filtering
-    std::set<utils::Heritable<ddspipe::core::types::IFilterTopic>> allowlist {};
-    std::set<utils::Heritable<ddspipe::core::types::IFilterTopic>> blocklist {};
-    std::set<utils::Heritable<ddspipe::core::types::DistributedTopic>> builtin_topics {};
 
     //! Whether to generate schemas as OMG IDL or ROS2 msg
     bool ros2_types = false;
