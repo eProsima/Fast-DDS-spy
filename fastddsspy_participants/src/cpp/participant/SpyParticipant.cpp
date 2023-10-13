@@ -35,6 +35,7 @@ SpyParticipant::SpyParticipant(
             {
                 return this->new_participant_info_(data);
             };
+
     participants_writer_ = std::make_shared<InternalWriter>(
         participant_configuration->id,
         participant_callback);
@@ -43,19 +44,10 @@ SpyParticipant::SpyParticipant(
             {
                 return this->new_endpoint_info_(data);
             };
+
     endpoints_writer_ = std::make_shared<InternalWriter>(
         participant_configuration->id,
         endpoint_callback);
-
-    // Simulate that there is a reader of participants to force this track creation
-    discovery_database_->add_endpoint(
-        ddspipe::participants::rtps::CommonParticipant::simulate_endpoint(participant_info_topic(), this->id())
-        );
-
-    // Simulate that there is a reader of endpoints to force this track creation
-    discovery_database_->add_endpoint(
-        ddspipe::participants::rtps::CommonParticipant::simulate_endpoint(endpoint_info_topic(), this->id())
-        );
 }
 
 std::shared_ptr<ddspipe::core::IWriter> SpyParticipant::create_writer(

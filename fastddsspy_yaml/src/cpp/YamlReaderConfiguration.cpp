@@ -164,6 +164,15 @@ void Configuration::load_dds_configuration_(
                 std::vector<ManualTopic>(manual_topics.begin(), manual_topics.end());
     }
 
+    // Create the internal communication (built-in) topics
+    const auto& participant_internal_topic = utils::Heritable<DistributedTopic>::make_heritable(
+            spy::participants::participant_info_topic());
+    const auto& endpoint_internal_topic = utils::Heritable<DistributedTopic>::make_heritable(
+            spy::participants::endpoint_info_topic());
+
+    ddspipe_configuration.builtin_topics.insert(participant_internal_topic);
+    ddspipe_configuration.builtin_topics.insert(endpoint_internal_topic);
+
     // Set the domain in Simple Participant Configuration
     if (YamlReader::is_tag_present(yml, DOMAIN_ID_TAG))
     {
