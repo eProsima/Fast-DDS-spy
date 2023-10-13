@@ -106,6 +106,53 @@ See `Interface Whitelist <https://fast-dds.docs.eprosima.com/en/latest/fastdds/t
 
     When providing an interface whitelist, external participants with which communication is desired must also be configured with interface whitelisting.
 
+.. _user_manual_configuration_dds__manual_topics:
+
+Topics
+------
+
+A subset of QoSs can be manually configured for a specific topic under the tag ``topics``.
+The tag ``topics`` has a required ``name`` tag that accepts wildcard characters.
+It also has two optional tags: a ``type`` tag that accepts wildcard characters, and a ``qos`` tag with the QoSs that the user wants to manually configure.
+If a ``qos`` is not manually configured, it will get its value by discovery.
+
+**Example of usage**
+
+.. code-block:: yaml
+
+    topics:
+      - name: temperature/*
+        type: temperature/types/*
+        qos:
+            reliability: true
+
+.. _user_manual_configuration_dds__builtin_topics:
+
+Built-in Topics
+---------------
+
+Apart from the dynamic DDS topics discovered in the network, the discovery phase can be accelerated by using the builtin topic list (``builtin-topics``).
+By defining topics in this list, the |ddsrecorder| will create the DataWriters and DataReaders in recorder initialization.
+
+The builtin-topics list is defined in the same form as the ``allowlist`` and ``blocklist``.
+
+This feature also allows to manually force the QoS of a specific topic, so the entities created in such topic follows the specified QoS and not the one first discovered.
+
+**Example of usage:**
+
+    .. code-block:: yaml
+
+        builtin-topics:
+          - name: HelloWorldTopic
+            type: HelloWorld
+            qos:
+              reliability: true       # Use QoS RELIABLE
+              durability: true        # Use QoS TRANSIENT_LOCAL
+              depth: 100              # Use History Depth 100
+              partitions: true        # Topic with partitions
+              ownership: false        # Use QoS SHARED_OWNERSHIP_QOS
+              keyed: true             # Topic with key
+
 Topic Filtering
 ---------------
 
@@ -227,6 +274,12 @@ This is a YAML file that uses all supported configurations and set them as defau
       blocklist:
         - name: "topic_name"
           type: "topic_type"
+
+      topics:
+        - name: temperature/*
+          type: temperature/types/*
+          qos:
+            reliability: true
 
       builtin-topics:
         - name: "HelloWorldTopic"

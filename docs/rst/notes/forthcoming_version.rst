@@ -10,3 +10,4 @@ Forthcoming Version
 This release will include the following **Configuration features**:
 
 * Display information in either ROS 2 format or the raw DDS format.
+* :ref:`Manual Topics <user_manual_configuration_manual_topics>`.
