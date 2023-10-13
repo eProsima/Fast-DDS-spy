@@ -249,6 +249,25 @@ Discovery Time
 This parameter is useful for very big networks, as |spy| may not discover the whole network fast enough to return a complete information.
 By default, this value is ``1000`` (1 second).
 
+.. _user_manual_configuration_max_rx_rate:
+
+Max Reception Rate
+------------------
+
+Limits the frequency [Hz] at which samples are processed, by discarding messages received before :code:`1/max-rx-rate` seconds have elapsed since the last processed message was received.
+When specified, ``max-rx-rate`` is set for all topics without distinction, but a different value can also set for a particular topic under the ``qos`` configuration tag within the builtin-topics list.
+This parameter only accepts non-negative values, and its default value is ``0`` (no limit).
+
+.. _user_manual_configuration_downsampling:
+
+Downsampling
+------------
+
+Reduces the sampling rate of the received data by keeping *1* out of every *n* samples received (per topic), where *n* is the value specified in ``downsampling``.
+If ``max-rx-rate`` is also set, downsampling applies to messages that already managed to pass this filter.
+When specified, this downsampling factor is set for all topics without distinction, but a different value can also set for a particular topic under the ``qos`` configuration tag within the builtin-topics list.
+This parameter only accepts positive integer values, and its default value is ``1`` (no downsampling).
+
 .. _user_manual_configuration_default:
 
 Default Configuration
@@ -279,7 +298,8 @@ This is a YAML file that uses all supported configurations and set them as defau
         - name: temperature/*
           type: temperature/types/*
           qos:
-            reliability: true
+            max-rx-rate: 5
+            downsampling: 1
 
       builtin-topics:
         - name: "HelloWorldTopic"
@@ -304,3 +324,5 @@ This is a YAML file that uses all supported configurations and set them as defau
       threads: 12
       max-history-depth: 5000
       discovery-time: 1000
+      max-rx-rate: 10
+      downsampling: 2

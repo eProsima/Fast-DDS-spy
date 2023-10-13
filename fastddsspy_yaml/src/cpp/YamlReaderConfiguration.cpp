@@ -227,6 +227,28 @@ void Configuration::load_specs_configuration_(
     {
         one_shot_wait_time_ms = YamlReader::get<utils::Duration_ms>(yml, GATHERING_TIME_TAG, version);
     }
+
+    /////
+    // Get optional max reception rate
+    if (YamlReader::is_tag_present(yml, MAX_RX_RATE_TAG))
+    {
+        // Save max reception rate
+        max_rx_rate = YamlReader::get_nonnegative_float(yml, MAX_RX_RATE_TAG);
+
+        // Set default value for max reception rate
+        TopicQoS::default_max_rx_rate.store(max_rx_rate);
+    }
+
+    /////
+    // Get optional downsampling
+    if (YamlReader::is_tag_present(yml, DOWNSAMPLING_TAG))
+    {
+        // Save downsampling factor
+        downsampling = YamlReader::get_positive_int(yml, DOWNSAMPLING_TAG);
+
+        // Set default value for downsampling
+        TopicQoS::default_downsampling.store(downsampling);
+    }
 }
 
 bool Configuration::is_valid(

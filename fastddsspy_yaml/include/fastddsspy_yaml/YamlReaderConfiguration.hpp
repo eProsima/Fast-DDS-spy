@@ -37,7 +37,7 @@ namespace spy {
 namespace yaml {
 
 /**
- * @brief Class that encapsulates specific methods to get a full ddspipe Configuration from a yaml node.
+ * @brief Class that encapsulates specific methods to get a full FastDdsSpy Configuration from a yaml node.
  */
 class Configuration : ddspipe::core::IConfiguration
 {
@@ -71,6 +71,8 @@ public:
     // Specs
     unsigned int n_threads = 12;
     utils::Duration_ms one_shot_wait_time_ms = 1000;
+    float max_rx_rate = 0;
+    unsigned int downsampling = 1;
 
 protected:
 
