@@ -17,11 +17,10 @@
 #include <cpp_utils/memory/Heritable.hpp>
 #include <cpp_utils/time/time_utils.hpp>
 
-#include <ddspipe_core/types/dds/TopicQoS.hpp>
-#include <ddspipe_core/types/topic/filter/IFilterTopic.hpp>
-#include <ddspipe_core/types/topic/dds/DistributedTopic.hpp>
 #include <ddspipe_core/configuration/DdsPipeConfiguration.hpp>
 #include <ddspipe_core/configuration/IConfiguration.hpp>
+#include <ddspipe_core/types/topic/filter/IFilterTopic.hpp>
+#include <ddspipe_core/types/topic/dds/DistributedTopic.hpp>
 
 #include <ddspipe_participants/configuration/SimpleParticipantConfiguration.hpp>
 #include <ddspipe_participants/configuration/ParticipantConfiguration.hpp>
@@ -30,6 +29,8 @@
 #include <ddspipe_yaml/YamlReader.hpp>
 
 #include <fastddsspy_participants/configuration/SpyParticipantConfiguration.hpp>
+#include <fastddsspy_participants/types/EndpointInfo.hpp>
+#include <fastddsspy_participants/types/ParticipantInfo.hpp>
 
 #include <fastddsspy_yaml/library/library_dll.h>
 

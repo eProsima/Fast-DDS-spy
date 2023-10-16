@@ -122,8 +122,8 @@ std::shared_ptr<DdsPipe> create_pipe(
         discovery_database,
         payload_pool,
         participant_database,
-        thread_pool
-        );
+        thread_pool);
+
     return pipe;
 }
 

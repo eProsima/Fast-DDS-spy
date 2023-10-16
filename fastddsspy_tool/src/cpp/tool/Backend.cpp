@@ -66,7 +66,7 @@ Backend::Backend(
     ddspipe::core::DdsPipeConfiguration ddspipe_configuration;
 
     pipe_ = std::make_unique<ddspipe::core::DdsPipe>(
-        ddspipe_configuration,
+        configuration.ddspipe_configuration,
         discovery_database_,
         payload_pool_,
         participant_database_,
