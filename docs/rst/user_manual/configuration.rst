@@ -108,8 +108,8 @@ See `Interface Whitelist <https://fast-dds.docs.eprosima.com/en/latest/fastdds/t
 
 .. _user_manual_configuration_dds__manual_topics:
 
-Topics
-------
+Manual Topics
+-------------
 
 A subset of QoSs can be manually configured for a specific topic under the tag ``topics``.
 The tag ``topics`` has a required ``name`` tag that accepts wildcard characters.
@@ -132,7 +132,7 @@ Built-in Topics
 ---------------
 
 Apart from the dynamic DDS topics discovered in the network, the discovery phase can be accelerated by using the builtin topic list (``builtin-topics``).
-By defining topics in this list, the |ddsrecorder| will create the DataWriters and DataReaders in recorder initialization.
+By defining topics in this list, the |spy| will create the DataWriters and DataReaders in recorder initialization.
 
 The builtin-topics list is defined in the same form as the ``allowlist`` and ``blocklist``.
 
@@ -311,7 +311,7 @@ This is a YAML file that uses all supported configurations and set them as defau
             partitions: true
             ownership: false
             downsampling: 4
-            max-reception-rate: 10
+            max-rx-rate: 10
 
       ignore-participant-flags: no_filter
       transport: builtin

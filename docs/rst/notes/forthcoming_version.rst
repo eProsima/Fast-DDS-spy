@@ -10,6 +10,6 @@ Forthcoming Version
 This release will include the following **Configuration features**:
 
 * Display information in either ROS 2 format or the raw DDS format.
-* :ref:`Manual Topics <user_manual_configuration_manual_topics>`.
+* :ref:`Manual Topics <user_manual_configuration_dds__manual_topics>`.
 * :ref:`Max Reception Rate <user_manual_configuration_max_rx_rate>`.
 * :ref:`Downsampling <user_manual_configuration_downsampling>`.

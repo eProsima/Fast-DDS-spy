@@ -2,7 +2,10 @@
 
 .. _notes:
 
+<<<<<<< HEAD
 .. TODO uncomment when there are forthcoming notes
+=======
+>>>>>>> 3eeea2f (Apply suggestions)
 .. include:: forthcoming_version.rst
 
 ##############
