@@ -213,41 +213,18 @@ void Configuration::load_specs_configuration_(
         n_threads = YamlReader::get<unsigned int>(yml, NUMBER_THREADS_TAG, version);
     }
 
-    // Get optional maximum history depth
-    if (YamlReader::is_tag_present(yml, MAX_HISTORY_DEPTH_TAG))
+    /////
+    // Get optional Topic QoS
+    if (YamlReader::is_tag_present(yml, SPECS_QOS_TAG))
     {
-        TopicQoS::default_history_depth = YamlReader::get<unsigned int>(
-            yml,
-            MAX_HISTORY_DEPTH_TAG,
-            version);
+        YamlReader::fill<TopicQoS>(topic_qos, YamlReader::get_value_in_tag(yml, SPECS_QOS_TAG), version);
+        TopicQoS::default_topic_qos.set_value(topic_qos);
     }
 
     // Get optional gathering time
     if (YamlReader::is_tag_present(yml, GATHERING_TIME_TAG))
     {
         one_shot_wait_time_ms = YamlReader::get<utils::Duration_ms>(yml, GATHERING_TIME_TAG, version);
-    }
-
-    /////
-    // Get optional max reception rate
-    if (YamlReader::is_tag_present(yml, MAX_RX_RATE_TAG))
-    {
-        // Save max reception rate
-        max_rx_rate = YamlReader::get_nonnegative_float(yml, MAX_RX_RATE_TAG);
-
-        // Set default value for max reception rate
-        TopicQoS::default_max_rx_rate.store(max_rx_rate);
-    }
-
-    /////
-    // Get optional downsampling
-    if (YamlReader::is_tag_present(yml, DOWNSAMPLING_TAG))
-    {
-        // Save downsampling factor
-        downsampling = YamlReader::get_positive_int(yml, DOWNSAMPLING_TAG);
-
-        // Set default value for downsampling
-        TopicQoS::default_downsampling.store(downsampling);
     }
 }
 

@@ -17,6 +17,7 @@
 #include <cpp_utils/memory/Heritable.hpp>
 #include <cpp_utils/time/time_utils.hpp>
 
+#include <ddspipe_core/types/dds/TopicQoS.hpp>
 #include <ddspipe_core/types/topic/filter/IFilterTopic.hpp>
 #include <ddspipe_core/types/topic/dds/DistributedTopic.hpp>
 #include <ddspipe_core/configuration/DdsPipeConfiguration.hpp>
@@ -71,8 +72,7 @@ public:
     // Specs
     unsigned int n_threads = 12;
     utils::Duration_ms one_shot_wait_time_ms = 1000;
-    float max_rx_rate = 0;
-    unsigned int downsampling = 1;
+    ddspipe::core::types::TopicQoS topic_qos{};
 
 protected:
 

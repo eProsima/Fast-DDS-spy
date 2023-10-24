@@ -106,17 +106,172 @@ See `Interface Whitelist <https://fast-dds.docs.eprosima.com/en/latest/fastdds/t
 
     When providing an interface whitelist, external participants with which communication is desired must also be configured with interface whitelisting.
 
+
+.. _user_manual_configuration_dds__builtin_topics:
+
+Built-in Topics
+---------------
+
+The discovery phase can be accelerated by listing topics under the ``builtin-topics`` tag.
+The |spy| will create the DataWriters and DataReaders for these topics in the |spy| initialization.
+The :ref:`Topic QoS <user_manual_configuration_dds__topic_qos>` for these topics can be manually configured with a :ref:`Manual Topic <user_manual_configuration_dds__manual_topics>`; if a :ref:`Topic QoS <user_manual_configuration_dds__topic_qos>` is not configured, it will take its default value.
+
+The ``builtin-topics`` must specify a ``name`` and ``type`` without wildcard characters.
+
+
+.. code-block:: yaml
+
+    builtin-topics:
+      - name: HelloWorldTopic
+        type: HelloWorld
+
+.. _user_manual_configuration_dds__topic_filtering:
+
+Topic Filtering
+---------------
+
+The |spy| automatically detects the topics that are being used in a DDS Network.
+The |spy| then creates internal DDS :term:`Readers<DataReader>` for each topic to forward the data published.
+
+.. note::
+
+    |spy| entities are created with the :ref:`Topic QoS <user_manual_configuration_dds__topic_qos>` of the first Subscriber found in this Topic.
+
+The |spy| allows filtering DDS :term:`Topics<Topic>`, that is, it allows users to configure which DDS :term:`Topics<Topic>` should be forwarded by the application.
+These data filtering rules can be configured under the ``allowlist`` and ``blocklist`` tags.
+If the ``allowlist`` and ``blocklist`` are not configured, the |spy| will forward all the data published on the topics it discovers.
+If both the ``allowlist`` and ``blocklist`` are configured and a topic appears in both of them, the ``blocklist`` has priority and the topic will be blocked.
+
+Topics are determined by the tags ``name`` (required) and ``type``, both of which accept wildcard characters.
+
+.. note::
+
+    Placing quotation marks around values in a YAML file is generally optional, but values containing wildcard characters do require single or double quotation marks.
+
+Consider the following example:
+
+.. code-block:: yaml
+
+    allowlist:
+      - name: AllowedTopic1
+        type: Allowed
+
+      - name: AllowedTopic2
+        type: "*"
+
+      - name: HelloWorldTopic
+        type: HelloWorld
+
+    blocklist:
+      - name: "*"
+        type: HelloWorld
+
+In this example, the data in the topic ``AllowedTopic1`` with type ``Allowed`` and the data in the topic ``AllowedTopic2`` with any type will be forwarded by the |spy|.
+The data in the topic ``HelloWorldTopic`` with type ``HelloWorld`` will be blocked, since the ``blocklist`` is blocking all topics with any name and with type ``HelloWorld``.
+
+.. _user_manual_configuration_dds__topic_qos:
+
+Topic QoS
+---------
+
+The following is the set of QoS that are configurable for a topic.
+For more information on topics, please read the `Fast DDS Topic <https://fast-dds.docs.eprosima.com/en/latest/fastdds/dds_layer/topic/topic.html>`_ section.
+
+.. list-table::
+    :header-rows: 1
+
+    *   - Quality of Service
+        - Yaml tag
+        - Data type
+        - Default value
+        - QoS set
+
+    *   - Reliability
+        - ``reliability``
+        - *bool*
+        - ``false``
+        - ``RELIABLE`` / ``BEST_EFFORT``
+
+    *   - Durability
+        - ``durability``
+        - *bool*
+        - ``false``
+        - ``TRANSIENT_LOCAL`` / ``VOLATILE``
+
+    *   - Ownership
+        - ``ownership``
+        - *bool*
+        - ``false``
+        - ``EXCLUSIVE_OWNERSHIP_QOS`` / ``SHARED_OWNERSHIP_QOS``
+
+    *   - Partitions
+        - ``partitions``
+        - *bool*
+        - ``false``
+        - Topic with / without partitions
+
+    *   - Key
+        - ``keyed``
+        - *bool*
+        - ``false``
+        - Topic with / without `key <https://fast-dds.docs.eprosima.com/en/latest/fastdds/dds_layer/topic/typeSupport/typeSupport.html#data-types-with-a-key>`_
+
+    *   - History Depth
+        - ``history-depth``
+        - *integer*
+        - ``5000``
+        - :ref:`user_manual_configuration_dds__history_depth`
+
+    *   - Max Reception Rate
+        - ``max-rx-rate``
+        - *float*
+        - ``0`` (unlimited)
+        - :ref:`user_manual_configuration_dds__max_rx_rate`
+
+    *   - Down-sampling
+        - ``downsampling``
+        - *unsigned integer*
+        - ``1``
+        - :ref:`user_manual_configuration_dds__downsampling`
+
+.. _user_manual_configuration_dds__history_depth:
+
+History Depth
+^^^^^^^^^^^^^
+
+The ``history-depth`` tag configures the history depth of the Fast DDS internal entities.
+By default, the depth of every RTPS History instance is :code:`5000`, which sets a constraint on the maximum number of samples a |spy| instance can deliver to late joiner Readers configured with ``TRANSIENT_LOCAL`` `DurabilityQosPolicyKind <https://fast-dds.docs.eprosima.com/en/latest/fastdds/dds_layer/core/policy/standardQosPolicies.html#durabilityqospolicykind>`_.
+Its value should be decreased when the sample size and/or number of created endpoints (increasing with the number of topics) are big enough to cause memory exhaustion issues.
+If enough memory is available, however, the ``history-depth`` could be increased to deliver a greater number of samples to late joiners.
+
+.. _user_manual_configuration_dds__max_rx_rate:
+
+Max Reception Rate
+^^^^^^^^^^^^^^^^^^
+
+The ``max-rx-rate`` tag limits the frequency [Hz] at which samples are processed by discarding messages received before :code:`1/max-rx-rate` seconds have passed since the last processed message.
+It only accepts non-negative numbers.
+By default it is set to ``0``; it processes samples at an unlimited reception rate.
+
+.. _user_manual_configuration_dds__downsampling:
+
+Downsampling
+^^^^^^^^^^^^
+
+The ``downsampling`` tag reduces the sampling rate of the received data by only keeping *1* out of every *n* samples received (per topic), where *n* is the value specified under the ``downsampling`` tag.
+When the ``max-rx-rate`` tag is also set, down-sampling only applies to messages that have passed the ``max-rx-rate`` filter.
+It only accepts positive integers.
+By default it is set to ``1``; it accepts every message.
+
 .. _user_manual_configuration_dds__manual_topics:
 
 Manual Topics
 -------------
 
-A subset of QoSs can be manually configured for a specific topic under the tag ``topics``.
+A subset of :ref:`Topic QoS <user_manual_configuration_dds__topic_qos>` can be manually configured for a specific topic under the tag ``topics``.
 The tag ``topics`` has a required ``name`` tag that accepts wildcard characters.
-It also has two optional tags: a ``type`` tag that accepts wildcard characters, and a ``qos`` tag with the QoSs that the user wants to manually configure.
+It also has two optional tags: a ``type`` tag that accepts wildcard characters and a ``qos`` tag with the :ref:`Topic QoS <user_manual_configuration_dds__topic_qos>` that the user wants to manually configure.
 If a ``qos`` is not manually configured, it will get its value by discovery.
-
-**Example of usage**
 
 .. code-block:: yaml
 
@@ -124,86 +279,11 @@ If a ``qos`` is not manually configured, it will get its value by discovery.
       - name: temperature/*
         type: temperature/types/*
         qos:
-            reliability: true
-
-.. _user_manual_configuration_dds__builtin_topics:
-
-Built-in Topics
----------------
-
-Apart from the dynamic DDS topics discovered in the network, the discovery phase can be accelerated by using the builtin topic list (``builtin-topics``).
-By defining topics in this list, the |spy| will create the DataWriters and DataReaders in recorder initialization.
-
-The builtin-topics list is defined in the same form as the ``allowlist`` and ``blocklist``.
-
-This feature also allows to manually force the QoS of a specific topic, so the entities created in such topic follows the specified QoS and not the one first discovered.
-
-**Example of usage:**
-
-    .. code-block:: yaml
-
-        builtin-topics:
-          - name: HelloWorldTopic
-            type: HelloWorld
-            qos:
-              reliability: true       # Use QoS RELIABLE
-              durability: true        # Use QoS TRANSIENT_LOCAL
-              depth: 100              # Use History Depth 100
-              partitions: true        # Topic with partitions
-              ownership: false        # Use QoS SHARED_OWNERSHIP_QOS
-              keyed: true             # Topic with key
-
-Topic Filtering
----------------
-
-|spy| includes a mechanism to automatically detect which topics are being used in a DDS network.
-By automatically detecting these topics, a |spy| creates internal :term:`Readers<DataReader>` for each topic and for each participant in order to read data published on each discovered topic.
-
-.. note::
-
-    |spy| entities are created with the QoS of the first subscriber found in this topic.
-
-|spy| allows filtering of DDS :term:`Topics<Topic>`, that is, it allows to define which DDS Topics are going to be
-relayed by the application.
-This way, it is possible to define a set of rules in |spy| to filter those data samples the user does not wish to
-forward.
-
-It is not mandatory to define such set of rules in the configuration file. In this case, a |spy| will read all
-the data published under the topics that it automatically discovers within the DDS network to which it connects.
-
-To define these data filtering rules based on the topics to which they belong, two lists are available:
-
-* Allowed topics list (``allowlist``)
-* Block topics list (``blocklist``)
-
-These two lists of topics listed above are defined by a tag in the *YAML* configuration file, which defines a
-*YAML* vector (``[]``).
-This vector contains the list of topics for each filtering rule.
-Each topic is determined by its entries ``name`` and ``type``, strings referring the topic name and topic data type name.
-
-.. note::
-
-    Placing quotation marks around values in a YAML file is generally optional. However, values containing wildcard
-    characters must be enclosed in single or double quotes.
-
-Allow topic list (``allowlist``)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-This is the list of topics that |spy| will forward, i.e. the data published under the topics matching the
-expressions in the ``allowlist`` will be relayed by |spy|.
-
-.. note::
-
-    If no ``allowlist`` is provided, data will be read for all topics (unless filtered out in ``blocklist``).
-
-
-Block topic list (``blocklist``)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-This is the list of topics that the |spy| will block, that is, all data published under the topics matching the
-filters specified in the ``blocklist`` will be discarded by the |spy| and therefore will not be relayed.
-
-This list takes precedence over the ``allowlist``.
-If a topic matches an expression both in the ``allowlist`` and in the ``blocklist``, the ``blocklist`` takes precedence,
-causing the data under this topic to be discarded.
+          max-tx-rate: 15
+          downsampling: 2
+        participants:
+          - Participant0
+          - Participant1
 
 Topic type format
 -----------------
@@ -230,16 +310,6 @@ This improves the performance of the data transmission between participants.
 This value should be set by each user depending on each system characteristics.
 By default, this value is ``12``.
 
-.. _history_depth_configuration:
-
-Maximum History Depth
----------------------
-
-``specs`` supports a ``max-depth`` **optional** value that configures the history size of the Fast DDS internal entities.
-By default, the depth of every RTPS History instance is :code:`5000`.
-This value should be decreased when the sample size and/or number of created endpoints (increasing with the number of
-topics) are as big as to cause memory exhaustion issues.
-
 .. _user_manual_configuration_discovery_time:
 
 Discovery Time
@@ -249,24 +319,10 @@ Discovery Time
 This parameter is useful for very big networks, as |spy| may not discover the whole network fast enough to return a complete information.
 By default, this value is ``1000`` (1 second).
 
-.. _user_manual_configuration_max_rx_rate:
+QoS
+---
 
-Max Reception Rate
-------------------
-
-Limits the frequency [Hz] at which samples are processed, by discarding messages received before :code:`1/max-rx-rate` seconds have elapsed since the last processed message was received.
-When specified, ``max-rx-rate`` is set for all topics without distinction, but a different value can also set for a particular topic under the ``qos`` configuration tag within the builtin-topics list.
-This parameter only accepts non-negative values, and its default value is ``0`` (no limit).
-
-.. _user_manual_configuration_downsampling:
-
-Downsampling
-------------
-
-Reduces the sampling rate of the received data by keeping *1* out of every *n* samples received (per topic), where *n* is the value specified in ``downsampling``.
-If ``max-rx-rate`` is also set, downsampling applies to messages that already managed to pass this filter.
-When specified, this downsampling factor is set for all topics without distinction, but a different value can also set for a particular topic under the ``qos`` configuration tag within the builtin-topics list.
-This parameter only accepts positive integer values, and its default value is ``1`` (no downsampling).
+``specs`` supports a ``qos`` **optional** tag to configure the default values of the :ref:`Topic QoS <user_manual_configuration_dds__topic_qos>`.
 
 .. _user_manual_configuration_default:
 
@@ -287,31 +343,23 @@ This is a YAML file that uses all supported configurations and set them as defau
       domain: 0
 
       allowlist:
-        - name: "topic_name"
-          type: "topic_type"
+        - name: topic_name
+          type: topic_type
 
       blocklist:
-        - name: "topic_name"
-          type: "topic_type"
+        - name: topic_name
+          type: topic_type
+
+      builtin-topics:
+        - name: HelloWorldTopic
+          type: HelloWorld
 
       topics:
-        - name: temperature/*
-          type: temperature/types/*
+        - name: "temperature/*"
+          type: "temperature/types/*"
           qos:
             max-rx-rate: 5
             downsampling: 1
-
-      builtin-topics:
-        - name: "HelloWorldTopic"
-          type: "HelloWorld"
-          qos:
-            reliability: true
-            durability: true
-            keyed: false
-            partitions: true
-            ownership: false
-            downsampling: 4
-            max-rx-rate: 10
 
       ignore-participant-flags: no_filter
       transport: builtin
@@ -322,7 +370,9 @@ This is a YAML file that uses all supported configurations and set them as defau
 
     specs:
       threads: 12
-      max-history-depth: 5000
       discovery-time: 1000
-      max-rx-rate: 10
-      downsampling: 2
+
+      qos:
+        history-depth: 5000
+        max-rx-rate: 10
+        downsampling: 2
