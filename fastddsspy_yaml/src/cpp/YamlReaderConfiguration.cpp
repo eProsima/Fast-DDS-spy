@@ -103,10 +103,7 @@ void Configuration::load_configuration_(
         WildcardDdsFilterTopic rpc_request_topic, rpc_response_topic;
         rpc_request_topic.topic_name.set_value("rq/*");
         rpc_response_topic.topic_name.set_value("rr/*");
-<<<<<<< HEAD
 
-=======
->>>>>>> 4c906f4 (Make the DdsPipeConfiguration required)
         ddspipe_configuration.blocklist.insert(
             utils::Heritable<WildcardDdsFilterTopic>::make_heritable(rpc_request_topic));
         ddspipe_configuration.blocklist.insert(

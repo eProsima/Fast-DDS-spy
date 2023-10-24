@@ -63,8 +63,6 @@ Backend::Backend(
         );
 
     // Create and initialize Pipe
-    ddspipe::core::DdsPipeConfiguration ddspipe_configuration;
-
     pipe_ = std::make_unique<ddspipe::core::DdsPipe>(
         configuration.ddspipe_configuration,
         discovery_database_,
