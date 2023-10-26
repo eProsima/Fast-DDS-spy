@@ -36,77 +36,6 @@ DDS Configurations
 The YAML Configuration supports a ``dds`` **optional** tag that contains certain :term:`DDS` configurations.
 The values available to configure are:
 
-DDS Domain Id
--------------
-
-In order to execute a |spy| instance in a :term:`Domain Id` different than the default (``0``) use tag ``domain``.
-
-.. _user_manual_configuration_dds_ignore_participant_flags:
-
-Ignore Participant Flags
-------------------------
-
-A set of discovery traffic filters can be defined in order to add an extra level of isolation.
-This configuration option can be set through the ``ignore-participant-flags`` tag:
-
-.. code-block:: yaml
-
-    ignore-participant-flags: no_filter                          # No filter (default)
-    # or
-    ignore-participant-flags: filter_different_host              # Discovery traffic from another host is discarded
-    # or
-    ignore-participant-flags: filter_different_process           # Discovery traffic from another process on same host is discarded
-    # or
-    ignore-participant-flags: filter_same_process                # Discovery traffic from own process is discarded
-    # or
-    ignore-participant-flags: filter_different_and_same_process  # Discovery traffic from own host is discarded
-
-See `Ignore Participant Flags <https://fast-dds.docs.eprosima.com/en/latest/fastdds/discovery/general_disc_settings.html?highlight=ignore%20flags#ignore-participant-flags>`_ for more information.
-
-
-.. _user_manual_configuration_dds_custom_transport_descriptors:
-
-Custom Transport Descriptors
-----------------------------
-
-By default, |spy| internal participants are created with enabled `UDP <https://fast-dds.docs.eprosima.com/en/latest/fastdds/transport/udp/udp.html>`_ and `Shared Memory <https://fast-dds.docs.eprosima.com/en/latest/fastdds/transport/shared_memory/shared_memory.html>`_ transport descriptors.
-The use of one or the other for communication will depend on the specific scenario, and whenever both are viable candidates, the most efficient one (Shared Memory Transport) is automatically selected.
-However, a user may desire to force the use of one of the two, which can be accomplished via the ``transport`` configuration tag.
-
-.. code-block:: yaml
-
-    transport: builtin    # UDP & SHM (default)
-    # or
-    transport: udp        # UDP only
-    # or
-    transport: shm        # SHM only
-
-.. warning::
-
-    When configured with ``transport: shm``, |spy| will only communicate with applications using Shared Memory Transport exclusively (with disabled UDP transport).
-
-
-.. _user_manual_configuration_dds__interface_whitelist:
-
-Interface Whitelist
--------------------
-
-Optional tag ``whitelist-interfaces`` allows to limit the network interfaces used by UDP and TCP transport.
-This may be useful to only allow communication within the host (note: same can be done with :ref:`user_manual_configuration_dds_ignore_participant_flags`).
-Example:
-
-.. code-block:: yaml
-
-    whitelist-interfaces:
-      - "127.0.0.1"    # Localhost only
-
-See `Interface Whitelist <https://fast-dds.docs.eprosima.com/en/latest/fastdds/transport/whitelist.html>`_ for more information.
-
-.. warning::
-
-    When providing an interface whitelist, external participants with which communication is desired must also be configured with interface whitelisting.
-
-
 .. _user_manual_configuration_dds__builtin_topics:
 
 Built-in Topics
@@ -114,7 +43,7 @@ Built-in Topics
 
 The discovery phase can be accelerated by listing topics under the ``builtin-topics`` tag.
 The |spy| will create the DataWriters and DataReaders for these topics in the |spy| initialization.
-The :ref:`Topic QoS <user_manual_configuration_dds__topic_qos>` for these topics can be manually configured with a :ref:`Manual Topic <user_manual_configuration_dds__manual_topics>`; if a :ref:`Topic QoS <user_manual_configuration_dds__topic_qos>` is not configured, it will take its default value.
+The :ref:`Topic QoS <user_manual_configuration_dds__topic_qos>` for these topics can be manually configured with a :ref:`Manual Topic <user_manual_configuration_dds__manual_topics>` and with the :ref:`Specs Topic QoS <user_manual_configuration_specs_topic_qos>`; if a :ref:`Topic QoS <user_manual_configuration_dds__topic_qos>` is not configured, it will take its default value.
 
 The ``builtin-topics`` must specify a ``name`` and ``type`` without wildcard characters.
 
@@ -137,7 +66,7 @@ The |spy| then creates internal DDS :term:`Readers<DataReader>` for each topic t
 
     |spy| entities are created with the :ref:`Topic QoS <user_manual_configuration_dds__topic_qos>` of the first Subscriber found in this Topic.
 
-The |spy| allows filtering DDS :term:`Topics<Topic>`, that is, it allows users to configure which DDS :term:`Topics<Topic>` should be forwarded by the application.
+The |spy| allows filtering DDS :term:`Topics<Topic>`, that is, it allows users to configure the DDS :term:`Topics<Topic>` that must be forwarded.
 These data filtering rules can be configured under the ``allowlist`` and ``blocklist`` tags.
 If the ``allowlist`` and ``blocklist`` are not configured, the |spy| will forward all the data published on the topics it discovers.
 If both the ``allowlist`` and ``blocklist`` are configured and a topic appears in both of them, the ``blocklist`` has priority and the topic will be blocked.
@@ -218,7 +147,7 @@ For more information on topics, please read the `Fast DDS Topic <https://fast-dd
 
     *   - History Depth
         - ``history-depth``
-        - *integer*
+        - *unsigned integer*
         - ``5000``
         - :ref:`user_manual_configuration_dds__history_depth`
 
@@ -276,14 +205,84 @@ If a ``qos`` is not manually configured, it will get its value by discovery.
 .. code-block:: yaml
 
     topics:
-      - name: temperature/*
-        type: temperature/types/*
+      - name: "temperature/*"
+        type: "temperature/types/*"
         qos:
           max-tx-rate: 15
           downsampling: 2
-        participants:
-          - Participant0
-          - Participant1
+
+.. note::
+
+    The :ref:`Topic QoS <user_manual_configuration_dds__topic_qos>` configured in the Manual Topics take precedence over the :ref:`Specs Topic QoS <user_manual_configuration_specs_topic_qos>`.
+
+DDS Domain Id
+-------------
+
+In order to execute a |spy| instance in a :term:`Domain Id` different than the default (``0``) use tag ``domain``.
+
+.. _user_manual_configuration_dds_ignore_participant_flags:
+
+Ignore Participant Flags
+------------------------
+
+A set of discovery traffic filters can be defined in order to add an extra level of isolation.
+This configuration option can be set through the ``ignore-participant-flags`` tag:
+
+.. code-block:: yaml
+
+    ignore-participant-flags: no_filter                          # No filter (default)
+    # or
+    ignore-participant-flags: filter_different_host              # Discovery traffic from another host is discarded
+    # or
+    ignore-participant-flags: filter_different_process           # Discovery traffic from another process on same host is discarded
+    # or
+    ignore-participant-flags: filter_same_process                # Discovery traffic from own process is discarded
+    # or
+    ignore-participant-flags: filter_different_and_same_process  # Discovery traffic from own host is discarded
+
+See `Ignore Participant Flags <https://fast-dds.docs.eprosima.com/en/latest/fastdds/discovery/general_disc_settings.html?highlight=ignore%20flags#ignore-participant-flags>`_ for more information.
+
+.. _user_manual_configuration_dds_custom_transport_descriptors:
+
+Custom Transport Descriptors
+----------------------------
+
+By default, |spy| internal participants are created with enabled `UDP <https://fast-dds.docs.eprosima.com/en/latest/fastdds/transport/udp/udp.html>`_ and `Shared Memory <https://fast-dds.docs.eprosima.com/en/latest/fastdds/transport/shared_memory/shared_memory.html>`_ transport descriptors.
+The use of one or the other for communication will depend on the specific scenario, and whenever both are viable candidates, the most efficient one (Shared Memory Transport) is automatically selected.
+However, a user may desire to force the use of one of the two, which can be accomplished via the ``transport`` configuration tag.
+
+.. code-block:: yaml
+
+    transport: builtin    # UDP & SHM (default)
+    # or
+    transport: udp        # UDP only
+    # or
+    transport: shm        # SHM only
+
+.. warning::
+
+    When configured with ``transport: shm``, |spy| will only communicate with applications using Shared Memory Transport exclusively (with disabled UDP transport).
+
+
+.. _user_manual_configuration_dds__interface_whitelist:
+
+Interface Whitelist
+-------------------
+
+Optional tag ``whitelist-interfaces`` allows to limit the network interfaces used by UDP and TCP transport.
+This may be useful to only allow communication within the host (note: same can be done with :ref:`user_manual_configuration_dds_ignore_participant_flags`).
+Example:
+
+.. code-block:: yaml
+
+    whitelist-interfaces:
+      - "127.0.0.1"    # Localhost only
+
+See `Interface Whitelist <https://fast-dds.docs.eprosima.com/en/latest/fastdds/transport/whitelist.html>`_ for more information.
+
+.. warning::
+
+    When providing an interface whitelist, external participants with which communication is desired must also be configured with interface whitelisting.
 
 Topic type format
 -----------------
@@ -319,10 +318,16 @@ Discovery Time
 This parameter is useful for very big networks, as |spy| may not discover the whole network fast enough to return a complete information.
 By default, this value is ``1000`` (1 second).
 
+.. _user_manual_configuration_specs_topic_qos:
+
 QoS
 ---
 
 ``specs`` supports a ``qos`` **optional** tag to configure the default values of the :ref:`Topic QoS <user_manual_configuration_dds__topic_qos>`.
+
+.. note::
+
+    The :ref:`Topic QoS <user_manual_configuration_dds__topic_qos>` configured in ``specs`` can be overwritten by the :ref:`Manual Topics <user_manual_configuration_specs_topic_qos>`.
 
 .. _user_manual_configuration_default:
 
@@ -343,16 +348,16 @@ This is a YAML file that uses all supported configurations and set them as defau
       domain: 0
 
       allowlist:
-        - name: topic_name
-          type: topic_type
+        - name: "topic_name"
+          type: "topic_type"
 
       blocklist:
-        - name: topic_name
-          type: topic_type
+        - name: "topic_name"
+          type: "topic_type"
 
       builtin-topics:
-        - name: HelloWorldTopic
-          type: HelloWorld
+        - name: "HelloWorldTopic"
+          type: "HelloWorld"
 
       topics:
         - name: "temperature/*"
