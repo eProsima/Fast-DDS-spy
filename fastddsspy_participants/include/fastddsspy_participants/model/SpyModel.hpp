@@ -26,6 +26,15 @@ namespace participants {
  */
 class SpyModel : public NetworkDatabase, public DataStreamer
 {
+public:
+
+    SpyModel(bool ros2_types);
+
+    bool get_ros2_types() const noexcept;
+
+private:
+
+    bool ros2_types_;
 };
 
 } /* namespace participants */

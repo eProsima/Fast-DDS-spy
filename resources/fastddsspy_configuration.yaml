@@ -11,6 +11,8 @@ dds:
     - name: "some_weird_topic"
       type: "with_weird_type"
 
+  ros2-types: true
+
 specs:
   threads: 12
   max-history-depth: 5000

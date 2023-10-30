@@ -13,6 +13,13 @@ dds:
   # DDS Domain - Optional (Default: 0)
   domain: 0
 
+  # Whether to generate schemas as OMG IDL or ROS2 msg
+  # Options:
+  #   - true -> ROS2 msg
+  #   - false -> OMG IDL
+  # [default = false]
+  ros2-types: false
+
 #########
 # Complex configuration
 specs:
