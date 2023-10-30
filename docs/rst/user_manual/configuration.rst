@@ -157,7 +157,7 @@ For more information on topics, please read the `Fast DDS Topic <https://fast-dd
         - ``0`` (unlimited)
         - :ref:`user_manual_configuration_dds__max_rx_rate`
 
-    *   - Down-sampling
+    *   - Downsampling
         - ``downsampling``
         - *unsigned integer*
         - ``1``
@@ -188,7 +188,7 @@ Downsampling
 ^^^^^^^^^^^^
 
 The ``downsampling`` tag reduces the sampling rate of the received data by only keeping *1* out of every *n* samples received (per topic), where *n* is the value specified under the ``downsampling`` tag.
-When the ``max-rx-rate`` tag is also set, down-sampling only applies to messages that have passed the ``max-rx-rate`` filter.
+When the ``max-rx-rate`` tag is also set, downsampling only applies to messages that have passed the ``max-rx-rate`` filter.
 It only accepts positive integers.
 By default it is set to ``1``; it accepts every message.
 
@@ -327,7 +327,7 @@ QoS
 
 .. note::
 
-    The :ref:`Topic QoS <user_manual_configuration_dds__topic_qos>` configured in ``specs`` can be overwritten by the :ref:`Manual Topics <user_manual_configuration_specs_topic_qos>`.
+    The :ref:`Topic QoS <user_manual_configuration_dds__topic_qos>` configured in ``specs`` can be overwritten by the :ref:`Manual Topics <user_manual_configuration_dds__manual_topics>`.
 
 .. _user_manual_configuration_default:
 
