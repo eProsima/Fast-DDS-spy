@@ -13,3 +13,4 @@ This release will include the following **Configuration features**:
 * :ref:`Manual Topics <user_manual_configuration_dds__manual_topics>`.
 * :ref:`Max Reception Rate <user_manual_configuration_dds__max_rx_rate>`.
 * :ref:`Downsampling <user_manual_configuration_dds__downsampling>`.
+* Remove the support for Built-in Topics.

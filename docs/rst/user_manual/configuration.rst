@@ -36,24 +36,6 @@ DDS Configurations
 The YAML Configuration supports a ``dds`` **optional** tag that contains certain :term:`DDS` configurations.
 The values available to configure are:
 
-.. _user_manual_configuration_dds__builtin_topics:
-
-Built-in Topics
----------------
-
-The discovery phase can be accelerated by listing topics under the ``builtin-topics`` tag.
-The |spy| will create the DataWriters and DataReaders for these topics in the |spy| initialization.
-The :ref:`Topic QoS <user_manual_configuration_dds__topic_qos>` for these topics can be manually configured with a :ref:`Manual Topic <user_manual_configuration_dds__manual_topics>` and with the :ref:`Specs Topic QoS <user_manual_configuration_specs_topic_qos>`; if a :ref:`Topic QoS <user_manual_configuration_dds__topic_qos>` is not configured, it will take its default value.
-
-The ``builtin-topics`` must specify a ``name`` and ``type`` without wildcard characters.
-
-
-.. code-block:: yaml
-
-    builtin-topics:
-      - name: HelloWorldTopic
-        type: HelloWorld
-
 .. _user_manual_configuration_dds__topic_filtering:
 
 Topic Filtering
@@ -354,10 +336,6 @@ This is a YAML file that uses all supported configurations and set them as defau
       blocklist:
         - name: "topic_name"
           type: "topic_type"
-
-      builtin-topics:
-        - name: "HelloWorldTopic"
-          type: "HelloWorld"
 
       topics:
         - name: "temperature/*"

@@ -72,7 +72,6 @@ void Configuration::load_configuration_(
 
         /////
         // Get optional specs configuration options
-        // WARNING: Parse builtin topics (dds tag) AFTER specs, as some topic-specific default values are set there
         if (YamlReader::is_tag_present(yml, SPECS_TAG))
         {
             auto specs_yml = YamlReader::get_value_in_tag(yml, SPECS_TAG);
@@ -144,14 +143,6 @@ void Configuration::load_dds_configuration_(
         const auto& manual_topics = YamlReader::get_list<ManualTopic>(yml, TOPICS_TAG, version);
         ddspipe_configuration.manual_topics =
                 std::vector<ManualTopic>(manual_topics.begin(), manual_topics.end());
-    }
-
-    /////
-    // Get optional builtin topics
-    if (YamlReader::is_tag_present(yml, BUILTIN_TAG))
-    {
-        ddspipe_configuration.builtin_topics = YamlReader::get_set<utils::Heritable<DistributedTopic>>(yml, BUILTIN_TAG,
-                        version);
     }
 
     // Set the domain in Simple Participant Configuration
