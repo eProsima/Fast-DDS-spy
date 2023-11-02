@@ -24,9 +24,9 @@ This value allow to keep using the same YAML file using an old configuration for
         - String in ``version`` tag
         - |spy| activation release
 
-    *   - version 1.0
-        - ``v1.0``
-        - *v0.1.0*
+    *   - version 2.0
+        - ``v2.0``
+        - *v0.2.0*
 
 .. _user_manual_configuration_dds:
 
@@ -42,15 +42,15 @@ Topic Filtering
 ---------------
 
 The |spy| automatically detects the topics that are being used in a DDS Network.
-The |spy| then creates internal DDS :term:`Readers<DataReader>` for each topic to forward the data published.
+The |spy| then creates internal DDS :term:`Readers<DataReader>` for each topic to process the data published.
 
 .. note::
 
     |spy| entities are created with the :ref:`Topic QoS <user_manual_configuration_dds__topic_qos>` of the first Subscriber found in this Topic.
 
-The |spy| allows filtering DDS :term:`Topics<Topic>`, that is, it allows users to configure the DDS :term:`Topics<Topic>` that must be forwarded.
+The |spy| allows filtering DDS :term:`Topics<Topic>`, that is, it allows users to configure the DDS :term:`Topics<Topic>` to process.
 These data filtering rules can be configured under the ``allowlist`` and ``blocklist`` tags.
-If the ``allowlist`` and ``blocklist`` are not configured, the |spy| will forward all the data published on the topics it discovers.
+If the ``allowlist`` and ``blocklist`` are not configured, the |spy| will process all the data published on the topics it discovers.
 If both the ``allowlist`` and ``blocklist`` are configured and a topic appears in both of them, the ``blocklist`` has priority and the topic will be blocked.
 
 Topics are determined by the tags ``name`` (required) and ``type``, both of which accept wildcard characters.
@@ -77,7 +77,7 @@ Consider the following example:
       - name: "*"
         type: HelloWorld
 
-In this example, the data in the topic ``AllowedTopic1`` with type ``Allowed`` and the data in the topic ``AllowedTopic2`` with any type will be forwarded by the |spy|.
+In this example, the data in the topic ``AllowedTopic1`` with type ``Allowed`` and the data in the topic ``AllowedTopic2`` with any type will be processed by the |spy|.
 The data in the topic ``HelloWorldTopic`` with type ``HelloWorld`` will be blocked, since the ``blocklist`` is blocking all topics with any name and with type ``HelloWorld``.
 
 .. _user_manual_configuration_dds__topic_qos:
@@ -145,15 +145,18 @@ For more information on topics, please read the `Fast DDS Topic <https://fast-dd
         - ``1``
         - :ref:`user_manual_configuration_dds__downsampling`
 
+.. warning::
+
+    The ``TRANSIENT_LOCAL`` durability is not compatible with the ``BEST_EFFORT`` reliability.
+
 .. _user_manual_configuration_dds__history_depth:
 
 History Depth
 ^^^^^^^^^^^^^
 
 The ``history-depth`` tag configures the history depth of the Fast DDS internal entities.
-By default, the depth of every RTPS History instance is :code:`5000`, which sets a constraint on the maximum number of samples a |spy| instance can deliver to late joiner Readers configured with ``TRANSIENT_LOCAL`` `DurabilityQosPolicyKind <https://fast-dds.docs.eprosima.com/en/latest/fastdds/dds_layer/core/policy/standardQosPolicies.html#durabilityqospolicykind>`_.
+By default, the depth of every RTPS History instance is :code:`5000`.
 Its value should be decreased when the sample size and/or number of created endpoints (increasing with the number of topics) are big enough to cause memory exhaustion issues.
-If enough memory is available, however, the ``history-depth`` could be increased to deliver a greater number of samples to late joiners.
 
 .. _user_manual_configuration_dds__max_rx_rate:
 
@@ -324,7 +327,7 @@ This is a YAML file that uses all supported configurations and set them as defau
 
 .. code-block:: yaml
 
-    version: 1.0
+    version: 2.0
 
     dds:
       domain: 0
