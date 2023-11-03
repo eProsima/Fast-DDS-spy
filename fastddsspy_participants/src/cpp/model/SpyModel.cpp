@@ -18,7 +18,7 @@ namespace eprosima {
 namespace spy {
 namespace participants {
 
-SpyModel::SpyModel(bool ros2_types)
+SpyModel::SpyModel(bool ros2_types /*= false*/)
     : ros2_types_(ros2_types)
 {
     // Do nothing

@@ -22,19 +22,52 @@ all_library_sources("${TEST_SOURCES}")
 set(TEST_LIST
         simple_participant
         simple_participant_two_participants
-        participants_verbose
-        complex_participant
-        simple_endpoint_writer
-        simple_endpoint_reader
+        participants_verbose_dds_endpoints
+        participants_verbose_ros2_types_dds_endpoints
+        participants_verbose_ros2_endpoints
+        participants_verbose_ros2_types_ros2_endpoints
+        complex_participant_dds_endpoints
+        complex_participant_ros2_types_dds_endpoints
+        complex_participant_ros2_endpoints
+        complex_participant_ros2_types_ros2_endpoints
+        simple_dds_endpoint_writer
+        simple_dds_endpoint_writer_ros2_types
+        simple_ros2_endpoint_writer
+        simple_ros2_endpoint_writer_ros2_types
+        simple_dds_endpoint_reader
+        simple_dds_endpoint_reader_ros2_types
+        simple_ros2_endpoint_reader
+        simple_ros2_endpoint_reader_ros2_types
         simple_endpoint_writer_readers
         simple_endpoint_reader_writers
-        endpoint_reader_verbose
-        endpoint_writer_verbose
-        complex_endpoint_writer
-        complex_endpoint_reader
-        simple_topic
-        topics_verbose
-        complex_topic
+        dds_endpoint_reader_verbose
+        dds_endpoint_reader_verbose_ros2_types
+        ros2_endpoint_reader_verbose
+        ros2_endpoint_reader_verbose_ros2_types
+        dds_endpoint_writer_verbose
+        dds_endpoint_writer_verbose_ros2_types
+        ros2_endpoint_writer_verbose
+        ros2_endpoint_writer_verbose_ros2_types
+        complex_dds_endpoint_writer
+        complex_dds_endpoint_writer_ros2_types
+        complex_ros2_endpoint_writer
+        complex_ros2_endpoint_writer_ros2_types
+        complex_dds_endpoint_reader
+        complex_dds_endpoint_reader_ros2_types
+        complex_ros2_endpoint_reader
+        complex_ros2_endpoint_reader_ros2_types
+        simple_topic_dds_endpoints
+        simple_topic_dds_endpoints_ros2_types
+        simple_topic_ros2_endpoints
+        simple_topic_ros2_endpoints_ros2_types
+        topics_verbose_dds_endpoints
+        topics_verbose_dds_endpoints_ros2_types
+        topics_verbose_ros2_endpoints
+        topics_verbose_ros2_endpoints_ros2_types
+        complex_topic_dds_endpoints
+        complex_topic_dds_endpoints_ros2_types
+        complex_topic_ros2_endpoints
+        complex_topic_ros2_endpoints_ros2_types
     )
 
 set(TEST_EXTRA_LIBRARIES
