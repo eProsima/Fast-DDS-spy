@@ -47,8 +47,12 @@ Configuration::Configuration()
     , spy_configuration(std::make_shared<participants::SpyParticipantConfiguration>())
 {
     simple_configuration->id = "SimpleParticipant";
+    simple_configuration->id = "RecorderRecorderParticipant";
+    simple_configuration->app_id = "FASTDDS SPY";
     simple_configuration->is_repeater = false;
     spy_configuration->id = "Fast-Spy-007";
+    simple_configuration->id = "RecorderRecorderParticipant";
+    simple_configuration->app_id = "FASTDDS SPY";
     spy_configuration->is_repeater = false;
 }
 
