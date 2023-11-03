@@ -158,6 +158,13 @@ This list takes precedence over the ``allowlist``.
 If a topic matches an expression both in the ``allowlist`` and in the ``blocklist``, the ``blocklist`` takes precedence,
 causing the data under this topic to be discarded.
 
+Topic type format
+-----------------
+
+The optional ``ros2-types`` tag allows you to specify the format for storing schemas.
+When set to ``true``, schemas are stored in ROS 2 message format (.msg).
+If set to ``false``, schemas are stored in OMG IDL format (.idl).
+
 .. _user_manual_configuration_specs:
 
 Specs Configurations
@@ -237,6 +244,8 @@ This is a YAML file that uses all supported configurations and set them as defau
       transport: builtin
       whitelist-interfaces:
         - "127.0.0.1"
+
+      ros2-types: false
 
     specs:
       threads: 12

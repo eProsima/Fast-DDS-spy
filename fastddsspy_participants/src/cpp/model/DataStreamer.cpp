@@ -107,8 +107,8 @@ void DataStreamer::add_data(
             {
                 // If all activated, add it only if schema is available, otherwise skip
                 logWarning(
-                        FASTDDSSPY_DATASTREAMER,
-                        "All activated but schema not is available.");
+                    FASTDDSSPY_DATASTREAMER,
+                    "All activated but schema not is available.");
                 return;
             }
         }
@@ -118,8 +118,8 @@ void DataStreamer::add_data(
             {
                 // If not all activated, and this is not the activated topic skip
                 logWarning(
-                        FASTDDSSPY_DATASTREAMER,
-                        "Not all activated, and this is not the activated topic.");
+                    FASTDDSSPY_DATASTREAMER,
+                    "Not all activated, and this is not the activated topic.");
                 return;
             }
         }

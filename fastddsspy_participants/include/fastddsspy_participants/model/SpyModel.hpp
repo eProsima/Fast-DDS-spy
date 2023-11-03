@@ -28,7 +28,8 @@ class SpyModel : public NetworkDatabase, public DataStreamer
 {
 public:
 
-    SpyModel(bool ros2_types = false);
+    SpyModel(
+            bool ros2_types = false);
 
     bool get_ros2_types() const noexcept;
 

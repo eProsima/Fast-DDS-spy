@@ -73,7 +73,8 @@ void add_endpoint_to_vector(
         already_endpoints_index[endpoint.second.topic.m_topic_name] = endpoints.size();
         endpoints.push_back({
                         endpoint.second.topic.m_topic_name,
-                        ros2_types ? utils::demangle_if_ros_type(endpoint.second.topic.type_name) : endpoint.second.topic.type_name,
+                        ros2_types ? utils::demangle_if_ros_type(
+                            endpoint.second.topic.type_name) : endpoint.second.topic.type_name,
                         1
                     });
     }
@@ -119,11 +120,13 @@ ComplexParticipantData ModelParser::participants(
         {
             if (endpoint.second.is_reader())
             {
-                add_endpoint_to_vector(already_endpoints_index_readers, result.readers, endpoint, model.get_ros2_types());
+                add_endpoint_to_vector(already_endpoints_index_readers, result.readers, endpoint,
+                        model.get_ros2_types());
             }
             else if (endpoint.second.is_writer())
             {
-                add_endpoint_to_vector(already_endpoints_index_writers, result.writers, endpoint, model.get_ros2_types());
+                add_endpoint_to_vector(already_endpoints_index_writers, result.writers, endpoint,
+                        model.get_ros2_types());
             }
         }
     }
@@ -172,7 +175,9 @@ void fill_complex_endpoint(
 
     result.guid = endpoint.guid;
     result.topic.topic_name = endpoint.topic.m_topic_name;
-    result.topic.topic_type = model.get_ros2_types() ? utils::demangle_if_ros_type(endpoint.topic.type_name) : endpoint.topic.type_name;
+    result.topic.topic_type =
+            model.get_ros2_types() ? utils::demangle_if_ros_type(endpoint.topic.type_name) : endpoint.topic.
+                    type_name;
     result.qos.durability = endpoint.topic.topic_qos.durability_qos;
     result.qos.reliability = endpoint.topic.topic_qos.reliability_qos;
 }
