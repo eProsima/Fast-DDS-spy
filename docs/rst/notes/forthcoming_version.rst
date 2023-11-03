@@ -14,3 +14,4 @@ This release will include the following **Configuration features**:
 * :ref:`Max Reception Rate <user_manual_configuration_dds__max_rx_rate>`.
 * :ref:`Downsampling <user_manual_configuration_dds__downsampling>`.
 * Remove the support for Built-in Topics.
+* Store `app_id` and `app_metadata` attributes in  *eProsima Fast DDS Spy* participants.
