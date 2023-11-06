@@ -340,7 +340,7 @@ TEST(ModelParserTest, participants_verbose_ros2_endpoints)
     std::vector<spy::participants::EndpointInfo> endpoints;
     // Topic
     ddspipe::core::types::DdsTopic topic;
-    topic.m_topic_name = "ROS_2_TopicName";
+    topic.m_topic_name = "rt/hello";
     topic.type_name = "std_msgs::msg::dds_::String_";
     topic.topic_qos = ddspipe::core::testing::random_topic_qos();
     endpoints = fill_database_endpoints(model, n_readers, n_writers, topic);
@@ -435,7 +435,7 @@ TEST(ModelParserTest, participants_verbose_ros2_types_ros2_endpoints)
     std::vector<spy::participants::EndpointInfo> endpoints;
     // Topic
     ddspipe::core::types::DdsTopic topic;
-    topic.m_topic_name = "ROS_2_TopicName";
+    topic.m_topic_name = "rt/hello";
     topic.type_name = "std_msgs::msg::dds_::String_";
     topic.topic_qos = ddspipe::core::testing::random_topic_qos();
 
@@ -456,7 +456,7 @@ TEST(ModelParserTest, participants_verbose_ros2_types_ros2_endpoints)
         if (it.is_writer())
         {
             writers.push_back({
-                it.topic.m_topic_name,
+                utils::demangle_if_ros_topic(it.topic.m_topic_name),
                 utils::demangle_if_ros_type(it.topic.type_name),
                 1
             });
@@ -464,7 +464,7 @@ TEST(ModelParserTest, participants_verbose_ros2_types_ros2_endpoints)
         if (it.is_reader())
         {
             readers.push_back({
-                it.topic.m_topic_name,
+                utils::demangle_if_ros_topic(it.topic.m_topic_name),
                 utils::demangle_if_ros_type(it.topic.type_name),
                 1
             });
@@ -693,7 +693,7 @@ TEST(ModelParserTest, complex_participant_ros2_endpoints)
     std::vector<spy::participants::EndpointInfo> endpoints;
     // Topic
     ddspipe::core::types::DdsTopic topic;
-    topic.m_topic_name = "ROS_2_TopicName";
+    topic.m_topic_name = "rt/hello";
     topic.type_name = "std_msgs::msg::dds_::String_";
     topic.topic_qos = ddspipe::core::testing::random_topic_qos();
 
@@ -780,7 +780,7 @@ TEST(ModelParserTest, complex_participant_ros2_types_ros2_endpoints)
     std::vector<spy::participants::EndpointInfo> endpoints;
     // Topic
     ddspipe::core::types::DdsTopic topic;
-    topic.m_topic_name = "ROS_2_TopicName";
+    topic.m_topic_name = "rt/hello";
     topic.type_name = "std_msgs::msg::dds_::String_";
     topic.topic_qos = ddspipe::core::testing::random_topic_qos();
     endpoints = fill_database_endpoints(model, n_readers, n_writers, topic);
@@ -798,7 +798,7 @@ TEST(ModelParserTest, complex_participant_ros2_types_ros2_endpoints)
         if (it.is_writer())
         {
             writers.push_back({
-                it.topic.m_topic_name,
+                utils::demangle_if_ros_topic(it.topic.m_topic_name),
                 utils::demangle_if_ros_type(it.topic.type_name),
                 1
             });
@@ -806,7 +806,7 @@ TEST(ModelParserTest, complex_participant_ros2_types_ros2_endpoints)
         if (it.is_reader())
         {
             readers.push_back({
-                it.topic.m_topic_name,
+                utils::demangle_if_ros_topic(it.topic.m_topic_name),
                 utils::demangle_if_ros_type(it.topic.type_name),
                 1
             });
@@ -933,7 +933,7 @@ TEST(ModelParserTest, simple_ros2_endpoint_writer)
     std::vector<spy::participants::EndpointInfo> endpoints;
     // Topic
     ddspipe::core::types::DdsTopic topic;
-    topic.m_topic_name = "ROS_2_TopicName";
+    topic.m_topic_name = "rt/hello";
     topic.type_name = "std_msgs::msg::dds_::String_";
     topic.topic_qos = ddspipe::core::testing::random_topic_qos();
     // Fill model
@@ -976,7 +976,7 @@ TEST(ModelParserTest, simple_ros2_endpoint_writer_ros2_types)
     std::vector<spy::participants::EndpointInfo> endpoints;
     // Topic
     ddspipe::core::types::DdsTopic topic;
-    topic.m_topic_name = "ROS_2_TopicName";
+    topic.m_topic_name = "rt/hello";
     topic.type_name = "std_msgs::msg::dds_::String_";
     topic.topic_qos = ddspipe::core::testing::random_topic_qos();
     // Fill model
@@ -994,7 +994,7 @@ TEST(ModelParserTest, simple_ros2_endpoint_writer_ros2_types)
             it.guid,
             it.discoverer_participant_id,
             {
-                it.topic.m_topic_name,
+                utils::demangle_if_ros_topic(it.topic.m_topic_name),
                 utils::demangle_if_ros_type(it.topic.type_name)
             }
 
@@ -1095,7 +1095,7 @@ TEST(ModelParserTest, simple_ros2_endpoint_reader)
     std::vector<spy::participants::EndpointInfo> endpoints;
     // Topic
     ddspipe::core::types::DdsTopic topic;
-    topic.m_topic_name = "ROS_2_TopicName";
+    topic.m_topic_name = "rt/hello";
     topic.type_name = "std_msgs::msg::dds_::String_";
     topic.topic_qos = ddspipe::core::testing::random_topic_qos();
     // Fill model
@@ -1138,7 +1138,7 @@ TEST(ModelParserTest, simple_ros2_endpoint_reader_ros2_types)
     std::vector<spy::participants::EndpointInfo> endpoints;
     // Topic
     ddspipe::core::types::DdsTopic topic;
-    topic.m_topic_name = "ROS_2_TopicName";
+    topic.m_topic_name = "rt/hello";
     topic.type_name = "std_msgs::msg::dds_::String_";
     topic.topic_qos = ddspipe::core::testing::random_topic_qos();
     // Fill model
@@ -1156,7 +1156,7 @@ TEST(ModelParserTest, simple_ros2_endpoint_reader_ros2_types)
             it.guid,
             it.discoverer_participant_id,
             {
-                it.topic.m_topic_name,
+                utils::demangle_if_ros_topic(it.topic.m_topic_name),
                 utils::demangle_if_ros_type(it.topic.type_name)
             }
 
@@ -1326,7 +1326,7 @@ TEST(ModelParserTest, ros2_endpoint_reader_verbose)
     std::vector<spy::participants::EndpointInfo> endpoints;
     // Topic
     ddspipe::core::types::DdsTopic topic;
-    topic.m_topic_name = "ROS_2_TopicName";
+    topic.m_topic_name = "rt/hello";
     topic.type_name = "std_msgs::msg::dds_::String_";
     topic.topic_qos = ddspipe::core::testing::random_topic_qos();
     endpoints = fill_database_endpoints(model, 1, 0, topic);
@@ -1381,7 +1381,7 @@ TEST(ModelParserTest, ros2_endpoint_reader_verbose_ros2_types)
     std::vector<spy::participants::EndpointInfo> endpoints;
     // Topic
     ddspipe::core::types::DdsTopic topic;
-    topic.m_topic_name = "ROS_2_TopicName";
+    topic.m_topic_name = "rt/hello";
     topic.type_name = "std_msgs::msg::dds_::String_";
     topic.topic_qos = ddspipe::core::testing::random_topic_qos();
     endpoints = fill_database_endpoints(model, 1, 0, topic);
@@ -1396,7 +1396,7 @@ TEST(ModelParserTest, ros2_endpoint_reader_verbose_ros2_types)
     {
         spy::participants::ComplexEndpointData fill_expected_result;
         fill_expected_result.guid = it.guid;
-        fill_expected_result.topic.topic_name = it.topic.m_topic_name;
+        fill_expected_result.topic.topic_name = utils::demangle_if_ros_topic(it.topic.m_topic_name);
         fill_expected_result.topic.topic_type = utils::demangle_if_ros_type(it.topic.type_name);
         fill_expected_result.qos.durability = it.topic.topic_qos.durability_qos;
         fill_expected_result.qos.reliability = it.topic.topic_qos.reliability_qos;
@@ -1534,7 +1534,7 @@ TEST(ModelParserTest, ros2_endpoint_writer_verbose)
     std::vector<spy::participants::EndpointInfo> endpoints;
     // Topic
     ddspipe::core::types::DdsTopic topic;
-    topic.m_topic_name = "ROS_2_TopicName";
+    topic.m_topic_name = "rt/hello";
     topic.type_name = "std_msgs::msg::dds_::String_";
     topic.topic_qos = ddspipe::core::testing::random_topic_qos();
     endpoints = fill_database_endpoints(model, 0, 1, topic);
@@ -1588,7 +1588,7 @@ TEST(ModelParserTest, ros2_endpoint_writer_verbose_ros2_types)
     std::vector<spy::participants::EndpointInfo> endpoints;
     // Topic
     ddspipe::core::types::DdsTopic topic;
-    topic.m_topic_name = "ROS_2_TopicName";
+    topic.m_topic_name = "rt/hello";
     topic.type_name = "std_msgs::msg::dds_::String_";
     topic.topic_qos = ddspipe::core::testing::random_topic_qos();
     endpoints = fill_database_endpoints(model, 0, 1, topic);
@@ -1603,7 +1603,7 @@ TEST(ModelParserTest, ros2_endpoint_writer_verbose_ros2_types)
     {
         spy::participants::ComplexEndpointData fill_expected_result;
         fill_expected_result.guid = it.guid;
-        fill_expected_result.topic.topic_name = it.topic.m_topic_name;
+        fill_expected_result.topic.topic_name = utils::demangle_if_ros_topic(it.topic.m_topic_name);
         fill_expected_result.topic.topic_type = utils::demangle_if_ros_type(it.topic.type_name);
         fill_expected_result.qos.durability = it.topic.topic_qos.durability_qos;
         fill_expected_result.qos.reliability = it.topic.topic_qos.reliability_qos;
@@ -1725,7 +1725,7 @@ TEST(ModelParserTest, complex_ros2_endpoint_writer)
     std::vector<spy::participants::EndpointInfo> endpoints;
     // Topic
     ddspipe::core::types::DdsTopic topic;
-    topic.m_topic_name = "ROS_2_TopicName";
+    topic.m_topic_name = "rt/hello";
     topic.type_name = "std_msgs::msg::dds_::String_";
     topic.topic_qos = ddspipe::core::testing::random_topic_qos();
     endpoints = fill_database_endpoints(model, 0, 1, topic);
@@ -1771,7 +1771,7 @@ TEST(ModelParserTest, complex_ros2_endpoint_writer_ros2_types)
     std::vector<spy::participants::EndpointInfo> endpoints;
     // Topic
     ddspipe::core::types::DdsTopic topic;
-    topic.m_topic_name = "ROS_2_TopicName";
+    topic.m_topic_name = "rt/hello";
     topic.type_name = "std_msgs::msg::dds_::String_";
     topic.topic_qos = ddspipe::core::testing::random_topic_qos();
     endpoints = fill_database_endpoints(model, 0, 1, topic);
@@ -1785,7 +1785,7 @@ TEST(ModelParserTest, complex_ros2_endpoint_writer_ros2_types)
     for (const auto& it : endpoints)
     {
         expected_result.guid = it.guid;
-        expected_result.topic.topic_name = it.topic.m_topic_name;
+        expected_result.topic.topic_name = utils::demangle_if_ros_topic(it.topic.m_topic_name);
         expected_result.topic.topic_type = utils::demangle_if_ros_type(it.topic.type_name);
         expected_result.qos.durability = it.topic.topic_qos.durability_qos;
         expected_result.qos.reliability = it.topic.topic_qos.reliability_qos;
@@ -1899,7 +1899,7 @@ TEST(ModelParserTest, complex_ros2_endpoint_reader)
     std::vector<spy::participants::EndpointInfo> endpoints;
     // Topic
     ddspipe::core::types::DdsTopic topic;
-    topic.m_topic_name = "ROS_2_TopicName";
+    topic.m_topic_name = "rt/hello";
     topic.type_name = "std_msgs::msg::dds_::String_";
     topic.topic_qos = ddspipe::core::testing::random_topic_qos();
     endpoints = fill_database_endpoints(model, 1, 0, topic);
@@ -1945,7 +1945,7 @@ TEST(ModelParserTest, complex_ros2_endpoint_reader_ros2_types)
     std::vector<spy::participants::EndpointInfo> endpoints;
     // Topic
     ddspipe::core::types::DdsTopic topic;
-    topic.m_topic_name = "ROS_2_TopicName";
+    topic.m_topic_name = "rt/hello";
     topic.type_name = "std_msgs::msg::dds_::String_";
     topic.topic_qos = ddspipe::core::testing::random_topic_qos();
     endpoints = fill_database_endpoints(model, 1, 0, topic);
@@ -1959,7 +1959,7 @@ TEST(ModelParserTest, complex_ros2_endpoint_reader_ros2_types)
     for (const auto& it : endpoints)
     {
         expected_result.guid = it.guid;
-        expected_result.topic.topic_name = it.topic.m_topic_name;
+        expected_result.topic.topic_name = utils::demangle_if_ros_topic(it.topic.m_topic_name);
         expected_result.topic.topic_type = utils::demangle_if_ros_type(it.topic.type_name);
         expected_result.qos.durability = it.topic.topic_qos.durability_qos;
         expected_result.qos.reliability = it.topic.topic_qos.reliability_qos;
@@ -2070,7 +2070,7 @@ TEST(ModelParserTest, simple_topic_ros2_endpoints)
     // Fill model
     // Topic
     ddspipe::core::types::DdsTopic topic;
-    topic.m_topic_name = "ROS_2_TopicName";
+    topic.m_topic_name = "rt/hello";
     topic.type_name = "std_msgs::msg::dds_::String_";
     topic.topic_qos = ddspipe::core::testing::random_topic_qos();
     // Endpoints
@@ -2115,7 +2115,7 @@ TEST(ModelParserTest, simple_topic_ros2_endpoints_ros2_types)
     // Fill model
     // Topic
     ddspipe::core::types::DdsTopic topic;
-    topic.m_topic_name = "ROS_2_TopicName";
+    topic.m_topic_name = "rt/hello";
     topic.type_name = "std_msgs::msg::dds_::String_";
     topic.topic_qos = ddspipe::core::testing::random_topic_qos();
     // Endpoints
@@ -2129,7 +2129,7 @@ TEST(ModelParserTest, simple_topic_ros2_endpoints_ros2_types)
     // Create expected return
     std::vector<spy::participants::SimpleTopicData> expected_result;
     expected_result.push_back({
-        topic.m_topic_name,
+        utils::demangle_if_ros_topic(topic.m_topic_name),
         utils::demangle_if_ros_type(topic.type_name),
         2,
         1,
@@ -2296,7 +2296,7 @@ TEST(ModelParserTest, topics_verbose_ros2_endpoints)
     // Fill model
     // Topic
     ddspipe::core::types::DdsTopic topic;
-    topic.m_topic_name = "ROS_2_TopicName";
+    topic.m_topic_name = "rt/hello";
     topic.type_name = "std_msgs::msg::dds_::String_";
     topic.topic_qos = ddspipe::core::testing::random_topic_qos();
     // Endpoints
@@ -2367,7 +2367,7 @@ TEST(ModelParserTest, topics_verbose_ros2_endpoints_ros2_types)
     // Fill model
     // Topic
     ddspipe::core::types::DdsTopic topic;
-    topic.m_topic_name = "ROS_2_TopicName";
+    topic.m_topic_name = "rt/hello";
     topic.type_name = "std_msgs::msg::dds_::String_";
     topic.topic_qos = ddspipe::core::testing::random_topic_qos();
     // Endpoints
@@ -2394,7 +2394,7 @@ TEST(ModelParserTest, topics_verbose_ros2_endpoints_ros2_types)
             datawriters.push_back({it.guid});
         }
     }
-    fill_expected_result.name = topic.m_topic_name;
+    fill_expected_result.name = utils::demangle_if_ros_topic(topic.m_topic_name);
     fill_expected_result.type = utils::demangle_if_ros_type(topic.type_name);
     fill_expected_result.datawriters = datawriters;
     fill_expected_result.datareaders = datareaders;
@@ -2558,7 +2558,7 @@ TEST(ModelParserTest, complex_topic_ros2_endpoints)
     // Fill model
     // Topic
     ddspipe::core::types::DdsTopic topic;
-    topic.m_topic_name = "ROS_2_TopicName";
+    topic.m_topic_name = "rt/hello";
     topic.type_name = "std_msgs::msg::dds_::String_";
     topic.topic_qos = ddspipe::core::testing::random_topic_qos();
     // Endpoints
@@ -2621,7 +2621,7 @@ TEST(ModelParserTest, complex_topic_ros2_endpoints_ros2_types)
     // Fill model
     // Topic
     ddspipe::core::types::DdsTopic topic;
-    topic.m_topic_name = "ROS_2_TopicName";
+    topic.m_topic_name = "rt/hello";
     topic.type_name = "std_msgs::msg::dds_::String_";
     topic.topic_qos = ddspipe::core::testing::random_topic_qos();
     // Endpoints
@@ -2647,7 +2647,7 @@ TEST(ModelParserTest, complex_topic_ros2_endpoints_ros2_types)
         }
     }
     spy::participants::ComplexTopicData expected_result;
-    expected_result.name = topic.m_topic_name;
+    expected_result.name = utils::demangle_if_ros_topic(topic.m_topic_name);
     expected_result.type = utils::demangle_if_ros_type(topic.type_name);
     expected_result.datawriters = datawriters;
     expected_result.datareaders = datareaders;

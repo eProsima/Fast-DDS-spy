@@ -9,4 +9,4 @@ Forthcoming Version
 
 This release will include the following **Configuration features**:
 
-* Store schemas in OMG IDL and ROS 2 msg format.
+* Display information in either ROS 2 format or the raw DDS format.

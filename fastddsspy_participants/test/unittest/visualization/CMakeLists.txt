@@ -21,7 +21,7 @@ all_library_sources("${TEST_SOURCES}")
 
 set(TEST_LIST
         simple_participant
-        simple_participant_two_participants
+        simple_participant_n_participants
         participants_verbose_dds_endpoints
         participants_verbose_ros2_types_dds_endpoints
         participants_verbose_ros2_endpoints
