@@ -161,9 +161,9 @@ causing the data under this topic to be discarded.
 Topic type format
 -----------------
 
-The optional ``ros2-types`` tag enables specification of the format for storing schemas.
-When set to ``true``, schemas are stored in ROS 2 message format (.msg).
-If set to ``false``, schemas are stored in OMG IDL format (.idl).
+The optional ``ros2-types`` tag enables specification of the format for displaying schemas.
+When set to ``true``, schemas are displayed in ROS 2 message format (.msg).
+If set to ``false``, schemas are displayed in OMG IDL format (.idl).
 
 .. _user_manual_configuration_specs:
 
