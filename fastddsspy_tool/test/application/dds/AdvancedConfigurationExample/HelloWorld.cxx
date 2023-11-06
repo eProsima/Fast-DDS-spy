@@ -60,7 +60,7 @@ HelloWorld::HelloWorld(
 }
 
 HelloWorld::HelloWorld(
-        HelloWorld&& x) noexcept 
+        HelloWorld&& x) noexcept
 {
     m_index = x.m_index;
     m_message = std::move(x.m_message);
@@ -208,7 +208,6 @@ std::array<char, 20>& HelloWorld::message()
     return m_message;
 }
 
-
 size_t HelloWorld::getKeyMaxCdrSerializedSize(
         size_t current_alignment)
 {
@@ -226,4 +225,3 @@ void HelloWorld::serializeKey(
 {
     (void) scdr;
 }
-

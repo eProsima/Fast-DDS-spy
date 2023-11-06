@@ -38,31 +38,34 @@
 #ifndef SWIG
 namespace detail {
 
-    template<typename Tag, typename Tag::type M>
-    struct HelloWorld_rob
+template<typename Tag, typename Tag::type M>
+struct HelloWorld_rob
+{
+    friend constexpr typename Tag::type get(
+            Tag)
     {
-        friend constexpr typename Tag::type get(
-                Tag)
-        {
-            return M;
-        }
-    };
-
-    struct HelloWorld_f
-    {
-        typedef std::array<char, 20> HelloWorld::* type;
-        friend constexpr type get(
-                HelloWorld_f);
-    };
-
-    template struct HelloWorld_rob<HelloWorld_f, &HelloWorld::m_message>;
-
-    template <typename T, typename Tag>
-    inline size_t constexpr HelloWorld_offset_of() {
-        return ((::size_t) &reinterpret_cast<char const volatile&>((((T*)0)->*get(Tag()))));
+        return M;
     }
+
+};
+
+struct HelloWorld_f
+{
+    typedef std::array<char, 20> HelloWorld::* type;
+    friend constexpr type get(
+            HelloWorld_f);
+};
+
+template struct HelloWorld_rob<HelloWorld_f, &HelloWorld::m_message>;
+
+template <typename T, typename Tag>
+inline size_t constexpr HelloWorld_offset_of()
+{
+    return ((::size_t) &reinterpret_cast<char const volatile&>((((T*)0)->*get(Tag()))));
 }
-#endif
+
+} // namespace detail
+#endif // ifndef SWIG
 
 /*!
  * @brief This class represents the TopicDataType of the type HelloWorld defined by the user in the IDL file.
@@ -132,9 +135,12 @@ private:
 
     static constexpr bool is_plain_impl()
     {
-        return 24ULL == (detail::HelloWorld_offset_of<HelloWorld, detail::HelloWorld_f>() + sizeof(std::array<char, 20>));
+        return 24ULL ==
+               (detail::HelloWorld_offset_of<HelloWorld, detail::HelloWorld_f>() + sizeof(std::array<char, 20>));
 
-    }};
+    }
+
+};
 
 #endif // _FAST_DDS_GENERATED_HELLOWORLD_PUBSUBTYPES_H_
 
