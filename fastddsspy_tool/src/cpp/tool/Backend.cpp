@@ -80,7 +80,8 @@ Backend::~Backend()
     pipe_->disable();
 }
 
-utils::ReturnCode Backend::reload_configuration(const yaml::Configuration& new_configuration)
+utils::ReturnCode Backend::reload_configuration(
+        const yaml::Configuration& new_configuration)
 {
     return pipe_->reload_configuration(new_configuration.ddspipe_configuration);
 }

@@ -63,7 +63,8 @@ void Controller::one_shot_run(
     run_command_(input_.parse_as_command(args));
 }
 
-utils::ReturnCode Controller::reload_configuration(const yaml::Configuration& new_configuration)
+utils::ReturnCode Controller::reload_configuration(
+        const yaml::Configuration& new_configuration)
 {
     return backend_.reload_configuration(new_configuration);
 }

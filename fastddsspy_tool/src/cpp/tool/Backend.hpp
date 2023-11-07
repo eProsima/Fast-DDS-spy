@@ -46,7 +46,8 @@ public:
 
     ~Backend();
 
-    utils::ReturnCode reload_configuration(const yaml::Configuration& new_configuration);
+    utils::ReturnCode reload_configuration(
+            const yaml::Configuration& new_configuration);
 
     std::shared_ptr<eprosima::spy::participants::SpyModel> model() const noexcept;
 
