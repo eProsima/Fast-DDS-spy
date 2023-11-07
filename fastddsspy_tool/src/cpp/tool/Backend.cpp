@@ -31,7 +31,7 @@ Backend::Backend(
             configuration.n_threads))
     , participant_database_(std::make_shared<ddspipe::core::ParticipantsDatabase>())
     , model_(
-        std::make_shared<participants::SpyModel>())
+        std::make_shared<participants::SpyModel>(configuration.ros2_types))
     , dds_participant_(
         std::make_shared<participants::SpyDdsParticipant>(
             configuration.simple_configuration,

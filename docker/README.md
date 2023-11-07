@@ -113,6 +113,7 @@ This first version does support the following configurations:
 | dds/allowlist        | List of topics that the tool will subscribe to              | List of topics | Empty     |
 | dds/blocklist        | List of topics that the tool will **not** subscribe to      | List of topics | Empty     |
 | dds/domain           | DDS Domain to discover and subscribe to topics allowed      | integer        | 0         |
+| dds/ros2-types       | Display information in either ROS 2 format (true) or the raw DDS format (false)| bool           | false     |
 | specs/threads        | Number of threads to read DDS data                          | int            | 12        |
 | specs/discovery-time | Time before showing info when using one-shot command        | int (ms)       | 1000      |
 | specs/max-depth      | Maximum history depth for DataReaders                       | int            | 5000      |

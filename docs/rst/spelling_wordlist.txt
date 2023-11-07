@@ -29,12 +29,14 @@ github
 gMock
 Gtest
 guid
+idl
 IPv
 kubernetes
 localhost
 metatraffic
 microcontroller
 middleware
+msg
 multicast
 mutex
 QoS
@@ -42,6 +44,7 @@ Redistributable
 Requiredness
 runtime
 scalable
+schemas
 utils
 validator
 Vulcanexus

@@ -14,6 +14,8 @@
 
 #include <utility>
 
+#include <cpp_utils/ros2_mangling.hpp>
+
 #include <fastddsspy_participants/visualization/ModelParser.hpp>
 
 namespace eprosima {
@@ -60,7 +62,8 @@ void add_endpoint_to_vector(
         std::map<std::string, int>& already_endpoints_index,
         std::vector<ComplexParticipantData::Endpoint>& endpoints,
         const std::pair<const eprosima::ddspipe::core::types::Guid,
-        eprosima::spy::participants::EndpointInfo>& endpoint) noexcept
+        eprosima::spy::participants::EndpointInfo>& endpoint,
+        bool ros2_types = false) noexcept
 {
     // Check if this topic has already endpoints added
     auto it = already_endpoints_index.find(endpoint.second.topic.m_topic_name);
@@ -69,8 +72,10 @@ void add_endpoint_to_vector(
         // If first for this topic, add new topic
         already_endpoints_index[endpoint.second.topic.m_topic_name] = endpoints.size();
         endpoints.push_back({
-                        endpoint.second.topic.m_topic_name,
-                        endpoint.second.topic.type_name,
+                        ros2_types ? utils::demangle_if_ros_topic(
+                            endpoint.second.topic.m_topic_name) : endpoint.second.topic.m_topic_name,
+                        ros2_types ? utils::demangle_if_ros_type(
+                            endpoint.second.topic.type_name) : endpoint.second.topic.type_name,
                         1
                     });
     }
@@ -116,11 +121,13 @@ ComplexParticipantData ModelParser::participants(
         {
             if (endpoint.second.is_reader())
             {
-                add_endpoint_to_vector(already_endpoints_index_readers, result.readers, endpoint);
+                add_endpoint_to_vector(already_endpoints_index_readers, result.readers, endpoint,
+                        model.get_ros2_types());
             }
             else if (endpoint.second.is_writer())
             {
-                add_endpoint_to_vector(already_endpoints_index_writers, result.writers, endpoint);
+                add_endpoint_to_vector(already_endpoints_index_writers, result.writers, endpoint,
+                        model.get_ros2_types());
             }
         }
     }
@@ -154,8 +161,9 @@ SimpleEndpointData fill_simple_endpoint(
         endpoint.guid,
         participant_name,
         {
-            endpoint.topic.m_topic_name,
-            endpoint.topic.type_name
+            model.get_ros2_types() ? utils::demangle_if_ros_topic(endpoint.topic.m_topic_name) : endpoint.topic.
+                    m_topic_name,
+            model.get_ros2_types() ? utils::demangle_if_ros_type(endpoint.topic.type_name) : endpoint.topic.type_name
         }
     };
 }
@@ -168,8 +176,12 @@ void fill_complex_endpoint(
     result.participant_name = get_participant_name(model, endpoint.guid);
 
     result.guid = endpoint.guid;
-    result.topic.topic_name = endpoint.topic.m_topic_name;
-    result.topic.topic_type = endpoint.topic.type_name;
+    result.topic.topic_name =
+            model.get_ros2_types() ? utils::demangle_if_ros_topic(endpoint.topic.m_topic_name) : endpoint.
+                    topic.m_topic_name;
+    result.topic.topic_type =
+            model.get_ros2_types() ? utils::demangle_if_ros_type(endpoint.topic.type_name) : endpoint.topic.
+                    type_name;
     result.qos.durability = endpoint.topic.topic_qos.durability_qos;
     result.qos.reliability = endpoint.topic.topic_qos.reliability_qos;
 }
@@ -337,8 +349,8 @@ std::vector<SimpleTopicData> ModelParser::topics(
             }
         }
         result.push_back({
-                        topic.m_topic_name,
-                        topic.type_name,
+                        model.get_ros2_types() ? utils::demangle_if_ros_topic(topic.m_topic_name) : topic.m_topic_name,
+                        model.get_ros2_types() ? utils::demangle_if_ros_type(topic.type_name) : topic.type_name,
                         datawriters,
                         datareaders,
                         {
@@ -382,8 +394,8 @@ ComplexTopicData ModelParser::topics(
     }
 
     // Topic found, fill its information
-    result.name = topic.m_topic_name;
-    result.type = topic.type_name;
+    result.name = model.get_ros2_types() ? utils::demangle_if_ros_topic(topic.m_topic_name) : topic.m_topic_name;
+    result.type = model.get_ros2_types() ? utils::demangle_if_ros_type(topic.type_name) : topic.type_name;
     result.discovered = model.is_topic_type_discovered(topic);
     result.rate.rate = model.get_topic_rate(topic);
     result.rate.unit = "Hz";

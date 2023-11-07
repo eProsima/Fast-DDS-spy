@@ -181,6 +181,13 @@ void Configuration::load_dds_configuration_(
     {
         simple_configuration->ignore_participant_flags = IgnoreParticipantFlags::no_filter;
     }
+
+    /////
+    // Get optional ros2_types
+    if (YamlReader::is_tag_present(yml, ROS2_TYPES_TAG))
+    {
+        ros2_types = YamlReader::get<bool>(yml, ROS2_TYPES_TAG, version);
+    }
 }
 
 void Configuration::load_specs_configuration_(

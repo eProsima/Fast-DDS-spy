@@ -28,6 +28,7 @@ namespace eprosima {
 namespace spy {
 namespace participants {
 
+
 bool DataStreamer::activate_all(
         const std::shared_ptr<CallbackType>& callback)
 {
@@ -79,6 +80,8 @@ void DataStreamer::add_schema(
     // Add type to map if not yet
     // NOTE: it does not matter if it is already in set
     types_discovered_[dynamic_type->get_name()] = dynamic_type;
+
+    logInfo(FASTDDSSPY_DATASTREAMER, "\nAdding schema with name " << dynamic_type->get_name() << ".");
 }
 
 void DataStreamer::add_data(
@@ -103,6 +106,9 @@ void DataStreamer::add_data(
             if (!is_topic_type_discovered_nts_(topic))
             {
                 // If all activated, add it only if schema is available, otherwise skip
+                logWarning(
+                    FASTDDSSPY_DATASTREAMER,
+                    "All activated but schema not is available.");
                 return;
             }
         }
@@ -111,9 +117,16 @@ void DataStreamer::add_data(
             if (!(activated_topic_ == topic))
             {
                 // If not all activated, and this is not the activated topic skip
+                logWarning(
+                    FASTDDSSPY_DATASTREAMER,
+                    "Not all activated, and this is not the activated topic.");
                 return;
             }
         }
+
+        logInfo(
+            FASTDDSSPY_DATASTREAMER,
+            "Adding data in topic " << topic);
 
         auto it = types_discovered_.find(topic.type_name);
         if (it == types_discovered_.end())

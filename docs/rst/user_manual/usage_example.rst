@@ -41,10 +41,8 @@ Spy configuration
 
 Additionally, it is possible to change the default configuration parameters by means of a YAML configuration file.
 
-.. TODO refer to Configuration
-
 .. note::
-    Please refer to Configuration for more information on how to configure a |espy|.
+    Please refer to :ref:`user_manual_configuration` for more information on how to configure a |espy|.
 
 Spy execution
 =============

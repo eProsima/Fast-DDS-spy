@@ -66,6 +66,9 @@ public:
     std::set<utils::Heritable<ddspipe::core::types::IFilterTopic>> blocklist {};
     std::set<utils::Heritable<ddspipe::core::types::DistributedTopic>> builtin_topics {};
 
+    //! Whether to generate schemas as OMG IDL or ROS2 msg
+    bool ros2_types = false;
+
     // Specs
     unsigned int n_threads = 12;
     utils::Duration_ms one_shot_wait_time_ms = 1000;

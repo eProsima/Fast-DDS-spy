@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include <fastddsspy_participants/library/library_dll.h>
+
 #include <fastddsspy_participants/model/DataStreamer.hpp>
 #include <fastddsspy_participants/model/NetworkDatabase.hpp>
 
@@ -26,6 +28,18 @@ namespace participants {
  */
 class SpyModel : public NetworkDatabase, public DataStreamer
 {
+public:
+
+    FASTDDSSPY_PARTICIPANTS_DllAPI
+    SpyModel(
+            bool ros2_types = false);
+
+    FASTDDSSPY_PARTICIPANTS_DllAPI
+    bool get_ros2_types() const noexcept;
+
+private:
+
+    bool ros2_types_;
 };
 
 } /* namespace participants */

@@ -12,31 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/**
- * @file yaml_configuration_tags.hpp
- */
-
-#pragma once
-
-#include <set>
-#include <string>
+#include <fastddsspy_participants/model/SpyModel.hpp>
 
 namespace eprosima {
 namespace spy {
-namespace yaml {
+namespace participants {
 
-//////////////////////
-// DDS related tags
-//////////////////////
-constexpr const char* DDS_TAG("dds");
-constexpr const char* ROS2_TYPES_TAG("ros2-types");
+SpyModel::SpyModel(
+        bool ros2_types /*= false*/)
+    : ros2_types_(ros2_types)
+{
+    // Do nothing
+}
 
-////////////////////////
-// Specs related tags
-////////////////////////
-constexpr const char* SPECS_TAG("specs");
-constexpr const char* GATHERING_TIME_TAG("discovery-time");
+bool SpyModel::get_ros2_types() const noexcept
+{
+    return ros2_types_;
+}
 
-} /* namespace yaml */
+} /* namespace participants */
 } /* namespace spy */
 } /* namespace eprosima */
