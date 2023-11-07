@@ -43,11 +43,6 @@ Topic Filtering
 
 The |spy| automatically detects the topics that are being used in a DDS Network.
 The |spy| then creates internal DDS :term:`Readers<DataReader>` for each topic to process the data published.
-
-.. note::
-
-    |spy| entities are created with the :ref:`Topic QoS <user_manual_configuration_dds__topic_qos>` of the first Subscriber found in this Topic.
-
 The |spy| allows filtering DDS :term:`Topics<Topic>`, that is, it allows users to configure the DDS :term:`Topics<Topic>` to process.
 These data filtering rules can be configured under the ``allowlist`` and ``blocklist`` tags.
 If the ``allowlist`` and ``blocklist`` are not configured, the |spy| will process all the data published on the topics it discovers.
