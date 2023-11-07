@@ -1,12 +1,13 @@
-version: 2.0
-
 dds:
   domain: 33
+
   allowlist:
     - name: "*"
+
   blocklist:
     - name: "topic_name"
       type: "topic_type"
+
   ros2-types: false
 
 specs:

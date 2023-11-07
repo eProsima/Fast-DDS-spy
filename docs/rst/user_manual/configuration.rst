@@ -10,24 +10,6 @@ Configuration
 A |spy| instance can be configured by a :term:`YAML` configuration file.
 In order to retrieve a configuration file to a |spy|, use :ref:`user_manual_user_interface_configuration_file_argument`.
 
-Version
-=======
-
-The YAML Configuration support a ``version`` value to identify the configuration version to parse the file.
-In future releases could be common to change the YAML format (some key words, fields, etc.).
-This value allow to keep using the same YAML file using an old configuration format, maintaining compatibility.
-
-.. list-table::
-    :header-rows: 1
-
-    *   - Configuration Versions
-        - String in ``version`` tag
-        - |spy| activation release
-
-    *   - version 2.0
-        - ``v2.0``
-        - *v0.2.0*
-
 .. _user_manual_configuration_dds:
 
 DDS Configurations
@@ -322,8 +304,6 @@ This is a YAML file that uses all supported configurations and set them as defau
     This example can be used as a quick reference, but it may not be correct due to incompatibility or exclusive properties. **Do not take it as a working example**.
 
 .. code-block:: yaml
-
-    version: 2.0
 
     dds:
       domain: 0
