@@ -17,8 +17,10 @@
 #include <cpp_utils/memory/Heritable.hpp>
 #include <cpp_utils/time/time_utils.hpp>
 
+#include <ddspipe_core/types/dds/TopicQoS.hpp>
 #include <ddspipe_core/types/topic/filter/IFilterTopic.hpp>
 #include <ddspipe_core/types/topic/dds/DistributedTopic.hpp>
+#include <ddspipe_core/configuration/DdsPipeConfiguration.hpp>
 #include <ddspipe_core/configuration/IConfiguration.hpp>
 
 #include <ddspipe_participants/configuration/SimpleParticipantConfiguration.hpp>
@@ -36,7 +38,7 @@ namespace spy {
 namespace yaml {
 
 /**
- * @brief Class that encapsulates specific methods to get a full ddspipe Configuration from a yaml node.
+ * @brief Class that encapsulates specific methods to get a full FastDdsSpy Configuration from a yaml node.
  */
 class Configuration : ddspipe::core::IConfiguration
 {
@@ -57,14 +59,12 @@ public:
     virtual bool is_valid(
             utils::Formatter& error_msg) const noexcept override;
 
+    //! DdsPipe configuration
+    ddspipe::core::DdsPipeConfiguration ddspipe_configuration {};
+
     // Participants configurations
     std::shared_ptr<ddspipe::participants::SimpleParticipantConfiguration> simple_configuration;
     std::shared_ptr<participants::SpyParticipantConfiguration> spy_configuration;
-
-    // Topic filtering
-    std::set<utils::Heritable<ddspipe::core::types::IFilterTopic>> allowlist {};
-    std::set<utils::Heritable<ddspipe::core::types::IFilterTopic>> blocklist {};
-    std::set<utils::Heritable<ddspipe::core::types::DistributedTopic>> builtin_topics {};
 
     //! Whether to generate schemas as OMG IDL or ROS2 msg
     bool ros2_types = false;
@@ -72,6 +72,7 @@ public:
     // Specs
     unsigned int n_threads = 12;
     utils::Duration_ms one_shot_wait_time_ms = 1000;
+    ddspipe::core::types::TopicQoS topic_qos{};
 
 protected:
 

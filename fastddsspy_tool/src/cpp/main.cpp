@@ -160,12 +160,7 @@ int main(
                     try
                     {
                         eprosima::spy::yaml::Configuration new_configuration(file_path);
-                        spy.reload_allowed_topics(
-                            std::make_shared<eprosima::ddspipe::core::AllowedTopicList>(
-                                new_configuration.allowlist,
-                                new_configuration.blocklist
-                                )
-                            );
+                        spy.reload_configuration(new_configuration);
                     }
                     catch (const std::exception& e)
                     {
@@ -199,12 +194,7 @@ int main(
                         try
                         {
                             eprosima::spy::yaml::Configuration new_configuration(file_path);
-                            spy.reload_allowed_topics(
-                                std::make_shared<eprosima::ddspipe::core::AllowedTopicList>(
-                                    new_configuration.allowlist,
-                                    new_configuration.blocklist
-                                    )
-                                );
+                            spy.reload_configuration(new_configuration);
                         }
                         catch (const std::exception& e)
                         {

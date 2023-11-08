@@ -1,15 +1,18 @@
-version: 1.0
-
 dds:
   domain: 33
+
   allowlist:
     - name: "*"
+
   blocklist:
     - name: "topic_name"
       type: "topic_type"
+
   ros2-types: false
 
 specs:
   threads: 12
-  max-history-depth: 5000
   discovery-time: 2000
+
+  qos:
+    history-depth: 5000

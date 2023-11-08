@@ -46,8 +46,8 @@ public:
 
     ~Backend();
 
-    utils::ReturnCode reload_allowed_topics(
-            const std::shared_ptr<ddspipe::core::AllowedTopicList>& allowed_topics);
+    utils::ReturnCode reload_configuration(
+            const yaml::Configuration& new_configuration);
 
     std::shared_ptr<eprosima::spy::participants::SpyModel> model() const noexcept;
 
@@ -61,9 +61,6 @@ protected:
 
     //! TODO comment
     std::shared_ptr<ddspipe::core::DiscoveryDatabase> discovery_database_;
-
-    //! TODO comment
-    std::shared_ptr<ddspipe::core::AllowedTopicList> allowed_topics_;
 
     //! TODO comment
     std::shared_ptr<eprosima::utils::SlotThreadPool> thread_pool_;

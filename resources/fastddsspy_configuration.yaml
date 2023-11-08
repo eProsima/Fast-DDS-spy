@@ -15,4 +15,6 @@ dds:
 
 specs:
   threads: 12
-  max-history-depth: 5000
+
+  qos:
+    history-depth: 5000
