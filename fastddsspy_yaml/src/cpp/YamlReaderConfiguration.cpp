@@ -25,6 +25,9 @@
 #include <ddspipe_yaml/YamlManager.hpp>
 #include <ddspipe_yaml/YamlReader.hpp>
 
+#include <fastddsspy_participants/types/EndpointInfo.hpp>
+#include <fastddsspy_participants/types/ParticipantInfo.hpp>
+
 #include <fastddsspy_yaml/yaml_configuration_tags.hpp>
 
 #include <fastddsspy_yaml/YamlReaderConfiguration.hpp>
@@ -122,10 +125,22 @@ void Configuration::load_dds_configuration_(
                         version);
 
         // Add to allowlist always the type object topic
-        WildcardDdsFilterTopic internal_topic;
-        internal_topic.topic_name.set_value(TYPE_OBJECT_TOPIC_NAME);
+        WildcardDdsFilterTopic type_object_topic;
+        type_object_topic.topic_name.set_value(TYPE_OBJECT_TOPIC_NAME);
         ddspipe_configuration.allowlist.insert(
-            utils::Heritable<WildcardDdsFilterTopic>::make_heritable(internal_topic));
+            utils::Heritable<WildcardDdsFilterTopic>::make_heritable(type_object_topic));
+
+        // Add to allowlist always the participant info internal topic
+        WildcardDdsFilterTopic participant_info_topic;
+        participant_info_topic.topic_name.set_value(participants::PARTICIPANT_INFO_TOPIC_NAME);
+        ddspipe_configuration.allowlist.insert(
+            utils::Heritable<WildcardDdsFilterTopic>::make_heritable(participant_info_topic));
+
+        // Add to allowlist always the endpoint info internal topic
+        WildcardDdsFilterTopic endpoint_info_topic;
+        endpoint_info_topic.topic_name.set_value(participants::ENDPOINT_INFO_TOPIC_NAME);
+        ddspipe_configuration.allowlist.insert(
+            utils::Heritable<WildcardDdsFilterTopic>::make_heritable(endpoint_info_topic));
     }
 
     /////
