@@ -62,11 +62,12 @@ Backend::Backend(
         spy_participant_
         );
 
-    // Create the internal communication (built-in) topics
+    // Create a built-in topic to transmit participant information
     configuration_.ddspipe_configuration.builtin_topics.insert(
         utils::Heritable<eprosima::ddspipe::core::types::DistributedTopic>::make_heritable(
             spy::participants::participant_info_topic()));
 
+    // Create a built-in topic to transmit endpoint information
     configuration_.ddspipe_configuration.builtin_topics.insert(
         utils::Heritable<eprosima::ddspipe::core::types::DistributedTopic>::make_heritable(
             spy::participants::endpoint_info_topic()));
