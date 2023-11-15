@@ -62,9 +62,18 @@ Backend::Backend(
         spy_participant_
         );
 
+    // Create the internal communication (built-in) topics
+    configuration_.ddspipe_configuration.builtin_topics.insert(
+        utils::Heritable<eprosima::ddspipe::core::types::DistributedTopic>::make_heritable(
+            spy::participants::participant_info_topic()));
+
+    configuration_.ddspipe_configuration.builtin_topics.insert(
+        utils::Heritable<eprosima::ddspipe::core::types::DistributedTopic>::make_heritable(
+            spy::participants::endpoint_info_topic()));
+
     // Create and initialize Pipe
     pipe_ = std::make_unique<ddspipe::core::DdsPipe>(
-        configuration.ddspipe_configuration,
+        configuration_.ddspipe_configuration,
         discovery_database_,
         payload_pool_,
         participant_database_,

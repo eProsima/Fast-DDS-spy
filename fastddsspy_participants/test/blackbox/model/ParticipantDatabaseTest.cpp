@@ -90,6 +90,7 @@ std::shared_ptr<DdsPipe> create_pipe(
     // Create participants
     std::shared_ptr<spy::participants::SpyParticipantConfiguration> spy_configuration =
             std::make_shared<spy::participants::SpyParticipantConfiguration>();
+
     std::shared_ptr<spy::participants::SpyParticipant> spy_participant =
             std::make_shared<spy::participants::SpyParticipant>(
         spy_configuration,
@@ -115,6 +116,11 @@ std::shared_ptr<DdsPipe> create_pipe(
     // Create DDS Pipe
     DdsPipeConfiguration ddspipe_configuration;
     ddspipe_configuration.init_enabled = true;
+
+    // Create the internal communication (built-in) topics
+    ddspipe_configuration.builtin_topics.insert(
+        utils::Heritable<types::DistributedTopic>::make_heritable(
+            spy::participants::participant_info_topic()));
 
     std::shared_ptr<DdsPipe> pipe =
             std::make_unique<DdsPipe>(

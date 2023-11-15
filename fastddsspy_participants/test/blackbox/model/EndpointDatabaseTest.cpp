@@ -116,6 +116,11 @@ std::shared_ptr<DdsPipe> create_pipe(
     DdsPipeConfiguration ddspipe_configuration;
     ddspipe_configuration.init_enabled = true;
 
+    // Create the internal communication (built-in) topics
+    ddspipe_configuration.builtin_topics.insert(
+        utils::Heritable<types::DistributedTopic>::make_heritable(
+            spy::participants::endpoint_info_topic()));
+
     std::shared_ptr<DdsPipe> pipe =
             std::make_unique<DdsPipe>(
         ddspipe_configuration,
