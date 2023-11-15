@@ -15,7 +15,6 @@
 #include <ddspipe_core/types/dds/TopicQoS.hpp>
 #include <ddspipe_core/types/dynamic_types/types.hpp>
 #include <ddspipe_core/types/topic/dds/DdsTopic.hpp>
-#include <ddspipe_core/types/topic/filter/IFilterTopic.hpp>
 #include <ddspipe_core/types/topic/filter/ManualTopic.hpp>
 #include <ddspipe_core/types/topic/filter/WildcardDdsFilterTopic.hpp>
 #include <ddspipe_participants/types/address/Address.hpp>
@@ -24,9 +23,6 @@
 #include <ddspipe_yaml/Yaml.hpp>
 #include <ddspipe_yaml/YamlManager.hpp>
 #include <ddspipe_yaml/YamlReader.hpp>
-
-#include <fastddsspy_participants/types/EndpointInfo.hpp>
-#include <fastddsspy_participants/types/ParticipantInfo.hpp>
 
 #include <fastddsspy_yaml/yaml_configuration_tags.hpp>
 
@@ -109,6 +105,7 @@ void Configuration::load_configuration_(
         ddspipe_configuration.blocklist.insert(
             utils::Heritable<WildcardDdsFilterTopic>::make_heritable(rpc_response_topic));
 
+        ddspipe_configuration.discovery_trigger = DiscoveryTrigger::WRITER;
     }
     catch (const std::exception& e)
     {
@@ -163,15 +160,6 @@ void Configuration::load_dds_configuration_(
         ddspipe_configuration.manual_topics =
                 std::vector<ManualTopic>(manual_topics.begin(), manual_topics.end());
     }
-
-    // Create the internal communication (built-in) topics
-    const auto& participant_internal_topic = utils::Heritable<DistributedTopic>::make_heritable(
-        spy::participants::participant_info_topic());
-    const auto& endpoint_internal_topic = utils::Heritable<DistributedTopic>::make_heritable(
-        spy::participants::endpoint_info_topic());
-
-    ddspipe_configuration.builtin_topics.insert(participant_internal_topic);
-    ddspipe_configuration.builtin_topics.insert(endpoint_internal_topic);
 
     // Set the domain in Simple Participant Configuration
     if (YamlReader::is_tag_present(yml, DOMAIN_ID_TAG))
