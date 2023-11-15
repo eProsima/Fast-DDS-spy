@@ -52,6 +52,7 @@ struct ParticipantInfoData : public ddspipe::core::IRoutingData
     ParticipantInfo info{};
 };
 
+FASTDDSSPY_PARTICIPANTS_DllAPI
 ddspipe::core::types::DdsTopic participant_info_topic() noexcept;
 
 FASTDDSSPY_PARTICIPANTS_DllAPI
