@@ -49,12 +49,12 @@ TEST(YamlReaderTest, get_spy_configuration_trivial)
     ASSERT_EQ(configuration.simple_configuration->id, "SimpleParticipant");
     ASSERT_EQ(configuration.simple_configuration->app_id, "FASTDDS_SPY");
     ASSERT_EQ(configuration.simple_configuration->app_metadata, "");
-    ASSERT_EQ(configuration.simple_configuration->is_repeater, false);
+    ASSERT_FALSE(configuration.simple_configuration->is_repeater);
 
     ASSERT_EQ(configuration.spy_configuration->id, "Fast-Spy-007");
     ASSERT_EQ(configuration.spy_configuration->app_id, "FASTDDS_SPY");
     ASSERT_EQ(configuration.spy_configuration->app_metadata, "");
-    ASSERT_EQ(configuration.spy_configuration->is_repeater, false);
+    ASSERT_FALSE(configuration.spy_configuration->is_repeater);
 }
 
 int main(
