@@ -12,9 +12,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-##############
-# Yaml Tests #
-##############
+############################
+# Yaml Reader Test         #
+############################
 
-add_subdirectory(yaml_writer)
-add_subdirectory(yaml_reader)
+set(TEST_NAME YamlReaderTest)
+
+set(TEST_SOURCES
+        ${PROJECT_SOURCE_DIR}/src/cpp/YamlReaderConfiguration.cpp
+        YamlReaderTest.cpp
+    )
+
+set(TEST_LIST
+        get_spy_configuration_trivial
+    )
+
+set(TEST_EXTRA_LIBRARIES
+        ${MODULE_DEPENDENCIES}
+    )
+
+add_unittest_executable(
+    "${TEST_NAME}"
+    "${TEST_SOURCES}"
+    "${TEST_LIST}"
+    "${TEST_EXTRA_LIBRARIES}")
