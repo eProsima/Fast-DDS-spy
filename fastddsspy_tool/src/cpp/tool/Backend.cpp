@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <ddspipe_core/configuration/DdsPipeConfiguration.hpp>
+#include <ddspipe_core/types/dynamic_types/types.hpp>
 
 #include "Backend.hpp"
 
@@ -71,6 +72,11 @@ Backend::Backend(
     configuration_.ddspipe_configuration.builtin_topics.insert(
         utils::Heritable<eprosima::ddspipe::core::types::DistributedTopic>::make_heritable(
             spy::participants::endpoint_info_topic()));
+
+    // Create an internal topic to transmit the dynamic types
+    configuration_.ddspipe_configuration.builtin_topics.insert(
+        utils::Heritable<eprosima::ddspipe::core::types::DistributedTopic>::make_heritable(
+            eprosima::ddspipe::core::types::type_object_topic()));
 
     // Create and initialize Pipe
     pipe_ = std::make_unique<ddspipe::core::DdsPipe>(
