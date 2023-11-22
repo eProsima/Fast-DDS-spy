@@ -105,6 +105,7 @@ void Configuration::load_configuration_(
         ddspipe_configuration.blocklist.insert(
             utils::Heritable<WildcardDdsFilterTopic>::make_heritable(rpc_response_topic));
 
+        // Only trigger the DdsPipe's callbacks with the discovery (and removal) of writers.
         ddspipe_configuration.discovery_trigger = DiscoveryTrigger::WRITER;
     }
     catch (const std::exception& e)
