@@ -40,6 +40,7 @@ struct EndpointInfoData : public ddspipe::core::IRoutingData
     EndpointInfo info{};
 };
 
+FASTDDSSPY_PARTICIPANTS_DllAPI
 ddspipe::core::types::DdsTopic endpoint_info_topic() noexcept;
 
 FASTDDSSPY_PARTICIPANTS_DllAPI

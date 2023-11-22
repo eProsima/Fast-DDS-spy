@@ -15,7 +15,6 @@
 #include <ddspipe_core/types/dds/TopicQoS.hpp>
 #include <ddspipe_core/types/dynamic_types/types.hpp>
 #include <ddspipe_core/types/topic/dds/DdsTopic.hpp>
-#include <ddspipe_core/types/topic/filter/IFilterTopic.hpp>
 #include <ddspipe_core/types/topic/filter/ManualTopic.hpp>
 #include <ddspipe_core/types/topic/filter/WildcardDdsFilterTopic.hpp>
 #include <ddspipe_participants/types/address/Address.hpp>
@@ -24,9 +23,6 @@
 #include <ddspipe_yaml/Yaml.hpp>
 #include <ddspipe_yaml/YamlManager.hpp>
 #include <ddspipe_yaml/YamlReader.hpp>
-
-#include <fastddsspy_participants/types/EndpointInfo.hpp>
-#include <fastddsspy_participants/types/ParticipantInfo.hpp>
 
 #include <fastddsspy_yaml/yaml_configuration_tags.hpp>
 
@@ -109,6 +105,8 @@ void Configuration::load_configuration_(
         ddspipe_configuration.blocklist.insert(
             utils::Heritable<WildcardDdsFilterTopic>::make_heritable(rpc_response_topic));
 
+        // Only trigger the DdsPipe's callbacks with the discovery (and removal) of writers.
+        ddspipe_configuration.discovery_trigger = DiscoveryTrigger::WRITER;
     }
     catch (const std::exception& e)
     {
@@ -127,24 +125,6 @@ void Configuration::load_dds_configuration_(
     {
         ddspipe_configuration.allowlist = YamlReader::get_set<utils::Heritable<IFilterTopic>>(yml, ALLOWLIST_TAG,
                         version);
-
-        // Add to allowlist always the type object topic
-        WildcardDdsFilterTopic type_object_topic;
-        type_object_topic.topic_name.set_value(TYPE_OBJECT_TOPIC_NAME);
-        ddspipe_configuration.allowlist.insert(
-            utils::Heritable<WildcardDdsFilterTopic>::make_heritable(type_object_topic));
-
-        // Add to allowlist always the participant info internal topic
-        WildcardDdsFilterTopic participant_info_topic;
-        participant_info_topic.topic_name.set_value(participants::PARTICIPANT_INFO_TOPIC_NAME);
-        ddspipe_configuration.allowlist.insert(
-            utils::Heritable<WildcardDdsFilterTopic>::make_heritable(participant_info_topic));
-
-        // Add to allowlist always the endpoint info internal topic
-        WildcardDdsFilterTopic endpoint_info_topic;
-        endpoint_info_topic.topic_name.set_value(participants::ENDPOINT_INFO_TOPIC_NAME);
-        ddspipe_configuration.allowlist.insert(
-            utils::Heritable<WildcardDdsFilterTopic>::make_heritable(endpoint_info_topic));
     }
 
     /////
