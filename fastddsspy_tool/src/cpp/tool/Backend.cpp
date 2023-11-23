@@ -65,17 +65,17 @@ Backend::Backend(
 
     // Create a built-in topic to transmit participant information
     configuration_.ddspipe_configuration.builtin_topics.insert(
-        utils::Heritable<eprosima::ddspipe::core::types::DistributedTopic>::make_heritable(
+        utils::Heritable<eprosima::ddspipe::core::types::DdsTopic>::make_heritable(
             spy::participants::participant_info_topic()));
 
     // Create a built-in topic to transmit endpoint information
     configuration_.ddspipe_configuration.builtin_topics.insert(
-        utils::Heritable<eprosima::ddspipe::core::types::DistributedTopic>::make_heritable(
+        utils::Heritable<eprosima::ddspipe::core::types::DdsTopic>::make_heritable(
             spy::participants::endpoint_info_topic()));
 
     // Create an internal topic to transmit the dynamic types
     configuration_.ddspipe_configuration.builtin_topics.insert(
-        utils::Heritable<eprosima::ddspipe::core::types::DistributedTopic>::make_heritable(
+        utils::Heritable<eprosima::ddspipe::core::types::DdsTopic>::make_heritable(
             eprosima::ddspipe::core::types::type_object_topic()));
 
     if (!configuration_.ddspipe_configuration.allowlist.empty())

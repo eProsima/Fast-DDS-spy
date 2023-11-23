@@ -119,7 +119,7 @@ std::shared_ptr<DdsPipe> create_pipe(
 
     // Create a built-in topic to transmit participant information
     ddspipe_configuration.builtin_topics.insert(
-        utils::Heritable<types::DistributedTopic>::make_heritable(
+        utils::Heritable<types::DdsTopic>::make_heritable(
             spy::participants::participant_info_topic()));
 
     std::shared_ptr<DdsPipe> pipe =
