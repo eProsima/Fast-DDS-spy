@@ -50,6 +50,8 @@ Backend::Backend(
         throw utils::ConfigurationException(error_msg);
     }
 
+    load_internal_topics_(configuration_);
+
     // Init Dds Participant
     dds_participant_->init();
 
@@ -62,46 +64,6 @@ Backend::Backend(
         spy_participant_->id(),
         spy_participant_
         );
-
-    // Create a built-in topic to transmit participant information
-    configuration_.ddspipe_configuration.builtin_topics.insert(
-        utils::Heritable<eprosima::ddspipe::core::types::DdsTopic>::make_heritable(
-            spy::participants::participant_info_topic()));
-
-    // Create a built-in topic to transmit endpoint information
-    configuration_.ddspipe_configuration.builtin_topics.insert(
-        utils::Heritable<eprosima::ddspipe::core::types::DdsTopic>::make_heritable(
-            spy::participants::endpoint_info_topic()));
-
-    // Create an internal topic to transmit the dynamic types
-    configuration_.ddspipe_configuration.builtin_topics.insert(
-        utils::Heritable<eprosima::ddspipe::core::types::DdsTopic>::make_heritable(
-            eprosima::ddspipe::core::types::type_object_topic()));
-
-    if (!configuration_.ddspipe_configuration.allowlist.empty())
-    {
-        // The allowlist is not empty. Add the internal topics.
-        eprosima::ddspipe::core::types::WildcardDdsFilterTopic type_object_topic;
-        type_object_topic.topic_name.set_value(eprosima::ddspipe::core::types::TYPE_OBJECT_TOPIC_NAME);
-
-        configuration_.ddspipe_configuration.allowlist.insert(
-            utils::Heritable<eprosima::ddspipe::core::types::WildcardDdsFilterTopic>::make_heritable(
-                type_object_topic));
-
-        eprosima::ddspipe::core::types::WildcardDdsFilterTopic participant_info_topic;
-        participant_info_topic.topic_name.set_value(participants::PARTICIPANT_INFO_TOPIC_NAME);
-
-        configuration_.ddspipe_configuration.allowlist.insert(
-            utils::Heritable<eprosima::ddspipe::core::types::WildcardDdsFilterTopic>::make_heritable(
-                participant_info_topic));
-
-        eprosima::ddspipe::core::types::WildcardDdsFilterTopic endpoint_info_topic;
-        endpoint_info_topic.topic_name.set_value(participants::ENDPOINT_INFO_TOPIC_NAME);
-
-        configuration_.ddspipe_configuration.allowlist.insert(
-            utils::Heritable<eprosima::ddspipe::core::types::WildcardDdsFilterTopic>::make_heritable(
-                endpoint_info_topic));
-    }
 
     // Create and initialize Pipe
     pipe_ = std::make_unique<ddspipe::core::DdsPipe>(
@@ -119,9 +81,55 @@ Backend::~Backend()
     pipe_->disable();
 }
 
-utils::ReturnCode Backend::reload_configuration(
-        const yaml::Configuration& new_configuration)
+void Backend::load_internal_topics_(
+        yaml::Configuration& configuration)
 {
+    // Create a built-in topic to transmit participant information
+    configuration.ddspipe_configuration.builtin_topics.insert(
+        utils::Heritable<eprosima::ddspipe::core::types::DdsTopic>::make_heritable(
+            spy::participants::participant_info_topic()));
+
+    // Create a built-in topic to transmit endpoint information
+    configuration.ddspipe_configuration.builtin_topics.insert(
+        utils::Heritable<eprosima::ddspipe::core::types::DdsTopic>::make_heritable(
+            spy::participants::endpoint_info_topic()));
+
+    // Create an internal topic to transmit the dynamic types
+    configuration.ddspipe_configuration.builtin_topics.insert(
+        utils::Heritable<eprosima::ddspipe::core::types::DdsTopic>::make_heritable(
+            eprosima::ddspipe::core::types::type_object_topic()));
+
+    if (!configuration.ddspipe_configuration.allowlist.empty())
+    {
+        // The allowlist is not empty. Add the internal topics.
+        eprosima::ddspipe::core::types::WildcardDdsFilterTopic type_object_topic;
+        type_object_topic.topic_name.set_value(eprosima::ddspipe::core::types::TYPE_OBJECT_TOPIC_NAME);
+
+        configuration.ddspipe_configuration.allowlist.insert(
+            utils::Heritable<eprosima::ddspipe::core::types::WildcardDdsFilterTopic>::make_heritable(
+                type_object_topic));
+
+        eprosima::ddspipe::core::types::WildcardDdsFilterTopic participant_info_topic;
+        participant_info_topic.topic_name.set_value(participants::PARTICIPANT_INFO_TOPIC_NAME);
+
+        configuration.ddspipe_configuration.allowlist.insert(
+            utils::Heritable<eprosima::ddspipe::core::types::WildcardDdsFilterTopic>::make_heritable(
+                participant_info_topic));
+
+        eprosima::ddspipe::core::types::WildcardDdsFilterTopic endpoint_info_topic;
+        endpoint_info_topic.topic_name.set_value(participants::ENDPOINT_INFO_TOPIC_NAME);
+
+        configuration.ddspipe_configuration.allowlist.insert(
+            utils::Heritable<eprosima::ddspipe::core::types::WildcardDdsFilterTopic>::make_heritable(
+                endpoint_info_topic));
+    }
+}
+
+utils::ReturnCode Backend::reload_configuration(
+        yaml::Configuration& new_configuration)
+{
+    load_internal_topics_(new_configuration);
+
     return pipe_->reload_configuration(new_configuration.ddspipe_configuration);
 }
 
