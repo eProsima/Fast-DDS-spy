@@ -87,6 +87,9 @@ protected:
     void load_dds_configuration_(
             const Yaml& yml,
             const ddspipe::yaml::YamlReaderVersion& version);
+
+    void load_configuration_from_file_(
+            const std::string& file_path);
 };
 
 } /* namespace yaml */
