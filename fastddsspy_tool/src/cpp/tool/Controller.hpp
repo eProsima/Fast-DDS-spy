@@ -43,7 +43,7 @@ public:
             const std::vector<std::string>& args);
 
     utils::ReturnCode reload_configuration(
-            const yaml::Configuration& new_configuration);
+            yaml::Configuration& new_configuration);
 
 protected:
 

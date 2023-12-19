@@ -47,11 +47,14 @@ public:
     ~Backend();
 
     utils::ReturnCode reload_configuration(
-            const yaml::Configuration& new_configuration);
+            yaml::Configuration& new_configuration);
 
     std::shared_ptr<eprosima::spy::participants::SpyModel> model() const noexcept;
 
 protected:
+
+    void load_internal_topics_(
+            yaml::Configuration& configuration);
 
     // TODO comment
     yaml::Configuration configuration_;

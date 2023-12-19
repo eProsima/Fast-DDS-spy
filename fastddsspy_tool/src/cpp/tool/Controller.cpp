@@ -64,7 +64,7 @@ void Controller::one_shot_run(
 }
 
 utils::ReturnCode Controller::reload_configuration(
-        const yaml::Configuration& new_configuration)
+        yaml::Configuration& new_configuration)
 {
     return backend_.reload_configuration(new_configuration);
 }
