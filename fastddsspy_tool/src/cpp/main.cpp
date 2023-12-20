@@ -169,9 +169,11 @@ int main(
                     }
                 };
 
+#if !defined(__APPLE__)
         // Creating FileWatcher event handler
         std::unique_ptr<eprosima::utils::event::FileWatcherHandler> file_watcher_handler =
                 std::make_unique<eprosima::utils::event::FileWatcherHandler>(filewatcher_callback, file_path);
+#endif // !defined(__APPLE__)
 
         /////
         // Periodic Handler for reload configuration in periodic time
@@ -223,10 +225,12 @@ int main(
             periodic_handler.reset();
         }
 
+#if !defined(__APPLE__)
         if (file_watcher_handler)
         {
             file_watcher_handler.reset();
         }
+#endif // !defined(__APPLE__)
     }
     catch (const eprosima::utils::ConfigurationException& e)
     {
