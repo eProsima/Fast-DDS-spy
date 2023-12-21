@@ -12,17 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cmake_minimum_required(VERSION 3.16.3)
+cmake_minimum_required(VERSION 3.22)
 
 project(AdvancedConfigurationExample VERSION 1 LANGUAGES CXX)
 
 # Find requirements
 if(NOT fastcdr_FOUND)
-    find_package(fastcdr REQUIRED)
+    find_package(fastcdr 2 REQUIRED)
 endif()
 
 if(NOT fastrtps_FOUND)
-    find_package(fastrtps REQUIRED)
+    find_package(fastrtps 2.12 REQUIRED)
 endif()
 
 #Check C++11

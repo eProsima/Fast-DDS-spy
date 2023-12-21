@@ -75,7 +75,7 @@ QoS options:
                     Partitions to match separated by ';'. Single or double
                     quotes required with multiple partitions. With empty string
                     ('') no partitions used. (Default: '').
-  -x <str>        --xml-profile=<str>
+  -x <str>        --xml-profile <str>
                     Profile name to configure DomainParticipant.
 
 Discovery options:
