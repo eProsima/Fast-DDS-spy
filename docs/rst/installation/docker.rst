@@ -7,9 +7,6 @@
 Docker Image (recommended)
 ##########################
 
-.. warning::
-    Docker image of |spy| will be updated soon in `eProsima Downloads website <https://www.eprosima.com/index.php/downloads-all>`_.
-
 eProsima distributes a Docker image of |spy| with Ubuntu 22.04 as base image.
 This image launches an instance of |spy| that is configured using a *YAML* configuration file provided by the user
 and shared with the Docker container.

@@ -149,7 +149,7 @@ Stop |espy| typing ``exit``.
 Next Steps
 ==========
 
-.. TODO add
+Since the main steps for running Fast DDS Spy have already been explained, you can now continue by applying a configuration file to this tool to adjust it to your monitoring and debugging needs.
+These configurations include settings to enable or disable the DDS communication transports used by Fast DDS Spy, set the DDS Domain to monitor, or define lists of allowed and blocked topics, among others.
 
-.. note::
-    This page is under maintenance and will be updated soon.
+Please refer to the :ref:`user_manual_configuration` section of this documentation to know more about all settings available for the Fast DDS Spy.
