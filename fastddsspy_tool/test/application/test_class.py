@@ -172,7 +172,7 @@ class TestCase():
         match = re.match(pattern, rate)
 
         if match:
-            return match.group(1) == "inf" or float(match.group(1)) > 0
+            return match.group(1) == 'inf' or float(match.group(1)) > 0
 
         print('Not valid rate: ')
         print(rate)
