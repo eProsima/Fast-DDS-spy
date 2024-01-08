@@ -37,7 +37,7 @@ class TestCase_instance (test_class.TestCase):
             config='',
             arguments_dds=[],
             arguments_spy=[],
-            commands_spy=['topic HelloWorldTopic'],
+            commands_spy=['topics'],
             output=""">> \x1b[0m- name: HelloWorldTopic\n\
 \n\
   type: HelloWorld\n\
