@@ -167,12 +167,13 @@ class TestCase():
         @param rate: The rate to check.
         @return Returns True if the rate is valid, False otherwise.
         """
-        pattern_1 = r'^(\d*\.?\d*\s(Hz))$'     # rate: 10.5 Hz
-        pattern_2 = r'^((inf)\s(Hz))$'         # rate: inf Hz
-        if re.match(pattern_1, rate):
-            return True
-        if re.match(pattern_2, rate):
-            return True
+        pattern = r'^(\d+(\.\d+)?|inf)\sHz$'     # rate: (10.5 | inf) Hz
+
+        match = re.match(pattern, rate)
+
+        if match:
+            return match.group(1) == "inf" or float(match.group(1)) > 0
+
         print('Not valid rate: ')
         print(rate)
         return False
