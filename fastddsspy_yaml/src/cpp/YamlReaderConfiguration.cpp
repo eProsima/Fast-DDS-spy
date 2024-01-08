@@ -61,9 +61,9 @@ Configuration::Configuration(
 
 Configuration::Configuration(
         const std::string& file_path)
-    : Configuration(YamlManager::load_file(file_path))
+    : Configuration()
 {
-    // Do nothing
+    load_configuration_from_file_(file_path);
 }
 
 void Configuration::load_configuration_(
@@ -105,7 +105,7 @@ void Configuration::load_configuration_(
         ddspipe_configuration.blocklist.insert(
             utils::Heritable<WildcardDdsFilterTopic>::make_heritable(rpc_response_topic));
 
-        // Only trigger the DdsPipe's callbacks with the discovery (and removal) of writers.
+        // Only trigger the DdsPipe's callbacks when discovering or removing writers
         ddspipe_configuration.discovery_trigger = DiscoveryTrigger::WRITER;
     }
     catch (const std::exception& e)
@@ -213,6 +213,29 @@ void Configuration::load_specs_configuration_(
     {
         one_shot_wait_time_ms = YamlReader::get<utils::Duration_ms>(yml, GATHERING_TIME_TAG, version);
     }
+}
+
+void Configuration::load_configuration_from_file_(
+        const std::string& file_path)
+{
+    Yaml yml;
+
+    // Load file
+    try
+    {
+        if (!file_path.empty())
+        {
+            yml = YamlManager::load_file(file_path);
+        }
+    }
+    catch (const std::exception& e)
+    {
+        throw eprosima::utils::ConfigurationException(
+                  utils::Formatter() << "Error loading Fast-DDS Spy configuration from file: <" << file_path <<
+                      "> :\n " << e.what());
+    }
+
+    load_configuration_(yml);
 }
 
 bool Configuration::is_valid(

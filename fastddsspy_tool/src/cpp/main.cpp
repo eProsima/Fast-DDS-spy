@@ -131,15 +131,14 @@ int main(
         // Fast DDS Spy Initialization
 
         // Default configuration. Load it from file if file exists
-        eprosima::spy::yaml::Configuration configuration;
-
         if (file_path != "")
         {
             logInfo(
                 FASTDDSSPY_TOOL,
                 "Loading configuration from file '" << file_path << "' .");
-            configuration = eprosima::spy::yaml::Configuration(file_path);
         }
+
+        eprosima::spy::yaml::Configuration configuration = eprosima::spy::yaml::Configuration(file_path);
 
         // Create the Spy
         eprosima::spy::Controller spy(configuration);

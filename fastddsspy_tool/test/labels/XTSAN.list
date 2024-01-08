@@ -11,6 +11,7 @@ tool.application.fastddsspy.test.test_cases.one_shot_participants_guid_dds
 tool.application.fastddsspy.test.test_cases.one_shot_participants_verbose_dds
 tool.application.fastddsspy.test.test_cases.one_shot_quit_dds
 tool.application.fastddsspy.test.test_cases.one_shot_topics_dds
+tool.application.fastddsspy.test.test_cases.one_shot_topics_dds_no_config
 tool.application.fastddsspy.test.test_cases.one_shot_topics_name_dds
 tool.application.fastddsspy.test.test_cases.one_shot_topics_verbose_dds
 tool.application.fastddsspy.test.test_cases.tool_datareader_dds
@@ -19,6 +20,7 @@ tool.application.fastddsspy.test.test_cases.tool_help_dds
 tool.application.fastddsspy.test.test_cases.tool_participants_dds
 tool.application.fastddsspy.test.test_cases.tool_show_topic_dds
 tool.application.fastddsspy.test.test_cases.tool_topics_dds
+tool.application.fastddsspy.test.test_cases.tool_topics_dds_no_config
 tool.application.fastddsspy.test.test_cases.one_shot__config
 tool.application.fastddsspy.test.test_cases.one_shot__config_fail_file
 tool.application.fastddsspy.test.test_cases.one_shot__config_fail_type
