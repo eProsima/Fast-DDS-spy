@@ -18,11 +18,11 @@ project(AdvancedConfigurationExample VERSION 1 LANGUAGES CXX)
 
 # Find requirements
 if(NOT fastcdr_FOUND)
-    find_package(fastcdr 2 REQUIRED)
+    find_package(fastcdr REQUIRED)
 endif()
 
 if(NOT fastrtps_FOUND)
-    find_package(fastrtps 2.12 REQUIRED)
+    find_package(fastrtps REQUIRED)
 endif()
 
 #Check C++11
@@ -35,9 +35,24 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     endif()
 endif()
 
+# Determine Fast DDS version
+if ("${fastrtps_VERSION}" VERSION_LESS 2.13)
+    set(DDS_TYPES_VERSION "v1")
+else()
+    set(DDS_TYPES_VERSION "v2")
+endif()
+
 message(STATUS "Configuring AdvancedConfiguration example...")
-file(GLOB ADVANCED_CONFIG_EXAMPLE_SOURCES_CXX "*.cxx")
-file(GLOB ADVANCED_CONFIG_EXAMPLE_SOURCES_CPP "*.cpp")
+file(
+    GLOB ADVANCED_CONFIG_EXAMPLE_SOURCES_CXX
+        "*.cxx"
+        "types/${DDS_TYPES_VERSION}/*.cxx"
+)
+file(
+    GLOB ADVANCED_CONFIG_EXAMPLE_SOURCES_CPP
+        "*.cpp"
+        "types/${DDS_TYPES_VERSION}/*.cpp"
+)
 
 add_executable(${PROJECT_NAME} ${ADVANCED_CONFIG_EXAMPLE_SOURCES_CXX} ${ADVANCED_CONFIG_EXAMPLE_SOURCES_CPP})
 target_compile_definitions(${PROJECT_NAME} PRIVATE

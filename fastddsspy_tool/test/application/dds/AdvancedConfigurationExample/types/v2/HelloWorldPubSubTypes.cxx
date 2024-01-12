@@ -91,7 +91,7 @@ bool HelloWorldPubSubType::serialize(
 
     // Get the serialized length
 #if FASTCDR_VERSION_MAJOR == 1
-    payload->length = static_cast<uint32_t>(ser.get_serialized_data_length());
+    payload->length = static_cast<uint32_t>(ser.getSerializedDataLength());
 #else
     payload->length = static_cast<uint32_t>(ser.get_serialized_data_length());
 #endif // FASTCDR_VERSION_MAJOR == 1
@@ -199,7 +199,7 @@ bool HelloWorldPubSubType::getKey(
     {
         m_md5.init();
 #if FASTCDR_VERSION_MAJOR == 1
-        m_md5.update(m_keyBuffer, static_cast<unsigned int>(ser.get_serialized_data_length()));
+        m_md5.update(m_keyBuffer, static_cast<unsigned int>(ser.getSerializedDataLength()));
 #else
         m_md5.update(m_keyBuffer, static_cast<unsigned int>(ser.get_serialized_data_length()));
 #endif // FASTCDR_VERSION_MAJOR == 1
