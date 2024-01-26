@@ -16,18 +16,19 @@ This release includes the following **Configuration Features**:
 * :ref:`Max Reception Rate <user_manual_configuration_dds__max_rx_rate>` per topic.
 * :ref:`Downsampling <user_manual_configuration_dds__downsampling>` per topic.
 * Remove the support for built-in Topics.
-* Set `app_id` and `app_metadata` attributes in  *eProsima Fast DDS Spy* participants.
-* Make the trigger of the DDS Pipe callbacks configurable.
+
+This release includes the following **Internal Changes** and **Bugfixes**:
+
 * Support both fastcdr v1 and v2.
 * Add support for Fast DDS versions lower than v2.13.
-
-This release includes the following **Bugfixes**:
+* Set `app_id` and `app_metadata` attributes in  *eProsima Fast DDS Spy* participants.
 * Add participant and endpoint info topics to allowlist.
 * Add internal builtin topics as DDS Topics.
 * Reload internal topics when reloading the configuration file.
 * Process an empty YAML when a configuration file isn't provided.
 
 This release includes the following **Documentation Updates**:
+
 * Update next steps in main example and remove warning in docker installation.
 * Fix documentation build for Sphinx versions lower than 5.0.
 
