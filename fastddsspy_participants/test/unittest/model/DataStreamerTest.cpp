@@ -15,7 +15,7 @@
 #include <cpp_utils/testing/gtest_aux.hpp>
 #include <gtest/gtest.h>
 
-#include <fastrtps/types/DynamicType.h>
+#include <fastdds/dds/xtypes/dynamic_types/DynamicType.hpp>
 #include <fastrtps/types/DynamicTypeBuilder.h>
 #include <fastrtps/types/DynamicTypeBuilderPtr.h>
 #include <fastrtps/types/DynamicTypeBuilderFactory.h>

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <fastrtps/types/DynamicType.h>
+#include <fastdds/dds/xtypes/dynamic_types/DynamicType.hpp>
 #include <fastrtps/types/DynamicPubSubType.h>
 #include <fastrtps/types/DynamicData.h>
 #include <fastrtps/types/DynamicDataFactory.h>
