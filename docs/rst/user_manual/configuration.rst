@@ -299,15 +299,6 @@ When configuring the verbosity to ``info``, all types of logs, including informa
 Conversely, setting it to ``warning`` will only show warnings and errors, while choosing ``error`` will exclusively display errors.
 By default, the filter allows all errors to be displayed, while selectively permitting warning messages from ``DDSPIPE|FASTDDSSPY`` and informational messages from the ``FASTDDSSPY`` category.
 
-.. code-block:: yaml
-
-    logging:
-      verbosity: info
-      filter:
-        error: "DDSPIPE|FASTDDSSPY"
-        warning: "DDSPIPE|FASTDDSSPY"
-        info: "FASTDDSSPY"
-
 .. note::
 
     Configuring the logs via the Command-Line is still active and takes precedence over YAML configuration when both methods are used simultaneously.
@@ -344,6 +335,52 @@ By default, the filter allows all errors to be displayed, while selectively perm
 
     For the logs to function properly, the ``-DLOG_INFO=ON`` compilation flag is required.
 
+
+By default, the logs will be printed in the standard output.
+To publish the logs, under the tag ``publish``, set ``enable: true`` and set a ``domain`` and a ``topic-name``.
+The type of the logs can be published by setting ``publish-type: true``.
+
+The type of the logs published is defined as follows:
+
+**LogEntry.idl**
+
+.. code-block:: idl
+
+    const long UNDEFINED = 0x10000000;
+    const long SAMPLE_LOST = 0x10000001;
+    const long TOPIC_MISMATCH_TYPE = 0x10000002;
+    const long TOPIC_MISMATCH_QOS = 0x10000003;
+
+    enum Kind {
+      Info,
+      Warning,
+      Error
+    };
+
+    struct LogEntry {
+      @key long event;
+      Kind kind;
+      string category;
+      string message;
+      string timestamp;
+    };
+
+**Example of usage**
+
+.. code-block:: yaml
+
+    logging:
+      verbosity: info
+      filter:
+        error: "DDSPIPE|FASTDDSSPY"
+        warning: "DDSPIPE|FASTDDSSPY"
+        info: "FASTDDSSPY"
+      publish:
+        enable: true
+        domain: 84
+        topic-name: "FastDdsSpyLogs"
+        publish-type: false
+      stdout: true
 
 .. _user_manual_configuration_default:
 
@@ -398,3 +435,9 @@ This is a YAML file that uses all supported configurations and set them as defau
           error: "DDSPIPE|FASTDDSSPY"
           warning: "DDSPIPE|FASTDDSSPY"
           info: "FASTDDSSPY"
+        publish:
+          enable: true
+          domain: 84
+          topic-name: "FastDdsSpyLogs"
+          publish-type: false
+        stdout: true
