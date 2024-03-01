@@ -27,6 +27,8 @@
 #include <cpp_utils/macros/custom_enumeration.hpp>
 #include <cpp_utils/time/time_utils.hpp>
 
+#include <fastddsspy_yaml/CommandlineArgsSpy.hpp>
+
 #include "ProcessReturnCode.hpp"
 
 namespace eprosima {
@@ -126,11 +128,7 @@ extern const option::Descriptor usage[];
 ProcessReturnCode parse_arguments(
         int argc,
         char** argv,
-        std::string& file_path,
-        utils::Duration_ms& reload_time,
-        std::string& log_filter,
-        eprosima::fastdds::dds::Log::Kind& log_verbosity,
-        std::vector<std::string>& one_shot_command);
+        yaml::CommandlineArgsSpy& commandline_args);
 
 //! \c Option to stream serializator
 std::ostream& operator <<(

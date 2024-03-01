@@ -32,6 +32,7 @@
 #include <fastddsspy_participants/types/EndpointInfo.hpp>
 #include <fastddsspy_participants/types/ParticipantInfo.hpp>
 
+#include <fastddsspy_yaml/CommandlineArgsSpy.hpp>
 #include <fastddsspy_yaml/library/library_dll.h>
 
 namespace eprosima {
@@ -50,11 +51,13 @@ public:
 
     FASTDDSSPY_YAML_DllAPI
     Configuration(
-            const Yaml& yml);
+            const Yaml& yml,
+            const CommandlineArgsSpy* args = nullptr);
 
     FASTDDSSPY_YAML_DllAPI
     Configuration(
-            const std::string& file_path);
+            const std::string& file_path,
+            const CommandlineArgsSpy* args = nullptr);
 
     FASTDDSSPY_YAML_DllAPI
     virtual bool is_valid(
@@ -78,7 +81,8 @@ public:
 protected:
 
     void load_configuration_(
-            const Yaml& yml);
+            const Yaml& yml,
+            const CommandlineArgsSpy* args = nullptr);
 
     void load_specs_configuration_(
             const Yaml& yml,
@@ -89,7 +93,8 @@ protected:
             const ddspipe::yaml::YamlReaderVersion& version);
 
     void load_configuration_from_file_(
-            const std::string& file_path);
+            const std::string& file_path,
+            const CommandlineArgsSpy* args = nullptr);
 };
 
 } /* namespace yaml */
