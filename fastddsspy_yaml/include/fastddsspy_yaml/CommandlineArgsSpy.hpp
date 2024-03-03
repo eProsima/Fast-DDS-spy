@@ -14,11 +14,7 @@
 
 #pragma once
 
-#include <string>
-#include <vector>
-
 #include <ddspipe_core/configuration/CommandlineArgs.hpp>
-#include <ddspipe_core/library/library_dll.h>
 
 namespace eprosima {
 namespace spy {
