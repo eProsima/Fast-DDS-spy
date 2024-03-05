@@ -25,7 +25,7 @@ namespace yaml {
 /*
  * Struct to parse the executable arguments
  */
-struct FASTDDSSPY_YAML_DllAPI CommandlineArgsSpy: public ddspipe::core::CommandlineArgs
+struct FASTDDSSPY_YAML_DllAPI CommandlineArgsSpy : public ddspipe::core::CommandlineArgs
 {
 
     /////////////////////////

@@ -88,7 +88,8 @@ int main(
     {
         logInfo(
             FASTDDSSPY_TOOL,
-            "File '" << commandline_args.file_path << "' does not exist or it is not accessible. Using default configuration.");
+            "File '" << commandline_args.file_path <<
+                "' does not exist or it is not accessible. Using default configuration.");
         commandline_args.file_path = "";
     }
 
@@ -106,7 +107,8 @@ int main(
                 "Loading configuration from file '" << commandline_args.file_path << "' .");
         }
 
-        eprosima::spy::yaml::Configuration configuration = eprosima::spy::yaml::Configuration(commandline_args.file_path, &commandline_args);
+        eprosima::spy::yaml::Configuration configuration = eprosima::spy::yaml::Configuration(
+            commandline_args.file_path, &commandline_args);
 
         // Debug
         {
@@ -157,7 +159,8 @@ int main(
 
         // Creating FileWatcher event handler
         std::unique_ptr<eprosima::utils::event::FileWatcherHandler> file_watcher_handler =
-                std::make_unique<eprosima::utils::event::FileWatcherHandler>(filewatcher_callback, commandline_args.file_path);
+                std::make_unique<eprosima::utils::event::FileWatcherHandler>(filewatcher_callback,
+                        commandline_args.file_path);
 
         /////
         // Periodic Handler for reload configuration in periodic time
@@ -175,7 +178,8 @@ int main(
                     {
                         logInfo(
                             FASTDDSSPY_TOOL,
-                            "Periodic Timer raised. Reloading configuration from file " << commandline_args.file_path << ".");
+                            "Periodic Timer raised. Reloading configuration from file " << commandline_args.file_path <<
+                        ".");
 
                         try
                         {
@@ -185,7 +189,8 @@ int main(
                         catch (const std::exception& e)
                         {
                             logWarning(FASTDDSSPY_TOOL,
-                                    "Error reloading configuration file " << commandline_args.file_path << " with error: " << e.what());
+                                    "Error reloading configuration file " << commandline_args.file_path << " with error: " <<
+                            e.what());
                         }
                     };
 
