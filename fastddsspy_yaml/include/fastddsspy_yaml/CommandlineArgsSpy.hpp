@@ -16,6 +16,8 @@
 
 #include <ddspipe_core/configuration/CommandlineArgs.hpp>
 
+#include <fastddsspy_yaml/library/library_dll.h>
+
 namespace eprosima {
 namespace spy {
 namespace yaml {
@@ -23,7 +25,7 @@ namespace yaml {
 /*
  * Struct to parse the executable arguments
  */
-struct CommandlineArgsSpy: public ddspipe::core::CommandlineArgs
+struct FASTDDSSPY_YAML_DllAPI CommandlineArgsSpy: public ddspipe::core::CommandlineArgs
 {
 
     /////////////////////////
