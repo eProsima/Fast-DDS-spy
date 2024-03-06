@@ -53,21 +53,24 @@ Configuration::Configuration()
 }
 
 Configuration::Configuration(
-        const Yaml& yml)
+        const Yaml& yml,
+        const CommandlineArgsSpy* args /*= nullptr*/)
     : Configuration()
 {
-    load_configuration_(yml);
+    load_configuration_(yml, args);
 }
 
 Configuration::Configuration(
-        const std::string& file_path)
+        const std::string& file_path,
+        const CommandlineArgsSpy* args /*= nullptr*/)
     : Configuration()
 {
-    load_configuration_from_file_(file_path);
+    load_configuration_from_file_(file_path, args);
 }
 
 void Configuration::load_configuration_(
-        const Yaml& yml)
+        const Yaml& yml,
+        const CommandlineArgsSpy* args)
 {
     try
     {
@@ -107,6 +110,19 @@ void Configuration::load_configuration_(
 
         // Only trigger the DdsPipe's callbacks when discovering or removing writers
         ddspipe_configuration.discovery_trigger = DiscoveryTrigger::WRITER;
+
+        /////
+        // Log Configuration's set methods: Depending on where Log Configuration has been configured
+        // (Yaml, Command-Line and/or by default) these methods will set DdsPipeConfiguration's log_configuration
+        // taking into account this precedence:
+        //  1. Log Configuration set on Command-line.
+        //  2. Log Configuration set by YAML.
+        //  3. Log Configuration set by default.
+        if (args != nullptr)
+        {
+            ddspipe_configuration.log_configuration.set(args->log_verbosity);
+            ddspipe_configuration.log_configuration.set(args->log_filter);
+        }
     }
     catch (const std::exception& e)
     {
@@ -213,10 +229,19 @@ void Configuration::load_specs_configuration_(
     {
         one_shot_wait_time_ms = YamlReader::get<utils::Duration_ms>(yml, GATHERING_TIME_TAG, version);
     }
+
+    /////
+    // Get optional Log Configuration
+    if (YamlReader::is_tag_present(yml, LOG_CONFIGURATION_TAG))
+    {
+        ddspipe_configuration.log_configuration = YamlReader::get<utils::LogConfiguration>(yml, LOG_CONFIGURATION_TAG,
+                        version);
+    }
 }
 
 void Configuration::load_configuration_from_file_(
-        const std::string& file_path)
+        const std::string& file_path,
+        const CommandlineArgsSpy* args)
 {
     Yaml yml;
 
@@ -235,7 +260,7 @@ void Configuration::load_configuration_from_file_(
                       "> :\n " << e.what());
     }
 
-    load_configuration_(yml);
+    load_configuration_(yml, args);
 }
 
 bool Configuration::is_valid(

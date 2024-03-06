@@ -24,10 +24,12 @@
 #include <cpp_utils/exception/ConfigurationException.hpp>
 #include <cpp_utils/exception/InitializationException.hpp>
 #include <cpp_utils/logging/CustomStdLogConsumer.hpp>
+#include <cpp_utils/logging/LogConfiguration.hpp>
 #include <cpp_utils/ReturnCode.hpp>
-#include <cpp_utils/time/time_utils.hpp>
-#include <cpp_utils/utils.hpp>
 #include <cpp_utils/thread_pool/pool/SlotThreadPool.hpp>
+#include <cpp_utils/time/time_utils.hpp>
+#include <cpp_utils/types/Fuzzy.hpp>
+#include <cpp_utils/utils.hpp>
 
 #include <ddspipe_core/core/DdsPipe.hpp>
 #include <ddspipe_core/dynamic/ParticipantsDatabase.hpp>
@@ -38,6 +40,7 @@
 #include <ddspipe_participants/participant/dynamic_types/DynTypesParticipant.hpp>
 
 #include <fastddsspy_yaml/YamlReaderConfiguration.hpp>
+#include <fastddsspy_yaml/CommandlineArgsSpy.hpp>
 
 #include "user_interface/constants.hpp"
 #include "user_interface/arguments_configuration.hpp"
@@ -48,29 +51,12 @@ int main(
         int argc,
         char** argv)
 {
-    // Configuration File path
-    std::string file_path = "";
-
-    // Reload time
-    eprosima::utils::Duration_ms reload_time = 0;
-
-    // Debug options
-    std::string log_filter = "FASTDDSSPY";
-    eprosima::fastdds::dds::Log::Kind log_verbosity = eprosima::fastdds::dds::Log::Kind::Warning;
-
-    // One shot command
-    std::vector<std::string> one_shot_command;
+    // Initialize CommandlineArgs
+    eprosima::spy::yaml::CommandlineArgsSpy commandline_args;
 
     // Parse arguments
     eprosima::spy::ProcessReturnCode arg_parse_result =
-            eprosima::spy::parse_arguments(
-        argc,
-        argv,
-        file_path,
-        reload_time,
-        log_filter,
-        log_verbosity,
-        one_shot_command);
+            eprosima::spy::parse_arguments(argc, argv, commandline_args);
 
     if (arg_parse_result == eprosima::spy::ProcessReturnCode::help_argument)
     {
@@ -85,43 +71,26 @@ int main(
         return static_cast<int>(arg_parse_result);
     }
 
-    // Debug
-    {
-        // Remove every consumer
-        eprosima::utils::Log::ClearConsumers();
-
-        // Activate log with verbosity, as this will avoid running log thread with not desired kind
-        eprosima::utils::Log::SetVerbosity(log_verbosity);
-
-        eprosima::utils::Log::RegisterConsumer(
-            std::make_unique<eprosima::utils::CustomStdLogConsumer>(log_filter, log_verbosity));
-
-        // NOTE:
-        // It will not filter any log, so Fast DDS logs will be visible unless Fast DDS is compiled
-        // in non debug or with LOG_NO_INFO=ON.
-        // This is the easiest way to allow to see Warnings and Errors from Fast DDS.
-        // Change it when Log Module is independent and with more extensive API.
-        // eprosima::utils::Log::SetCategoryFilter(std::regex("(ddspipe|FOXGLOVEWS)"));
-    }
 
     // Check file is in args, else get the default file
-    if (file_path == "")
+    if (commandline_args.file_path == "")
     {
-        file_path = eprosima::spy::DEFAULT_CONFIGURATION_FILE_NAME;
+        commandline_args.file_path = eprosima::spy::DEFAULT_CONFIGURATION_FILE_NAME;
 
         logInfo(
             FASTDDSSPY_TOOL,
-            "Not configuration file given, try to use default file " << file_path << ".");
+            "Not configuration file given, try to use default file " << commandline_args.file_path << ".");
     }
 
     // Check file exists and it is readable
     // NOTE: this check is redundant with option parse arg check
-    if (!is_file_accessible(file_path.c_str(), eprosima::utils::FileAccessMode::read))
+    if (!is_file_accessible(commandline_args.file_path.c_str(), eprosima::utils::FileAccessMode::read))
     {
         logInfo(
             FASTDDSSPY_TOOL,
-            "File '" << file_path << "' does not exist or it is not accessible. Using default configuration.");
-        file_path = "";
+            "File '" << commandline_args.file_path <<
+                "' does not exist or it is not accessible. Using default configuration.");
+        commandline_args.file_path = "";
     }
 
     // Encapsulating execution in block to erase all memory correctly before closing process
@@ -131,15 +100,35 @@ int main(
         // Fast DDS Spy Initialization
 
         // Default configuration. Load it from file if file exists
-        if (file_path != "")
+        if (commandline_args.file_path != "")
         {
             logInfo(
                 FASTDDSSPY_TOOL,
-                "Loading configuration from file '" << file_path << "' .");
+                "Loading configuration from file '" << commandline_args.file_path << "' .");
         }
 
-        eprosima::spy::yaml::Configuration configuration = eprosima::spy::yaml::Configuration(file_path);
+        eprosima::spy::yaml::Configuration configuration = eprosima::spy::yaml::Configuration(
+            commandline_args.file_path, &commandline_args);
 
+        // Debug
+        {
+            // Remove every consumer
+            eprosima::utils::Log::ClearConsumers();
+
+            // Activate log with verbosity, as this will avoid running log thread with not desired kind
+            eprosima::utils::Log::SetVerbosity(configuration.ddspipe_configuration.log_configuration.verbosity);
+
+            eprosima::utils::LogConfiguration log_config = configuration.ddspipe_configuration.log_configuration;
+            eprosima::utils::Log::RegisterConsumer(
+                std::make_unique<eprosima::utils::CustomStdLogConsumer>(&log_config));
+
+            // NOTE:
+            // It will not filter any log, so Fast DDS logs will be visible unless Fast DDS is compiled
+            // in non debug or with LOG_NO_INFO=ON.
+            // This is the easiest way to allow to see Warnings and Errors from Fast DDS.
+            // Change it when Log Module is independent and with more extensive API.
+            // eprosima::utils::Log::SetCategoryFilter(std::regex("(ddspipe|FOXGLOVEWS)"));
+        }
         // Create the Spy
         eprosima::spy::Controller spy(configuration);
 
@@ -149,7 +138,7 @@ int main(
         // Callback will reload configuration and pass it to ddspipe
         // WARNING: it is needed to pass file_path, as FileWatcher only retrieves file_name
         std::function<void(std::string)> filewatcher_callback =
-                [&spy, file_path]
+                [&spy, commandline_args]
                     (std::string file_name)
                 {
                     logInfo(
@@ -158,7 +147,7 @@ int main(
 
                     try
                     {
-                        eprosima::spy::yaml::Configuration new_configuration(file_path);
+                        eprosima::spy::yaml::Configuration new_configuration(commandline_args.file_path);
                         spy.reload_configuration(new_configuration);
                     }
                     catch (const std::exception& e)
@@ -170,7 +159,8 @@ int main(
 
         // Creating FileWatcher event handler
         std::unique_ptr<eprosima::utils::event::FileWatcherHandler> file_watcher_handler =
-                std::make_unique<eprosima::utils::event::FileWatcherHandler>(filewatcher_callback, file_path);
+                std::make_unique<eprosima::utils::event::FileWatcherHandler>(filewatcher_callback,
+                        commandline_args.file_path);
 
         /////
         // Periodic Handler for reload configuration in periodic time
@@ -179,41 +169,43 @@ int main(
         std::unique_ptr<eprosima::utils::event::PeriodicEventHandler> periodic_handler;
 
         // If reload time is higher than 0, create a periodic event to reload configuration
-        if (reload_time > 0)
+        if (commandline_args.reload_time > 0)
         {
             // Callback will reload configuration and pass it to ddspipe
             std::function<void()> periodic_callback =
-                    [&spy, file_path]
+                    [&spy, commandline_args]
                         ()
                     {
                         logInfo(
                             FASTDDSSPY_TOOL,
-                            "Periodic Timer raised. Reloading configuration from file " << file_path << ".");
+                            "Periodic Timer raised. Reloading configuration from file " << commandline_args.file_path <<
+                                ".");
 
                         try
                         {
-                            eprosima::spy::yaml::Configuration new_configuration(file_path);
+                            eprosima::spy::yaml::Configuration new_configuration(commandline_args.file_path);
                             spy.reload_configuration(new_configuration);
                         }
                         catch (const std::exception& e)
                         {
                             logWarning(FASTDDSSPY_TOOL,
-                                    "Error reloading configuration file " << file_path << " with error: " << e.what());
+                                    "Error reloading configuration file " << commandline_args.file_path << " with error: " <<
+                                    e.what());
                         }
                     };
 
             periodic_handler = std::make_unique<eprosima::utils::event::PeriodicEventHandler>(periodic_callback,
-                            reload_time);
+                            commandline_args.reload_time);
         }
 
         // If one-shot is required, do one shot run. Otherwise run along
-        if (one_shot_command.empty())
+        if (commandline_args.one_shot_command.empty())
         {
             spy.run();
         }
         else
         {
-            spy.one_shot_run(one_shot_command);
+            spy.one_shot_run(commandline_args.one_shot_command);
         }
 
         // Before stopping the Fast DDS Spy erase event handlers that reload configuration
@@ -230,7 +222,7 @@ int main(
     catch (const eprosima::utils::ConfigurationException& e)
     {
         logError(FASTDDSSPY_TOOL,
-                "Error Loading Fast DDS Spy Configuration from file " << file_path <<
+                "Error Loading Fast DDS Spy Configuration from file " << commandline_args.file_path <<
                 ". Error message:\n " <<
                 e.what());
         return static_cast<int>(eprosima::spy::ProcessReturnCode::execution_failed);

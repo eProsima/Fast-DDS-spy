@@ -288,6 +288,63 @@ QoS
 
     The :ref:`Topic QoS <user_manual_configuration_dds__topic_qos>` configured in ``specs`` can be overwritten by the :ref:`Manual Topics <user_manual_configuration_dds__manual_topics>`.
 
+.. _spy_specs_logging:
+
+Logging
+-------
+
+``specs`` supports a ``logging`` **optional** tag to configure the |spy| logs.
+Under the ``logging`` tag, users can configure the type of logs to display and filter the logs based on their content and category.
+When configuring the verbosity to ``info``, all types of logs, including informational messages, warnings, and errors, will be displayed.
+Conversely, setting it to ``warning`` will only show warnings and errors, while choosing ``error`` will exclusively display errors.
+By default, the filter allows all errors to be displayed, while selectively permitting warning messages from ``DDSPIPE|FASTDDSSPY`` and informational messages from the ``FASTDDSSPY`` category.
+
+.. code-block:: yaml
+
+    logging:
+      verbosity: info
+      filter:
+        error: "DDSPIPE|FASTDDSSPY"
+        warning: "DDSPIPE|FASTDDSSPY"
+        info: "FASTDDSSPY"
+
+.. note::
+
+    Configuring the logs via the Command-Line is still active and takes precedence over YAML configuration when both methods are used simultaneously.
+
+.. list-table::
+    :header-rows: 1
+
+    *   - Logging
+        - Yaml tag
+        - Description
+        - Data type
+        - Default value
+        - Possible values
+
+    *   - Verbosity
+        - ``verbosity``
+        - Show messages of equal |br|
+          or higher importance.
+        - *enum*
+        - ``warning``
+        - ``info`` / ``warning`` / ``error``
+
+    *   - Filter
+        - ``filter``
+        - Regex to filter the category  |br|
+          or message of the logs.
+        - *string*
+        - info : ``FASTDDSSPY`` |br|
+          warning : ``DDSPIPE|FASTDDSSPY`` |br|
+          error : ``""``
+        - Regex string
+
+.. note::
+
+    For the logs to function properly, the ``-DLOG_INFO=ON`` compilation flag is required.
+
+
 .. _user_manual_configuration_default:
 
 Default Configuration
@@ -334,3 +391,10 @@ This is a YAML file that uses all supported configurations and set them as defau
         history-depth: 5000
         max-rx-rate: 10
         downsampling: 2
+
+      logging:
+        verbosity: info
+        filter:
+          error: "DDSPIPE|FASTDDSSPY"
+          warning: "DDSPIPE|FASTDDSSPY"
+          info: "FASTDDSSPY"

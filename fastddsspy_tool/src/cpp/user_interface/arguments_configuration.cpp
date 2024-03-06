@@ -162,11 +162,7 @@ void print_version()
 ProcessReturnCode parse_arguments(
         int argc,
         char** argv,
-        std::string& file_path,
-        utils::Duration_ms& reload_time,
-        std::string& log_filter,
-        eprosima::fastdds::dds::Log::Kind& log_verbosity,
-        std::vector<std::string>& one_shot_command)
+        yaml::CommandlineArgsSpy& commandline_args)
 {
     // Variable to pretty print usage help
     int columns;
@@ -205,7 +201,7 @@ ProcessReturnCode parse_arguments(
     // Unknown args provided
     for (int i = 0; i < parse.nonOptionsCount(); ++i)
     {
-        one_shot_command.push_back(parse.nonOption(i));
+        commandline_args.one_shot_command.push_back(parse.nonOption(i));
     }
 
     // Adding Help before every other check to show help in case an argument is incorrect
@@ -227,24 +223,29 @@ ProcessReturnCode parse_arguments(
         switch (opt.index())
         {
             case optionIndex::CONFIGURATION_FILE:
-                file_path = opt.arg;
+                commandline_args.file_path = opt.arg;
                 break;
 
             case optionIndex::RELOAD_TIME:
-                reload_time = std::stol(opt.arg) * 1000; // pass to milliseconds
+                commandline_args.reload_time = std::stol(opt.arg) * 1000; // pass to milliseconds
                 break;
 
             case optionIndex::ACTIVATE_DEBUG:
-                log_filter = "FASTDDSSPY";
-                log_verbosity = eprosima::fastdds::dds::Log::Kind::Info;
+                commandline_args.log_filter[utils::VerbosityKind::Error].set_value("");
+                commandline_args.log_filter[utils::VerbosityKind::Warning].set_value("(FASTDDSSPY|DDSPIPE)");
+                commandline_args.log_filter[utils::VerbosityKind::Info].set_value("FASTDDSSPY");
+                commandline_args.log_verbosity = utils::VerbosityKind::Info;
                 break;
 
             case optionIndex::LOG_FILTER:
-                log_filter = opt.arg;
+                commandline_args.log_filter[utils::VerbosityKind::Error].set_value(opt.arg);
+                commandline_args.log_filter[utils::VerbosityKind::Warning].set_value(opt.arg);
+                commandline_args.log_filter[utils::VerbosityKind::Info].set_value(opt.arg);
                 break;
 
             case optionIndex::LOG_VERBOSITY:
-                log_verbosity = eprosima::fastdds::dds::Log::Kind(static_cast<int>(from_string_LogKind(opt.arg)));
+                commandline_args.log_verbosity =
+                        utils::VerbosityKind(static_cast<int>(from_string_LogKind(opt.arg)));
                 break;
 
             case optionIndex::UNKNOWN_OPT:
