@@ -179,7 +179,7 @@ int main(
                         logInfo(
                             FASTDDSSPY_TOOL,
                             "Periodic Timer raised. Reloading configuration from file " << commandline_args.file_path <<
-                        ".");
+                                ".");
 
                         try
                         {
@@ -190,7 +190,7 @@ int main(
                         {
                             logWarning(FASTDDSSPY_TOOL,
                                     "Error reloading configuration file " << commandline_args.file_path << " with error: " <<
-                            e.what());
+                                    e.what());
                         }
                     };
 
