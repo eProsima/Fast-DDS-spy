@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <ddspipe_core/configuration/DdsPipeConfiguration.hpp>
 #include <ddspipe_core/types/dds/TopicQoS.hpp>
 #include <ddspipe_core/types/dynamic_types/types.hpp>
 #include <ddspipe_core/types/topic/dds/DdsTopic.hpp>
@@ -234,7 +235,7 @@ void Configuration::load_specs_configuration_(
     // Get optional Log Configuration
     if (YamlReader::is_tag_present(yml, LOG_CONFIGURATION_TAG))
     {
-        ddspipe_configuration.log_configuration = YamlReader::get<utils::LogConfiguration>(yml, LOG_CONFIGURATION_TAG,
+        ddspipe_configuration.log_configuration = YamlReader::get<DdsPipeLogConfiguration>(yml, LOG_CONFIGURATION_TAG,
                         version);
     }
 }
