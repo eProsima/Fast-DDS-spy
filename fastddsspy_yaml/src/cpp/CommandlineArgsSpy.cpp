@@ -21,7 +21,7 @@ namespace yaml {
 CommandlineArgsSpy::CommandlineArgsSpy()
 {
     log_filter[utils::VerbosityKind::Info].set_value("FASTDDSSPY", utils::FuzzyLevelValues::fuzzy_level_default);
-    log_filter[utils::VerbosityKind::Warning].set_value("FASTDDSSPY|DDSPIPE",
+    log_filter[utils::VerbosityKind::Warning].set_value("FASTDDSSPY",
             utils::FuzzyLevelValues::fuzzy_level_default);
     log_filter[utils::VerbosityKind::Error].set_value("", utils::FuzzyLevelValues::fuzzy_level_default);
 }
