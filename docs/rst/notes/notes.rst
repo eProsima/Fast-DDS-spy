@@ -14,7 +14,7 @@ This release includes the following **Configuration Features**:
 
 This release includes the following **Documentation Updates**:
 
-* Add a new :ref:`<spy_specs_logging>` section to the :ref:`<user_manual_configuration>` page.
+* Add a new :ref:`Logging <spy_specs_logging>` section to the :ref:`Configuration <user_manual_configuration>` page.
 
 This release includes the following **Dependencies Update**:
 
