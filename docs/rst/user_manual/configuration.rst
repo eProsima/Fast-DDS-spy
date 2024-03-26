@@ -387,10 +387,10 @@ The type of the logs published is defined as follows:
 
 .. _user_manual_configuration_default:
 
-Default Configuration
-=====================
+General Example
+===============
 
-This is a YAML file that uses all supported configurations and set them as default:
+A complete example of all the configurations described on this page can be found below.
 
 .. warning::
 
@@ -433,7 +433,7 @@ This is a YAML file that uses all supported configurations and set them as defau
         downsampling: 2
 
       logging:
-        verbosity: error
+        verbosity: warning
         filter:
           error: ""
           warning: "FASTDDSSPY"
