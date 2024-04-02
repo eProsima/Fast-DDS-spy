@@ -249,7 +249,7 @@ ProcessReturnCode parse_arguments(
                 break;
 
             case optionIndex::UNKNOWN_OPT:
-                logError(FOXGLOVEWS_ARGS, opt << " is not a valid argument.");
+                logError(FASTDDSSPY_ARGS, opt << " is not a valid argument.");
                 option::printUsage(fwrite, stdout, usage, columns);
                 return ProcessReturnCode::incorrect_argument;
                 break;
@@ -269,7 +269,7 @@ option::ArgStatus Arg::Unknown(
     if (msg)
     {
         logError(
-            FOXGLOVEWS_ARGS,
+            FASTDDSSPY_ARGS,
             "Unknown option '" << option << "'. Use -h to see this executable possible arguments.");
     }
     return option::ARG_ILLEGAL;
@@ -286,7 +286,7 @@ option::ArgStatus Arg::Required(
 
     if (msg)
     {
-        logError(FOXGLOVEWS_ARGS, "Option '" << option << "' required.");
+        logError(FASTDDSSPY_ARGS, "Option '" << option << "' required.");
     }
     return option::ARG_ILLEGAL;
 }
@@ -306,7 +306,7 @@ option::ArgStatus Arg::Numeric(
 
     if (msg)
     {
-        logError(FOXGLOVEWS_ARGS, "Option '" << option << "' requires a numeric argument.");
+        logError(FASTDDSSPY_ARGS, "Option '" << option << "' requires a numeric argument.");
     }
     return option::ARG_ILLEGAL;
 }
@@ -326,7 +326,7 @@ option::ArgStatus Arg::Float(
 
     if (msg)
     {
-        logError(FOXGLOVEWS_ARGS, "Option '" << option << "' requires a float argument.");
+        logError(FASTDDSSPY_ARGS, "Option '" << option << "' requires a float argument.");
     }
     return option::ARG_ILLEGAL;
 }
@@ -341,7 +341,7 @@ option::ArgStatus Arg::String(
     }
     if (msg)
     {
-        logError(FOXGLOVEWS_ARGS, "Option '" << option << "' requires a text argument.");
+        logError(FASTDDSSPY_ARGS, "Option '" << option << "' requires a text argument.");
     }
     return option::ARG_ILLEGAL;
 }
@@ -360,7 +360,7 @@ option::ArgStatus Arg::Readable_File(
     }
     if (msg)
     {
-        logError(FOXGLOVEWS_ARGS, "Option '" << option << "' requires an existing readable file as argument.");
+        logError(FASTDDSSPY_ARGS, "Option '" << option << "' requires an existing readable file as argument.");
     }
     return option::ARG_ILLEGAL;
 }
@@ -381,7 +381,7 @@ option::ArgStatus Arg::Valid_Options(
     {
         if (msg)
         {
-            logError(FOXGLOVEWS_ARGS, "Option '" << option.name << "' requires a text argument.");
+            logError(FASTDDSSPY_ARGS, "Option '" << option.name << "' requires a text argument.");
         }
         return option::ARG_ILLEGAL;
     }
@@ -400,7 +400,7 @@ option::ArgStatus Arg::Valid_Options(
         }
         error_msg << "}.";
 
-        logError(FOXGLOVEWS_ARGS, error_msg);
+        logError(FASTDDSSPY_ARGS, error_msg);
     }
 
     return option::ARG_ILLEGAL;

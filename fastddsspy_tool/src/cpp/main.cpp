@@ -138,7 +138,7 @@ int main(
             // in non debug or with LOG_NO_INFO=ON.
             // This is the easiest way to allow to see Warnings and Errors from Fast DDS.
             // Change it when Log Module is independent and with more extensive API.
-            // eprosima::utils::Log::SetCategoryFilter(std::regex("(ddspipe|FOXGLOVEWS)"));
+            // eprosima::utils::Log::SetCategoryFilter(std::regex("(ddspipe|FASTDDSSPY)"));
         }
         // Create the Spy
         eprosima::spy::Controller spy(configuration);
