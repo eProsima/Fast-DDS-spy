@@ -100,6 +100,17 @@ const option::Descriptor usage[] = {
 
     },
 
+    {
+        optionIndex::DOMAIN,
+        0,
+        "",
+        "domain",
+        Arg::Numeric,
+        "  \t--domain\t  \t" \
+        "Set the domain (0-255) to spy on. " \
+        "[Default = 0]."
+    },
+
     ////////////////////
     // Debug options
     {
@@ -246,6 +257,10 @@ ProcessReturnCode parse_arguments(
             case optionIndex::LOG_VERBOSITY:
                 commandline_args.log_verbosity =
                         utils::VerbosityKind(static_cast<int>(from_string_LogKind(opt.arg)));
+                break;
+
+            case optionIndex::DOMAIN:
+                commandline_args.domain.set_value(std::stoi(opt.arg));
                 break;
 
             case optionIndex::UNKNOWN_OPT:

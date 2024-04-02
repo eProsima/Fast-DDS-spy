@@ -123,6 +123,12 @@ void Configuration::load_configuration_(
         {
             ddspipe_configuration.log_configuration.set(args->log_verbosity);
             ddspipe_configuration.log_configuration.set(args->log_filter);
+
+            if (args->domain.is_set())
+            {
+                // Set domain from command-line
+                simple_configuration->domain = args->domain.get_value();
+            }
         }
     }
     catch (const std::exception& e)
