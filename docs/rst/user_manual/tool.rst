@@ -125,7 +125,7 @@ It shows the usage information of the application.
     Debug parameters
     -d --debug          Set log verbosity to Info (Using this option with --log-filter and/or --log-verbosity will head to undefined behaviour).
        --log-filter     Set a Regex Filter to filter by category the info and warning log entries. [Default = "FASTDDSSPY"].
-       --log-verbosity  Set a Log Verbosity Level higher or equal the one given. (Values accepted: "info","warning","error" no Case Sensitive) [Default = "warning"].
+       --log-verbosity  Set a Log Verbosity Level higher or equal the one given. (Values accepted: "info","warning","error" no Case Sensitive) [Default = "error"].
 
 .. _user_manual_user_interface_version_argument:
 
