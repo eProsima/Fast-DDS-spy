@@ -68,6 +68,38 @@ The |espy| application supports several input arguments:
         - Readable File Path
         - ``./FASTDDSSPY_CONFIGURATION.yaml``
 
+    *   - :ref:`user_manual_user_interface_reload_time_argument`
+        - ``-r``
+        - ``--reload-time``
+        - Period (in seconds) to reload |br|
+          configuration file
+        - 0
+
+    *   - :ref:`user_manual_user_interface_domain_argument`
+        -
+        - ``--domain``
+        - Domain to spy on
+        - 0
+
+    *   - :ref:`user_manual_user_interface_debug_argument`
+        - ``-d``
+        - ``--debug``
+        - Debug mode
+        - ``false``
+
+    *   - :ref:`user_manual_user_interface_log_filter_argument`
+        -
+        - ``--log-filter``
+        - Filter the logs displayed
+        - ``FASTDDSSPY``
+
+    *   - :ref:`user_manual_user_interface_log_verbosity_argument`
+        -
+        - ``--log-verbosity``
+        - Maximum category of the |br|
+          logs displayed
+        - ``error``
+
 .. _user_manual_user_interface_help_argument:
 
 Help Argument
@@ -87,6 +119,13 @@ It shows the usage information of the application.
 
     Application parameters
     -c --config-path    Path to the Configuration File (yaml format) [Default: ./FASTDDSSPY_CONFIGURATION.yaml].
+    -r --reload-time    Time period in seconds to reload configuration file. This is needed when FileWatcher functionality is not available (e.g. config file is a symbolic link). Value 0 does not reload file. [Default: 0].
+       --domain         Set the domain (0-255) to spy on. [Default = 0].
+
+    Debug parameters
+    -d --debug          Set log verbosity to Info (Using this option with --log-filter and/or --log-verbosity will head to undefined behaviour).
+       --log-filter     Set a Regex Filter to filter by category the info and warning log entries. [Default = "FASTDDSSPY"].
+       --log-verbosity  Set a Log Verbosity Level higher or equal the one given. (Values accepted: "info","warning","error" no Case Sensitive) [Default = "error"].
 
 .. _user_manual_user_interface_version_argument:
 
@@ -113,6 +152,51 @@ Reload Topics
 
 This configuration file allows to allow and block DDS :term:`Topics <Topic>`.
 A modification in this file will modify the running application.
+
+.. _user_manual_user_interface_reload_time_argument:
+
+Reload Time Argument
+--------------------
+
+This argument sets the time period in seconds to reload the configuration file.
+
+.. _user_manual_user_interface_domain_argument:
+
+Domain Argument
+---------------
+
+This argument sets the domain id of the |spy|.
+
+.. warning::
+
+    If set, it will override the domain id set in the configuration file.
+
+.. _user_manual_user_interface_debug_argument:
+
+Debug Argument
+--------------
+
+This argument sets the log verbosity to Info.
+
+.. warning::
+
+    Using this option with :ref:`log filter <user_manual_user_interface_log_filter_argument>` and/or :ref:`log verbosity <user_manual_user_interface_log_verbosity_argument>` will head to undefined behaviour.
+
+.. _user_manual_user_interface_log_filter_argument:
+
+Log Filter Argument
+-------------------
+
+Configure the |spy| to print the logs that match the given filter.
+By default the filter is set to ``FASTDDSSPY`` for ``warning`` and ``info`` logs.
+
+.. _user_manual_user_interface_log_verbosity_argument:
+
+Log Verbosity Argument
+----------------------
+
+Configure the |spy| to print the logs up to a certain verbosity level.
+The verbosity levels are (from more to less restrictive): ``error``, ``warning``, and ``info``.
 
 .. _user_manual_user_interface_interactive_app:
 

@@ -14,7 +14,10 @@
 
 #pragma once
 
+#include <cpp_utils/types/Fuzzy.hpp>
+
 #include <ddspipe_core/configuration/CommandlineArgs.hpp>
+#include <ddspipe_core/types/dds/DomainId.hpp>
 
 #include <fastddsspy_yaml/library/library_dll.h>
 
@@ -50,6 +53,9 @@ struct FASTDDSSPY_YAML_DllAPI CommandlineArgsSpy : public ddspipe::core::Command
 
     // One shot command
     std::vector<std::string> one_shot_command;
+
+    // Domain
+    utils::Fuzzy<ddspipe::core::types::DomainId> domain{0, utils::FuzzyLevelValues::fuzzy_level_default};
 };
 
 } /* namespace yaml */

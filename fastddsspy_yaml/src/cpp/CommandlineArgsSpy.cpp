@@ -29,6 +29,12 @@ CommandlineArgsSpy::CommandlineArgsSpy()
 bool CommandlineArgsSpy::is_valid(
         utils::Formatter& error_msg) const noexcept
 {
+    if (domain.get_value() < 0 || domain.get_value() > 255)
+    {
+        error_msg << "Domain ID must be between 0 and 255";
+        return false;
+    }
+
     return ddspipe::core::CommandlineArgs::is_valid(error_msg);
 }
 

@@ -1,4 +1,4 @@
-# Copyright 2023 Proyectos y Sistemas de Mantenimiento SL (eProsima).
+# Copyright 2024 Proyectos y Sistemas de Mantenimiento SL (eProsima).
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,19 +24,22 @@ class TestCase_instance (test_class.TestCase):
         """
         @brief Initialize the TestCase_instance object.
 
-        This test launch:
-            fastddsspy --reload-time hello exit
+        This test launches:
+            fastddsspy --domain
         """
         super().__init__(
-            name='--reloadFailCommand',
+            name='--DomainFailCommand',
             one_shot=True,
             command=[],
             dds=False,
             config='',
             arguments_dds=[],
-            arguments_spy=['--reload-time', 'hello', 'exit'],
+            arguments_spy=['--domain'],
             commands_spy=[],
-            output="""Usage: Fast DDS Spy \n\
+            output="""\x1b[37;1m%%time%% \x1b[31;1m[\x1b[37;1mFASTDDSSPY_ARGS\x1b[31;1m Error] \
+\x1b[37mOption \'--domain\' requires a numeric argument.\x1b[34;1m -> Function \
+\x1b[36mString\x1b[m\n\
+Usage: Fast DDS Spy \n\
 Start an interactive CLI to introspect a DDS network.\n\
 General options:\n\
 
@@ -50,6 +53,7 @@ Application parameters\n\
   -r --reload-time    Time period in seconds to reload configuration file. \
 This is needed when FileWatcher functionality is not available \
 (e.g. config file is a symbolic link). Value 0 does not reload file. [Default: 0].\n\
+     --domain         Set the domain (0-255) to spy on. [Default = 0].\n\
 \n\
 Debug parameters\n\
   -d --debug          Set log verbosity to Info                                   \
@@ -59,11 +63,7 @@ Debug parameters\n\
      --log-filter     Set a Regex Filter to filter by category the info and warning \
 log entries. [Default = "FASTDDSSPY"]. \n\
      --log-verbosity  Set a Log Verbosity Level higher or equal the one given. \
-(Values accepted: "info","warning","error" no Case Sensitive) [Default = "warning"]. \n\
-\n\
-\x1b[37;1m2023-04-12 14:29:23.337 \x1b[31;1m[\x1b[37;1mFASTDDSSPY_ARGS\x1b[31;1m Error] \
-\x1b[37mOption '--reload-time' requires a numeric argument.\
-\x1b[34;1m -> Function \x1b[36mValid_Options\x1b[m"""
+(Values accepted: "info","warning","error" no Case Sensitive) [Default = "warning"]. \n\n"""
         )
 
     def valid_output(self, output):

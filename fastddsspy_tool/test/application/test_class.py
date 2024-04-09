@@ -207,22 +207,28 @@ class TestCase():
 
         lines_expected_output = expected_output.splitlines()
         lines_output = output.splitlines()
-        guid = True
-        rate = True
+
         for i in range(len(lines_expected_output)):
             if '%%guid%%' in lines_expected_output[i]:
                 start_guid_position = lines_expected_output[i].find('%%guid%%')
-                guid = self.valid_guid(lines_output[i][start_guid_position:])
+
+                if not self.valid_guid(lines_output[i][start_guid_position:]):
+                    return False
+
             elif '%%rate%%' in lines_expected_output[i]:
                 start_rate_position = lines_expected_output[i].find('%%rate%%')
-                rate = self.valid_rate(lines_output[i][start_rate_position:])
+
+                if not self.valid_rate(lines_output[i][start_rate_position:]):
+                    return False
+
             elif lines_expected_output[i] != lines_output[i]:
                 print('Output: ')
                 print(output)
                 print('Expected output: ')
                 print(expected_output)
                 return False
-        return (guid and rate)
+
+        return True
 
     def stop_tool(self, proc) -> bool:
         """

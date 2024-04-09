@@ -61,6 +61,7 @@ Application parameters\n\
   -r --reload-time    Time period in seconds to reload configuration file. \
 This is needed when FileWatcher functionality is not available \
 (e.g. config file is a symbolic link). Value 0 does not reload file. [Default: 0].\n\
+     --domain         Set the domain (0-255) to spy on. [Default = 0].\n\
 \n\
 Debug parameters\n\
   -d --debug          Set log verbosity to Info                                   \

@@ -61,7 +61,7 @@ log entries. [Default = "(DDSPIPE|FASTDDSSPY)"]. \n\
      --log-verbosity  Set a Log Verbosity Level higher or equal the one given. \
 (Values accepted: "info","warning","error" no Case Sensitive) [Default = "warning"]. \n\
 \n\
-\x1b[37;1m2023-04-12 14:29:23.337 \x1b[31;1m[\x1b[37;1mFOXGLOVEWS_ARGS\x1b[31;1m Error] \
+\x1b[37;1m2023-04-12 14:29:23.337 \x1b[31;1m[\x1b[37;1mFASTDDSSPY_ARGS\x1b[31;1m Error] \
 \x1b[37mOption '--log-verbosity' requires a one of this values: {"error";"warning";"info";}.\
 \x1b[34;1m -> Function \x1b[36mValid_Options\x1b[m\n"""
         )
