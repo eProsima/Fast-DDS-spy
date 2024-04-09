@@ -63,9 +63,8 @@ Debug parameters\n\
      --log-filter     Set a Regex Filter to filter by category the info and warning \
 log entries. [Default = "FASTDDSSPY"]. \n\
      --log-verbosity  Set a Log Verbosity Level higher or equal the one given. \
-(Values accepted: "info","warning","error" no Case Sensitive) [Default = "warning"]. \n\n
-"""
-)
+(Values accepted: "info","warning","error" no Case Sensitive) [Default = "warning"]. \n\n"""
+        )
 
     def valid_output(self, output):
         """
