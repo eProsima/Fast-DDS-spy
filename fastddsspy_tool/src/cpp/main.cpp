@@ -47,6 +47,10 @@
 #include "user_interface/ProcessReturnCode.hpp"
 #include "tool/Controller.hpp"
 
+
+int exit(const eprosima::spy::ProcessReturnCode& code);
+
+
 int main(
         int argc,
         char** argv)
@@ -60,15 +64,15 @@ int main(
 
     if (arg_parse_result == eprosima::spy::ProcessReturnCode::help_argument)
     {
-        return static_cast<int>(eprosima::spy::ProcessReturnCode::success);
+        return exit(eprosima::spy::ProcessReturnCode::success);
     }
     else if (arg_parse_result == eprosima::spy::ProcessReturnCode::version_argument)
     {
-        return static_cast<int>(eprosima::spy::ProcessReturnCode::success);
+        return exit(eprosima::spy::ProcessReturnCode::success);
     }
     else if (arg_parse_result != eprosima::spy::ProcessReturnCode::success)
     {
-        return static_cast<int>(arg_parse_result);
+        return exit(arg_parse_result);
     }
 
     // Check file is in args, else get the default file
@@ -236,21 +240,23 @@ int main(
                 "Error Loading Fast DDS Spy Configuration from file " << commandline_args.file_path <<
                 ". Error message:\n " <<
                 e.what());
-        return static_cast<int>(eprosima::spy::ProcessReturnCode::execution_failed);
+        return exit(eprosima::spy::ProcessReturnCode::execution_failed);
     }
     catch (const eprosima::utils::InitializationException& e)
     {
         EPROSIMA_LOG_ERROR(FASTDDSSPY_TOOL,
                 "Error Initializing Fast DDS Spy. Error message:\n " <<
                 e.what());
-        return static_cast<int>(eprosima::spy::ProcessReturnCode::execution_failed);
+        return exit(eprosima::spy::ProcessReturnCode::execution_failed);
     }
 
-    // Force print every log before closing
-    eprosima::utils::Log::Flush();
+    return exit(eprosima::spy::ProcessReturnCode::success);
+}
 
+int exit(const eprosima::spy::ProcessReturnCode& code)
+{
     // Delete the consumers before closing
     eprosima::utils::Log::ClearConsumers();
 
-    return static_cast<int>(eprosima::spy::ProcessReturnCode::success);
+    return static_cast<int>(code);
 }
