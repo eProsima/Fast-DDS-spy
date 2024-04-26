@@ -30,6 +30,7 @@
 #include <cpp_utils/types/Fuzzy.hpp>
 #include <cpp_utils/utils.hpp>
 
+#include <ddspipe_core/configuration/DdsPipeLogConfiguration.hpp>
 #include <ddspipe_core/core/DdsPipe.hpp>
 #include <ddspipe_core/dynamic/ParticipantsDatabase.hpp>
 #include <ddspipe_core/dynamic/DiscoveryDatabase.hpp>
@@ -49,6 +50,7 @@
 
 
 int exit(const eprosima::spy::ProcessReturnCode& code);
+void register_log_consumers(const eprosima::ddspipe::core::DdsPipeLogConfiguration& configuration);
 
 
 int main(
@@ -99,6 +101,12 @@ int main(
     // Encapsulating execution in block to erase all memory correctly before closing process
     try
     {
+        // Register the LogConsumers to log the YAML configuration errors
+        eprosima::ddspipe::core::DdsPipeLogConfiguration log_configuration;
+        log_configuration.set(eprosima::utils::VerbosityKind::Warning);
+
+        register_log_consumers(log_configuration);
+
         /////
         // Fast DDS Spy Initialization
 
@@ -113,37 +121,8 @@ int main(
         eprosima::spy::yaml::Configuration configuration = eprosima::spy::yaml::Configuration(
             commandline_args.file_path, &commandline_args);
 
-        // Debug
-        {
-            const auto log_configuration = configuration.ddspipe_configuration.log_configuration;
+        register_log_consumers(configuration.ddspipe_configuration.log_configuration);
 
-            // Remove every consumer
-            eprosima::utils::Log::ClearConsumers();
-
-            // Activate log with verbosity, as this will avoid running log thread with not desired kind
-            eprosima::utils::Log::SetVerbosity(configuration.ddspipe_configuration.log_configuration.verbosity);
-
-            // Stdout Log Consumer
-            if (log_configuration.stdout_enable)
-            {
-                eprosima::utils::Log::RegisterConsumer(
-                    std::make_unique<eprosima::utils::StdLogConsumer>(&log_configuration));
-            }
-
-            // DDS Log Consumer
-            if (log_configuration.publish.enable)
-            {
-                eprosima::utils::Log::RegisterConsumer(
-                    std::make_unique<eprosima::ddspipe::core::DdsLogConsumer>(&log_configuration));
-            }
-
-            // NOTE:
-            // It will not filter any log, so Fast DDS logs will be visible unless Fast DDS is compiled
-            // in non debug or with LOG_NO_INFO=ON.
-            // This is the easiest way to allow to see Warnings and Errors from Fast DDS.
-            // Change it when Log Module is independent and with more extensive API.
-            // eprosima::utils::Log::SetCategoryFilter(std::regex("(ddspipe|FASTDDSSPY)"));
-        }
         // Create the Spy
         eprosima::spy::Controller spy(configuration);
 
@@ -259,4 +238,34 @@ int exit(const eprosima::spy::ProcessReturnCode& code)
     eprosima::utils::Log::ClearConsumers();
 
     return static_cast<int>(code);
+}
+
+void register_log_consumers(const eprosima::ddspipe::core::DdsPipeLogConfiguration& configuration)
+{
+    // Remove every consumer
+    eprosima::utils::Log::ClearConsumers();
+
+    // Activate log with verbosity, as this will avoid running log thread with not desired kind
+    eprosima::utils::Log::SetVerbosity(configuration.verbosity);
+
+    // Stdout Log Consumer
+    if (configuration.stdout_enable)
+    {
+        eprosima::utils::Log::RegisterConsumer(
+            std::make_unique<eprosima::utils::StdLogConsumer>(&configuration));
+    }
+
+    // DDS Log Consumer
+    if (configuration.publish.enable)
+    {
+        eprosima::utils::Log::RegisterConsumer(
+            std::make_unique<eprosima::ddspipe::core::DdsLogConsumer>(&configuration));
+    }
+
+    // NOTE:
+    // It will not filter any log, so Fast DDS logs will be visible unless Fast DDS is compiled
+    // in non debug or with LOG_NO_INFO=ON.
+    // This is the easiest way to allow to see Warnings and Errors from Fast DDS.
+    // Change it when Log Module is independent and with more extensive API.
+    // utils::Log::SetCategoryFilter(std::regex("(FASTDDSSPY)"));
 }
