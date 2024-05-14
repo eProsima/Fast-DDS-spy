@@ -61,7 +61,7 @@ jobs:
 
 
 #####################################################################
-# UBUNTU TEST
+# MULTIPLATFORM TEST
 
   multiplatform-tests:
     runs-on: ${{ matrix.os }}
