@@ -73,9 +73,11 @@ void DataStreamer::deactivate()
 
 void DataStreamer::add_schema(
         const fastdds::dds::DynamicType::_ref_type& dynamic_type,
-        const std::tuple<fastcdr::string_255, fastdds::dds::xtypes::TypeIdentifier>& type_ids_tuple)
+        const std::string& type_name,
+        const fastdds::dds::xtypes::TypeIdentifier& type_id)
 {
-    static_cast<void>(type_ids_tuple);
+    static_cast<void>(type_name);
+    static_cast<void>(type_id);
 
     std::unique_lock<std::shared_timed_mutex> _(mutex_);
 
