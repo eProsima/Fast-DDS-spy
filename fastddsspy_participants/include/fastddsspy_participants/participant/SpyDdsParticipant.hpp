@@ -47,19 +47,22 @@ public:
             const ddspipe::core::ITopic& topic) override;
 
     FASTDDSSPY_PARTICIPANTS_DllAPI
-    virtual void onParticipantDiscovery(
-            fastrtps::rtps::RTPSParticipant* participant,
-            fastrtps::rtps::ParticipantDiscoveryInfo&& info) override;
+    void onParticipantDiscovery(
+            fastdds::rtps::RTPSParticipant* participant,
+            fastdds::rtps::ParticipantDiscoveryInfo&& info,
+            bool& should_be_ignored) override;
 
     FASTDDSSPY_PARTICIPANTS_DllAPI
-    virtual void onReaderDiscovery(
-            fastrtps::rtps::RTPSParticipant* participant,
-            fastrtps::rtps::ReaderDiscoveryInfo&& info);
+    void onReaderDiscovery(
+            fastdds::rtps::RTPSParticipant* participant,
+            fastdds::rtps::ReaderDiscoveryInfo&& info,
+            bool& should_be_ignored) override;
 
     FASTDDSSPY_PARTICIPANTS_DllAPI
-    virtual void onWriterDiscovery(
-            fastrtps::rtps::RTPSParticipant* participant,
-            fastrtps::rtps::WriterDiscoveryInfo&& info);
+    void onWriterDiscovery(
+            fastdds::rtps::RTPSParticipant* participant,
+            fastdds::rtps::WriterDiscoveryInfo&& info,
+            bool& should_be_ignored) override;
 
 protected:
 

@@ -73,15 +73,16 @@ void DataStreamer::deactivate()
 
 void DataStreamer::add_schema(
         const fastdds::dds::DynamicType::_ref_type& dynamic_type,
-        const std::tuple<fastcdr::string_255, fastdds::dds::xtypes::TypeIdentifier>& type_ids_tuple)
+        const std::string& type_name,
+        const fastdds::dds::xtypes::TypeIdentifier& type_id)
 {
-    static_cast<void>(type_ids_tuple);
+    static_cast<void>(type_id);
 
     std::unique_lock<std::shared_timed_mutex> _(mutex_);
 
     // Add type to map if not yet
     // NOTE: it does not matter if it is already in set
-    types_discovered_[dynamic_type->get_name().to_string()] = dynamic_type;
+    types_discovered_[type_name] = dynamic_type;
 
     logInfo(FASTDDSSPY_DATASTREAMER, "\nAdding schema with name " << dynamic_type->get_name() << ".");
 }

@@ -60,7 +60,8 @@ public:
     FASTDDSSPY_PARTICIPANTS_DllAPI
     void add_schema(
             const fastdds::dds::DynamicType::_ref_type& dynamic_type,
-            const std::tuple<fastcdr::string_255, fastdds::dds::xtypes::TypeIdentifier>& type_ids_tuple) override;
+            const std::string& type_name,
+            const fastdds::dds::xtypes::TypeIdentifier& type_id) override;
 
     FASTDDSSPY_PARTICIPANTS_DllAPI
     void add_data(

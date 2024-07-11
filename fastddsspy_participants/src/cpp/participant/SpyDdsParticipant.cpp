@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <fastdds/rtps/builtin/data/ParticipantProxyData.h>
-#include <fastdds/rtps/builtin/data/ReaderProxyData.h>
-#include <fastdds/rtps/builtin/data/WriterProxyData.h>
-#include <fastdds/rtps/participant/RTPSParticipant.h>
+#include <fastdds/rtps/builtin/data/ParticipantProxyData.hpp>
+#include <fastdds/rtps/builtin/data/ReaderProxyData.hpp>
+#include <fastdds/rtps/builtin/data/WriterProxyData.hpp>
+#include <fastdds/rtps/participant/RTPSParticipant.hpp>
 
 #include <ddspipe_participants/utils/utils.hpp>
 
@@ -60,10 +60,11 @@ std::shared_ptr<ddspipe::core::IReader> SpyDdsParticipant::create_reader(
 }
 
 void SpyDdsParticipant::onParticipantDiscovery(
-        fastrtps::rtps::RTPSParticipant* participant,
-        fastrtps::rtps::ParticipantDiscoveryInfo&& discovery_info)
+        fastdds::rtps::RTPSParticipant* participant,
+        fastdds::rtps::ParticipantDiscoveryInfo&& discovery_info,
+        bool& should_be_ignored)
 {
-    fastrtps::rtps::ParticipantProxyData proxy_copy_info(discovery_info.info);
+    fastdds::rtps::ParticipantProxyData proxy_copy_info(discovery_info.info);
 
     // If comes from this participant is not interesting
     if (come_from_this_participant_(proxy_copy_info.m_guid))
@@ -72,21 +73,22 @@ void SpyDdsParticipant::onParticipantDiscovery(
     }
 
     ParticipantInfo info;
-    info.active = (discovery_info.status == eprosima::fastrtps::rtps::ParticipantDiscoveryInfo::DISCOVERED_PARTICIPANT
-            || discovery_info.status == eprosima::fastrtps::rtps::ParticipantDiscoveryInfo::CHANGED_QOS_PARTICIPANT);
+    info.active = (discovery_info.status == eprosima::fastdds::rtps::ParticipantDiscoveryInfo::DISCOVERED_PARTICIPANT
+            || discovery_info.status == eprosima::fastdds::rtps::ParticipantDiscoveryInfo::CHANGED_QOS_PARTICIPANT);
     info.name = std::string(proxy_copy_info.m_participantName);
     info.guid = proxy_copy_info.m_guid;
 
-    ddspipe::participants::rtps::CommonParticipant::onParticipantDiscovery(participant, std::move(discovery_info));
+    ddspipe::participants::rtps::CommonParticipant::onParticipantDiscovery(participant, std::move(discovery_info), should_be_ignored);
 
     internal_notify_participant_discovered_(info);
 }
 
 void SpyDdsParticipant::onReaderDiscovery(
-        fastrtps::rtps::RTPSParticipant* participant,
-        fastrtps::rtps::ReaderDiscoveryInfo&& info)
+        fastdds::rtps::RTPSParticipant* participant,
+        fastdds::rtps::ReaderDiscoveryInfo&& info,
+        bool& should_be_ignored)
 {
-    fastrtps::rtps::ReaderProxyData proxy_copy(info.info);
+    fastdds::rtps::ReaderProxyData proxy_copy(info.info);
 
     // If comes from this participant is not interesting
     if (come_from_this_participant_(proxy_copy.guid()))
@@ -97,18 +99,19 @@ void SpyDdsParticipant::onReaderDiscovery(
     EndpointInfo endpoint_info = ddspipe::participants::detail::create_endpoint_from_info_(info, id());
 
     // If participant left or dropped, this notification arrives as well
-    endpoint_info.active = !(info.status == fastrtps::rtps::ReaderDiscoveryInfo::DISCOVERY_STATUS::REMOVED_READER);
+    endpoint_info.active = !(info.status == fastdds::rtps::ReaderDiscoveryInfo::DISCOVERY_STATUS::REMOVED_READER);
 
-    ddspipe::participants::DynTypesParticipant::onReaderDiscovery(participant, std::move(info));
+    ddspipe::participants::DynTypesParticipant::onReaderDiscovery(participant, std::move(info), should_be_ignored);
 
     internal_notify_endpoint_discovered_(endpoint_info);
 }
 
 void SpyDdsParticipant::onWriterDiscovery(
-        fastrtps::rtps::RTPSParticipant* participant,
-        fastrtps::rtps::WriterDiscoveryInfo&& info)
+        fastdds::rtps::RTPSParticipant* participant,
+        fastdds::rtps::WriterDiscoveryInfo&& info,
+        bool& should_be_ignored)
 {
-    fastrtps::rtps::WriterProxyData proxy_copy(info.info);
+    fastdds::rtps::WriterProxyData proxy_copy(info.info);
 
     // If comes from this participant is not interesting
     if (come_from_this_participant_(proxy_copy.guid()))
@@ -119,9 +122,9 @@ void SpyDdsParticipant::onWriterDiscovery(
     EndpointInfo endpoint_info = ddspipe::participants::detail::create_endpoint_from_info_(info, id());
 
     // If participant left or dropped, this notification arrives as well
-    endpoint_info.active = !(info.status == fastrtps::rtps::WriterDiscoveryInfo::DISCOVERY_STATUS::REMOVED_WRITER);
+    endpoint_info.active = !(info.status == fastdds::rtps::WriterDiscoveryInfo::DISCOVERY_STATUS::REMOVED_WRITER);
 
-    ddspipe::participants::DynTypesParticipant::onWriterDiscovery(participant, std::move(info));
+    ddspipe::participants::DynTypesParticipant::onWriterDiscovery(participant, std::move(info), should_be_ignored);
 
     internal_notify_endpoint_discovered_(endpoint_info);
 }
