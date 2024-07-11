@@ -144,7 +144,7 @@ void Controller::data_stream_callback_(
     view_.show("---");
     std::stringstream ss;
     ss << std::setw(4);
-    auto ret = fastdds::dds::json_serialize(dyn_data, ss, fastdds::dds::DynamicDataJsonFormat::EPROSIMA);
+    auto ret = fastdds::dds::json_serialize(dyn_data, fastdds::dds::DynamicDataJsonFormat::EPROSIMA, ss);
     std::cout << ss.str() << std::endl;
     view_.show("---\n");
 }
@@ -176,7 +176,7 @@ void Controller::data_stream_callback_verbose_(
     view_.show("data:\n---");
     std::stringstream ss;
     ss << std::setw(4);
-    auto ret = fastdds::dds::json_serialize(dyn_data, ss, fastdds::dds::DynamicDataJsonFormat::EPROSIMA);
+    auto ret = fastdds::dds::json_serialize(dyn_data, fastdds::dds::DynamicDataJsonFormat::EPROSIMA, ss);
     std::cout << ss.str() << std::endl;
     view_.show("---\n");
 }
