@@ -21,8 +21,8 @@ if(NOT fastcdr_FOUND)
     find_package(fastcdr REQUIRED)
 endif()
 
-if(NOT fastrtps_FOUND)
-    find_package(fastrtps REQUIRED)
+if(NOT fastdds_FOUND)
+    find_package(fastdds REQUIRED)
 endif()
 
 #Check C++11
@@ -35,23 +35,16 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     endif()
 endif()
 
-# Determine Fast DDS version
-if ("${fastrtps_VERSION}" VERSION_LESS 2.13)
-    set(DDS_TYPES_VERSION "v1")
-else()
-    set(DDS_TYPES_VERSION "v2")
-endif()
-
 message(STATUS "Configuring AdvancedConfiguration example...")
 file(
     GLOB ADVANCED_CONFIG_EXAMPLE_SOURCES_CXX
         "*.cxx"
-        "types/${DDS_TYPES_VERSION}/*.cxx"
+        "types/*.cxx"
 )
 file(
     GLOB ADVANCED_CONFIG_EXAMPLE_SOURCES_CPP
         "*.cpp"
-        "types/${DDS_TYPES_VERSION}/*.cpp"
+        "types/*.cpp"
 )
 
 add_executable(${PROJECT_NAME} ${ADVANCED_CONFIG_EXAMPLE_SOURCES_CXX} ${ADVANCED_CONFIG_EXAMPLE_SOURCES_CPP})
@@ -61,7 +54,7 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
     $<$<BOOL:${SHM_TRANSPORT_DEFAULT}>:SHM_TRANSPORT_BUILTIN> # Enable SHM as built-in transport
 )
 
-target_link_libraries(${PROJECT_NAME} fastrtps fastcdr fastdds::optionparser)
+target_link_libraries(${PROJECT_NAME} fastdds fastcdr fastdds::optionparser)
 install(TARGETS ${PROJECT_NAME}
     RUNTIME DESTINATION examples/cpp/dds/${PROJECT_NAME}/${BIN_INSTALL_DIR})
 
