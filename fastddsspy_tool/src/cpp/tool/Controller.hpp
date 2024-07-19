@@ -17,7 +17,8 @@
 #include <memory>
 #include <mutex>
 
-#include <fastrtps/types/DynamicDataPtr.h>
+#include <fastdds/dds/xtypes/dynamic_types/DynamicType.hpp>
+#include <fastdds/dds/xtypes/dynamic_types/DynamicData.hpp>
 
 #include <fastddsspy_participants/model/DataStreamer.hpp>
 
@@ -52,18 +53,18 @@ protected:
 
     ////////////////////////////
     // DATA STREAM CALLBACKS
-    static fastrtps::types::DynamicData_ptr get_dynamic_data_(
-            const fastrtps::types::DynamicType_ptr& dyn_type,
+    static fastdds::dds::DynamicData::_ref_type get_dynamic_data_(
+            const fastdds::dds::DynamicType::_ref_type& dyn_type,
             const ddspipe::core::types::RtpsPayloadData& data) noexcept;
 
     void data_stream_callback_(
             const ddspipe::core::types::DdsTopic& topic,
-            const fastrtps::types::DynamicType_ptr& dyn_type,
+            const fastdds::dds::DynamicType::_ref_type& dyn_type,
             const ddspipe::core::types::RtpsPayloadData& data);
 
     void data_stream_callback_verbose_(
             const ddspipe::core::types::DdsTopic& topic,
-            const fastrtps::types::DynamicType_ptr& dyn_type,
+            const fastdds::dds::DynamicType::_ref_type& dyn_type,
             const ddspipe::core::types::RtpsPayloadData& data);
 
     /////////////////////

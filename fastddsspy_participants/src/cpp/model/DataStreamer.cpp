@@ -14,11 +14,10 @@
 
 #include <mutex>
 
-#include <fastrtps/types/DynamicType.h>
-#include <fastrtps/types/DynamicPubSubType.h>
-#include <fastrtps/types/DynamicData.h>
-#include <fastrtps/types/DynamicDataFactory.h>
-#include <fastrtps/types/DynamicDataHelper.hpp>
+#include <fastdds/dds/xtypes/dynamic_types/DynamicType.hpp>
+#include <fastdds/dds/xtypes/dynamic_types/DynamicPubSubType.hpp>
+#include <fastdds/dds/xtypes/dynamic_types/DynamicData.hpp>
+#include <fastdds/dds/xtypes/dynamic_types/DynamicDataFactory.hpp>
 
 #include <cpp_utils/utils.hpp>
 
@@ -73,13 +72,17 @@ void DataStreamer::deactivate()
 }
 
 void DataStreamer::add_schema(
-        const fastrtps::types::DynamicType_ptr& dynamic_type)
+        const fastdds::dds::DynamicType::_ref_type& dynamic_type,
+        const std::string& type_name,
+        const fastdds::dds::xtypes::TypeIdentifier& type_id)
 {
+    static_cast<void>(type_id);
+
     std::unique_lock<std::shared_timed_mutex> _(mutex_);
 
     // Add type to map if not yet
     // NOTE: it does not matter if it is already in set
-    types_discovered_[dynamic_type->get_name()] = dynamic_type;
+    types_discovered_[type_name] = dynamic_type;
 
     logInfo(FASTDDSSPY_DATASTREAMER, "\nAdding schema with name " << dynamic_type->get_name() << ".");
 }
@@ -90,7 +93,7 @@ void DataStreamer::add_data(
 {
     TopicRateCalculator::add_data(topic, data);
 
-    fastrtps::types::DynamicType_ptr dyn_type;
+    fastdds::dds::DynamicType::_ref_type dyn_type;
 
     {
         std::shared_lock<std::shared_timed_mutex> _(mutex_);

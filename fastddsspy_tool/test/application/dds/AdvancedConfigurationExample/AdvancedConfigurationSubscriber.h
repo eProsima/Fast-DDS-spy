@@ -28,11 +28,7 @@
 #include <fastdds/dds/domain/DomainParticipant.hpp>
 #include <fastdds/dds/subscriber/DataReaderListener.hpp>
 
-#if FASTRTPS_VERSION_MAJOR <= 2 && FASTRTPS_VERSION_MINOR < 13
-    #include "types/v1/HelloWorldPubSubTypes.h"
-#else
-    #include "types/v2/HelloWorldPubSubTypes.h"
-#endif // if FASTRTPS_VERSION_MAJOR <= 2 && FASTRTPS_VERSION_MINOR < 13
+#include "types/HelloWorldPubSubTypes.hpp"
 
 #include "types.hpp"
 

@@ -12,7 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <fastdds/rtps/participant/RTPSParticipant.h>
+#include <fastdds/rtps/builtin/data/ParticipantProxyData.hpp>
+#include <fastdds/rtps/builtin/data/ReaderProxyData.hpp>
+#include <fastdds/rtps/builtin/data/WriterProxyData.hpp>
+#include <fastdds/rtps/participant/RTPSParticipant.hpp>
 
 #include <ddspipe_participants/utils/utils.hpp>
 
@@ -56,31 +59,39 @@ std::shared_ptr<ddspipe::core::IReader> SpyDdsParticipant::create_reader(
     return ddspipe::participants::DynTypesParticipant::create_reader(topic);
 }
 
-void SpyDdsParticipant::on_participant_discovery(
-        fastdds::dds::DomainParticipant* participant,
-        fastrtps::rtps::ParticipantDiscoveryInfo&& discovery_info)
+void SpyDdsParticipant::onParticipantDiscovery(
+        fastdds::rtps::RTPSParticipant* participant,
+        fastdds::rtps::ParticipantDiscoveryInfo&& discovery_info,
+        bool& should_be_ignored)
 {
+    fastdds::rtps::ParticipantProxyData proxy_copy_info(discovery_info.info);
+
     // If comes from this participant is not interesting
-    if (come_from_this_participant_(discovery_info.info.m_guid))
+    if (come_from_this_participant_(proxy_copy_info.m_guid))
     {
         return;
     }
 
     ParticipantInfo info;
-    info.active = (discovery_info.status == eprosima::fastrtps::rtps::ParticipantDiscoveryInfo::DISCOVERED_PARTICIPANT
-            || discovery_info.status == eprosima::fastrtps::rtps::ParticipantDiscoveryInfo::CHANGED_QOS_PARTICIPANT);
-    info.name = std::string(discovery_info.info.m_participantName);
-    info.guid = discovery_info.info.m_guid;
+    info.active = (discovery_info.status == eprosima::fastdds::rtps::ParticipantDiscoveryInfo::DISCOVERED_PARTICIPANT
+            || discovery_info.status == eprosima::fastdds::rtps::ParticipantDiscoveryInfo::CHANGED_QOS_PARTICIPANT);
+    info.name = std::string(proxy_copy_info.m_participantName);
+    info.guid = proxy_copy_info.m_guid;
+
+    ddspipe::participants::rtps::CommonParticipant::onParticipantDiscovery(participant, std::move(discovery_info), should_be_ignored);
 
     internal_notify_participant_discovered_(info);
 }
 
-void SpyDdsParticipant::on_subscriber_discovery(
-        fastdds::dds::DomainParticipant* participant,
-        fastrtps::rtps::ReaderDiscoveryInfo&& info)
+void SpyDdsParticipant::onReaderDiscovery(
+        fastdds::rtps::RTPSParticipant* participant,
+        fastdds::rtps::ReaderDiscoveryInfo&& info,
+        bool& should_be_ignored)
 {
+    fastdds::rtps::ReaderProxyData proxy_copy(info.info);
+
     // If comes from this participant is not interesting
-    if (come_from_this_participant_(info.info.guid()))
+    if (come_from_this_participant_(proxy_copy.guid()))
     {
         return;
     }
@@ -88,17 +99,22 @@ void SpyDdsParticipant::on_subscriber_discovery(
     EndpointInfo endpoint_info = ddspipe::participants::detail::create_endpoint_from_info_(info, id());
 
     // If participant left or dropped, this notification arrives as well
-    endpoint_info.active = !(info.status == fastrtps::rtps::ReaderDiscoveryInfo::DISCOVERY_STATUS::REMOVED_READER);
+    endpoint_info.active = !(info.status == fastdds::rtps::ReaderDiscoveryInfo::DISCOVERY_STATUS::REMOVED_READER);
+
+    ddspipe::participants::DynTypesParticipant::onReaderDiscovery(participant, std::move(info), should_be_ignored);
 
     internal_notify_endpoint_discovered_(endpoint_info);
 }
 
-void SpyDdsParticipant::on_publisher_discovery(
-        fastdds::dds::DomainParticipant* participant,
-        fastrtps::rtps::WriterDiscoveryInfo&& info)
+void SpyDdsParticipant::onWriterDiscovery(
+        fastdds::rtps::RTPSParticipant* participant,
+        fastdds::rtps::WriterDiscoveryInfo&& info,
+        bool& should_be_ignored)
 {
+    fastdds::rtps::WriterProxyData proxy_copy(info.info);
+
     // If comes from this participant is not interesting
-    if (come_from_this_participant_(info.info.guid()))
+    if (come_from_this_participant_(proxy_copy.guid()))
     {
         return;
     }
@@ -106,7 +122,9 @@ void SpyDdsParticipant::on_publisher_discovery(
     EndpointInfo endpoint_info = ddspipe::participants::detail::create_endpoint_from_info_(info, id());
 
     // If participant left or dropped, this notification arrives as well
-    endpoint_info.active = !(info.status == fastrtps::rtps::WriterDiscoveryInfo::DISCOVERY_STATUS::REMOVED_WRITER);
+    endpoint_info.active = !(info.status == fastdds::rtps::WriterDiscoveryInfo::DISCOVERY_STATUS::REMOVED_WRITER);
+
+    ddspipe::participants::DynTypesParticipant::onWriterDiscovery(participant, std::move(info), should_be_ignored);
 
     internal_notify_endpoint_discovered_(endpoint_info);
 }
@@ -140,9 +158,7 @@ void SpyDdsParticipant::internal_notify_endpoint_discovered_(
 bool SpyDdsParticipant::come_from_this_participant_(
         const ddspipe::core::types::Guid& guid) const noexcept
 {
-    return (guid.guid_prefix() == dds_participant_->guid().guidPrefix
-           ||  guid.guid_prefix() == rtps_participant_->getGuid().guidPrefix
-           );
+    return (guid.guid_prefix() == rtps_participant_->getGuid().guidPrefix);
 }
 
 } /* namespace participants */
