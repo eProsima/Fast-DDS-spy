@@ -15,24 +15,35 @@
 #include <cpp_utils/testing/gtest_aux.hpp>
 #include <gtest/gtest.h>
 
-#include <fastrtps/types/DynamicType.h>
-#include <fastrtps/types/DynamicTypeBuilder.h>
-#include <fastrtps/types/DynamicTypeBuilderPtr.h>
-#include <fastrtps/types/DynamicTypeBuilderFactory.h>
+#include <fastdds/dds/xtypes/dynamic_types/DynamicType.hpp>
+#include <fastdds/dds/xtypes/dynamic_types/DynamicTypeBuilder.hpp>
+#include <fastdds/dds/xtypes/dynamic_types/DynamicTypeBuilderFactory.hpp>
+#include <fastdds/dds/xtypes/type_representation/detail/dds_xtypes_typeobject.hpp>
 
 #include <fastddsspy_participants/model/DataStreamer.hpp>
 
 using namespace eprosima;
 
-void create_schema(
-        ddspipe::core::types::DdsTopic& topic,
-        fastrtps::types::DynamicType_ptr& dynamic_type_topic)
+fastdds::dds::DynamicType::_ref_type create_schema(
+        ddspipe::core::types::DdsTopic& topic)
 {
-    fastrtps::types::DynamicTypeBuilder_ptr dynamic_type_topic_builder;
-    dynamic_type_topic_builder = fastrtps::types::DynamicTypeBuilderFactory::get_instance()->create_struct_builder();
+    // // Opción 1:
+    // fastdds::dds::TypeSupport type(new DynamicPubSubType(dynamic_type_topic));
+    // type->setName(topic.type_name);
 
-    dynamic_type_topic_builder->set_name(topic.type_name);
-    dynamic_type_topic = dynamic_type_topic_builder->build();
+    // Lo que había antes
+    // fastdds::dds::DynamicTypeBuilder:_ref_type dynamic_type_topic_builder;
+    // dynamic_type_topic_builder = fastrtps::types::DynamicTypeBuilderFactory::get_instance()->create_struct_builder();
+
+    // dynamic_type_topic_builder->set_name(topic.type_name);
+    // dynamic_type_topic = dynamic_type_topic_builder->build();
+
+    // Opción 2:
+    fastdds::dds::TypeDescriptor::_ref_type type_descriptor {fastdds::dds::traits<fastdds::dds::TypeDescriptor>::make_shared()};
+    type_descriptor->name(topic.type_name);
+    fastdds::dds::DynamicTypeBuilder::_ref_type struct_builder {fastdds::dds::DynamicTypeBuilderFactory::get_instance()->create_type(type_descriptor)};
+    fastdds::dds::DynamicType::_ref_type dynamic_type_topic {struct_builder->build()};
+    return dynamic_type_topic;
 }
 
 TEST(DataStreamerTest, activate_false)
@@ -58,10 +69,11 @@ TEST(DataStreamerTest, activate_true)
     std::shared_ptr<spy::participants::DataStreamer::CallbackType> cb =
             std::make_shared<spy::participants::DataStreamer::CallbackType>();
 
-    fastrtps::types::DynamicType_ptr dynamic_type_topic;
-    create_schema(topic, dynamic_type_topic);
+    fastdds::dds::DynamicType::_ref_type dynamic_type_topic;
+    dynamic_type_topic = create_schema(topic);
 
-    ds.add_schema(dynamic_type_topic);
+    fastdds::dds::xtypes::TypeIdentifier type_id;
+    ds.add_schema(dynamic_type_topic, topic.type_name, type_id);
 
     ASSERT_TRUE(ds.activate(topic, cb));
 }
@@ -77,19 +89,21 @@ TEST(DataStreamerTest, activate_twice)
     std::shared_ptr<spy::participants::DataStreamer::CallbackType> cb =
             std::make_shared<spy::participants::DataStreamer::CallbackType>();
 
-    fastrtps::types::DynamicType_ptr dynamic_type_topic_1;
-    create_schema(topic_1, dynamic_type_topic_1);
+    fastdds::dds::DynamicType::_ref_type dynamic_type_topic_1;
+    dynamic_type_topic_1 = create_schema(topic_1);
 
-    ds.add_schema(dynamic_type_topic_1);
+    fastdds::dds::xtypes::TypeIdentifier type_id_1;
+    ds.add_schema(dynamic_type_topic_1, topic_1.type_name, type_id_1);
 
     ddspipe::core::types::DdsTopic topic_2;
     topic_2.m_topic_name = "topic2";
     topic_2.type_name = "type2";
 
-    fastrtps::types::DynamicType_ptr dynamic_type_topic_2;
-    create_schema(topic_2, dynamic_type_topic_2);
+    fastdds::dds::DynamicType::_ref_type dynamic_type_topic_2;
+    dynamic_type_topic_2 = create_schema(topic_2);
 
-    ds.add_schema(dynamic_type_topic_2);
+    fastdds::dds::xtypes::TypeIdentifier type_id_2;
+    ds.add_schema(dynamic_type_topic_2, topic_2.type_name, type_id_2);
 
     // is this the correct behaviour?
     ASSERT_TRUE(ds.activate(topic_1, cb));
@@ -110,10 +124,11 @@ TEST(DataStreamerTest, topic_type_discovered)
     topic_2.m_topic_name = "topic2";
     topic_2.type_name = "type2";
 
-    fastrtps::types::DynamicType_ptr dynamic_type_topic_2;
-    create_schema(topic_2, dynamic_type_topic_2);
+    fastdds::dds::DynamicType::_ref_type dynamic_type_topic_2;
+    dynamic_type_topic_2 = create_schema(topic_2);
 
-    ds.add_schema(dynamic_type_topic_2);
+    fastdds::dds::xtypes::TypeIdentifier type_id;
+    ds.add_schema(dynamic_type_topic_2, topic_2.type_name, type_id);
 
     ASSERT_TRUE(ds.is_topic_type_discovered(topic_2));
 }
@@ -131,16 +146,17 @@ TEST(DataStreamerTest, deactivate)
             std::make_shared<spy::participants::DataStreamer::CallbackType>(
         [&data_sent]
             (const ddspipe::core::types::DdsTopic& topic,
-        const fastrtps::types::DynamicType_ptr& type,
+        const fastdds::dds::DynamicType::_ref_type& type,
         const ddspipe::core::types::RtpsPayloadData& data)
         {
             data_sent++;
         });
 
-    fastrtps::types::DynamicType_ptr dynamic_type_topic;
-    create_schema(topic, dynamic_type_topic);
+    fastdds::dds::DynamicType::_ref_type dynamic_type_topic;
+    dynamic_type_topic = create_schema(topic);
 
-    ds.add_schema(dynamic_type_topic);
+    fastdds::dds::xtypes::TypeIdentifier type_id;
+    ds.add_schema(dynamic_type_topic, topic.type_name, type_id);
 
     ds.activate(topic, cb);
 
@@ -178,16 +194,17 @@ TEST(DataStreamerTest, add_data)
             std::make_shared<spy::participants::DataStreamer::CallbackType>(
         [&data_sent]
             (const ddspipe::core::types::DdsTopic& topic,
-        const fastrtps::types::DynamicType_ptr& type,
+        const fastdds::dds::DynamicType::_ref_type& type,
         const ddspipe::core::types::RtpsPayloadData& data)
         {
             data_sent++;
         });
 
-    fastrtps::types::DynamicType_ptr dynamic_type_topic;
-    create_schema(topic, dynamic_type_topic);
+    fastdds::dds::DynamicType::_ref_type dynamic_type_topic;
+    dynamic_type_topic = create_schema(topic);
 
-    ds.add_schema(dynamic_type_topic);
+    fastdds::dds::xtypes::TypeIdentifier type_id;
+    ds.add_schema(dynamic_type_topic, topic.type_name, type_id);
 
     ds.activate(topic, cb);
 
@@ -217,16 +234,17 @@ TEST(DataStreamerTest, add_data_two_topics)
             std::make_shared<spy::participants::DataStreamer::CallbackType>(
         [&data_sent_1]
             (const ddspipe::core::types::DdsTopic& topic,
-        const fastrtps::types::DynamicType_ptr& type,
+        const fastdds::dds::DynamicType::_ref_type& type,
         const ddspipe::core::types::RtpsPayloadData& data)
         {
             data_sent_1++;
         });
 
-    fastrtps::types::DynamicType_ptr dynamic_type_topic_1;
-    create_schema(topic_1, dynamic_type_topic_1);
+    fastdds::dds::DynamicType::_ref_type dynamic_type_topic_1;
+    dynamic_type_topic_1 = create_schema(topic_1);
 
-    ds.add_schema(dynamic_type_topic_1);
+    fastdds::dds::xtypes::TypeIdentifier type_id_1;
+    ds.add_schema(dynamic_type_topic_1, topic_1.type_name, type_id_1);
 
     ds.activate(topic_1, cb_1);
 
@@ -240,16 +258,17 @@ TEST(DataStreamerTest, add_data_two_topics)
             std::make_shared<spy::participants::DataStreamer::CallbackType>(
         [&data_sent_2]
             (const ddspipe::core::types::DdsTopic& topic,
-        const fastrtps::types::DynamicType_ptr& type,
+        const fastdds::dds::DynamicType::_ref_type& type,
         const ddspipe::core::types::RtpsPayloadData& data)
         {
             data_sent_2++;
         });
 
-    fastrtps::types::DynamicType_ptr dynamic_type_topic_2;
-    create_schema(topic_2, dynamic_type_topic_2);
+    fastdds::dds::DynamicType::_ref_type dynamic_type_topic_2;
+    dynamic_type_topic_2 = create_schema(topic_2);
 
-    ds.add_schema(dynamic_type_topic_2);
+    fastdds::dds::xtypes::TypeIdentifier type_id_2;
+    ds.add_schema(dynamic_type_topic_2, topic_2.type_name, type_id_2);
 
     ds.activate(topic_2, cb_2);
 

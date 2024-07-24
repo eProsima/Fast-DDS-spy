@@ -25,7 +25,7 @@ The following packages will be installed:
 
 - ``foonathan_memory_vendor``, an STL compatible C++ memory allocation library.
 - ``fastcdr``, a C++ library that serializes according to the standard CDR serialization mechanism.
-- ``fastrtps``, the core library of eProsima Fast DDS library.
+- ``fastdds``, the core library of eProsima Fast DDS library.
 - ``cmake_utils``, an eProsima utils library for CMake.
 - ``cpp_utils``, an eProsima utils library for C++.
 - ``ddspipe``, an eProsima internal library that enables the communication of DDS interfaces.
@@ -255,7 +255,7 @@ There are two possibilities:
 However, when running an instance of a |spy| compiled using CMake, it must be linked with its dependencies where the packages have been installed.
 This can be done by opening the *Edit system environment variables* control panel and adding to the ``PATH`` the |espy|, *Fast DDS*, *Fast CDR*, *DDS Pipe* installation directories:
 
-*   *Fast DDS*: ``C:\\Program Files\\fastrtps``
+*   *Fast DDS*: ``C:\\Program Files\\fastdds``
 *   *Fast CDR*: ``C:\\Program Files\\fastcdr``
 *   *DDS Pipe*: ``C:\\Program Files\\ddspipe``
 *   |espy|: ``C:\\Program Files\\ddsrecord``
