@@ -72,8 +72,8 @@ TEST(DataStreamerTest, activate_true)
     fastdds::dds::DynamicType::_ref_type dynamic_type_topic;
     dynamic_type_topic = create_schema(topic);
 
-    fastdds::dds::xtypes::TypeIdentifier type_id;
-    ds.add_schema(dynamic_type_topic, topic.type_name, type_id);
+    fastdds::dds::xtypes::TypeIdentifier type_identifier;
+    ds.add_schema(dynamic_type_topic, type_identifier);
 
     ASSERT_TRUE(ds.activate(topic, cb));
 }
@@ -92,8 +92,8 @@ TEST(DataStreamerTest, activate_twice)
     fastdds::dds::DynamicType::_ref_type dynamic_type_topic_1;
     dynamic_type_topic_1 = create_schema(topic_1);
 
-    fastdds::dds::xtypes::TypeIdentifier type_id_1;
-    ds.add_schema(dynamic_type_topic_1, topic_1.type_name, type_id_1);
+    fastdds::dds::xtypes::TypeIdentifier type_identifier_1;
+    ds.add_schema(dynamic_type_topic_1, type_identifier_1);
 
     ddspipe::core::types::DdsTopic topic_2;
     topic_2.m_topic_name = "topic2";
@@ -102,8 +102,8 @@ TEST(DataStreamerTest, activate_twice)
     fastdds::dds::DynamicType::_ref_type dynamic_type_topic_2;
     dynamic_type_topic_2 = create_schema(topic_2);
 
-    fastdds::dds::xtypes::TypeIdentifier type_id_2;
-    ds.add_schema(dynamic_type_topic_2, topic_2.type_name, type_id_2);
+    fastdds::dds::xtypes::TypeIdentifier type_identifier_2;
+    ds.add_schema(dynamic_type_topic_2, type_identifier_2);
 
     // is this the correct behaviour?
     ASSERT_TRUE(ds.activate(topic_1, cb));
@@ -127,8 +127,8 @@ TEST(DataStreamerTest, topic_type_discovered)
     fastdds::dds::DynamicType::_ref_type dynamic_type_topic_2;
     dynamic_type_topic_2 = create_schema(topic_2);
 
-    fastdds::dds::xtypes::TypeIdentifier type_id;
-    ds.add_schema(dynamic_type_topic_2, topic_2.type_name, type_id);
+    fastdds::dds::xtypes::TypeIdentifier type_identifier;
+    ds.add_schema(dynamic_type_topic_2, type_identifier);
 
     ASSERT_TRUE(ds.is_topic_type_discovered(topic_2));
 }
@@ -155,8 +155,8 @@ TEST(DataStreamerTest, deactivate)
     fastdds::dds::DynamicType::_ref_type dynamic_type_topic;
     dynamic_type_topic = create_schema(topic);
 
-    fastdds::dds::xtypes::TypeIdentifier type_id;
-    ds.add_schema(dynamic_type_topic, topic.type_name, type_id);
+    fastdds::dds::xtypes::TypeIdentifier type_identifier;
+    ds.add_schema(dynamic_type_topic, type_identifier);
 
     ds.activate(topic, cb);
 
@@ -203,8 +203,8 @@ TEST(DataStreamerTest, add_data)
     fastdds::dds::DynamicType::_ref_type dynamic_type_topic;
     dynamic_type_topic = create_schema(topic);
 
-    fastdds::dds::xtypes::TypeIdentifier type_id;
-    ds.add_schema(dynamic_type_topic, topic.type_name, type_id);
+    fastdds::dds::xtypes::TypeIdentifier type_identifier;
+    ds.add_schema(dynamic_type_topic, type_identifier);
 
     ds.activate(topic, cb);
 
@@ -243,8 +243,8 @@ TEST(DataStreamerTest, add_data_two_topics)
     fastdds::dds::DynamicType::_ref_type dynamic_type_topic_1;
     dynamic_type_topic_1 = create_schema(topic_1);
 
-    fastdds::dds::xtypes::TypeIdentifier type_id_1;
-    ds.add_schema(dynamic_type_topic_1, topic_1.type_name, type_id_1);
+    fastdds::dds::xtypes::TypeIdentifier type_identifier_1;
+    ds.add_schema(dynamic_type_topic_1, type_identifier_1);
 
     ds.activate(topic_1, cb_1);
 
@@ -267,8 +267,8 @@ TEST(DataStreamerTest, add_data_two_topics)
     fastdds::dds::DynamicType::_ref_type dynamic_type_topic_2;
     dynamic_type_topic_2 = create_schema(topic_2);
 
-    fastdds::dds::xtypes::TypeIdentifier type_id_2;
-    ds.add_schema(dynamic_type_topic_2, topic_2.type_name, type_id_2);
+    fastdds::dds::xtypes::TypeIdentifier type_identifier_2;
+    ds.add_schema(dynamic_type_topic_2, type_identifier_2);
 
     ds.activate(topic_2, cb_2);
 

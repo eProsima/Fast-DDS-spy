@@ -234,8 +234,8 @@ bool HelloWorldPublisher::init(
         wqos.ownership_strength().value = ownership_strength;
     }
 
-    wqos.liveliness().lease_duration = eprosima::fastdds::Duration_t(2, 0);
-    wqos.liveliness().announcement_period = eprosima::fastdds::Duration_t(1, 0);
+    wqos.liveliness().lease_duration = eprosima::fastdds::dds::Duration_t(2, 0);
+    wqos.liveliness().announcement_period = eprosima::fastdds::dds::Duration_t(1, 0);
 
     writer_ = publisher_->create_datawriter(topic_, wqos, &listener_);
 

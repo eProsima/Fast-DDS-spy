@@ -14,6 +14,14 @@
 
 #pragma once
 
+#include <fastdds/rtps/builtin/data/ParticipantBuiltinTopicData.hpp>
+#include <fastdds/rtps/builtin/data/PublicationBuiltinTopicData.hpp>
+#include <fastdds/rtps/builtin/data/SubscriptionBuiltinTopicData.hpp>
+#include <fastdds/rtps/participant/ParticipantDiscoveryInfo.hpp>
+#include <fastdds/rtps/participant/RTPSParticipant.hpp>
+#include <fastdds/rtps/reader/ReaderDiscoveryStatus.hpp>
+#include <fastdds/rtps/writer/WriterDiscoveryStatus.hpp>
+
 #include <ddspipe_participants/participant/dynamic_types/DynTypesParticipant.hpp>
 #include <ddspipe_core/types/dds/Endpoint.hpp>
 
@@ -47,21 +55,24 @@ public:
             const ddspipe::core::ITopic& topic) override;
 
     FASTDDSSPY_PARTICIPANTS_DllAPI
-    void onParticipantDiscovery(
+    void on_participant_discovery(
             fastdds::rtps::RTPSParticipant* participant,
-            fastdds::rtps::ParticipantDiscoveryInfo&& info,
+            fastdds::rtps::ParticipantDiscoveryStatus reason,
+            const fastdds::rtps::ParticipantBuiltinTopicData& info,
             bool& should_be_ignored) override;
 
     FASTDDSSPY_PARTICIPANTS_DllAPI
-    void onReaderDiscovery(
+    void on_reader_discovery(
             fastdds::rtps::RTPSParticipant* participant,
-            fastdds::rtps::ReaderDiscoveryInfo&& info,
+            fastdds::rtps::ReaderDiscoveryStatus reason,
+            const fastdds::rtps::SubscriptionBuiltinTopicData& info,
             bool& should_be_ignored) override;
 
     FASTDDSSPY_PARTICIPANTS_DllAPI
-    void onWriterDiscovery(
+    void on_writer_discovery(
             fastdds::rtps::RTPSParticipant* participant,
-            fastdds::rtps::WriterDiscoveryInfo&& info,
+            fastdds::rtps::WriterDiscoveryStatus reason,
+            const fastdds::rtps::PublicationBuiltinTopicData& info,
             bool& should_be_ignored) override;
 
 protected:

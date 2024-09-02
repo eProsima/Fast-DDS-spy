@@ -122,8 +122,7 @@ fastdds::dds::DynamicData::_ref_type Controller::get_dynamic_data_(
     fastdds::dds::DynamicPubSubType pubsub_type(dyn_type);
     fastdds::dds::DynamicData::_ref_type dyn_data(fastdds::dds::DynamicDataFactory::get_instance()->create_data(dyn_type));
 
-    // pubsub_type.deserialize(&data_no_const.payload, dyn_data.get());
-    pubsub_type.deserialize(&data_no_const.payload, &dyn_data);
+    pubsub_type.deserialize(data_no_const.payload, &dyn_data);
 
     return dyn_data;
 }
