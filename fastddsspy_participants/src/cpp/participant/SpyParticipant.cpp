@@ -75,7 +75,7 @@ utils::ReturnCode SpyParticipant::new_participant_info_(
     ParticipantInfo info = participant_info.info;
     ddspipe::core::types::Guid guid = info.guid;
     model_->participant_database_.add_or_modify(std::move(guid), std::move(info));
-    return utils::ReturnCode::OK;
+    return utils::ReturnCode::RETCODE_OK;
 }
 
 utils::ReturnCode SpyParticipant::new_endpoint_info_(
@@ -86,7 +86,7 @@ utils::ReturnCode SpyParticipant::new_endpoint_info_(
     EndpointInfo info = endpoint_info.info;
     ddspipe::core::types::Guid guid = info.guid;
     model_->endpoint_database_.add_or_modify(std::move(guid), std::move(info));
-    return utils::ReturnCode::OK;
+    return utils::ReturnCode::RETCODE_OK;
 }
 
 } /* namespace participants */
