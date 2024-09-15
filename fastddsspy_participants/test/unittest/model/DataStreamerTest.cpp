@@ -27,18 +27,6 @@ using namespace eprosima;
 fastdds::dds::DynamicType::_ref_type create_schema(
         ddspipe::core::types::DdsTopic& topic)
 {
-    // // Opción 1:
-    // fastdds::dds::TypeSupport type(new DynamicPubSubType(dynamic_type_topic));
-    // type->setName(topic.type_name);
-
-    // Lo que había antes
-    // fastdds::dds::DynamicTypeBuilder:_ref_type dynamic_type_topic_builder;
-    // dynamic_type_topic_builder = fastrtps::types::DynamicTypeBuilderFactory::get_instance()->create_struct_builder();
-
-    // dynamic_type_topic_builder->set_name(topic.type_name);
-    // dynamic_type_topic = dynamic_type_topic_builder->build();
-
-    // Opción 2:
     fastdds::dds::TypeDescriptor::_ref_type type_descriptor {fastdds::dds::traits<fastdds::dds::TypeDescriptor>::make_shared()};
     type_descriptor->name(topic.type_name);
     fastdds::dds::DynamicTypeBuilder::_ref_type struct_builder {fastdds::dds::DynamicTypeBuilderFactory::get_instance()->create_type(type_descriptor)};

@@ -14,8 +14,6 @@
 
 #pragma once
 
-#include <fastdds/dds/xtypes/dynamic_types/DynamicType.hpp>
-
 #include <cpp_utils/collection/database/SafeDatabase.hpp>
 #include <cpp_utils/types/Atomicable.hpp>
 
