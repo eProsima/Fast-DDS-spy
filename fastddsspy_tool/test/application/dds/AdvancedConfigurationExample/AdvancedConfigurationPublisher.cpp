@@ -26,11 +26,10 @@
 #include <fastdds/dds/publisher/Publisher.hpp>
 #include <fastdds/dds/publisher/qos/DataWriterQos.hpp>
 #include <fastdds/dds/publisher/qos/PublisherQos.hpp>
-#include <fastdds/rtps/transport/shared_mem/SharedMemTransportDescriptor.h>
-#include <fastdds/rtps/transport/UDPv4TransportDescriptor.h>
-#include <fastdds/rtps/transport/UDPv6TransportDescriptor.h>
-#include <fastrtps/attributes/ParticipantAttributes.h>
-#include <fastrtps/attributes/PublisherAttributes.h>
+#include <fastdds/rtps/transport/shared_mem/SharedMemTransportDescriptor.hpp>
+#include <fastdds/rtps/transport/UDPv4TransportDescriptor.hpp>
+#include <fastdds/rtps/transport/UDPv6TransportDescriptor.hpp>
+#include <fastdds/rtps/attributes/RTPSParticipantAttributes.hpp>
 
 #include "AdvancedConfigurationPublisher.h"
 
@@ -235,8 +234,8 @@ bool HelloWorldPublisher::init(
         wqos.ownership_strength().value = ownership_strength;
     }
 
-    wqos.liveliness().lease_duration = eprosima::fastrtps::Duration_t(2, 0);
-    wqos.liveliness().announcement_period = eprosima::fastrtps::Duration_t(1, 0);
+    wqos.liveliness().lease_duration = eprosima::fastdds::dds::Duration_t(2, 0);
+    wqos.liveliness().announcement_period = eprosima::fastdds::dds::Duration_t(1, 0);
 
     writer_ = publisher_->create_datawriter(topic_, wqos, &listener_);
 

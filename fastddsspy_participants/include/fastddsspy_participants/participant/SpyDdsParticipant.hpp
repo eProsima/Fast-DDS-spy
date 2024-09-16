@@ -14,6 +14,14 @@
 
 #pragma once
 
+#include <fastdds/rtps/builtin/data/ParticipantBuiltinTopicData.hpp>
+#include <fastdds/rtps/builtin/data/PublicationBuiltinTopicData.hpp>
+#include <fastdds/rtps/builtin/data/SubscriptionBuiltinTopicData.hpp>
+#include <fastdds/rtps/participant/ParticipantDiscoveryInfo.hpp>
+#include <fastdds/rtps/participant/RTPSParticipant.hpp>
+#include <fastdds/rtps/reader/ReaderDiscoveryStatus.hpp>
+#include <fastdds/rtps/writer/WriterDiscoveryStatus.hpp>
+
 #include <ddspipe_participants/participant/dynamic_types/DynTypesParticipant.hpp>
 #include <ddspipe_core/types/dds/Endpoint.hpp>
 
@@ -47,19 +55,25 @@ public:
             const ddspipe::core::ITopic& topic) override;
 
     FASTDDSSPY_PARTICIPANTS_DllAPI
-    virtual void on_participant_discovery(
-            fastdds::dds::DomainParticipant* participant,
-            fastrtps::rtps::ParticipantDiscoveryInfo&& info) override;
+    void on_participant_discovery(
+            fastdds::rtps::RTPSParticipant* participant,
+            fastdds::rtps::ParticipantDiscoveryStatus reason,
+            const fastdds::rtps::ParticipantBuiltinTopicData& info,
+            bool& should_be_ignored) override;
 
     FASTDDSSPY_PARTICIPANTS_DllAPI
-    virtual void on_subscriber_discovery(
-            fastdds::dds::DomainParticipant* participant,
-            fastrtps::rtps::ReaderDiscoveryInfo&& info);
+    void on_reader_discovery(
+            fastdds::rtps::RTPSParticipant* participant,
+            fastdds::rtps::ReaderDiscoveryStatus reason,
+            const fastdds::rtps::SubscriptionBuiltinTopicData& info,
+            bool& should_be_ignored) override;
 
     FASTDDSSPY_PARTICIPANTS_DllAPI
-    virtual void on_publisher_discovery(
-            fastdds::dds::DomainParticipant* participant,
-            fastrtps::rtps::WriterDiscoveryInfo&& info);
+    void on_writer_discovery(
+            fastdds::rtps::RTPSParticipant* participant,
+            fastdds::rtps::WriterDiscoveryStatus reason,
+            const fastdds::rtps::PublicationBuiltinTopicData& info,
+            bool& should_be_ignored) override;
 
 protected:
 

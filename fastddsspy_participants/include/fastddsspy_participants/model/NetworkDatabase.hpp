@@ -14,8 +14,6 @@
 
 #pragma once
 
-#include <fastrtps/types/DynamicTypePtr.h>
-
 #include <cpp_utils/collection/database/SafeDatabase.hpp>
 #include <cpp_utils/types/Atomicable.hpp>
 

@@ -14,11 +14,10 @@
 
 #include <mutex>
 
-#include <fastrtps/types/DynamicType.h>
-#include <fastrtps/types/DynamicPubSubType.h>
-#include <fastrtps/types/DynamicData.h>
-#include <fastrtps/types/DynamicDataFactory.h>
-#include <fastrtps/types/DynamicDataHelper.hpp>
+#include <fastdds/dds/xtypes/dynamic_types/DynamicType.hpp>
+#include <fastdds/dds/xtypes/dynamic_types/DynamicPubSubType.hpp>
+#include <fastdds/dds/xtypes/dynamic_types/DynamicData.hpp>
+#include <fastdds/dds/xtypes/dynamic_types/DynamicDataFactory.hpp>
 
 #include <cpp_utils/utils.hpp>
 
@@ -48,7 +47,7 @@ bool DataStreamer::activate(
 {
     if (!is_topic_type_discovered(topic_to_activate))
     {
-        logWarning(FASTDDSSPY_DATASTREAMER,
+        EPROSIMA_LOG_WARNING(FASTDDSSPY_DATASTREAMER,
                 "Type <" << topic_to_activate.type_name <<
                 "> for topic <" << topic_to_activate.topic_name() << "> is not discovered.");
         return false;
@@ -73,15 +72,19 @@ void DataStreamer::deactivate()
 }
 
 void DataStreamer::add_schema(
-        const fastrtps::types::DynamicType_ptr& dynamic_type)
+        const fastdds::dds::DynamicType::_ref_type& dynamic_type,
+        const fastdds::dds::xtypes::TypeIdentifier& type_identifier)
 {
+    static_cast<void>(type_identifier);
+
     std::unique_lock<std::shared_timed_mutex> _(mutex_);
 
     // Add type to map if not yet
     // NOTE: it does not matter if it is already in set
-    types_discovered_[dynamic_type->get_name()] = dynamic_type;
+    auto const type_name = dynamic_type->get_name().to_string();
+    types_discovered_[type_name] = dynamic_type;
 
-    logInfo(FASTDDSSPY_DATASTREAMER, "\nAdding schema with name " << dynamic_type->get_name() << ".");
+    EPROSIMA_LOG_INFO(FASTDDSSPY_DATASTREAMER, "\nAdding schema with name " << type_name << ".");
 }
 
 void DataStreamer::add_data(
@@ -90,7 +93,7 @@ void DataStreamer::add_data(
 {
     TopicRateCalculator::add_data(topic, data);
 
-    fastrtps::types::DynamicType_ptr dyn_type;
+    fastdds::dds::DynamicType::_ref_type dyn_type;
 
     {
         std::shared_lock<std::shared_timed_mutex> _(mutex_);
@@ -106,7 +109,7 @@ void DataStreamer::add_data(
             if (!is_topic_type_discovered_nts_(topic))
             {
                 // If all activated, add it only if schema is available, otherwise skip
-                logWarning(
+                EPROSIMA_LOG_WARNING(
                     FASTDDSSPY_DATASTREAMER,
                     "All activated but schema not is available.");
                 return;
@@ -117,14 +120,14 @@ void DataStreamer::add_data(
             if (!(activated_topic_ == topic))
             {
                 // If not all activated, and this is not the activated topic skip
-                logWarning(
+                EPROSIMA_LOG_WARNING(
                     FASTDDSSPY_DATASTREAMER,
                     "Not all activated, and this is not the activated topic.");
                 return;
             }
         }
 
-        logInfo(
+        EPROSIMA_LOG_INFO(
             FASTDDSSPY_DATASTREAMER,
             "Adding data in topic " << topic);
 

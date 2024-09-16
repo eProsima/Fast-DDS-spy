@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <fastrtps/types/DynamicType.h>
-#include <fastrtps/types/DynamicPubSubType.h>
-#include <fastrtps/types/DynamicData.h>
-#include <fastrtps/types/DynamicDataFactory.h>
-#include <fastrtps/types/DynamicDataHelper.hpp>
+#include <fastdds/dds/xtypes/dynamic_types/DynamicType.hpp>
+#include <fastdds/dds/xtypes/dynamic_types/DynamicPubSubType.hpp>
+#include <fastdds/dds/xtypes/dynamic_types/DynamicData.hpp>
+#include <fastdds/dds/xtypes/dynamic_types/DynamicDataFactory.hpp>
+#include <fastdds/dds/xtypes/utils.hpp>
 
 #include <cpp_utils/user_interface/CommandReader.hpp>
 #include <cpp_utils/macros/custom_enumeration.hpp>
@@ -111,25 +111,26 @@ void Controller::run_command_(
     }
 }
 
-fastrtps::types::DynamicData_ptr Controller::get_dynamic_data_(
-        const fastrtps::types::DynamicType_ptr& dyn_type,
+fastdds::dds::DynamicData::_ref_type Controller::get_dynamic_data_(
+        const fastdds::dds::DynamicType::_ref_type& dyn_type,
         const ddspipe::core::types::RtpsPayloadData& data) noexcept
 {
     // TODO fast this should not be done, but dyn types API is like it is.
     auto& data_no_const = const_cast<ddspipe::core::types::RtpsPayloadData&>(data);
 
     // Create PubSub Type
-    fastrtps::types::DynamicPubSubType pubsub_type(dyn_type);
-    fastrtps::types::DynamicData_ptr dyn_data(fastrtps::types::DynamicDataFactory::get_instance()->create_data(dyn_type));
+    fastdds::dds::DynamicPubSubType pubsub_type(dyn_type);
+    fastdds::dds::DynamicData::_ref_type dyn_data(fastdds::dds::DynamicDataFactory::get_instance()->create_data(
+                dyn_type));
 
-    pubsub_type.deserialize(&data_no_const.payload, dyn_data.get());
+    pubsub_type.deserialize(data_no_const.payload, &dyn_data);
 
     return dyn_data;
 }
 
 void Controller::data_stream_callback_(
         const ddspipe::core::types::DdsTopic& topic,
-        const fastrtps::types::DynamicType_ptr& dyn_type,
+        const fastdds::dds::DynamicType::_ref_type& dyn_type,
         const ddspipe::core::types::RtpsPayloadData& data)
 {
     // Block entrance so prints does not collapse
@@ -141,13 +142,22 @@ void Controller::data_stream_callback_(
     // TODO fast this does not make much sense as dynamictypes::print does not allow to choose target
     // change in dyn types to be able to print it in view
     view_.show("---");
-    fastrtps::types::DynamicDataHelper::print(dyn_data.get());
+    std::stringstream ss;
+    ss << std::setw(4);
+    if (fastdds::dds::RETCODE_OK !=
+            fastdds::dds::json_serialize(dyn_data, fastdds::dds::DynamicDataJsonFormat::EPROSIMA, ss))
+    {
+        EPROSIMA_LOG_WARNING(FASTDDSSPY_CONTROLLER,
+                "Not able to serialize data of topic " << topic.topic_name() << " into JSON format.");
+        return;
+    }
+    std::cout << ss.str() << std::endl;
     view_.show("---\n");
 }
 
 void Controller::data_stream_callback_verbose_(
         const ddspipe::core::types::DdsTopic& topic,
-        const fastrtps::types::DynamicType_ptr& dyn_type,
+        const fastdds::dds::DynamicType::_ref_type& dyn_type,
         const ddspipe::core::types::RtpsPayloadData& data)
 {
     // Block entrance so prints does not collapse
@@ -170,7 +180,16 @@ void Controller::data_stream_callback_verbose_(
 
     // Print data
     view_.show("data:\n---");
-    fastrtps::types::DynamicDataHelper::print(dyn_data.get());
+    std::stringstream ss;
+    ss << std::setw(4);
+    if (fastdds::dds::RETCODE_OK !=
+            fastdds::dds::json_serialize(dyn_data, fastdds::dds::DynamicDataJsonFormat::EPROSIMA, ss))
+    {
+        EPROSIMA_LOG_WARNING(FASTDDSSPY_CONTROLLER,
+                "Not able to serialize data of topic " << topic.topic_name() << " into JSON format.");
+        return;
+    }
+    std::cout << ss.str() << std::endl;
     view_.show("---\n");
 }
 
@@ -310,7 +329,7 @@ void Controller::print_command_(
             std::make_shared<participants::DataStreamer::CallbackType>(
                 [this](
                     const ddspipe::core::types::DdsTopic& topic,
-                    const fastrtps::types::DynamicType_ptr& dyn_type,
+                    const fastdds::dds::DynamicType::_ref_type& dyn_type,
                     const ddspipe::core::types::RtpsPayloadData& data
                     )
                 {
@@ -363,7 +382,7 @@ void Controller::print_command_(
             callback = std::make_shared<participants::DataStreamer::CallbackType>(
                 [this](
                     const ddspipe::core::types::DdsTopic& topic,
-                    const fastrtps::types::DynamicType_ptr& dyn_type,
+                    const fastdds::dds::DynamicType::_ref_type& dyn_type,
                     const ddspipe::core::types::RtpsPayloadData& data
                     )
                 {
@@ -375,7 +394,7 @@ void Controller::print_command_(
             callback = std::make_shared<participants::DataStreamer::CallbackType>(
                 [this](
                     const ddspipe::core::types::DdsTopic& topic,
-                    const fastrtps::types::DynamicType_ptr& dyn_type,
+                    const fastdds::dds::DynamicType::_ref_type& dyn_type,
                     const ddspipe::core::types::RtpsPayloadData& data
                     )
                 {

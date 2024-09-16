@@ -17,8 +17,11 @@
 #include <iostream>
 #include <functional>
 #include <shared_mutex>
+#include <tuple>
 
-#include <fastrtps/types/DynamicTypePtr.h>
+#include <fastcdr/cdr/fixed_size_string.hpp>
+
+#include <fastdds/dds/xtypes/dynamic_types/DynamicType.hpp>
 
 #include <ddspipe_core/types/topic/dds/DdsTopic.hpp>
 #include <ddspipe_core/types/dds/Payload.hpp>
@@ -39,7 +42,7 @@ public:
 
     using CallbackType = std::function<void (
                         const ddspipe::core::types::DdsTopic&,
-                        const fastrtps::types::DynamicType_ptr&,
+                        const fastdds::dds::DynamicType::_ref_type&,
                         const ddspipe::core::types::RtpsPayloadData&)>;
 
     FASTDDSSPY_PARTICIPANTS_DllAPI
@@ -56,7 +59,8 @@ public:
 
     FASTDDSSPY_PARTICIPANTS_DllAPI
     void add_schema(
-            const fastrtps::types::DynamicType_ptr& dynamic_type) override;
+            const fastdds::dds::DynamicType::_ref_type& dynamic_type,
+            const fastdds::dds::xtypes::TypeIdentifier& type_identifier) override;
 
     FASTDDSSPY_PARTICIPANTS_DllAPI
     void add_data(
@@ -80,7 +84,7 @@ protected:
 
     ddspipe::core::types::DdsTopic activated_topic_;
 
-    std::map<std::string, fastrtps::types::DynamicType_ptr> types_discovered_;
+    std::map<std::string, fastdds::dds::DynamicType::_ref_type> types_discovered_;
 
     mutable std::shared_timed_mutex mutex_;
 };

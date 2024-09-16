@@ -44,5 +44,5 @@ type: HelloWorld\n\
 datawriters:\n\
   - %%guid%%\n\
 rate: %%rate%%\n\
-dynamic_type_discovered: false\n"""
+dynamic_type_discovered: true\n"""
         )
