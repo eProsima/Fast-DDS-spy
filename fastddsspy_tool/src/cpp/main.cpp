@@ -76,7 +76,7 @@ int main(
     {
         commandline_args.file_path = eprosima::spy::DEFAULT_CONFIGURATION_FILE_NAME;
 
-        logInfo(
+        EPROSIMA_LOG_INFO(
             FASTDDSSPY_TOOL,
             "Not configuration file given, try to use default file " << commandline_args.file_path << ".");
     }
@@ -85,7 +85,7 @@ int main(
     // NOTE: this check is redundant with option parse arg check
     if (!is_file_accessible(commandline_args.file_path.c_str(), eprosima::utils::FileAccessMode::read))
     {
-        logInfo(
+        EPROSIMA_LOG_INFO(
             FASTDDSSPY_TOOL,
             "File '" << commandline_args.file_path <<
                 "' does not exist or it is not accessible. Using default configuration.");
@@ -101,7 +101,7 @@ int main(
         // Default configuration. Load it from file if file exists
         if (commandline_args.file_path != "")
         {
-            logInfo(
+            EPROSIMA_LOG_INFO(
                 FASTDDSSPY_TOOL,
                 "Loading configuration from file '" << commandline_args.file_path << "' .");
         }
@@ -152,7 +152,7 @@ int main(
                 [&spy, commandline_args]
                     (std::string file_name)
                 {
-                    logInfo(
+                    EPROSIMA_LOG_INFO(
                         FASTDDSSPY_TOOL,
                         "FileWatcher notified changes in file " << file_name << ". Reloading configuration");
 
@@ -163,7 +163,7 @@ int main(
                     }
                     catch (const std::exception& e)
                     {
-                        logWarning(FASTDDSSPY_TOOL,
+                        EPROSIMA_LOG_WARNING(FASTDDSSPY_TOOL,
                                 "Error reloading configuration file " << file_name << " with error: " << e.what());
                     }
                 };
@@ -187,7 +187,7 @@ int main(
                     [&spy, commandline_args]
                         ()
                     {
-                        logInfo(
+                        EPROSIMA_LOG_INFO(
                             FASTDDSSPY_TOOL,
                             "Periodic Timer raised. Reloading configuration from file " << commandline_args.file_path <<
                                 ".");
@@ -199,7 +199,7 @@ int main(
                         }
                         catch (const std::exception& e)
                         {
-                            logWarning(FASTDDSSPY_TOOL,
+                            EPROSIMA_LOG_WARNING(FASTDDSSPY_TOOL,
                                     "Error reloading configuration file " << commandline_args.file_path << " with error: " <<
                                     e.what());
                         }
@@ -232,7 +232,7 @@ int main(
     }
     catch (const eprosima::utils::ConfigurationException& e)
     {
-        logError(FASTDDSSPY_TOOL,
+        EPROSIMA_LOG_ERROR(FASTDDSSPY_TOOL,
                 "Error Loading Fast DDS Spy Configuration from file " << commandline_args.file_path <<
                 ". Error message:\n " <<
                 e.what());
@@ -240,7 +240,7 @@ int main(
     }
     catch (const eprosima::utils::InitializationException& e)
     {
-        logError(FASTDDSSPY_TOOL,
+        EPROSIMA_LOG_ERROR(FASTDDSSPY_TOOL,
                 "Error Initializing Fast DDS Spy. Error message:\n " <<
                 e.what());
         return static_cast<int>(eprosima::spy::ProcessReturnCode::execution_failed);
