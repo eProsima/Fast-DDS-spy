@@ -72,7 +72,8 @@ void SpyDdsParticipant::on_participant_discovery(
     participant_info.name = std::string(info.participant_name);
     participant_info.guid = info.guid;
 
-    ddspipe::participants::rtps::CommonParticipant::on_participant_discovery(participant, reason, info, should_be_ignored);
+    ddspipe::participants::rtps::CommonParticipant::on_participant_discovery(participant, reason, info,
+            should_be_ignored);
 
     internal_notify_participant_discovered_(participant_info);
 }

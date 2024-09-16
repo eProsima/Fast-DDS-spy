@@ -27,9 +27,11 @@ using namespace eprosima;
 fastdds::dds::DynamicType::_ref_type create_schema(
         ddspipe::core::types::DdsTopic& topic)
 {
-    fastdds::dds::TypeDescriptor::_ref_type type_descriptor {fastdds::dds::traits<fastdds::dds::TypeDescriptor>::make_shared()};
+    fastdds::dds::TypeDescriptor::_ref_type type_descriptor {fastdds::dds::traits<fastdds::dds::TypeDescriptor>::
+                                                             make_shared()};
     type_descriptor->name(topic.type_name);
-    fastdds::dds::DynamicTypeBuilder::_ref_type struct_builder {fastdds::dds::DynamicTypeBuilderFactory::get_instance()->create_type(type_descriptor)};
+    fastdds::dds::DynamicTypeBuilder::_ref_type struct_builder {fastdds::dds::DynamicTypeBuilderFactory::get_instance()
+                                                                        ->create_type(type_descriptor)};
     fastdds::dds::DynamicType::_ref_type dynamic_type_topic {struct_builder->build()};
     return dynamic_type_topic;
 }

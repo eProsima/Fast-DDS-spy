@@ -120,7 +120,8 @@ fastdds::dds::DynamicData::_ref_type Controller::get_dynamic_data_(
 
     // Create PubSub Type
     fastdds::dds::DynamicPubSubType pubsub_type(dyn_type);
-    fastdds::dds::DynamicData::_ref_type dyn_data(fastdds::dds::DynamicDataFactory::get_instance()->create_data(dyn_type));
+    fastdds::dds::DynamicData::_ref_type dyn_data(fastdds::dds::DynamicDataFactory::get_instance()->create_data(
+                dyn_type));
 
     pubsub_type.deserialize(data_no_const.payload, &dyn_data);
 
@@ -143,10 +144,11 @@ void Controller::data_stream_callback_(
     view_.show("---");
     std::stringstream ss;
     ss << std::setw(4);
-    if (fastdds::dds::RETCODE_OK != fastdds::dds::json_serialize(dyn_data, fastdds::dds::DynamicDataJsonFormat::EPROSIMA, ss))
+    if (fastdds::dds::RETCODE_OK !=
+            fastdds::dds::json_serialize(dyn_data, fastdds::dds::DynamicDataJsonFormat::EPROSIMA, ss))
     {
         EPROSIMA_LOG_WARNING(FASTDDSSPY_CONTROLLER,
-                        "Not able to serialize data of topic " << topic.topic_name() << " into JSON format.");
+                "Not able to serialize data of topic " << topic.topic_name() << " into JSON format.");
         return;
     }
     std::cout << ss.str() << std::endl;
@@ -180,10 +182,11 @@ void Controller::data_stream_callback_verbose_(
     view_.show("data:\n---");
     std::stringstream ss;
     ss << std::setw(4);
-    if (fastdds::dds::RETCODE_OK != fastdds::dds::json_serialize(dyn_data, fastdds::dds::DynamicDataJsonFormat::EPROSIMA, ss))
+    if (fastdds::dds::RETCODE_OK !=
+            fastdds::dds::json_serialize(dyn_data, fastdds::dds::DynamicDataJsonFormat::EPROSIMA, ss))
     {
         EPROSIMA_LOG_WARNING(FASTDDSSPY_CONTROLLER,
-                        "Not able to serialize data of topic " << topic.topic_name() << " into JSON format.");
+                "Not able to serialize data of topic " << topic.topic_name() << " into JSON format.");
         return;
     }
     std::cout << ss.str() << std::endl;
