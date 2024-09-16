@@ -48,7 +48,7 @@ The steps to run |spy| in a Docker container are explained below.
             --ipc=host \
             --privileged \
             -v /<fastddsspy>/FASTDDSSPY_CONFIGURATION.yaml:/root/FASTDDSSPY_CONFIGURATION.yaml \
-            ubuntu-fastddsspy:v0.4.0
+            ubuntu-fastddsspy:v1.0.0
 
     It is important to mention that both the path to the configuration file hosted in the local machine and the one
     created in the Docker container must be absolute paths in order to share just one single file as a shared volume.
