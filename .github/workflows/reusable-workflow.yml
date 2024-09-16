@@ -53,6 +53,13 @@ on:
         default: '_nightly'
         type: string
 
+      ref:
+        description: >
+          The branch or tag name to checkout.
+        required: true
+        type: string
+        default: 'main'
+
 env:
   code_packages_names: 'fastddsspy_participants fastddsspy_yaml fastddsspy_tool'
   docs_packages_names: 'fastddsspy_docs'
@@ -83,6 +90,7 @@ jobs:
         uses: eProsima/eProsima-CI/external/checkout@v0
         with:
           path: src
+          ref: ${{ inputs.ref }}
 
       - name: Download dependencies and install requirements
         uses: ./src/.github/actions/project_dependencies
@@ -114,6 +122,7 @@ jobs:
         uses: eProsima/eProsima-CI/external/checkout@v0
         with:
           path: src
+          ref: ${{ inputs.ref }}
 
       - name: Download dependencies and install requirements
         uses: ./src/.github/actions/project_dependencies
@@ -142,6 +151,7 @@ jobs:
         uses: eProsima/eProsima-CI/external/checkout@v0
         with:
           path: src
+          ref: ${{ inputs.ref }}
 
       - name: Download dependencies and install requirements
         uses: ./src/.github/actions/project_dependencies
@@ -170,6 +180,7 @@ jobs:
         uses: eProsima/eProsima-CI/external/checkout@v0
         with:
           path: src
+          ref: ${{ inputs.ref }}
 
       - name: Download dependencies and install requirements
         uses: ./src/.github/actions/project_dependencies
@@ -200,6 +211,7 @@ jobs:
         uses: eProsima/eProsima-CI/external/checkout@v0
         with:
           path: src
+          ref: ${{ inputs.ref }}
 
       - name: Download dependencies and install requirements
         uses: ./src/.github/actions/project_dependencies
@@ -230,6 +242,7 @@ jobs:
         uses: eProsima/eProsima-CI/external/checkout@v0
         with:
           path: src
+          ref: ${{ inputs.ref }}
 
       - name: Download dependencies and install requirements
         uses: ./src/.github/actions/project_dependencies
