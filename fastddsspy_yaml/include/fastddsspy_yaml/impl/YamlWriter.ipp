@@ -103,7 +103,8 @@ template <>
 FASTDDSSPY_YAML_DllAPI
 void set(
         Yaml& yml,
-        const SimpleTopicData& value);
+        const SimpleTopicData& value,
+        const bool is_compact);
 
 template <>
 FASTDDSSPY_YAML_DllAPI

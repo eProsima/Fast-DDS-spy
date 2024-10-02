@@ -61,8 +61,8 @@ void set(
         Yaml& yml,
         const SimpleParticipantData& value)
 {
-    set(yml, "name", value.name);
-    set(yml, "guid", value.guid);
+    set_in_tag(yml, "name", value.name);
+    set_in_tag(yml, "guid", value.guid);
 }
 
 template <>
@@ -80,10 +80,10 @@ void set(
         Yaml& yml,
         const ComplexParticipantData& value)
 {
-    set(yml, "name", value.name);
-    set(yml, "guid", value.guid);
-    set(yml, "datawriters", value.writers);
-    set(yml, "datareaders", value.readers);
+    set_in_tag(yml, "name", value.name);
+    set_in_tag(yml, "guid", value.guid);
+    set_in_tag(yml, "datawriters", value.writers);
+    set_in_tag(yml, "datareaders", value.readers);
 }
 
 template <>
@@ -101,9 +101,9 @@ void set(
         Yaml& yml,
         const SimpleEndpointData& value)
 {
-    set(yml, "guid", value.guid);
-    set(yml, "participant", value.participant_name);
-    set(yml, "topic", value.topic);
+    set_in_tag(yml, "guid", value.guid);
+    set_in_tag(yml, "participant", value.participant_name);
+    set_in_tag(yml, "topic", value.topic);
 }
 
 template <>
@@ -111,8 +111,8 @@ void set(
         Yaml& yml,
         const ComplexEndpointData::ExtendedTopic& value)
 {
-    set(yml, "name", value.topic_name);
-    set(yml, "type", value.topic_type);
+    set_in_tag(yml, "name", value.topic_name);
+    set_in_tag(yml, "type", value.topic_type);
 }
 
 template <>
@@ -122,20 +122,20 @@ void set(
 {
     if (value.durability == ddspipe::core::types::DurabilityKind::VOLATILE)
     {
-        set(yml, "durability", std::string("volatile"));
+        set_in_tag(yml, "durability", std::string("volatile"));
     }
     else
     {
-        set(yml, "durability", std::string("transient-local"));
+        set_in_tag(yml, "durability", std::string("transient-local"));
     }
 
     if (value.reliability == ddspipe::core::types::ReliabilityKind::BEST_EFFORT)
     {
-        set(yml, "reliability", std::string("best-effort"));
+        set_in_tag(yml, "reliability", std::string("best-effort"));
     }
     else
     {
-        set(yml, "reliability", std::string("reliable"));
+        set_in_tag(yml, "reliability", std::string("reliable"));
     }
 }
 
@@ -144,10 +144,10 @@ void set(
         Yaml& yml,
         const ComplexEndpointData& value)
 {
-    set(yml, "guid", value.guid);
-    set(yml, "participant", value.participant_name);
-    set(yml, "topic", value.topic);
-    set(yml, "qos", value.qos);
+    set_in_tag(yml, "guid", value.guid);
+    set_in_tag(yml, "participant", value.participant_name);
+    set_in_tag(yml, "topic", value.topic);
+    set_in_tag(yml, "qos", value.qos);
 }
 
 template <>
@@ -163,13 +163,27 @@ void set(
 template <>
 void set(
         Yaml& yml,
-        const SimpleTopicData& value)
+        const SimpleTopicData& value,
+        const bool is_compact)
 {
-    set(yml, "name", value.name);
-    set(yml, "type", value.type);
-    set(yml, "datawriters", value.datawriters);
-    set(yml, "datareaders", value.datareaders);
-    set(yml, "rate", value.rate);
+    if (is_compact)
+    {
+        std::string compact_format =
+            value.name + " (" + value.type + ") (" +
+            std::to_string(value.datawriters) + "|" +
+            std::to_string(value.datareaders) + ") [" +
+            std::to_string(value.rate.rate) + value.rate.unit + "]";
+
+        set_in_tag(yml, "topic", compact_format);
+    }
+    else
+    {
+        set_in_tag(yml, "name", value.name);
+        set_in_tag(yml, "type", value.type);
+        set_in_tag(yml, "datawriters", value.datawriters);
+        set_in_tag(yml, "datareaders", value.datareaders);
+        set_in_tag(yml, "rate", value.rate);
+    }
 }
 
 template <>
@@ -185,12 +199,12 @@ void set(
         Yaml& yml,
         const ComplexTopicData& value)
 {
-    set(yml, "name", value.name);
-    set(yml, "type", value.type);
-    set(yml, "datawriters", value.datawriters);
-    set(yml, "datareaders", value.datareaders);
-    set(yml, "rate", value.rate);
-    set(yml, "dynamic_type_discovered", value.discovered);
+    set_in_tag(yml, "name", value.name);
+    set_in_tag(yml, "type", value.type);
+    set_in_tag(yml, "datawriters", value.datawriters);
+    set_in_tag(yml, "datareaders", value.datareaders);
+    set_in_tag(yml, "rate", value.rate);
+    set_in_tag(yml, "dynamic_type_discovered", value.discovered);
 }
 
 template <>
@@ -198,9 +212,9 @@ void set(
         Yaml& yml,
         const DdsDataData& value)
 {
-    set(yml, "topic", value.topic);
-    set(yml, "writer", value.writer);
-    set(yml, "timestamp", value.timestamp);
+    set_in_tag(yml, "topic", value.topic);
+    set_in_tag(yml, "writer", value.writer);
+    set_in_tag(yml, "timestamp", value.timestamp);
 }
 
 } /* namespace yaml */

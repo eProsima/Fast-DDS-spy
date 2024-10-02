@@ -21,6 +21,7 @@
 #include <cpp_utils/user_interface/CommandReader.hpp>
 #include <cpp_utils/macros/custom_enumeration.hpp>
 
+#include <ddspipe_core/types/topic/filter/WildcardDdsFilterTopic.hpp>
 #include <ddspipe_yaml/YamlWriter.hpp>
 
 #include <fastddsspy_participants/library/config.h>
@@ -193,6 +194,17 @@ void Controller::data_stream_callback_verbose_(
     view_.show("---\n");
 }
 
+bool Controller::compact_argument_(
+        const std::string& argument) const noexcept
+{
+    return (
+        (argument == "compact")
+        || (argument == "c")
+        || (argument == "-c")
+        || (argument == "--c")
+        || (argument == "C"));
+}
+
 bool Controller::verbose_argument_(
         const std::string& argument) const noexcept
 {
@@ -282,30 +294,45 @@ void Controller::topics_command_(
         const std::vector<std::string>& arguments) noexcept
 {
     Yaml yml;
-    // Size cannot be 0
+
+    // Handle 'topics' command without arguments
     if (arguments.size() == 1)
     {
         // all participants simple
-        ddspipe::yaml::set(yml, participants::ModelParser::topics(*model_));
-    }
-    else if (verbose_argument_(arguments[1]))
-    {
-        // verbose
-        ddspipe::yaml::set(yml, participants::ModelParser::topics_verbose(*model_));
+        ddspipe::yaml::set(yml, participants::ModelParser::topics(*model_), false);
     }
     else
     {
-        auto data = participants::ModelParser::topics(*model_, arguments[1]);
-        if (data.name != arguments[1])
+        const std::string& option = arguments[1];
+
+        if (compact_argument_(option))
         {
-            view_.show_error(STR_ENTRY
-                    << "<"
-                    << arguments[1]
-                    << "> topic does not exist in the DDS network.");
-            return;
+            // Handle 'topics compact'
+            ddspipe::yaml::set(yml, participants::ModelParser::topics(*model_), true);
         }
-        ddspipe::yaml::set(yml, data);
+        else if (verbose_argument_(option))
+        {
+            // Handle 'topics verbose'
+            ddspipe::yaml::set(yml, participants::ModelParser::topics_verbose(*model_));
+        }
+        else
+        {
+            // Handle 'topics <name>'
+            ddspipe::core::types::WildcardDdsFilterTopic filter_topic;
+            filter_topic.topic_name = option;
+            auto data = participants::ModelParser::topics_verbose(*model_, filter_topic);
+            if (data.empty())
+            {
+                view_.show_error(STR_ENTRY
+                        << "<"
+                        << arguments[1]
+                        << "> topic does not exist in the DDS network.");
+                return;
+            }
+            ddspipe::yaml::set_collection(yml, data);
+        }
     }
+
     view_.show(yml);
 }
 
@@ -348,8 +375,13 @@ void Controller::print_command_(
     // Print topic
     else
     {
-        ddspipe::core::types::DdsTopic topic = participants::ModelParser::get_topic(*model_, arguments[1]);
-        if (topic.m_topic_name != arguments[1])
+        std::string topic_name = arguments[1];
+
+        ddspipe::core::types::WildcardDdsFilterTopic filter_topic;
+        filter_topic.topic_name = topic_name;
+
+        std::set<eprosima::ddspipe::core::types::DdsTopic> topics = participants::ModelParser::get_topics(*model_, filter_topic);
+        if (topics.empty())
         {
             view_.show_error(STR_ENTRY
                     << "Topic <"
@@ -358,12 +390,21 @@ void Controller::print_command_(
             return;
         }
 
-        bool topic_available = model_->is_topic_type_discovered(topic);
+        bool topic_available = false;
+        for (const auto& topic : topics)
+        {
+            topic_available = model_->is_topic_type_discovered(topic);
+            if (topic_available)
+            {
+                break;
+            }
+        }
+
         if (!topic_available)
         {
             view_.show_error(STR_ENTRY
                     << "Topic Type <"
-                    << topic.type_name
+                    << topic_name
                     << "> has not been discovered, and thus cannot print its data.");
             return;
         }
@@ -404,14 +445,14 @@ void Controller::print_command_(
 
         // Must activate data streamer with the required callback
         bool activated = model_->activate(
-            topic,
+            filter_topic,
             callback);
 
         if (!activated)
         {
             view_.show_error(STR_ENTRY
                     << "Error showing data for topic <"
-                    << topic.topic_name()
+                    << topic_name
                     << ".");
             return;
         }

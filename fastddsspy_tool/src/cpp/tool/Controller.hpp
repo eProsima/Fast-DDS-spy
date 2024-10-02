@@ -69,6 +69,9 @@ protected:
 
     /////////////////////
     // PARSE ARGUMENTS
+    bool compact_argument_(
+            const std::string& argument) const noexcept;
+
     bool verbose_argument_(
             const std::string& argument) const noexcept;
 
