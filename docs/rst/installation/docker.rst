@@ -22,7 +22,7 @@ The steps to run |spy| in a Docker container are explained below.
 
     .. code-block:: bash
 
-        docker load ubuntu-fastddsspy:<version>.tar
+        docker load -i ubuntu-fastddsspy:<version>.tar
 
     where ``version`` is the downloaded version of |spy|.
 
