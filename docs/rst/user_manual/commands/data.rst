@@ -38,11 +38,23 @@ Topic name
 When a topic name is given, the information shown is the data received in real-time in the topic specified.
 The output format is as follows: :ref:`user_manual_command_show_output_simple`.
 
+Topic name prefix + *
+---------------------
+When a topic name is provided followed by an asterisk (*), the command will display real-time information for all topics whose names begin with the given value.
+The asterisk acts as a wildcard, allowing the display of data received from multiple topics that share the same prefix.
+
+For example, if you enter ``sensor_*``, the command will print data from all topics starting with ``sensor_``, such as ``sensor_temperature``, ``sensor_humidity``, etc.
+
 Topic name + Verbose
 --------------------
 
 Giving a topic name and the the :ref:`verbose argument <user_manual_commands_input_verbose>` the output is the data received in real-time with additional meta-information as the topic name, the source timestamp, and the source :term:`DataWriter` :term:`Guid`.
 Data is printing using :ref:`user_manual_command_show_output_verbose`.
+
+Topic name prefix + * + Verbose
+-------------------------------
+
+When a topic name is provided with a prefix followed by an asterisk (*) and the :ref:`verbose argument <user_manual_commands_input_verbose>`, the command displays detailed real-time information and meta-information for all topics that share the specified prefix.
 
 All
 ---

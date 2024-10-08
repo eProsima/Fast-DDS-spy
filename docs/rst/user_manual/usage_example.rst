@@ -118,24 +118,28 @@ Try out all the commands DDS Spy has to offer:
     Fast DDS Spy is an interactive CLI that allow to instrospect DDS networks.
     Each command shows data related with the network in Yaml format.
     Commands available and the information they show:
-        help                   : this help.
-        version                : tool version.
-        quit                   : exit interactive CLI and close program.
-        participants           : DomainParticipants discovered in the network.
-        participants verbose   : verbose information about DomainParticipants discovered in the network.
-        participants <Guid>    : verbose information related with a specific DomainParticipant.
-        writers                : DataWriters discovered in the network.
-        writers verbose        : verbose information about DataWriters discovered in the network.
-        writers <Guid>         : verbose information related with a specific DataWriter.
-        reader                 : DataReaders discovered in the network.
-        reader verbose         : verbose information about DataReaders discovered in the network.
-        reader <Guid>          : verbose information related with a specific DataReader.
-        topics                 : Topics discovered in the network.
-        topics verbose         : verbose information about Topics discovered in the network.
-        topics <name>          : verbose information related with a specific Topic.
-        show <name>            : data of a specific Topic (Data Type must be discovered).
-        show <name> verbose    : data with additional source info of a specific Topic.
-        show all               : verbose data of all topics (only those whose Data Type is discovered).
+        help                            : this help.
+        version                         : tool version.
+        quit                            : exit interactive CLI and close program.
+        participants                    : DomainParticipants discovered in the network.
+        participants verbose            : verbose information about DomainParticipants discovered in the network.
+        participants <Guid>             : verbose information related with a specific DomainParticipant.
+        writers                         : DataWriters discovered in the network.
+        writers verbose                 : verbose information about DataWriters discovered in the network.
+        writers <Guid>                  : verbose information related with a specific DataWriter.
+        reader                          : DataReaders discovered in the network.
+        reader verbose                  : verbose information about DataReaders discovered in the network.
+        reader <Guid>                   : verbose information related with a specific DataReader.
+        topics                          : Topics discovered in the network.
+        topics compact                  : Topics discovered in the network in compact format.
+        topics verbose                  : verbose information about Topics discovered in the network.
+        topics <name>                   : verbose information related with a specific Topic.
+        topics <name_prefix> + *        : verbose information related with Topics with prefix <name_prefix>.
+        show <name>                     : data of a specific Topic (Data Type must be discovered).
+        show <name_prefix> + *          : data of a Topics with prefix <name_prefix> (Data Type must be discovered).
+        show <name> verbose             : data with additional source info of a specific Topic.
+        show <name_prefix> + * verbose  : data with additional source info of Topics with prefix <name_prefix>.
+        show all                        : verbose data of all topics (only those whose Data Type is discovered).
 
     Notes and comments:
         To exit from data printing, press enter.
