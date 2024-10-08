@@ -107,7 +107,11 @@ class TestCase():
         """
         time.sleep(SLEEP_TIME)
         proc.stdin.write((self.commands_spy[0]+'\n'))
-        proc.stdin.flush()
+
+        try:
+            proc.stdin.flush()
+        except (BrokenPipeError, IOError):
+            pass
 
         output = self.read_command_output(proc)
         return (output)
