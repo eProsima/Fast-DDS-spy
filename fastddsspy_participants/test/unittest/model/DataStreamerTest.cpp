@@ -36,25 +36,31 @@ fastdds::dds::DynamicType::_ref_type create_schema(
     return dynamic_type_topic;
 }
 
-// TEST(DataStreamerTest, activate_false)
-// {
-//     spy::participants::DataStreamer ds;
-//     ddspipe::core::types::WildcardDdsFilterTopic filter_topic;
-//     filter_topic.topic_name = std::string("topic1");
-//     filter_topic.type_name = std::string("type1");
+TEST(DataStreamerTest, activate_false)
+{
+    std::set<ddspipe::core::types::DdsTopic> network_topics;
+    spy::participants::DataStreamer ds;
 
-//     std::shared_ptr<spy::participants::DataStreamer::CallbackType> cb =
-//             std::make_shared<spy::participants::DataStreamer::CallbackType>();
+    ddspipe::core::types::WildcardDdsFilterTopic filter_topic;
+    filter_topic.topic_name = std::string("topic1");
+    filter_topic.type_name = std::string("type1");
 
-//     ASSERT_FALSE(ds.activate(filter_topic, cb));
-// }
+    std::shared_ptr<spy::participants::DataStreamer::CallbackType> cb =
+            std::make_shared<spy::participants::DataStreamer::CallbackType>();
+
+    ASSERT_FALSE(ds.activate(filter_topic, network_topics, cb));
+}
 
 TEST(DataStreamerTest, activate_true)
 {
+    std::set<ddspipe::core::types::DdsTopic> network_topics;
     spy::participants::DataStreamer ds;
+
     ddspipe::core::types::DdsTopic topic;
     topic.m_topic_name = "topic1";
     topic.type_name = "type1";
+
+    network_topics.insert(topic);
 
     std::shared_ptr<spy::participants::DataStreamer::CallbackType> cb =
             std::make_shared<spy::participants::DataStreamer::CallbackType>();
@@ -69,16 +75,19 @@ TEST(DataStreamerTest, activate_true)
     filter_topic.topic_name = topic.m_topic_name;
     filter_topic.type_name = topic.type_name;
 
-    ASSERT_TRUE(ds.activate(filter_topic, cb));
+    ASSERT_TRUE(ds.activate(filter_topic, network_topics, cb));
 }
 
 TEST(DataStreamerTest, activate_twice)
 {
+    std::set<ddspipe::core::types::DdsTopic> network_topics;
     spy::participants::DataStreamer ds;
 
     ddspipe::core::types::DdsTopic topic_1;
     topic_1.m_topic_name = "topic1";
     topic_1.type_name = "type1";
+
+    network_topics.insert(topic_1);
 
     std::shared_ptr<spy::participants::DataStreamer::CallbackType> cb =
             std::make_shared<spy::participants::DataStreamer::CallbackType>();
@@ -89,9 +98,15 @@ TEST(DataStreamerTest, activate_twice)
     fastdds::dds::xtypes::TypeIdentifier type_identifier_1;
     ds.add_schema(dynamic_type_topic_1, type_identifier_1);
 
+    ddspipe::core::types::WildcardDdsFilterTopic filter_topic_1;
+    filter_topic_1.topic_name = topic_1.m_topic_name;
+    filter_topic_1.type_name = topic_1.type_name;
+
     ddspipe::core::types::DdsTopic topic_2;
     topic_2.m_topic_name = "topic2";
     topic_2.type_name = "type2";
+
+    network_topics.insert(topic_2);
 
     fastdds::dds::DynamicType::_ref_type dynamic_type_topic_2;
     dynamic_type_topic_2 = create_schema(topic_2);
@@ -99,9 +114,13 @@ TEST(DataStreamerTest, activate_twice)
     fastdds::dds::xtypes::TypeIdentifier type_identifier_2;
     ds.add_schema(dynamic_type_topic_2, type_identifier_2);
 
+    ddspipe::core::types::WildcardDdsFilterTopic filter_topic_2;
+    filter_topic_2.topic_name = topic_2.m_topic_name;
+    filter_topic_2.type_name = topic_2.type_name;
+
     // is this the correct behaviour?
-    ASSERT_TRUE(ds.activate(topic_1, cb));
-    ASSERT_TRUE(ds.activate(topic_2, cb));
+    ASSERT_TRUE(ds.activate(filter_topic_1, network_topics, cb));
+    ASSERT_TRUE(ds.activate(filter_topic_2, network_topics, cb));
 }
 
 TEST(DataStreamerTest, topic_type_discovered)
@@ -127,164 +146,193 @@ TEST(DataStreamerTest, topic_type_discovered)
     ASSERT_TRUE(ds.is_topic_type_discovered(topic_2));
 }
 
-// TEST(DataStreamerTest, deactivate)
-// {
-//     spy::participants::DataStreamer ds;
-//     ddspipe::core::types::DdsTopic topic;
-//     topic.m_topic_name = "topic1";
-//     topic.type_name = "type1";
+TEST(DataStreamerTest, deactivate)
+{
+    std::set<ddspipe::core::types::DdsTopic> network_topics;
+    spy::participants::DataStreamer ds;
 
-//     std::atomic<uint32_t> data_sent(0);
+    ddspipe::core::types::DdsTopic topic;
+    topic.m_topic_name = "topic1";
+    topic.type_name = "type1";
 
-//     std::shared_ptr<spy::participants::DataStreamer::CallbackType> cb =
-//             std::make_shared<spy::participants::DataStreamer::CallbackType>(
-//         [&data_sent]
-//             (const ddspipe::core::types::DdsTopic& topic,
-//         const fastdds::dds::DynamicType::_ref_type& type,
-//         const ddspipe::core::types::RtpsPayloadData& data)
-//         {
-//             data_sent++;
-//         });
+    std::atomic<uint32_t> data_sent(0);
 
-//     fastdds::dds::DynamicType::_ref_type dynamic_type_topic;
-//     dynamic_type_topic = create_schema(topic);
+    std::shared_ptr<spy::participants::DataStreamer::CallbackType> cb =
+            std::make_shared<spy::participants::DataStreamer::CallbackType>(
+        [&data_sent]
+            (const ddspipe::core::types::DdsTopic& topic,
+        const fastdds::dds::DynamicType::_ref_type& type,
+        const ddspipe::core::types::RtpsPayloadData& data)
+        {
+            data_sent++;
+        });
 
-//     fastdds::dds::xtypes::TypeIdentifier type_identifier;
-//     ds.add_schema(dynamic_type_topic, type_identifier);
+    fastdds::dds::DynamicType::_ref_type dynamic_type_topic;
+    dynamic_type_topic = create_schema(topic);
 
-//     ds.activate(topic, cb);
+    fastdds::dds::xtypes::TypeIdentifier type_identifier;
+    ds.add_schema(dynamic_type_topic, type_identifier);
 
-//     ddspipe::core::types::RtpsPayloadData data;
+    network_topics.insert(topic);
 
-//     unsigned int rand_1 = rand() % 20;
+    ddspipe::core::types::WildcardDdsFilterTopic filter_topic;
+    filter_topic.topic_name = topic.m_topic_name;
+    filter_topic.type_name = topic.type_name;
 
-//     for (unsigned int i = 0; i < rand_1; i++)
-//     {
-//         ds.add_data(topic, data);
-//     }
+    ds.activate(filter_topic, network_topics, cb);
 
-//     ds.deactivate();
+    ddspipe::core::types::RtpsPayloadData data;
 
-//     unsigned int rand_2 = rand() % 20;
+    unsigned int rand_1 = rand() % 20;
 
-//     for (unsigned int i = 0; i < rand_2; i++)
-//     {
-//         ds.add_data(topic, data);
-//     }
+    for (unsigned int i = 0; i < rand_1; i++)
+    {
+        ds.add_data(topic, data);
+    }
 
-//     ASSERT_EQ(data_sent, rand_1);
-// }
+    ds.deactivate();
 
-// TEST(DataStreamerTest, add_data)
-// {
-//     spy::participants::DataStreamer ds;
-//     ddspipe::core::types::DdsTopic topic;
-//     topic.m_topic_name = "topic1";
-//     topic.type_name = "type1";
+    unsigned int rand_2 = rand() % 20;
 
-//     std::atomic<uint32_t> data_sent(0);
+    for (unsigned int i = 0; i < rand_2; i++)
+    {
+        ds.add_data(topic, data);
+    }
 
-//     std::shared_ptr<spy::participants::DataStreamer::CallbackType> cb =
-//             std::make_shared<spy::participants::DataStreamer::CallbackType>(
-//         [&data_sent]
-//             (const ddspipe::core::types::DdsTopic& topic,
-//         const fastdds::dds::DynamicType::_ref_type& type,
-//         const ddspipe::core::types::RtpsPayloadData& data)
-//         {
-//             data_sent++;
-//         });
+    ASSERT_EQ(data_sent, rand_1);
+}
 
-//     fastdds::dds::DynamicType::_ref_type dynamic_type_topic;
-//     dynamic_type_topic = create_schema(topic);
+TEST(DataStreamerTest, add_data)
+{
+    std::set<ddspipe::core::types::DdsTopic> network_topics;
+    spy::participants::DataStreamer ds;
 
-//     fastdds::dds::xtypes::TypeIdentifier type_identifier;
-//     ds.add_schema(dynamic_type_topic, type_identifier);
+    ddspipe::core::types::DdsTopic topic;
+    topic.m_topic_name = "topic1";
+    topic.type_name = "type1";
 
-//     ds.activate(topic, cb);
+    std::atomic<uint32_t> data_sent(0);
 
-//     ddspipe::core::types::RtpsPayloadData data;
+    std::shared_ptr<spy::participants::DataStreamer::CallbackType> cb =
+            std::make_shared<spy::participants::DataStreamer::CallbackType>(
+        [&data_sent]
+            (const ddspipe::core::types::DdsTopic& topic,
+        const fastdds::dds::DynamicType::_ref_type& type,
+        const ddspipe::core::types::RtpsPayloadData& data)
+        {
+            data_sent++;
+        });
 
-//     unsigned int rand_1 = rand() % 20;
+    fastdds::dds::DynamicType::_ref_type dynamic_type_topic;
+    dynamic_type_topic = create_schema(topic);
 
-//     for (unsigned int i = 0; i < rand_1; i++)
-//     {
-//         ds.add_data(topic, data);
-//     }
+    fastdds::dds::xtypes::TypeIdentifier type_identifier;
+    ds.add_schema(dynamic_type_topic, type_identifier);
 
-//     ASSERT_EQ(data_sent, rand_1);
-// }
+    network_topics.insert(topic);
 
-// TEST(DataStreamerTest, add_data_two_topics)
-// {
-//     spy::participants::DataStreamer ds;
+    ddspipe::core::types::WildcardDdsFilterTopic filter_topic;
+    filter_topic.topic_name = topic.m_topic_name;
+    filter_topic.type_name = topic.type_name;
 
-//     ddspipe::core::types::DdsTopic topic_1;
-//     topic_1.m_topic_name = "topic1";
-//     topic_1.type_name = "type1";
+    ds.activate(filter_topic, network_topics, cb);
 
-//     std::atomic<uint32_t> data_sent_1(0);
+    ddspipe::core::types::RtpsPayloadData data;
 
-//     std::shared_ptr<spy::participants::DataStreamer::CallbackType> cb_1 =
-//             std::make_shared<spy::participants::DataStreamer::CallbackType>(
-//         [&data_sent_1]
-//             (const ddspipe::core::types::DdsTopic& topic,
-//         const fastdds::dds::DynamicType::_ref_type& type,
-//         const ddspipe::core::types::RtpsPayloadData& data)
-//         {
-//             data_sent_1++;
-//         });
+    unsigned int rand_1 = rand() % 20;
 
-//     fastdds::dds::DynamicType::_ref_type dynamic_type_topic_1;
-//     dynamic_type_topic_1 = create_schema(topic_1);
+    for (unsigned int i = 0; i < rand_1; i++)
+    {
+        ds.add_data(topic, data);
+    }
 
-//     fastdds::dds::xtypes::TypeIdentifier type_identifier_1;
-//     ds.add_schema(dynamic_type_topic_1, type_identifier_1);
+    ASSERT_EQ(data_sent, rand_1);
+}
 
-//     ds.activate(topic_1, cb_1);
+TEST(DataStreamerTest, add_data_two_topics)
+{
+    std::set<ddspipe::core::types::DdsTopic> network_topics;
+    spy::participants::DataStreamer ds;
 
-//     ddspipe::core::types::DdsTopic topic_2;
-//     topic_2.m_topic_name = "topic2";
-//     topic_2.type_name = "type2";
+    ddspipe::core::types::DdsTopic topic_1;
+    topic_1.m_topic_name = "topic1";
+    topic_1.type_name = "type1";
 
-//     std::atomic<uint32_t> data_sent_2(0);
+    std::atomic<uint32_t> data_sent_1(0);
 
-//     std::shared_ptr<spy::participants::DataStreamer::CallbackType> cb_2 =
-//             std::make_shared<spy::participants::DataStreamer::CallbackType>(
-//         [&data_sent_2]
-//             (const ddspipe::core::types::DdsTopic& topic,
-//         const fastdds::dds::DynamicType::_ref_type& type,
-//         const ddspipe::core::types::RtpsPayloadData& data)
-//         {
-//             data_sent_2++;
-//         });
+    std::shared_ptr<spy::participants::DataStreamer::CallbackType> cb_1 =
+            std::make_shared<spy::participants::DataStreamer::CallbackType>(
+        [&data_sent_1]
+            (const ddspipe::core::types::DdsTopic& topic,
+        const fastdds::dds::DynamicType::_ref_type& type,
+        const ddspipe::core::types::RtpsPayloadData& data)
+        {
+            data_sent_1++;
+        });
 
-//     fastdds::dds::DynamicType::_ref_type dynamic_type_topic_2;
-//     dynamic_type_topic_2 = create_schema(topic_2);
+    fastdds::dds::DynamicType::_ref_type dynamic_type_topic_1;
+    dynamic_type_topic_1 = create_schema(topic_1);
 
-//     fastdds::dds::xtypes::TypeIdentifier type_identifier_2;
-//     ds.add_schema(dynamic_type_topic_2, type_identifier_2);
+    fastdds::dds::xtypes::TypeIdentifier type_identifier_1;
+    ds.add_schema(dynamic_type_topic_1, type_identifier_1);
 
-//     ds.activate(topic_2, cb_2);
+    network_topics.insert(topic_1);
 
-//     ddspipe::core::types::RtpsPayloadData data;
+    ddspipe::core::types::WildcardDdsFilterTopic filter_topic_1;
+    filter_topic_1.topic_name = topic_1.m_topic_name;
+    filter_topic_1.type_name = topic_1.type_name;
 
-//     unsigned int rand_1 = rand() % 20;
+    ds.activate(filter_topic_1, network_topics, cb_1);
 
-//     for (unsigned int i = 0; i < rand_1; i++)
-//     {
-//         ds.add_data(topic_1, data);
-//     }
+    ddspipe::core::types::DdsTopic topic_2;
+    topic_2.m_topic_name = "topic2";
+    topic_2.type_name = "type2";
 
-//     unsigned int rand_2 = rand() % 20;
+    std::atomic<uint32_t> data_sent_2(0);
 
-//     for (unsigned int i = 0; i < rand_2; i++)
-//     {
-//         ds.add_data(topic_2, data);
-//     }
+    std::shared_ptr<spy::participants::DataStreamer::CallbackType> cb_2 =
+            std::make_shared<spy::participants::DataStreamer::CallbackType>(
+        [&data_sent_2]
+            (const ddspipe::core::types::DdsTopic& topic,
+        const fastdds::dds::DynamicType::_ref_type& type,
+        const ddspipe::core::types::RtpsPayloadData& data)
+        {
+            data_sent_2++;
+        });
 
-//     ASSERT_FALSE(data_sent_1);
-//     ASSERT_EQ(data_sent_2, rand_2);
-// }
+    fastdds::dds::DynamicType::_ref_type dynamic_type_topic_2;
+    dynamic_type_topic_2 = create_schema(topic_2);
+
+    fastdds::dds::xtypes::TypeIdentifier type_identifier_2;
+    ds.add_schema(dynamic_type_topic_2, type_identifier_2);
+
+    network_topics.insert(topic_2);
+
+    ddspipe::core::types::WildcardDdsFilterTopic filter_topic_2;
+    filter_topic_2.topic_name = topic_2.m_topic_name;
+    filter_topic_2.type_name = topic_2.type_name;
+
+    ds.activate(filter_topic_2, network_topics, cb_2);
+
+    ddspipe::core::types::RtpsPayloadData data;
+
+    unsigned int rand_1 = rand() % 20;
+
+    for (unsigned int i = 0; i < rand_1; i++)
+    {
+        ds.add_data(topic_1, data);
+    }
+
+    unsigned int rand_2 = rand() % 20;
+
+    for (unsigned int i = 0; i < rand_2; i++)
+    {
+        ds.add_data(topic_2, data);
+    }
+
+    ASSERT_FALSE(data_sent_1);
+    ASSERT_EQ(data_sent_2, rand_2);
+}
 
 int main(
         int argc,

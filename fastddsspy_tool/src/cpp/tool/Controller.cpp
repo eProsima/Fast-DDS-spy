@@ -390,25 +390,6 @@ void Controller::print_command_(
             return;
         }
 
-        bool topic_available = false;
-        for (const auto& topic : topics)
-        {
-            topic_available = model_->is_topic_type_discovered(topic);
-            if (topic_available)
-            {
-                break;
-            }
-        }
-
-        if (!topic_available)
-        {
-            view_.show_error(STR_ENTRY
-                    << "Topic Type <"
-                    << topic_name
-                    << "> has not been discovered, and thus cannot print its data.");
-            return;
-        }
-
         // Check if verbose is set
         bool verbose = false;
         if (arguments.size() >= 3)
@@ -446,16 +427,8 @@ void Controller::print_command_(
         // Must activate data streamer with the required callback
         bool activated = model_->activate(
             filter_topic,
+            topics,
             callback);
-
-        if (!activated)
-        {
-            view_.show_error(STR_ENTRY
-                    << "Error showing data for topic <"
-                    << topic_name
-                    << ".");
-            return;
-        }
     }
 
     // Wait for other command to stop printing topics

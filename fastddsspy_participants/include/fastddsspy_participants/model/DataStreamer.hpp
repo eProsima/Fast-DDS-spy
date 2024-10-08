@@ -54,6 +54,7 @@ public:
     FASTDDSSPY_PARTICIPANTS_DllAPI
     bool activate(
             const ddspipe::core::types::WildcardDdsFilterTopic& topic_to_activate,
+            const std::set<eprosima::ddspipe::core::types::DdsTopic>& topics,
             const std::shared_ptr<CallbackType>& callback);
 
     FASTDDSSPY_PARTICIPANTS_DllAPI
@@ -71,19 +72,19 @@ public:
 
     FASTDDSSPY_PARTICIPANTS_DllAPI
     bool is_topic_type_discovered(
-            const ddspipe::core::types::WildcardDdsFilterTopic& topic_to_activate) const noexcept;
+            const ddspipe::core::types::DdsTopic& topic_to_activate) const noexcept;
 
     FASTDDSSPY_PARTICIPANTS_DllAPI
-    bool is_topic_type_discovered(
-            const ddspipe::core::types::DdsTopic& topic_to_activate) const noexcept;
+    bool is_any_topic_type_discovered(
+            const std::set<eprosima::ddspipe::core::types::DdsTopic>& topics) const noexcept;
 
 protected:
 
     bool is_topic_type_discovered_nts_(
-            const ddspipe::core::types::WildcardDdsFilterTopic& topic_to_activate) const noexcept;
-
-    bool is_topic_type_discovered_nts_(
             const ddspipe::core::types::DdsTopic& topic_to_activate) const noexcept;
+
+    bool is_any_topic_type_discovered_nts_(
+            const std::set<eprosima::ddspipe::core::types::DdsTopic>& topics) const noexcept;
 
     bool activated_ {false};
 

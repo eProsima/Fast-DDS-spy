@@ -43,9 +43,10 @@ bool DataStreamer::activate_all(
 
 bool DataStreamer::activate(
         const ddspipe::core::types::WildcardDdsFilterTopic& topic_to_activate,
+        const std::set<eprosima::ddspipe::core::types::DdsTopic>& topics,
         const std::shared_ptr<CallbackType>& callback)
 {
-    if (!is_topic_type_discovered(topic_to_activate))
+    if (!is_any_topic_type_discovered(topics))
     {
         EPROSIMA_LOG_WARNING(FASTDDSSPY_DATASTREAMER,
                 "Type <" << topic_to_activate.type_name <<
@@ -157,30 +158,6 @@ void DataStreamer::add_data(
 }
 
 bool DataStreamer::is_topic_type_discovered(
-        const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic) const noexcept
-{
-    std::shared_lock<std::shared_timed_mutex> _(mutex_);
-    return is_topic_type_discovered_nts_(filter_topic);
-}
-
-bool DataStreamer::is_topic_type_discovered_nts_(
-        const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic) const noexcept
-{
-    ddspipe::core::types::DdsTopic topic;
-    for (const auto& it : topic_type_discovered_)
-    {
-        topic.m_topic_name = it.first;
-        topic.type_name = it.second;
-        if (filter_topic.matches(topic) == true)
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-bool DataStreamer::is_topic_type_discovered(
         const ddspipe::core::types::DdsTopic& topic) const noexcept
 {
     std::shared_lock<std::shared_timed_mutex> _(mutex_);
@@ -191,6 +168,28 @@ bool DataStreamer::is_topic_type_discovered_nts_(
         const ddspipe::core::types::DdsTopic& topic) const noexcept
 {
     return types_discovered_.find(topic.type_name) != types_discovered_.end();
+}
+
+bool DataStreamer::is_any_topic_type_discovered(
+        const std::set<eprosima::ddspipe::core::types::DdsTopic>& topics) const noexcept
+{
+    std::shared_lock<std::shared_timed_mutex> _(mutex_);
+    return is_any_topic_type_discovered_nts_(topics);
+}
+
+bool DataStreamer::is_any_topic_type_discovered_nts_(
+        const std::set<eprosima::ddspipe::core::types::DdsTopic>& topics) const noexcept
+{
+    for (const auto& topic : topics)
+    {
+        if (types_discovered_.find(topic.type_name) != types_discovered_.end())
+        {
+            // If there's at least one topic that matches the filter topic return true
+            return true;
+        }
+    }
+
+    return false;
 }
 
 } /* namespace participants */
