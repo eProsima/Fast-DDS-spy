@@ -26,10 +26,8 @@
     <a href="https://github.com/eProsima/Fast-DDS-Spy/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/eProsima/Fast-DDS-Spy.svg"/></a>
     <br>
     <a href="https://fast-dds-spy.readthedocs.io"><img alt="Documentation badge" src="https://img.shields.io/readthedocs/fast-dds-spy.svg"/></a>
-    <a href="https://github.com/eProsima/Fast-DDS-spy/actions/workflows/nightly-windows-ci.yml"><img alt="Windows CI" src="https://img.shields.io/github/actions/workflow/status/eProsima/Fast-DDS-spy/nightly-windows-ci.yml?label=Windows%20CI">
-    <a href="https://github.com/eProsima/Fast-DDS-spy/actions/workflows/nightly-ubuntu-ci.yml"><img alt="Ubuntu CI" src="https://img.shields.io/github/actions/workflow/status/eProsima/Fast-DDS-spy/nightly-ubuntu-ci.yml?label=Ubuntu%20CI">
-</a>
-
+    <a href="https://github.com/eProsima/Fast-DDS-spy/actions/workflows/nightly-windows-ci.yml"><img alt="Windows CI" src="https://img.shields.io/github/actions/workflow/status/eProsima/Fast-DDS-spy/nightly-windows-ci.yml?label=Windows%20CI"></a>
+    <a href="https://github.com/eProsima/Fast-DDS-spy/actions/workflows/nightly-ubuntu-ci.yml"><img alt="Ubuntu CI" src="https://img.shields.io/github/actions/workflow/status/eProsima/Fast-DDS-spy/nightly-ubuntu-ci.yml?label=Ubuntu%20CI"></a>
 </div>
 
 <br><br>
