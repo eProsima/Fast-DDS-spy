@@ -25,7 +25,8 @@
     <a href="https://github.com/eProsima/Fast-DDS-Spy/network/members"><img alt="Forks" src="https://img.shields.io/github/forks/eProsima/Fast-DDS-Spy.svg"/></a>
     <a href="https://github.com/eProsima/Fast-DDS-Spy/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/eProsima/Fast-DDS-Spy.svg"/></a>
     <a href="https://fast-dds-spy.readthedocs.io"><img alt="Documentation badge" src="https://img.shields.io/readthedocs/fast-dds-spy.svg"/></a>
-    <a href="https://github.com/eProsima/Fast-DDS-spy/actions/workflows/nightly.yml"><img alt="Nightly badge" src="https://github.com/eProsima/Fast-DDS-spy/actions/workflows/nightly.yml/badge.svg"/></a>
+    <a href="https://github.com/eProsima/Fast-DDS-spy/actions/workflows/nightly.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/eProsima/Fast-DDS-spy/nightly.yml?label=CI"></a>
+
 </div>
 
 <br><br>
