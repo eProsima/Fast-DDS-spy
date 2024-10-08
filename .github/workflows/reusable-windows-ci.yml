@@ -55,5 +55,5 @@ jobs:
       os: ${{ matrix.os }}
       custom_version_build: ${{ inputs.custom_version_build || 'v3' }}
       dependencies_artifact_postfix: ${{ inputs.dependencies_artifact_postfix || '_nightly' }}
-      ref: ${{ github.ref }}
+      ref: ${{ inputs.ref }}
     secrets: inherit
