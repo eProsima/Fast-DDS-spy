@@ -1,12 +1,35 @@
-# Fast-DDS-spy
+[![Fast DDS](resources/images/github_banner_fastddsspy.png)](https://eprosima.com/middleware/tools/fast-dds-spy)
 
-<a href="http://www.eprosima.com"><img src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSd0PDlVz1U_7MgdTe0FRIWD0Jc9_YH-gGi0ZpLkr-qgCI6ZEoJZ5GBqQ" align="left" hspace="8" vspace="2" width="100" height="100" ></a>
+<br>
 
-[![License](https://img.shields.io/github/license/eProsima/Fast-DDS-spy.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Issues](https://img.shields.io/github/issues/eProsima/Fast-DDS-spy.svg)](https://github.com/eProsima/Fast-DDS-spy/issues)
-[![Forks](https://img.shields.io/github/forks/eProsima/Fast-DDS-spy.svg)](https://github.com/eProsima/Fast-DDS-spy/network/members)
-[![Stars](https://img.shields.io/github/stars/eProsima/Fast-DDS-spy.svg)](https://github.com/eProsima/Fast-DDS-spy/stargazers)
-[![test](https://github.com/eProsima/Fast-DDS-spy/actions/workflows/test.yml/badge.svg)](https://github.com/eProsima/Fast-DDS-spy/actions/workflows/test.yml)
+<div class="menu" align="center">
+    <strong>
+        <a href="https://eprosima.com/index.php/downloads-all">Download</a>
+        <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+        <a href="https://fast-dds-spy.readthedocs.io/en/latest/">Docs</a>
+        <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+        <a href="https://eprosima.com/index.php/company-all/news">News</a>
+        <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+        <a href="https://twitter.com/EProsima">Twitter</a>
+        <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+        <a href="mailto:info@eprosima.com">Contact Us</a>
+    </strong>
+</div>
+
+<br><br>
+
+<div class="badges" align="center">
+    <a href="https://opensource.org/licenses/Apache-2.0"><img alt="License" src="https://img.shields.io/github/license/eProsima/Fast-DDS-Spy.svg"/></a>
+    <a href="https://github.com/eProsima/Fast-DDS-Spy/releases"><img alt="Releases" src="https://img.shields.io/github/v/release/eProsima/Fast-DDS-Spy?sort=semver"/></a>
+    <a href="https://github.com/eProsima/Fast-DDS-Spy/issues"><img alt="Issues" src="https://img.shields.io/github/issues/eProsima/Fast-DDS-Spy.svg"/></a>
+    <a href="https://github.com/eProsima/Fast-DDS-Spy/network/members"><img alt="Forks" src="https://img.shields.io/github/forks/eProsima/Fast-DDS-Spy.svg"/></a>
+    <a href="https://github.com/eProsima/Fast-DDS-Spy/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/eProsima/Fast-DDS-Spy.svg"/></a>
+    <a href="https://fast-dds-spy.readthedocs.io"><img alt="Documentation badge" src="https://img.shields.io/readthedocs/fast-dds-spy.svg"/></a>
+    <a href="https://github.com/eProsima/Fast-DDS-spy/actions/workflows/nightly.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/eProsima/Fast-DDS-spy/nightly.yml?label=CI"></a>
+
+</div>
+
+<br><br>
 
 *eProsima Fast DDS Spy* is a CLI interactive tool that allows to introspect a DDS network in human readable format.
 It is possible to query the network about the DomainParticipants connected, their endpoints (DataWriters and DataReaders) and the topics they communicate in.
@@ -15,7 +38,7 @@ It is also possible to see the user data sent through network topics in a schema
 
 ## Documentation
 
-You can access the documentation online, which is hosted on [Read the Docs](https://fast-dds-spy.readthedocs.io).
+You can access the documentation online hosted on *Read the Docs*.
 
 * [Introduction](https://fast-dds-spy.readthedocs.io/en/latest/rst/formalia/titlepage.html)
 * [Installation Manual](https://fast-dds-spy.readthedocs.io/en/latest/rst/installation/linux.html)
