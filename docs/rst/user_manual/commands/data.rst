@@ -1,10 +1,10 @@
 .. include:: ../../exports/alias.include
 .. include:: ../../exports/roles.include
 
-.. _user_manual_command_show:
+.. _user_manual_command_echo:
 
 ####
-Show
+Echo
 ####
 
 This command prints every User Data received in a human readable way.
@@ -19,7 +19,7 @@ Key-words
 =========
 
 These are the key-words recognize as this command:
-``show`` ``print`` ``s`` ``S``.
+``echo`` ``show`` ``print`` ``s`` ``S``.
 
 Data Type discovered
 ====================
@@ -30,18 +30,17 @@ The information whether the topic data type is already discovered be the applica
 Arguments
 =========
 
-**Show** command support different combination of arguments:
+**Echo** command support different combination of arguments:
 
 Topic name
 ----------
 
 When a topic name is given, the information shown is the data received in real-time in the topic specified.
-The output format is as follows: :ref:`user_manual_command_show_output_simple`.
+The output format is as follows: :ref:`user_manual_command_echo_output_simple`.
 
-Topic name prefix + *
----------------------
-When a topic name is provided followed by an asterisk (*), the command will display real-time information for all topics whose names begin with the given value.
-The asterisk acts as a wildcard, allowing the display of data received from multiple topics that share the same prefix.
+Topic name with wildcards
+-------------------------
+When a topic name is provided with wildcards (*), the command will display real-time information for all topics whose names match the given filter.
 
 For example, if you enter ``sensor_*``, the command will print data from all topics starting with ``sensor_``, such as ``sensor_temperature``, ``sensor_humidity``, etc.
 
@@ -49,18 +48,18 @@ Topic name + Verbose
 --------------------
 
 Giving a topic name and the the :ref:`verbose argument <user_manual_commands_input_verbose>` the output is the data received in real-time with additional meta-information as the topic name, the source timestamp, and the source :term:`DataWriter` :term:`Guid`.
-Data is printing using :ref:`user_manual_command_show_output_verbose`.
+Data is printing using :ref:`user_manual_command_echo_output_verbose`.
 
 Topic name prefix + * + Verbose
 -------------------------------
 
-When a topic name is provided with a prefix followed by an asterisk (*) and the :ref:`verbose argument <user_manual_commands_input_verbose>`, the command displays detailed real-time information and meta-information for all topics that share the specified prefix.
+When a topic name is provided with wildcards (*) and the :ref:`verbose argument <user_manual_commands_input_verbose>`, the command displays detailed real-time information and meta-information for all topics that match the given filter.
 
 All
 ---
 
 This argument prints all topics which Data Type has been discovered.
-Data is printing using :ref:`user_manual_command_show_output_verbose`.
+Data is printing using :ref:`user_manual_command_echo_output_verbose`.
 
 Output Format
 =============
@@ -72,7 +71,7 @@ Output Format
 
 The data information is retrieved in 2 formats depending on the verbose option.
 
-.. _user_manual_command_show_output_simple:
+.. _user_manual_command_echo_output_simple:
 
 Simple Data format
 ------------------
@@ -86,7 +85,7 @@ Only shows the data, by
     ...
     ---
 
-.. _user_manual_command_show_output_verbose:
+.. _user_manual_command_echo_output_verbose:
 
 Verbose Data format
 -------------------

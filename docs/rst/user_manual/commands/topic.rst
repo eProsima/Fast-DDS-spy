@@ -18,7 +18,7 @@ These are the key-words recognize as this command:
 Arguments
 =========
 
-**Topic** command support 0 or 1 argument:
+**Topic** command support from 0 to 2 arguments:
 
 *No argument*
 -------------
@@ -26,9 +26,6 @@ Arguments
 When no arguments are given to this command, the information shown is a **list** with every topic with at least one endpoint currently active in the network.
 The information shown is the topic name, data type name, number of writers and readers and the subscription rate measured in samples per second.
 The output format is as follows: :ref:`user_manual_command_topic_output_simple`.
-
-Compact
--------
 
 When the compact argument is used with the Topic command, the information is displayed in a more concise format, with each topic's details condensed into a single line.
 This allows for easier reading and quick scanning, especially when there are many active topics in the network.
@@ -62,12 +59,19 @@ This allows users to query multiple topics in a single command, making it easier
 Output Format
 =============
 
-The topic information is retrieved in 2 formats depending on the verbose option.
+The topic information is retrieved in multiple formats depending on the verbosity option.
 
 .. _user_manual_command_topic_output_simple:
 
-Simple Writer info
------------------------
+Topics info
+-----------
+
+- topic: <topic name> (<topic type name>) (<n writers>|<n readers>) [<rate> Hz]
+
+.. _user_manual_command_topic_output_verbose:
+
+Topics info in verbose mode
+---------------------------
 
 .. code-block:: yaml
 
@@ -77,10 +81,8 @@ Simple Writer info
     datareaders: <number of datareaders currently active>
     rate: <samples per second> Hz
 
-.. _user_manual_command_topic_output_verbose:
-
-Verbose Writer info
-------------------------
+Topics info in high verbosity mode
+----------------------------------
 
 .. code-block:: yaml
 

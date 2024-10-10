@@ -85,29 +85,25 @@ Try out all the commands DDS Spy has to offer:
 
 .. code-block:: output
 
-    - name: Circle
-      type: ShapeType
-      datawriters: 2
-      datareaders: 2
-      rate: 13.0298 Hz
-    - name: Square
-      type: ShapeType
-      datawriters: 3
-      datareaders: 2
-      rate: 26.6975 Hz
+    - topic: Circle (ShapeType) (1|2) [9.000000Hz]
+    - topic: Square (ShapeType) (1|0) [12.412500Hz]
+    - topic: Triangle (ShapeType) (0|1) [0.000000Hz]
+    - ...
 
-* ``topics Square``
+* ``topics Circle vv``
 
 .. code-block:: output
 
-    name: Circle
-    type: ShapeType
-    datawriters:
-      - 01.0f.44.59.da.57.de.ec.00.00.00.00|0.0.6.2
-    datareaders:
-      - 01.0f.44.59.c9.65.78.e5.00.00.00.00|0.0.2.7
-    rate: 13.0418 Hz
-    dynamic_type_discovered: true
+    - name: Circle
+      type: ShapeType
+      datawriters:
+        - 01.0f.93.86.fb.9a.7f.92.00.00.02.00|0.0.3.2
+      datareaders:
+        - 01.0f.93.86.fb.9a.7f.92.00.00.02.00|0.0.1.7
+        - 01.0f.93.86.fb.9a.7f.92.00.00.02.00|0.0.2.7
+      rate: 11.2986 Hz
+      dynamic_type_discovered: false
+
 
 * ``help``
 
@@ -130,16 +126,15 @@ Try out all the commands DDS Spy has to offer:
         reader                          : DataReaders discovered in the network.
         reader verbose                  : verbose information about DataReaders discovered in the network.
         reader <Guid>                   : verbose information related with a specific DataReader.
-        topics                          : Topics discovered in the network.
-        topics compact                  : Topics discovered in the network in compact format.
-        topics verbose                  : verbose information about Topics discovered in the network.
-        topics <name>                   : verbose information related with a specific Topic.
-        topics <name_prefix> + *        : verbose information related with Topics with prefix <name_prefix>.
-        show <name>                     : data of a specific Topic (Data Type must be discovered).
-        show <name_prefix> + *          : data of a Topics with prefix <name_prefix> (Data Type must be discovered).
-        show <name> verbose             : data with additional source info of a specific Topic.
-        show <name_prefix> + * verbose  : data with additional source info of Topics with prefix <name_prefix>.
-        show all                        : verbose data of all topics (only those whose Data Type is discovered).
+        topics                          : Topics discovered in the network in compact format.
+        topics v                        : Topics discovered in the network.
+        topics vv                       : verbose information about Topics discovered in the network.
+        topics <name>                   : Topics discovered in the network filtered by name (wildcard allowed (*)).
+        print <name>                     : data of a specific Topic (Data Type must be discovered).
+        print <wildcard_name>            : data of a Topics matching the wildcard name (Data Type must be discovered).
+        print <name> verbose             : data with additional source info of a specific Topic.
+        print <wildcard_name> verbose    : data with additional source info of Topics with prefix <name_prefix>.
+        print all                        : verbose data of all topics (only those whose Data Type is discovered).
 
     Notes and comments:
         To exit from data printing, press enter.
