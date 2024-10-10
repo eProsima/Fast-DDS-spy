@@ -378,7 +378,6 @@ The type of the logs published is defined as follows:
         enable: true
         domain: 84
         topic-name: "FastDdsSpyLogs"
-        publish-type: false
       stdout: true
 
 .. _user_manual_configuration_default:
@@ -438,5 +437,4 @@ A complete example of all the configurations described on this page can be found
           enable: true
           domain: 0
           topic-name: "FastDdsSpyLogs"
-          publish-type: false
         stdout: true

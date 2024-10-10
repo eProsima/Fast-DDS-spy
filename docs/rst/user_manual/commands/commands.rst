@@ -100,11 +100,12 @@ Summary
         - Show Topic info
         - ``_`` |br|
           ``verbose`` |br|
+          ``vv`` |br|
           ``<topic name>``
         - ``topic`` ``topics`` |br|
           ``t`` ``T``
 
-    *   - :ref:`user_manual_command_show`
+    *   - :ref:`user_manual_command_echo`
         - Show real-time receiving user data.
         - ``<topic name>`` |br|
           ``<topic name> verbose`` |br|

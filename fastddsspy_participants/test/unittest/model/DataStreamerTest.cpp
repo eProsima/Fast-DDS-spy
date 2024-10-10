@@ -38,23 +38,29 @@ fastdds::dds::DynamicType::_ref_type create_schema(
 
 TEST(DataStreamerTest, activate_false)
 {
+    std::set<ddspipe::core::types::DdsTopic> network_topics;
     spy::participants::DataStreamer ds;
-    ddspipe::core::types::DdsTopic topic;
-    topic.m_topic_name = "topic1";
-    topic.type_name = "type1";
+
+    ddspipe::core::types::WildcardDdsFilterTopic filter_topic;
+    filter_topic.topic_name = std::string("topic1");
+    filter_topic.type_name = std::string("type1");
 
     std::shared_ptr<spy::participants::DataStreamer::CallbackType> cb =
             std::make_shared<spy::participants::DataStreamer::CallbackType>();
 
-    ASSERT_FALSE(ds.activate(topic, cb));
+    ASSERT_FALSE(ds.activate(filter_topic, network_topics, cb));
 }
 
 TEST(DataStreamerTest, activate_true)
 {
+    std::set<ddspipe::core::types::DdsTopic> network_topics;
     spy::participants::DataStreamer ds;
+
     ddspipe::core::types::DdsTopic topic;
     topic.m_topic_name = "topic1";
     topic.type_name = "type1";
+
+    network_topics.insert(topic);
 
     std::shared_ptr<spy::participants::DataStreamer::CallbackType> cb =
             std::make_shared<spy::participants::DataStreamer::CallbackType>();
@@ -65,16 +71,23 @@ TEST(DataStreamerTest, activate_true)
     fastdds::dds::xtypes::TypeIdentifier type_identifier;
     ds.add_schema(dynamic_type_topic, type_identifier);
 
-    ASSERT_TRUE(ds.activate(topic, cb));
+    ddspipe::core::types::WildcardDdsFilterTopic filter_topic;
+    filter_topic.topic_name = topic.m_topic_name;
+    filter_topic.type_name = topic.type_name;
+
+    ASSERT_TRUE(ds.activate(filter_topic, network_topics, cb));
 }
 
 TEST(DataStreamerTest, activate_twice)
 {
+    std::set<ddspipe::core::types::DdsTopic> network_topics;
     spy::participants::DataStreamer ds;
 
     ddspipe::core::types::DdsTopic topic_1;
     topic_1.m_topic_name = "topic1";
     topic_1.type_name = "type1";
+
+    network_topics.insert(topic_1);
 
     std::shared_ptr<spy::participants::DataStreamer::CallbackType> cb =
             std::make_shared<spy::participants::DataStreamer::CallbackType>();
@@ -85,9 +98,15 @@ TEST(DataStreamerTest, activate_twice)
     fastdds::dds::xtypes::TypeIdentifier type_identifier_1;
     ds.add_schema(dynamic_type_topic_1, type_identifier_1);
 
+    ddspipe::core::types::WildcardDdsFilterTopic filter_topic_1;
+    filter_topic_1.topic_name = topic_1.m_topic_name;
+    filter_topic_1.type_name = topic_1.type_name;
+
     ddspipe::core::types::DdsTopic topic_2;
     topic_2.m_topic_name = "topic2";
     topic_2.type_name = "type2";
+
+    network_topics.insert(topic_2);
 
     fastdds::dds::DynamicType::_ref_type dynamic_type_topic_2;
     dynamic_type_topic_2 = create_schema(topic_2);
@@ -95,9 +114,13 @@ TEST(DataStreamerTest, activate_twice)
     fastdds::dds::xtypes::TypeIdentifier type_identifier_2;
     ds.add_schema(dynamic_type_topic_2, type_identifier_2);
 
+    ddspipe::core::types::WildcardDdsFilterTopic filter_topic_2;
+    filter_topic_2.topic_name = topic_2.m_topic_name;
+    filter_topic_2.type_name = topic_2.type_name;
+
     // is this the correct behaviour?
-    ASSERT_TRUE(ds.activate(topic_1, cb));
-    ASSERT_TRUE(ds.activate(topic_2, cb));
+    ASSERT_TRUE(ds.activate(filter_topic_1, network_topics, cb));
+    ASSERT_TRUE(ds.activate(filter_topic_2, network_topics, cb));
 }
 
 TEST(DataStreamerTest, topic_type_discovered)
@@ -125,7 +148,9 @@ TEST(DataStreamerTest, topic_type_discovered)
 
 TEST(DataStreamerTest, deactivate)
 {
+    std::set<ddspipe::core::types::DdsTopic> network_topics;
     spy::participants::DataStreamer ds;
+
     ddspipe::core::types::DdsTopic topic;
     topic.m_topic_name = "topic1";
     topic.type_name = "type1";
@@ -148,7 +173,13 @@ TEST(DataStreamerTest, deactivate)
     fastdds::dds::xtypes::TypeIdentifier type_identifier;
     ds.add_schema(dynamic_type_topic, type_identifier);
 
-    ds.activate(topic, cb);
+    network_topics.insert(topic);
+
+    ddspipe::core::types::WildcardDdsFilterTopic filter_topic;
+    filter_topic.topic_name = topic.m_topic_name;
+    filter_topic.type_name = topic.type_name;
+
+    ds.activate(filter_topic, network_topics, cb);
 
     ddspipe::core::types::RtpsPayloadData data;
 
@@ -173,7 +204,9 @@ TEST(DataStreamerTest, deactivate)
 
 TEST(DataStreamerTest, add_data)
 {
+    std::set<ddspipe::core::types::DdsTopic> network_topics;
     spy::participants::DataStreamer ds;
+
     ddspipe::core::types::DdsTopic topic;
     topic.m_topic_name = "topic1";
     topic.type_name = "type1";
@@ -196,7 +229,13 @@ TEST(DataStreamerTest, add_data)
     fastdds::dds::xtypes::TypeIdentifier type_identifier;
     ds.add_schema(dynamic_type_topic, type_identifier);
 
-    ds.activate(topic, cb);
+    network_topics.insert(topic);
+
+    ddspipe::core::types::WildcardDdsFilterTopic filter_topic;
+    filter_topic.topic_name = topic.m_topic_name;
+    filter_topic.type_name = topic.type_name;
+
+    ds.activate(filter_topic, network_topics, cb);
 
     ddspipe::core::types::RtpsPayloadData data;
 
@@ -212,6 +251,7 @@ TEST(DataStreamerTest, add_data)
 
 TEST(DataStreamerTest, add_data_two_topics)
 {
+    std::set<ddspipe::core::types::DdsTopic> network_topics;
     spy::participants::DataStreamer ds;
 
     ddspipe::core::types::DdsTopic topic_1;
@@ -236,7 +276,13 @@ TEST(DataStreamerTest, add_data_two_topics)
     fastdds::dds::xtypes::TypeIdentifier type_identifier_1;
     ds.add_schema(dynamic_type_topic_1, type_identifier_1);
 
-    ds.activate(topic_1, cb_1);
+    network_topics.insert(topic_1);
+
+    ddspipe::core::types::WildcardDdsFilterTopic filter_topic_1;
+    filter_topic_1.topic_name = topic_1.m_topic_name;
+    filter_topic_1.type_name = topic_1.type_name;
+
+    ds.activate(filter_topic_1, network_topics, cb_1);
 
     ddspipe::core::types::DdsTopic topic_2;
     topic_2.m_topic_name = "topic2";
@@ -260,7 +306,13 @@ TEST(DataStreamerTest, add_data_two_topics)
     fastdds::dds::xtypes::TypeIdentifier type_identifier_2;
     ds.add_schema(dynamic_type_topic_2, type_identifier_2);
 
-    ds.activate(topic_2, cb_2);
+    network_topics.insert(topic_2);
+
+    ddspipe::core::types::WildcardDdsFilterTopic filter_topic_2;
+    filter_topic_2.topic_name = topic_2.m_topic_name;
+    filter_topic_2.type_name = topic_2.type_name;
+
+    ds.activate(filter_topic_2, network_topics, cb_2);
 
     ddspipe::core::types::RtpsPayloadData data;
 

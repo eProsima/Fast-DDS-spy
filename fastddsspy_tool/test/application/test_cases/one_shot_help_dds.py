@@ -42,26 +42,27 @@ configuration_discovery_time.yaml',
             output="""Fast DDS Spy is an interactive CLI that allow to instrospect DDS networks.\n\
 Each command shows data related with the network in Yaml format.\n\
 Commands available and the information they show:\n\
-\thelp                   : this help.\n\
-\tversion                : tool version.\n\
-\tquit                   : exit interactive CLI and close program.\n\
-\tparticipants           : DomainParticipants discovered in the network.\n\
-\tparticipants verbose   : verbose information about DomainParticipants discovered in the \
-network.\n\
-\tparticipants <Guid>    : verbose information related with a specific DomainParticipant.\n\
-\twriters                : DataWriters discovered in the network.\n\
-\twriters verbose        : verbose information about DataWriters discovered in the network.\n\
-\twriters <Guid>         : verbose information related with a specific DataWriter.\n\
-\treader                 : DataReaders discovered in the network.\n\
-\treader verbose         : verbose information about DataReaders discovered in the network.\n\
-\treader <Guid>          : verbose information related with a specific DataReader.\n\
-\ttopics                 : Topics discovered in the network.\n\
-\ttopics verbose         : verbose information about Topics discovered in the network.\n\
-\ttopics <name>          : verbose information related with a specific Topic.\n\
-\tshow <name>            : data of a specific Topic (Data Type must be discovered).\n\
-\tshow <name> verbose    : data with additional source info of a specific Topic.\n\
-\tshow all               : verbose data of all topics (only those whose Data Type is \
-discovered).\n\
+\thelp                            : this help.\n\
+\tversion                         : tool version.\n\
+\tquit                            : exit interactive CLI and close program.\n\
+\tparticipants                    : DomainParticipants discovered in the network.\n\
+\tparticipants verbose            : verbose information about DomainParticipants discovered in the network.\n\
+\tparticipants <Guid>             : verbose information related with a specific DomainParticipant.\n\
+\twriters                         : DataWriters discovered in the network.\n\
+\twriters verbose                 : verbose information about DataWriters discovered in the network.\n\
+\twriters <Guid>                  : verbose information related with a specific DataWriter.\n\
+\treader                          : DataReaders discovered in the network.\n\
+\treader verbose                  : verbose information about DataReaders discovered in the network.\n\
+\treader <Guid>                   : verbose information related with a specific DataReader.\n\
+\ttopics                          : Topics discovered in the network in compact format.\n\
+\ttopics v                        : Topics discovered in the network.\n\
+\ttopics vv                       : verbose information about Topics discovered in the network.\n\
+\ttopics <name>                   : Topics discovered in the network filtered by name (wildcard allowed (*)).\n\
+\techo <name>                     : data of a specific Topic (Data Type must be discovered).\n\
+\techo <wildcard_name>            : data of a Topics matching the wildcard name (Data Type must be discovered).\n\
+\techo <name> verbose             : data with additional source info of a specific Topic.\n\
+\techo <wildcard_name> verbose    : data with additional source info of Topics with prefix <name_prefix>.\n\
+\techo all                        : verbose data of all topics (only those whose Data Type is discovered).\n\
 \n\
 Notes and comments:\n\
 \tTo exit from data printing, press enter.\n\

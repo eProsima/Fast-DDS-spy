@@ -42,14 +42,15 @@ bool DataStreamer::activate_all(
 }
 
 bool DataStreamer::activate(
-        const ddspipe::core::types::DdsTopic& topic_to_activate,
+        const ddspipe::core::types::WildcardDdsFilterTopic& topic_to_activate,
+        const std::set<eprosima::ddspipe::core::types::DdsTopic>& topics,
         const std::shared_ptr<CallbackType>& callback)
 {
-    if (!is_topic_type_discovered(topic_to_activate))
+    if (!is_any_topic_type_discovered(topics))
     {
         EPROSIMA_LOG_WARNING(FASTDDSSPY_DATASTREAMER,
                 "Type <" << topic_to_activate.type_name <<
-                "> for topic <" << topic_to_activate.topic_name() << "> is not discovered.");
+                "> for topic <" << topic_to_activate.topic_name << "> is not discovered.");
         return false;
     }
 
@@ -117,12 +118,13 @@ void DataStreamer::add_data(
         }
         else
         {
-            if (!(activated_topic_ == topic))
+            if (!(activated_topic_.matches(topic)))
             {
                 // If not all activated, and this is not the activated topic skip
-                EPROSIMA_LOG_WARNING(
+                EPROSIMA_LOG_INFO(
                     FASTDDSSPY_DATASTREAMER,
-                    "Not all activated, and this is not the activated topic.");
+                    "Received data for topic '" << topic << "'. Note: This topic is not activated. " <<
+                    "Not all topics activated.");
                 return;
             }
         }
@@ -142,6 +144,12 @@ void DataStreamer::add_data(
         {
             dyn_type = it->second;
         }
+
+        auto map_it = topic_type_discovered_.find(topic.m_topic_name);
+        if (map_it == topic_type_discovered_.end())
+        {
+            topic_type_discovered_[topic.m_topic_name] = topic.type_name;
+        }
     }
 
     // This should be called without mutex taken
@@ -160,6 +168,28 @@ bool DataStreamer::is_topic_type_discovered_nts_(
         const ddspipe::core::types::DdsTopic& topic) const noexcept
 {
     return types_discovered_.find(topic.type_name) != types_discovered_.end();
+}
+
+bool DataStreamer::is_any_topic_type_discovered(
+        const std::set<eprosima::ddspipe::core::types::DdsTopic>& topics) const noexcept
+{
+    std::shared_lock<std::shared_timed_mutex> _(mutex_);
+    return is_any_topic_type_discovered_nts_(topics);
+}
+
+bool DataStreamer::is_any_topic_type_discovered_nts_(
+        const std::set<eprosima::ddspipe::core::types::DdsTopic>& topics) const noexcept
+{
+    for (const auto& topic : topics)
+    {
+        if (types_discovered_.find(topic.type_name) != types_discovered_.end())
+        {
+            // If there's at least one topic that matches the filter topic return true
+            return true;
+        }
+    }
+
+    return false;
 }
 
 } /* namespace participants */

@@ -3,6 +3,21 @@
 
 .. _user_manual_commands_input:
 
+.. _user_manual_commands_input_compact:
+
+Compact
+=======
+
+The compact argument provides a simplified and concise output format for the information received by the command.
+This format is useful when a more streamlined view of the data is preferred, reducing the amount of metadata shown and
+focusing on the essential data values from the topics.
+
+Key-words
+---------
+
+These are the key-words recognize as this argument:
+``compact`` ``c`` ``-c`` ``--c`` ``C``.
+
 .. _user_manual_commands_input_verbose:
 
 Verbose
