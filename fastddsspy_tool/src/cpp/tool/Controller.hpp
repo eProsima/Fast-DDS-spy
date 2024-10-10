@@ -69,10 +69,10 @@ protected:
 
     /////////////////////
     // PARSE ARGUMENTS
-    bool compact_argument_(
+    bool verbose_argument_(
             const std::string& argument) const noexcept;
 
-    bool verbose_argument_(
+    bool verbose_verbose_argument_(
             const std::string& argument) const noexcept;
 
     bool all_argument_(

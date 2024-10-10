@@ -194,17 +194,6 @@ void Controller::data_stream_callback_verbose_(
     view_.show("---\n");
 }
 
-bool Controller::compact_argument_(
-        const std::string& argument) const noexcept
-{
-    return (
-        (argument == "compact")
-        || (argument == "c")
-        || (argument == "-c")
-        || (argument == "--c")
-        || (argument == "C"));
-}
-
 bool Controller::verbose_argument_(
         const std::string& argument) const noexcept
 {
@@ -214,6 +203,16 @@ bool Controller::verbose_argument_(
         || (argument == "-v")
         || (argument == "--v")
         || (argument == "V"));
+}
+
+bool Controller::verbose_verbose_argument_(
+        const std::string& argument) const noexcept
+{
+    return (
+        (argument == "verbose2")
+        || (argument == "vv")
+        || (argument == "--vv")
+        || (argument == "VV"));
 }
 
 bool Controller::all_argument_(
@@ -299,37 +298,81 @@ void Controller::topics_command_(
     if (arguments.size() == 1)
     {
         // all participants simple
-        ddspipe::yaml::set(yml, participants::ModelParser::topics(*model_), false);
+        ddspipe::yaml::set(yml, participants::ModelParser::topics(*model_), true);
     }
-    else
+    else if (arguments.size() >= 2)
     {
-        const std::string& option = arguments[1];
+        const std::string& arg_1 = arguments[1];
 
-        if (compact_argument_(option))
-        {
-            // Handle 'topics compact'
-            ddspipe::yaml::set(yml, participants::ModelParser::topics(*model_), true);
-        }
-        else if (verbose_argument_(option))
+        if (verbose_argument_(arg_1))
         {
             // Handle 'topics verbose'
+            ddspipe::yaml::set(yml, participants::ModelParser::topics(*model_), false);
+        }
+        else if (verbose_verbose_argument_(arg_1))
+        {
+            // Handle 'topics verbose2'
             ddspipe::yaml::set(yml, participants::ModelParser::topics_verbose(*model_));
         }
         else
         {
-            // Handle 'topics <name>'
             ddspipe::core::types::WildcardDdsFilterTopic filter_topic;
-            filter_topic.topic_name = option;
-            auto data = participants::ModelParser::topics_verbose(*model_, filter_topic);
-            if (data.empty())
+            filter_topic.topic_name = arg_1;
+
+            if (arguments.size() == 3)
             {
-                view_.show_error(STR_ENTRY
-                        << "<"
-                        << arguments[1]
-                        << "> topic does not exist in the DDS network.");
-                return;
+                const std::string& arg_2 = arguments[2];
+
+                if (verbose_argument_(arg_2))
+                {
+                    // Handle 'topics <name> verbose'
+                    auto data = participants::ModelParser::topics(*model_, filter_topic);
+
+                    if (data.empty())
+                    {
+                        view_.show_error(STR_ENTRY
+                                << "<"
+                                << arguments[1]
+                                << "> does not match any topic in the DDS network.");
+                        return;
+                    }
+
+                    ddspipe::yaml::set(yml, data, false);
+                }
+                else if (verbose_verbose_argument_(arg_2))
+                {
+                    // Handle 'topics <name> verbose2'
+                    auto data = participants::ModelParser::topics_verbose(*model_, filter_topic);
+
+                    if (data.empty())
+                    {
+                        view_.show_error(STR_ENTRY
+                                << "<"
+                                << arguments[1]
+                                << "> does not match any topic in the DDS network.");
+                        return;
+                    }
+
+                    ddspipe::yaml::set_collection(yml, data);
+                }
             }
-            ddspipe::yaml::set_collection(yml, data);
+            else
+            {
+                // Handle 'topics <name>'
+                auto data = participants::ModelParser::topics(*model_, filter_topic);
+
+                if (data.empty())
+                {
+                    view_.show_error(STR_ENTRY
+                            << "<"
+                            << arguments[1]
+                            << "> does not match any topic in the DDS network.");
+                    return;
+                }
+
+                ddspipe::yaml::set(yml, data, true);
+            }
+
         }
     }
 

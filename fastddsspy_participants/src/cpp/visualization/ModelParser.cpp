@@ -291,29 +291,9 @@ ComplexEndpointData ModelParser::readers(
     return result;
 }
 
-/*
- * This is an auxiliary function that is used to get topics endpoint database
- */
-std::set<eprosima::ddspipe::core::types::DdsTopic> ModelParser::get_topics(
-        const SpyModel& model) noexcept
-{
-    std::set<eprosima::ddspipe::core::types::DdsTopic> result;
-    for (const auto& endpoint : model.endpoint_database_)
-    {
-        if (endpoint.second.active)
-        {
-            result.insert(endpoint.second.topic);
-        }
-    }
-    return result;
-}
-
-/*
- * This is an auxiliary function that is used to get topics endpoint database that match with a regex topic_name
- */
 std::set<eprosima::ddspipe::core::types::DdsTopic> ModelParser::get_topics(
         const SpyModel& model,
-        const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic) noexcept
+        const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic /* = WildcardDdsFilterTopic() */) noexcept
 {
     std::set<eprosima::ddspipe::core::types::DdsTopic> result;
     for (const auto& endpoint : model.endpoint_database_)
@@ -391,11 +371,12 @@ ComplexTopicData ModelParser::complex_topic_data(
 }
 
 std::vector<SimpleTopicData> ModelParser::topics(
-        const SpyModel& model) noexcept
+        const SpyModel& model,
+        const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic /* = WildcardDdsFilterTopic() */) noexcept
 {
     std::vector<SimpleTopicData> result;
 
-    std::set<eprosima::ddspipe::core::types::DdsTopic> endpoints_topics = get_topics(model);
+    std::set<eprosima::ddspipe::core::types::DdsTopic> endpoints_topics = get_topics(model, filter_topic);
     for (const auto& topic : endpoints_topics)
     {
         result.push_back(simple_topic_data(model, topic));
@@ -405,22 +386,8 @@ std::vector<SimpleTopicData> ModelParser::topics(
 }
 
 std::vector<ComplexTopicData> ModelParser::topics_verbose(
-        const SpyModel& model) noexcept
-{
-    std::vector<ComplexTopicData> result;
-
-    std::set<eprosima::ddspipe::core::types::DdsTopic> endpoints_topics = get_topics(model);
-    for (const auto& topic : endpoints_topics)
-    {
-        result.push_back(complex_topic_data(model, topic));
-    }
-
-    return result;
-}
-
-std::vector<ComplexTopicData> ModelParser::topics_verbose(
         const SpyModel& model,
-        const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic) noexcept
+        const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic /* = WildcardDdsFilterTopic() */) noexcept
 {
     std::vector<ComplexTopicData> result;
 
