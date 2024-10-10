@@ -164,7 +164,7 @@ template <>
 void set(
         Yaml& yml,
         const SimpleTopicData& value,
-        const bool is_compact)
+        bool is_compact)
 {
     if (is_compact)
     {
