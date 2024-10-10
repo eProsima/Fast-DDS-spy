@@ -172,7 +172,7 @@ void set(
             value.name + " (" + value.type + ") (" +
             std::to_string(value.datawriters) + "|" +
             std::to_string(value.datareaders) + ") [" +
-            std::to_string(value.rate.rate) + value.rate.unit + "]";
+            std::to_string(value.rate.rate) + " " + value.rate.unit + "]";
 
         set_in_tag(yml, "topic", compact_format);
     }

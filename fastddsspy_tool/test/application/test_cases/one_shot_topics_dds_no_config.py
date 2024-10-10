@@ -37,9 +37,5 @@ class TestCase_instance (test_class.TestCase):
             arguments_dds=[],
             arguments_spy=['topics'],
             commands_spy=[],
-            output="""- name: HelloWorldTopic\n\
-  type: HelloWorld\n\
-  datawriters: 1\n\
-  datareaders: 0\n\
-  rate: %%rate%%\n"""
+            output="""- topic: HelloWorldTopic (HelloWorld) (1|0) [%%rate%% Hz]"""
         )

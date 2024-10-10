@@ -27,14 +27,10 @@ When no arguments are given to this command, the information shown is a **list**
 The information shown is the topic name, data type name, number of writers and readers and the subscription rate measured in samples per second.
 The output format is as follows: :ref:`user_manual_command_topic_output_simple`.
 
-When the compact argument is used with the Topic command, the information is displayed in a more concise format, with each topic's details condensed into a single line.
-This allows for easier reading and quick scanning, especially when there are many active topics in the network.
-
 Verbose
 -------
 
-This argument queries for more complete information about each of the topics in the network.
-It adds the Guid of each endpoint on the topic and the whether the type has been discovered.
+This argument (``v`` or ``vv``) queries for more complete information about each of the topics in the network.
 The output is a **list** of data with :ref:`verbose information <user_manual_command_topic_output_verbose>`.
 Check the :ref:`verbose <user_manual_commands_input_verbose>` section in order to know which key-words are available for this argument.
 
@@ -50,10 +46,10 @@ This Guid must exist inside the DDS network.
     If there are 2 topics with the same name and different Topic Data Type, only one of them could be visible.
     These is a circumstance that :term:`DDS` allows, but it is strongly suggested not to do.
 
-Topic name prefix + *
----------------------
+Topic name with wildcards
+-------------------------
 
-When a topic name is provided followed by an asterisk (*), this command retrieves :ref:`verbose information <user_manual_command_topic_output_verbose>` for all topics that share the same prefix.
+When a topic name is with wildcards (*), this command retrieves :ref:`verbose information <user_manual_command_topic_output_verbose>` for all topics that matches the given filter.
 This allows users to query multiple topics in a single command, making it easier to gather related data quickly.
 
 Output Format

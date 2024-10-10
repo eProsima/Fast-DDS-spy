@@ -130,11 +130,11 @@ Try out all the commands DDS Spy has to offer:
         topics v                        : Topics discovered in the network.
         topics vv                       : verbose information about Topics discovered in the network.
         topics <name>                   : Topics discovered in the network filtered by name (wildcard allowed (*)).
-        print <name>                     : data of a specific Topic (Data Type must be discovered).
-        print <wildcard_name>            : data of a Topics matching the wildcard name (Data Type must be discovered).
-        print <name> verbose             : data with additional source info of a specific Topic.
-        print <wildcard_name> verbose    : data with additional source info of Topics with prefix <name_prefix>.
-        print all                        : verbose data of all topics (only those whose Data Type is discovered).
+        echo <name>                     : data of a specific Topic (Data Type must be discovered).
+        echo <wildcard_name>            : data of a Topics matching the wildcard name (Data Type must be discovered).
+        echo <name> verbose             : data with additional source info of a specific Topic.
+        echo <wildcard_name> verbose    : data with additional source info of Topics with prefix <name_prefix>.
+        echo all                        : verbose data of all topics (only those whose Data Type is discovered).
 
     Notes and comments:
         To exit from data printing, press enter.
