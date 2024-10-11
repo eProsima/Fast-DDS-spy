@@ -358,7 +358,17 @@ void Controller::topics_command_(
 
                     ddspipe::yaml::set_collection(yml, data);
                 }
+                else
+                {
+                    view_.show_error(STR_ENTRY
+                                << "<"
+                                << arguments[2]
+                                << "> is not a valid verbosity mode. "
+                                << "Valid options are \"v \" and \"vv\".");
+                    return;
+                }
             }
+            // Handle 'topics <wildard topic name>'
             else
             {
                 // Handle 'topics <name>'
@@ -421,18 +431,17 @@ void Controller::print_command_(
     // Print topic
     else
     {
-        std::string topic_name = arguments[1];
-
         ddspipe::core::types::WildcardDdsFilterTopic filter_topic;
-        filter_topic.topic_name = topic_name;
+        filter_topic.topic_name = arguments[1];
 
-        std::set<eprosima::ddspipe::core::types::DdsTopic> topics = participants::ModelParser::get_topics(*model_, filter_topic);
+        std::set<eprosima::ddspipe::core::types::DdsTopic> topics =
+                participants::ModelParser::get_topics(*model_, filter_topic);
         if (topics.empty())
         {
             view_.show_error(STR_ENTRY
-                    << "Topic <"
+                    << "<"
                     << arguments[1]
-                    << "> does not exist.");
+                    << "> does match any topic discovered.");
             return;
         }
 
@@ -516,9 +525,9 @@ void Controller::help_command_(
             << "\ttopics vv                       : verbose information about Topics discovered in the network.\n"
             << "\ttopics <name>                   : Topics discovered in the network filtered by name (wildcard allowed (*)).\n"
             << "\techo <name>                     : data of a specific Topic (Data Type must be discovered).\n"
-            << "\techo <wildcard_name>            : data of a Topics matching the wildcard name (Data Type must be discovered).\n"
+            << "\techo <wildcard_name>            : data of Topics matching the wildcard name (and whose Data Type is discovered).\n"
             << "\techo <name> verbose             : data with additional source info of a specific Topic.\n"
-            << "\techo <wildcard_name> verbose    : data with additional source info of Topics with prefix <name_prefix>.\n"
+            << "\techo <wildcard_name> verbose    : data with additional source info of Topics matching the topic name (wildcard allowed (*).\n"
             << "\techo all                        : verbose data of all topics (only those whose Data Type is discovered).\n"
             << "\n"
             << "Notes and comments:\n"

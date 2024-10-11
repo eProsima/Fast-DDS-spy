@@ -112,7 +112,7 @@ void DataStreamer::add_data(
                 // If all activated, add it only if schema is available, otherwise skip
                 EPROSIMA_LOG_WARNING(
                     FASTDDSSPY_DATASTREAMER,
-                    "All activated but schema not is available.");
+                    "All activated but schema is not available.");
                 return;
             }
         }
@@ -137,8 +137,10 @@ void DataStreamer::add_data(
         if (it == types_discovered_.end())
         {
             // The topic that is supposed to be activated has no associated type. This should not happen
-            utils::tsnh(STR_ENTRY
-                    << "Topic <" << topic << "> must not be activated if its type is not registered.");
+            EPROSIMA_LOG_WARNING(
+                FASTDDSSPY_DATASTREAMER,
+                "Data received on topic <" << topic << "> while its type has not been registered.");
+            return;
         }
         else
         {

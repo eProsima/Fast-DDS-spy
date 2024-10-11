@@ -60,9 +60,9 @@ Commands available and the information they show:\n\n\
 \ttopics vv                       : verbose information about Topics discovered in the network.\n\n\
 \ttopics <name>                   : Topics discovered in the network filtered by name (wildcard allowed (*)).\n\n\
 \techo <name>                     : data of a specific Topic (Data Type must be discovered).\n\n\
-\techo <wildcard_name>            : data of a Topics matching the wildcard name (Data Type must be discovered).\n\n\
+\techo <wildcard_name>            : data of Topics matching the wildcard name (and whose Data Type is discovered).\n\n\
 \techo <name> verbose             : data with additional source info of a specific Topic.\n\n\
-\techo <wildcard_name> verbose    : data with additional source info of Topics with prefix <name_prefix>.\n\n\
+\techo <wildcard_name> verbose    : data with additional source info of Topics matching the topic name (wildcard allowed (*).\n\n\
 \techo all                        : verbose data of all topics (only those whose Data Type is discovered).\n\n\
 \n\n\
 Notes and comments:\n\n\

@@ -391,7 +391,6 @@ std::vector<ComplexTopicData> ModelParser::topics_verbose(
 {
     std::vector<ComplexTopicData> result;
 
-    // Lets check if topic exists
     std::set<eprosima::ddspipe::core::types::DdsTopic> topics = get_topics(model, filter_topic);
     for (const auto& topic : topics)
     {
