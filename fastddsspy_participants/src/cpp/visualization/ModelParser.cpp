@@ -293,7 +293,7 @@ ComplexEndpointData ModelParser::readers(
 
 std::set<eprosima::ddspipe::core::types::DdsTopic> ModelParser::get_topics(
         const SpyModel& model,
-        const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic /* = WildcardDdsFilterTopic() */) noexcept
+        const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic) noexcept
 {
     std::set<eprosima::ddspipe::core::types::DdsTopic> result;
     for (const auto& endpoint : model.endpoint_database_)
@@ -372,7 +372,7 @@ ComplexTopicData ModelParser::complex_topic_data(
 
 std::vector<SimpleTopicData> ModelParser::topics(
         const SpyModel& model,
-        const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic /* = WildcardDdsFilterTopic() */) noexcept
+        const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic) noexcept
 {
     std::vector<SimpleTopicData> result;
 
@@ -387,7 +387,7 @@ std::vector<SimpleTopicData> ModelParser::topics(
 
 std::vector<ComplexTopicData> ModelParser::topics_verbose(
         const SpyModel& model,
-        const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic /* = WildcardDdsFilterTopic() */) noexcept
+        const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic) noexcept
 {
     std::vector<ComplexTopicData> result;
 

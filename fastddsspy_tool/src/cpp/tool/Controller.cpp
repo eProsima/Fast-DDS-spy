@@ -298,7 +298,8 @@ void Controller::topics_command_(
     if (arguments.size() == 1)
     {
         // all participants simple
-        ddspipe::yaml::set(yml, participants::ModelParser::topics(*model_), true);
+        ddspipe::yaml::set(yml, participants::ModelParser::topics(
+                *model_, ddspipe::core::types::WildcardDdsFilterTopic()), true);
     }
     else if (arguments.size() >= 2)
     {
@@ -307,12 +308,14 @@ void Controller::topics_command_(
         if (verbose_argument_(arg_1))
         {
             // Handle 'topics verbose'
-            ddspipe::yaml::set(yml, participants::ModelParser::topics(*model_), false);
+            ddspipe::yaml::set(yml, participants::ModelParser::topics(
+                *model_, ddspipe::core::types::WildcardDdsFilterTopic()), false);
         }
         else if (verbose_verbose_argument_(arg_1))
         {
             // Handle 'topics verbose2'
-            ddspipe::yaml::set(yml, participants::ModelParser::topics_verbose(*model_));
+            ddspipe::yaml::set(yml, participants::ModelParser::topics_verbose(
+                    *model_, ddspipe::core::types::WildcardDdsFilterTopic()));
         }
         else
         {

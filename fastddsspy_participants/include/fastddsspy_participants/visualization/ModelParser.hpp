@@ -65,7 +65,7 @@ struct ModelParser
     FASTDDSSPY_PARTICIPANTS_DllAPI
     static std::set<eprosima::ddspipe::core::types::DdsTopic> get_topics(
             const SpyModel& model,
-            const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic = ddspipe::core::types::WildcardDdsFilterTopic()) noexcept;
+            const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic) noexcept;
 
     FASTDDSSPY_PARTICIPANTS_DllAPI
     static SimpleTopicData simple_topic_data(
@@ -79,11 +79,11 @@ struct ModelParser
     FASTDDSSPY_PARTICIPANTS_DllAPI
     static std::vector<SimpleTopicData> topics(
             const SpyModel& model,
-            const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic = ddspipe::core::types::WildcardDdsFilterTopic()) noexcept;
+            const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic) noexcept;
     FASTDDSSPY_PARTICIPANTS_DllAPI
     static std::vector<ComplexTopicData> topics_verbose(
             const SpyModel& model,
-            const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic = ddspipe::core::types::WildcardDdsFilterTopic()) noexcept;
+            const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic) noexcept;
 };
 
 } /* namespace participants */
