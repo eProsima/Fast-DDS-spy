@@ -95,8 +95,6 @@ protected:
 
     std::map<std::string, fastdds::dds::DynamicType::_ref_type> types_discovered_;
 
-    std::unordered_map<std::string, std::string> topic_type_discovered_;
-
     mutable std::shared_timed_mutex mutex_;
 };
 

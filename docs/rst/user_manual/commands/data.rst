@@ -50,8 +50,8 @@ Topic name + Verbose
 Giving a topic name and the the :ref:`verbose argument <user_manual_commands_input_verbose>` the output is the data received in real-time with additional meta-information as the topic name, the source timestamp, and the source :term:`DataWriter` :term:`Guid`.
 Data is printing using :ref:`user_manual_command_echo_output_verbose`.
 
-Topic name prefix + * + Verbose / * + Topic name suffix + Verbose
------------------------------------------------------------------
+Topic name wildcard
+-------------------
 
 When a topic name is provided with wildcards (*) and the :ref:`verbose argument <user_manual_commands_input_verbose>`, the command displays detailed real-time information and meta-information for all topics that match the given filter.
 
