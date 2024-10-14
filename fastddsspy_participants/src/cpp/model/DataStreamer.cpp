@@ -102,7 +102,7 @@ void DataStreamer::add_data(
             EPROSIMA_LOG_INFO(
                 FASTDDSSPY_DATASTREAMER,
                 "Received data for topic '" << topic << "'. Note: This topic is not activated. " <<
-                "Not all topics activated.");
+                    "Not all topics activated.");
             return;
         }
 

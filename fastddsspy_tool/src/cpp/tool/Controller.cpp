@@ -299,7 +299,7 @@ void Controller::topics_command_(
     {
         // all participants simple
         ddspipe::yaml::set(yml, participants::ModelParser::topics(
-                *model_, ddspipe::core::types::WildcardDdsFilterTopic()), true);
+                    *model_, ddspipe::core::types::WildcardDdsFilterTopic()), true);
     }
     else if (arguments.size() == 2)
     {
@@ -309,13 +309,13 @@ void Controller::topics_command_(
         {
             // Handle 'topics verbose'
             ddspipe::yaml::set(yml, participants::ModelParser::topics(
-                *model_, ddspipe::core::types::WildcardDdsFilterTopic()), false);
+                        *model_, ddspipe::core::types::WildcardDdsFilterTopic()), false);
         }
         else if (verbose_verbose_argument_(arg_1))
         {
             // Handle 'topics verbose2'
             ddspipe::yaml::set(yml, participants::ModelParser::topics_verbose(
-                    *model_, ddspipe::core::types::WildcardDdsFilterTopic()));
+                        *model_, ddspipe::core::types::WildcardDdsFilterTopic()));
         }
         else
         {
@@ -381,10 +381,10 @@ void Controller::topics_command_(
         else
         {
             view_.show_error(STR_ENTRY
-                        << "<"
-                        << arguments[2]
-                        << "> is not a valid verbosity mode. "
-                        << "Valid options are \"v \" and \"vv\".");
+                    << "<"
+                    << arguments[2]
+                    << "> is not a valid verbosity mode. "
+                    << "Valid options are \"v \" and \"vv\".");
             return;
         }
     }
