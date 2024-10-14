@@ -54,7 +54,6 @@ public:
     FASTDDSSPY_PARTICIPANTS_DllAPI
     bool activate(
             const ddspipe::core::types::WildcardDdsFilterTopic& topic_to_activate,
-            const std::set<eprosima::ddspipe::core::types::DdsTopic>& topics,
             const std::shared_ptr<CallbackType>& callback);
 
     FASTDDSSPY_PARTICIPANTS_DllAPI

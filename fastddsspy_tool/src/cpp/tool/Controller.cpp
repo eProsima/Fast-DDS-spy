@@ -301,7 +301,7 @@ void Controller::topics_command_(
         ddspipe::yaml::set(yml, participants::ModelParser::topics(
                 *model_, ddspipe::core::types::WildcardDdsFilterTopic()), true);
     }
-    else if (arguments.size() >= 2)
+    else if (arguments.size() == 2)
     {
         const std::string& arg_1 = arguments[1];
 
@@ -319,73 +319,73 @@ void Controller::topics_command_(
         }
         else
         {
+            // Handle 'topics <wildard topic name>'
             ddspipe::core::types::WildcardDdsFilterTopic filter_topic;
             filter_topic.topic_name = arg_1;
 
-            if (arguments.size() == 3)
+            auto data = participants::ModelParser::topics(*model_, filter_topic);
+
+            if (data.empty())
             {
-                const std::string& arg_2 = arguments[2];
-
-                if (verbose_argument_(arg_2))
-                {
-                    // Handle 'topics <name> verbose'
-                    auto data = participants::ModelParser::topics(*model_, filter_topic);
-
-                    if (data.empty())
-                    {
-                        view_.show_error(STR_ENTRY
-                                << "<"
-                                << arguments[1]
-                                << "> does not match any topic in the DDS network.");
-                        return;
-                    }
-
-                    ddspipe::yaml::set(yml, data, false);
-                }
-                else if (verbose_verbose_argument_(arg_2))
-                {
-                    // Handle 'topics <name> verbose2'
-                    auto data = participants::ModelParser::topics_verbose(*model_, filter_topic);
-
-                    if (data.empty())
-                    {
-                        view_.show_error(STR_ENTRY
-                                << "<"
-                                << arguments[1]
-                                << "> does not match any topic in the DDS network.");
-                        return;
-                    }
-
-                    ddspipe::yaml::set_collection(yml, data);
-                }
-                else
-                {
-                    view_.show_error(STR_ENTRY
-                                << "<"
-                                << arguments[2]
-                                << "> is not a valid verbosity mode. "
-                                << "Valid options are \"v \" and \"vv\".");
-                    return;
-                }
-            }
-            // Handle 'topics <wildard topic name>'
-            else
-            {
-                // Handle 'topics <name>'
-                auto data = participants::ModelParser::topics(*model_, filter_topic);
-
-                if (data.empty())
-                {
-                    view_.show_error(STR_ENTRY
-                            << "<"
-                            << arguments[1]
-                            << "> does not match any topic in the DDS network.");
-                    return;
-                }
-
-                ddspipe::yaml::set(yml, data, true);
+                view_.show_error(STR_ENTRY
+                        << "<"
+                        << arguments[1]
+                        << "> does not match any topic in the DDS network.");
+                return;
             }
 
+            ddspipe::yaml::set(yml, data, true);
+        }
+    }
+    else if (arguments.size() == 3)
+    {
+        const std::string& arg_1 = arguments[1];
+
+        ddspipe::core::types::WildcardDdsFilterTopic filter_topic;
+        filter_topic.topic_name = arg_1;
+
+        const std::string& arg_2 = arguments[2];
+
+        if (verbose_argument_(arg_2))
+        {
+            // Handle 'topics <name> verbose'
+            auto data = participants::ModelParser::topics(*model_, filter_topic);
+
+            if (data.empty())
+            {
+                view_.show_error(STR_ENTRY
+                        << "<"
+                        << arguments[1]
+                        << "> does not match any topic in the DDS network.");
+                return;
+            }
+
+            ddspipe::yaml::set(yml, data, false);
+        }
+        else if (verbose_verbose_argument_(arg_2))
+        {
+            // Handle 'topics <name> verbose2'
+            auto data = participants::ModelParser::topics_verbose(*model_, filter_topic);
+
+            if (data.empty())
+            {
+                view_.show_error(STR_ENTRY
+                        << "<"
+                        << arguments[1]
+                        << "> does not match any topic in the DDS network.");
+                return;
+            }
+
+            ddspipe::yaml::set_collection(yml, data);
+        }
+        else
+        {
+            view_.show_error(STR_ENTRY
+                        << "<"
+                        << arguments[2]
+                        << "> is not a valid verbosity mode. "
+                        << "Valid options are \"v \" and \"vv\".");
+            return;
         }
     }
 
@@ -441,7 +441,15 @@ void Controller::print_command_(
             view_.show_error(STR_ENTRY
                     << "<"
                     << arguments[1]
-                    << "> does match any topic discovered.");
+                    << "> does not match any topic discovered.");
+            return;
+        }
+        if (!(model_->is_any_topic_type_discovered(topics)))
+        {
+            view_.show_error(STR_ENTRY
+                    << "No Topic Type matching <"
+                    << filter_topic.topic_name
+                    << "> wildcard has been discovered, and thus cannot print its data.");
             return;
         }
 
@@ -482,7 +490,6 @@ void Controller::print_command_(
         // Must activate data streamer with the required callback
         bool activated = model_->activate(
             filter_topic,
-            topics,
             callback);
     }
 

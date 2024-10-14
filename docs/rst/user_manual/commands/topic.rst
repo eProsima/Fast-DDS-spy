@@ -18,7 +18,7 @@ These are the key-words recognize as this command:
 Arguments
 =========
 
-**Topic** command support from 0 to 2 arguments:
+**Topic** command supports from 0 to 2 arguments:
 
 *No argument*
 -------------
@@ -49,7 +49,7 @@ This Guid must exist inside the DDS network.
 Topic name with wildcards
 -------------------------
 
-When a topic name is with wildcards (*), this command retrieves :ref:`verbose information <user_manual_command_topic_output_verbose>` for all topics that matches the given filter.
+When a topic name contains wildcards (*), this command retrieves :ref:`verbose information <user_manual_command_topic_output_verbose>` for all topics that match the given filter.
 This allows users to query multiple topics in a single command, making it easier to gather related data quickly.
 
 Output Format

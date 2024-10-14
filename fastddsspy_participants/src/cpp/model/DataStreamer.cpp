@@ -43,17 +43,8 @@ bool DataStreamer::activate_all(
 
 bool DataStreamer::activate(
         const ddspipe::core::types::WildcardDdsFilterTopic& topic_to_activate,
-        const std::set<eprosima::ddspipe::core::types::DdsTopic>& topics,
         const std::shared_ptr<CallbackType>& callback)
 {
-    if (!is_any_topic_type_discovered(topics))
-    {
-        EPROSIMA_LOG_WARNING(FASTDDSSPY_DATASTREAMER,
-                "Type <" << topic_to_activate.type_name <<
-                "> for topic <" << topic_to_activate.topic_name << "> is not discovered.");
-        return false;
-    }
-
     std::unique_lock<std::shared_timed_mutex> _(mutex_);
 
     // If type exist, this is the new topic to activate
@@ -105,28 +96,14 @@ void DataStreamer::add_data(
             return;
         }
 
-        if (activated_all_)
+        if (!activated_all_ && !activated_topic_.matches(topic))
         {
-            if (!is_topic_type_discovered_nts_(topic))
-            {
-                // If all activated, add it only if schema is available, otherwise skip
-                EPROSIMA_LOG_WARNING(
-                    FASTDDSSPY_DATASTREAMER,
-                    "All activated but schema is not available.");
-                return;
-            }
-        }
-        else
-        {
-            if (!(activated_topic_.matches(topic)))
-            {
-                // If not all activated, and this is not the activated topic skip
-                EPROSIMA_LOG_INFO(
-                    FASTDDSSPY_DATASTREAMER,
-                    "Received data for topic '" << topic << "'. Note: This topic is not activated. " <<
-                    "Not all topics activated.");
-                return;
-            }
+            // If not all activated, and this is not the activated topic skip
+            EPROSIMA_LOG_INFO(
+                FASTDDSSPY_DATASTREAMER,
+                "Received data for topic '" << topic << "'. Note: This topic is not activated. " <<
+                "Not all topics activated.");
+            return;
         }
 
         EPROSIMA_LOG_INFO(
@@ -136,7 +113,6 @@ void DataStreamer::add_data(
         auto it = types_discovered_.find(topic.type_name);
         if (it == types_discovered_.end())
         {
-            // The topic that is supposed to be activated has no associated type. This should not happen
             EPROSIMA_LOG_WARNING(
                 FASTDDSSPY_DATASTREAMER,
                 "Data received on topic <" << topic << "> while its type has not been registered.");
@@ -145,12 +121,6 @@ void DataStreamer::add_data(
         else
         {
             dyn_type = it->second;
-        }
-
-        auto map_it = topic_type_discovered_.find(topic.m_topic_name);
-        if (map_it == topic_type_discovered_.end())
-        {
-            topic_type_discovered_[topic.m_topic_name] = topic.type_name;
         }
     }
 
