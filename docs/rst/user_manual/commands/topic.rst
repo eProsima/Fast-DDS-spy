@@ -80,6 +80,9 @@ Topics info in verbose mode
 Topics info in high verbosity mode
 ----------------------------------
 
+This argument queries for more complete information about each of the topics in the network.
+It adds the Guid of each endpoint on the topic and the whether the type has been discovered.
+
 .. code-block:: yaml
 
     name: <topic name>
