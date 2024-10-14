@@ -46,7 +46,7 @@ eProsima_ENUMERATION_BUILDER(
             { CommandValue::datawriter COMMA {"datawriter" COMMA "datawriters" COMMA "w" COMMA "W" COMMA "writer" COMMA "writers" COMMA "publication" COMMA "publications"}} COMMA
             { CommandValue::datareader COMMA {"datareader" COMMA "datareaders" COMMA "r" COMMA "R" COMMA "reader" COMMA "readers" COMMA "subscription" COMMA "subscriptions"}} COMMA
             { CommandValue::topic COMMA {"topic"  COMMA "topics" COMMA "t" COMMA "T"}} COMMA
-            { CommandValue::print COMMA {"print" COMMA "show" COMMA "s" COMMA "S"}} COMMA
+            { CommandValue::print COMMA {"echo" COMMA "print" COMMA "show" COMMA "s" COMMA "S"}} COMMA
         }
     );
 

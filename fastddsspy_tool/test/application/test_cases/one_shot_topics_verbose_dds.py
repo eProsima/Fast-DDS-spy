@@ -37,12 +37,11 @@ class TestCase_instance (test_class.TestCase):
             config='fastddsspy_tool/test/application/configuration/\
 configuration_discovery_time.yaml',
             arguments_dds=[],
-            arguments_spy=['--config-path', 'configuration', 'topics', 'verbose'],
+            arguments_spy=['--config-path', 'configuration', 'topics', 'v'],
             commands_spy=[],
             output="""- name: HelloWorldTopic\n\
   type: HelloWorld\n\
-  datawriters:\n\
-    - %%guid%%\n\
-  rate: %%rate%%\n\
-  dynamic_type_discovered: true\n"""
+  datawriters: 1\n\
+  datareaders: 0\n\
+  rate: %%rate%%\n"""
         )

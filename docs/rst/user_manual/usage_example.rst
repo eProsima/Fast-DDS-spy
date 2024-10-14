@@ -85,29 +85,25 @@ Try out all the commands DDS Spy has to offer:
 
 .. code-block:: output
 
-    - name: Circle
-      type: ShapeType
-      datawriters: 2
-      datareaders: 2
-      rate: 13.0298 Hz
-    - name: Square
-      type: ShapeType
-      datawriters: 3
-      datareaders: 2
-      rate: 26.6975 Hz
+    - topic: Circle (ShapeType) (1|2) [9.000000Hz]
+    - topic: Square (ShapeType) (1|0) [12.412500Hz]
+    - topic: Triangle (ShapeType) (0|1) [0.000000Hz]
+    - ...
 
-* ``topics Square``
+* ``topics Circle vv``
 
 .. code-block:: output
 
-    name: Circle
-    type: ShapeType
-    datawriters:
-      - 01.0f.44.59.da.57.de.ec.00.00.00.00|0.0.6.2
-    datareaders:
-      - 01.0f.44.59.c9.65.78.e5.00.00.00.00|0.0.2.7
-    rate: 13.0418 Hz
-    dynamic_type_discovered: true
+    - name: Circle
+      type: ShapeType
+      datawriters:
+        - 01.0f.93.86.fb.9a.7f.92.00.00.02.00|0.0.3.2
+      datareaders:
+        - 01.0f.93.86.fb.9a.7f.92.00.00.02.00|0.0.1.7
+        - 01.0f.93.86.fb.9a.7f.92.00.00.02.00|0.0.2.7
+      rate: 11.2986 Hz
+      dynamic_type_discovered: false
+
 
 * ``help``
 
@@ -118,24 +114,27 @@ Try out all the commands DDS Spy has to offer:
     Fast DDS Spy is an interactive CLI that allow to instrospect DDS networks.
     Each command shows data related with the network in Yaml format.
     Commands available and the information they show:
-        help                   : this help.
-        version                : tool version.
-        quit                   : exit interactive CLI and close program.
-        participants           : DomainParticipants discovered in the network.
-        participants verbose   : verbose information about DomainParticipants discovered in the network.
-        participants <Guid>    : verbose information related with a specific DomainParticipant.
-        writers                : DataWriters discovered in the network.
-        writers verbose        : verbose information about DataWriters discovered in the network.
-        writers <Guid>         : verbose information related with a specific DataWriter.
-        reader                 : DataReaders discovered in the network.
-        reader verbose         : verbose information about DataReaders discovered in the network.
-        reader <Guid>          : verbose information related with a specific DataReader.
-        topics                 : Topics discovered in the network.
-        topics verbose         : verbose information about Topics discovered in the network.
-        topics <name>          : verbose information related with a specific Topic.
-        show <name>            : data of a specific Topic (Data Type must be discovered).
-        show <name> verbose    : data with additional source info of a specific Topic.
-        show all               : verbose data of all topics (only those whose Data Type is discovered).
+        help                            : this help.
+        version                         : tool version.
+        quit                            : exit interactive CLI and close program.
+        participants                    : DomainParticipants discovered in the network.
+        participants verbose            : verbose information about DomainParticipants discovered in the network.
+        participants <Guid>             : verbose information related with a specific DomainParticipant.
+        writers                         : DataWriters discovered in the network.
+        writers verbose                 : verbose information about DataWriters discovered in the network.
+        writers <Guid>                  : verbose information related with a specific DataWriter.
+        reader                          : DataReaders discovered in the network.
+        reader verbose                  : verbose information about DataReaders discovered in the network.
+        reader <Guid>                   : verbose information related with a specific DataReader.
+        topics                          : Topics discovered in the network in compact format.
+        topics v                        : Topics discovered in the network.
+        topics vv                       : verbose information about Topics discovered in the network.
+        topics <name>                   : Topics discovered in the network filtered by name (wildcard allowed (*)).
+        echo <name>                     : data of a specific Topic (Data Type must be discovered).
+        echo <wildcard_name>            : data of a Topics matching the wildcard name (Data Type must be discovered).
+        echo <name> verbose             : data with additional source info of a specific Topic.
+        echo <wildcard_name> verbose    : data with additional source info of Topics matching the topic name (wildcard allowed (*)).
+        echo all                        : verbose data of all topics (only those whose Data Type is discovered).
 
     Notes and comments:
         To exit from data printing, press enter.

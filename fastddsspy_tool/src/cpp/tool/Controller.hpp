@@ -72,6 +72,9 @@ protected:
     bool verbose_argument_(
             const std::string& argument) const noexcept;
 
+    bool verbose_verbose_argument_(
+            const std::string& argument) const noexcept;
+
     bool all_argument_(
             const std::string& argument) const noexcept;
 

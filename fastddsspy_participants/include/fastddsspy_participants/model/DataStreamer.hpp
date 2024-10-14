@@ -14,17 +14,19 @@
 
 #pragma once
 
-#include <iostream>
 #include <functional>
+#include <iostream>
 #include <shared_mutex>
 #include <tuple>
+#include <unordered_map>
 
 #include <fastcdr/cdr/fixed_size_string.hpp>
 
 #include <fastdds/dds/xtypes/dynamic_types/DynamicType.hpp>
 
-#include <ddspipe_core/types/topic/dds/DdsTopic.hpp>
 #include <ddspipe_core/types/dds/Payload.hpp>
+#include <ddspipe_core/types/topic/dds/DdsTopic.hpp>
+#include <ddspipe_core/types/topic/filter/WildcardDdsFilterTopic.hpp>
 
 #include <fastddsspy_participants/library/library_dll.h>
 #include <fastddsspy_participants/model/TopicRateCalculator.hpp>
@@ -51,7 +53,7 @@ public:
 
     FASTDDSSPY_PARTICIPANTS_DllAPI
     bool activate(
-            const ddspipe::core::types::DdsTopic& topic_to_activate,
+            const ddspipe::core::types::WildcardDdsFilterTopic& topic_to_activate,
             const std::shared_ptr<CallbackType>& callback);
 
     FASTDDSSPY_PARTICIPANTS_DllAPI
@@ -71,10 +73,17 @@ public:
     bool is_topic_type_discovered(
             const ddspipe::core::types::DdsTopic& topic_to_activate) const noexcept;
 
+    FASTDDSSPY_PARTICIPANTS_DllAPI
+    bool is_any_topic_type_discovered(
+            const std::set<eprosima::ddspipe::core::types::DdsTopic>& topics) const noexcept;
+
 protected:
 
     bool is_topic_type_discovered_nts_(
             const ddspipe::core::types::DdsTopic& topic_to_activate) const noexcept;
+
+    bool is_any_topic_type_discovered_nts_(
+            const std::set<eprosima::ddspipe::core::types::DdsTopic>& topics) const noexcept;
 
     bool activated_ {false};
 
@@ -82,7 +91,7 @@ protected:
 
     bool activated_all_ {false};
 
-    ddspipe::core::types::DdsTopic activated_topic_;
+    ddspipe::core::types::WildcardDdsFilterTopic activated_topic_;
 
     std::map<std::string, fastdds::dds::DynamicType::_ref_type> types_discovered_;
 

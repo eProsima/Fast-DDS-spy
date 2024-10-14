@@ -20,9 +20,6 @@ set(TEST_SOURCES
 all_library_sources("${TEST_SOURCES}")
 
 set(TEST_LIST
-        activate_false
-        activate_true
-        activate_twice
         topic_type_discovered
         deactivate
         add_data

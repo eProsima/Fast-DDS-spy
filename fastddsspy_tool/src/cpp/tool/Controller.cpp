@@ -21,6 +21,7 @@
 #include <cpp_utils/user_interface/CommandReader.hpp>
 #include <cpp_utils/macros/custom_enumeration.hpp>
 
+#include <ddspipe_core/types/topic/filter/WildcardDdsFilterTopic.hpp>
 #include <ddspipe_yaml/YamlWriter.hpp>
 
 #include <fastddsspy_participants/library/config.h>
@@ -204,6 +205,16 @@ bool Controller::verbose_argument_(
         || (argument == "V"));
 }
 
+bool Controller::verbose_verbose_argument_(
+        const std::string& argument) const noexcept
+{
+    return (
+        (argument == "verbose2")
+        || (argument == "vv")
+        || (argument == "--vv")
+        || (argument == "VV"));
+}
+
 bool Controller::all_argument_(
         const std::string& argument) const noexcept
 {
@@ -282,30 +293,102 @@ void Controller::topics_command_(
         const std::vector<std::string>& arguments) noexcept
 {
     Yaml yml;
-    // Size cannot be 0
+
+    // Handle 'topics' command without arguments
     if (arguments.size() == 1)
     {
         // all participants simple
-        ddspipe::yaml::set(yml, participants::ModelParser::topics(*model_));
+        ddspipe::yaml::set(yml, participants::ModelParser::topics(
+                    *model_, ddspipe::core::types::WildcardDdsFilterTopic()), true);
     }
-    else if (verbose_argument_(arguments[1]))
+    else if (arguments.size() == 2)
     {
-        // verbose
-        ddspipe::yaml::set(yml, participants::ModelParser::topics_verbose(*model_));
+        const std::string& arg_1 = arguments[1];
+
+        if (verbose_argument_(arg_1))
+        {
+            // Handle 'topics verbose'
+            ddspipe::yaml::set(yml, participants::ModelParser::topics(
+                        *model_, ddspipe::core::types::WildcardDdsFilterTopic()), false);
+        }
+        else if (verbose_verbose_argument_(arg_1))
+        {
+            // Handle 'topics verbose2'
+            ddspipe::yaml::set(yml, participants::ModelParser::topics_verbose(
+                        *model_, ddspipe::core::types::WildcardDdsFilterTopic()));
+        }
+        else
+        {
+            // Handle 'topics <wildard topic name>'
+            ddspipe::core::types::WildcardDdsFilterTopic filter_topic;
+            filter_topic.topic_name = arg_1;
+
+            auto data = participants::ModelParser::topics(*model_, filter_topic);
+
+            if (data.empty())
+            {
+                view_.show_error(STR_ENTRY
+                        << "<"
+                        << arguments[1]
+                        << "> does not match any topic in the DDS network.");
+                return;
+            }
+
+            ddspipe::yaml::set(yml, data, true);
+        }
     }
-    else
+    else if (arguments.size() == 3)
     {
-        auto data = participants::ModelParser::topics(*model_, arguments[1]);
-        if (data.name != arguments[1])
+        const std::string& arg_1 = arguments[1];
+
+        ddspipe::core::types::WildcardDdsFilterTopic filter_topic;
+        filter_topic.topic_name = arg_1;
+
+        const std::string& arg_2 = arguments[2];
+
+        if (verbose_argument_(arg_2))
+        {
+            // Handle 'topics <name> verbose'
+            auto data = participants::ModelParser::topics(*model_, filter_topic);
+
+            if (data.empty())
+            {
+                view_.show_error(STR_ENTRY
+                        << "<"
+                        << arguments[1]
+                        << "> does not match any topic in the DDS network.");
+                return;
+            }
+
+            ddspipe::yaml::set(yml, data, false);
+        }
+        else if (verbose_verbose_argument_(arg_2))
+        {
+            // Handle 'topics <name> verbose2'
+            auto data = participants::ModelParser::topics_verbose(*model_, filter_topic);
+
+            if (data.empty())
+            {
+                view_.show_error(STR_ENTRY
+                        << "<"
+                        << arguments[1]
+                        << "> does not match any topic in the DDS network.");
+                return;
+            }
+
+            ddspipe::yaml::set_collection(yml, data);
+        }
+        else
         {
             view_.show_error(STR_ENTRY
                     << "<"
-                    << arguments[1]
-                    << "> topic does not exist in the DDS network.");
+                    << arguments[2]
+                    << "> is not a valid verbosity mode. "
+                    << "Valid options are \"v \" and \"vv\".");
             return;
         }
-        ddspipe::yaml::set(yml, data);
     }
+
     view_.show(yml);
 }
 
@@ -348,23 +431,23 @@ void Controller::print_command_(
     // Print topic
     else
     {
-        ddspipe::core::types::DdsTopic topic = participants::ModelParser::get_topic(*model_, arguments[1]);
-        if (topic.m_topic_name != arguments[1])
+        ddspipe::core::types::WildcardDdsFilterTopic filter_topic;
+        filter_topic.topic_name = arguments[1];
+
+        std::set<eprosima::ddspipe::core::types::DdsTopic> topics =
+                participants::ModelParser::get_topics(*model_, filter_topic);
+        if (topics.empty())
         {
             view_.show_error(STR_ENTRY
-                    << "Topic <"
-                    << arguments[1]
-                    << "> does not exist.");
+                    << "<"
+                    << filter_topic.topic_name.get_value()
+                    << "> does not match any topic discovered.");
             return;
         }
-
-        bool topic_available = model_->is_topic_type_discovered(topic);
-        if (!topic_available)
+        if (!(model_->is_any_topic_type_discovered(topics)))
         {
             view_.show_error(STR_ENTRY
-                    << "Topic Type <"
-                    << topic.type_name
-                    << "> has not been discovered, and thus cannot print its data.");
+                    << "No type information available and thus cannot print data.");
             return;
         }
 
@@ -404,17 +487,8 @@ void Controller::print_command_(
 
         // Must activate data streamer with the required callback
         bool activated = model_->activate(
-            topic,
+            filter_topic,
             callback);
-
-        if (!activated)
-        {
-            view_.show_error(STR_ENTRY
-                    << "Error showing data for topic <"
-                    << topic.topic_name()
-                    << ".");
-            return;
-        }
     }
 
     // Wait for other command to stop printing topics
@@ -439,24 +513,27 @@ void Controller::help_command_(
             << "Fast DDS Spy is an interactive CLI that allow to instrospect DDS networks.\n"
             << "Each command shows data related with the network in Yaml format.\n"
             << "Commands available and the information they show:\n"
-            << "\thelp                   : this help.\n"
-            << "\tversion                : tool version.\n"
-            << "\tquit                   : exit interactive CLI and close program.\n"
-            << "\tparticipants           : DomainParticipants discovered in the network.\n"
-            << "\tparticipants verbose   : verbose information about DomainParticipants discovered in the network.\n"
-            << "\tparticipants <Guid>    : verbose information related with a specific DomainParticipant.\n"
-            << "\twriters                : DataWriters discovered in the network.\n"
-            << "\twriters verbose        : verbose information about DataWriters discovered in the network.\n"
-            << "\twriters <Guid>         : verbose information related with a specific DataWriter.\n"
-            << "\treader                 : DataReaders discovered in the network.\n"
-            << "\treader verbose         : verbose information about DataReaders discovered in the network.\n"
-            << "\treader <Guid>          : verbose information related with a specific DataReader.\n"
-            << "\ttopics                 : Topics discovered in the network.\n"
-            << "\ttopics verbose         : verbose information about Topics discovered in the network.\n"
-            << "\ttopics <name>          : verbose information related with a specific Topic.\n"
-            << "\tshow <name>            : data of a specific Topic (Data Type must be discovered).\n"
-            << "\tshow <name> verbose    : data with additional source info of a specific Topic.\n"
-            << "\tshow all               : verbose data of all topics (only those whose Data Type is discovered).\n"
+            << "\thelp                            : this help.\n"
+            << "\tversion                         : tool version.\n"
+            << "\tquit                            : exit interactive CLI and close program.\n"
+            << "\tparticipants                    : DomainParticipants discovered in the network.\n"
+            << "\tparticipants verbose            : verbose information about DomainParticipants discovered in the network.\n"
+            << "\tparticipants <Guid>             : verbose information related with a specific DomainParticipant.\n"
+            << "\twriters                         : DataWriters discovered in the network.\n"
+            << "\twriters verbose                 : verbose information about DataWriters discovered in the network.\n"
+            << "\twriters <Guid>                  : verbose information related with a specific DataWriter.\n"
+            << "\treader                          : DataReaders discovered in the network.\n"
+            << "\treader verbose                  : verbose information about DataReaders discovered in the network.\n"
+            << "\treader <Guid>                   : verbose information related with a specific DataReader.\n"
+            << "\ttopics                          : Topics discovered in the network in compact format.\n"
+            << "\ttopics v                        : Topics discovered in the network.\n"
+            << "\ttopics vv                       : verbose information about Topics discovered in the network.\n"
+            << "\ttopics <name>                   : Topics discovered in the network filtered by name (wildcard allowed (*)).\n"
+            << "\techo <name>                     : data of a specific Topic (Data Type must be discovered).\n"
+            << "\techo <wildcard_name>            : data of Topics matching the wildcard name (and whose Data Type is discovered).\n"
+            << "\techo <name> verbose             : data with additional source info of a specific Topic.\n"
+            << "\techo <wildcard_name> verbose    : data with additional source info of Topics matching the topic name (wildcard allowed (*)).\n"
+            << "\techo all                        : verbose data of all topics (only those whose Data Type is discovered).\n"
             << "\n"
             << "Notes and comments:\n"
             << "\tTo exit from data printing, press enter.\n"

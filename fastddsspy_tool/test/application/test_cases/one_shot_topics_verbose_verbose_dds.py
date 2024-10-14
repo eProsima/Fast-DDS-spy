@@ -25,16 +25,24 @@ class TestCase_instance (test_class.TestCase):
         @brief Initialize the TestCase_instance object.
 
         This test launch:
-            fastddsspy show hello
+            fastddsspy --config-path fastddsspy_tool/test/application/configuration/\
+                configuration_discovery_time.yaml topics verbose
+            AdvancedConfigurationExample publisher
         """
         super().__init__(
-            name='ShowTopicCommand',
+            name='TopicsVerboseDDSCommand',
             one_shot=True,
             command=[],
-            dds=False,
-            config='',
+            dds=True,
+            config='fastddsspy_tool/test/application/configuration/\
+configuration_discovery_time.yaml',
             arguments_dds=[],
-            arguments_spy=['show', 'hello'],
+            arguments_spy=['--config-path', 'configuration', 'topics', 'vv'],
             commands_spy=[],
-            output="""\x1b[1;31m<hello> does not match any topic discovered.\x1b[0m\n"""
+            output="""- name: HelloWorldTopic\n\
+  type: HelloWorld\n\
+  datawriters:\n\
+    - %%guid%%\n\
+  rate: %%rate%%\n\
+  dynamic_type_discovered: true\n"""
         )

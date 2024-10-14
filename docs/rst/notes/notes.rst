@@ -2,7 +2,7 @@
 
 .. _notes:
 
-.. .. include:: forthcoming_version.rst
+.. include:: forthcoming_version.rst
 
 ##############
 Version v1.0.0
@@ -51,8 +51,8 @@ This release includes the following **Dependencies Update**:
         - `v1.0.0 <https://github.com/eProsima/dev-utils/releases/tag/v1.0.0>`_
     *   - DDS Pipe
         - `eProsima/DDS-Pipe <https://github.com/eProsima/DDS-Pipe.git>`_
-        - `v0.4.0 <https://github.com/eProsima/DDS-Pipe/releases/tag/v0.4.0>`_
-        - `v1.0.0 <https://github.com/eProsima/DDS-Pipe/releases/tag/v0.4.0>`_
+        - `v0.4.0 <https://github.com/eProsima/DDS-Pipe/releases/tag/v0.4.0>`__
+        - `v1.0.0 <https://github.com/eProsima/DDS-Pipe/releases/tag/v1.0.0>`__
 
 
 #################

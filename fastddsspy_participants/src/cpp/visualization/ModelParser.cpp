@@ -291,16 +291,14 @@ ComplexEndpointData ModelParser::readers(
     return result;
 }
 
-/*
- * This is an auxiliary function that is used to get topics endpoint database
- */
-std::set<eprosima::ddspipe::core::types::DdsTopic> get_topics(
-        const SpyModel& model) noexcept
+std::set<eprosima::ddspipe::core::types::DdsTopic> ModelParser::get_topics(
+        const SpyModel& model,
+        const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic) noexcept
 {
     std::set<eprosima::ddspipe::core::types::DdsTopic> result;
     for (const auto& endpoint : model.endpoint_database_)
     {
-        if (endpoint.second.active)
+        if (endpoint.second.active && filter_topic.matches(endpoint.second.topic))
         {
             result.insert(endpoint.second.topic);
         }
@@ -308,90 +306,44 @@ std::set<eprosima::ddspipe::core::types::DdsTopic> get_topics(
     return result;
 }
 
-ddspipe::core::types::DdsTopic ModelParser::get_topic(
+SimpleTopicData ModelParser::simple_topic_data(
         const SpyModel& model,
-        std::string topic_name) noexcept
+        const ddspipe::core::types::DdsTopic& topic) noexcept
 {
+    SimpleTopicData result;
 
+    int datawriters = 0;
+    int datareaders = 0;
     for (const auto& endpoint : model.endpoint_database_)
     {
-        if (endpoint.second.active && endpoint.second.topic.m_topic_name == topic_name)
+        if (endpoint.second.active && endpoint.second.topic.m_topic_name == topic.m_topic_name)
         {
-            return endpoint.second.topic;
-        }
-    }
-    ddspipe::core::types::DdsTopic topic;
-    return topic;
-}
-
-std::vector<SimpleTopicData> ModelParser::topics(
-        const SpyModel& model) noexcept
-{
-    std::vector<SimpleTopicData> result;
-
-    std::set<eprosima::ddspipe::core::types::DdsTopic> endpoints_topics = get_topics(model);
-    for (const auto& topic : endpoints_topics)
-    {
-        int datawriters = 0;
-        int datareaders = 0;
-        for (const auto& endpoint : model.endpoint_database_)
-        {
-            if (endpoint.second.active && endpoint.second.topic.m_topic_name == topic.m_topic_name)
+            if (endpoint.second.is_reader())
             {
-                if (endpoint.second.is_reader())
-                {
-                    datareaders++;
-                }
-                if (endpoint.second.is_writer())
-                {
-                    datawriters++;
-                }
+                datareaders++;
+            }
+            if (endpoint.second.is_writer())
+            {
+                datawriters++;
             }
         }
-        result.push_back({
-                        model.get_ros2_types() ? utils::demangle_if_ros_topic(topic.m_topic_name) : topic.m_topic_name,
-                        model.get_ros2_types() ? utils::demangle_if_ros_type(topic.type_name) : topic.type_name,
-                        datawriters,
-                        datareaders,
-                        {
-                            model.get_topic_rate(topic),
-                            "Hz"
-                        }
-                    });
     }
+
+    result.name = model.get_ros2_types() ? utils::demangle_if_ros_topic(topic.m_topic_name) : topic.m_topic_name;
+    result.type = model.get_ros2_types() ? utils::demangle_if_ros_type(topic.type_name) : topic.type_name;
+    result.datawriters = datawriters;
+    result.datareaders = datareaders;
+    result.rate.rate = model.get_topic_rate(topic);
+    result.rate.unit = "Hz";
 
     return result;
 }
 
-std::vector<ComplexTopicData> ModelParser::topics_verbose(
-        const SpyModel& model) noexcept
-{
-    std::vector<ComplexTopicData> result;
-
-    std::set<eprosima::ddspipe::core::types::DdsTopic> endpoints_topics = get_topics(model);
-    for (const auto& topic : endpoints_topics)
-    {
-        result.push_back(topics(model, topic.m_topic_name));
-    }
-
-    return result;
-}
-
-ComplexTopicData ModelParser::topics(
+ComplexTopicData ModelParser::complex_topic_data(
         const SpyModel& model,
-        const std::string& topic_name) noexcept
+        const ddspipe::core::types::DdsTopic& topic) noexcept
 {
     ComplexTopicData result;
-
-    // Lets check if topic exists
-    auto topic = get_topic(model, topic_name);
-
-    // If topic not found, return an empty Daa
-    if (topic.m_topic_name != topic_name)
-    {
-        result.name = "";
-        return result;
-    }
 
     // Topic found, fill its information
     result.name = model.get_ros2_types() ? utils::demangle_if_ros_topic(topic.m_topic_name) : topic.m_topic_name;
@@ -413,6 +365,36 @@ ComplexTopicData ModelParser::topics(
                 result.datawriters.push_back({it.first});
             }
         }
+    }
+
+    return result;
+}
+
+std::vector<SimpleTopicData> ModelParser::topics(
+        const SpyModel& model,
+        const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic) noexcept
+{
+    std::vector<SimpleTopicData> result;
+
+    std::set<eprosima::ddspipe::core::types::DdsTopic> endpoints_topics = get_topics(model, filter_topic);
+    for (const auto& topic : endpoints_topics)
+    {
+        result.push_back(simple_topic_data(model, topic));
+    }
+
+    return result;
+}
+
+std::vector<ComplexTopicData> ModelParser::topics_verbose(
+        const SpyModel& model,
+        const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic) noexcept
+{
+    std::vector<ComplexTopicData> result;
+
+    std::set<eprosima::ddspipe::core::types::DdsTopic> topics = get_topics(model, filter_topic);
+    for (const auto& topic : topics)
+    {
+        result.push_back(complex_topic_data(model, topic));
     }
 
     return result;

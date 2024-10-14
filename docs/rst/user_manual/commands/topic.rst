@@ -18,7 +18,7 @@ These are the key-words recognize as this command:
 Arguments
 =========
 
-**Topic** command support 0 or 1 argument:
+**Topic** command supports from 0 to 2 arguments:
 
 *No argument*
 -------------
@@ -30,8 +30,7 @@ The output format is as follows: :ref:`user_manual_command_topic_output_simple`.
 Verbose
 -------
 
-This argument queries for more complete information about each of the topics in the network.
-It adds the Guid of each endpoint on the topic and the whether the type has been discovered.
+This argument (``v`` or ``vv``) queries for more complete information about each of the topics in the network.
 The output is a **list** of data with :ref:`verbose information <user_manual_command_topic_output_verbose>`.
 Check the :ref:`verbose <user_manual_commands_input_verbose>` section in order to know which key-words are available for this argument.
 
@@ -47,15 +46,28 @@ This Guid must exist inside the DDS network.
     If there are 2 topics with the same name and different Topic Data Type, only one of them could be visible.
     These is a circumstance that :term:`DDS` allows, but it is strongly suggested not to do.
 
+Topic name with wildcards
+-------------------------
+
+When a topic name contains wildcards (*), this command retrieves :ref:`verbose information <user_manual_command_topic_output_verbose>` for all topics that match the given filter.
+This allows users to query multiple topics in a single command, making it easier to gather related data quickly.
+
 Output Format
 =============
 
-The topic information is retrieved in 2 formats depending on the verbose option.
+The topic information is retrieved in multiple formats depending on the verbosity option.
 
 .. _user_manual_command_topic_output_simple:
 
-Simple Writer info
------------------------
+Topics info
+-----------
+
+- topic: <topic name> (<topic type name>) (<n writers>|<n readers>) [<rate> Hz]
+
+.. _user_manual_command_topic_output_verbose:
+
+Topics info in verbose mode
+---------------------------
 
 .. code-block:: yaml
 
@@ -65,10 +77,11 @@ Simple Writer info
     datareaders: <number of datareaders currently active>
     rate: <samples per second> Hz
 
-.. _user_manual_command_topic_output_verbose:
+Topics info in high verbosity mode
+----------------------------------
 
-Verbose Writer info
-------------------------
+This argument queries for more complete information about each of the topics in the network.
+It adds the Guid of each endpoint on the topic and the whether the type has been discovered.
 
 .. code-block:: yaml
 

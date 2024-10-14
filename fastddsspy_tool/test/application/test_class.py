@@ -167,12 +167,13 @@ class TestCase():
         @param rate: The rate to check.
         @return Returns True if the rate is valid, False otherwise.
         """
-        pattern = r'^(\d+(\.\d+)?|inf)\sHz$'     # rate: (10.5 | inf) Hz
+        # Just find the number or inf
+        pattern = r'^(inf|\d+(\.\d+)?)'
 
         match = re.match(pattern, rate)
 
         if match:
-            return match.group(1) == 'inf' or float(match.group(1)) > 0
+            return match.group() == 'inf' or float(match.group()) > 0
 
         print('Not valid rate: ')
         print(rate)
@@ -208,6 +209,7 @@ class TestCase():
         lines_expected_output = expected_output.splitlines()
         lines_output = output.splitlines()
 
+        # TODO (Raul): If guid and rate are on the same line this will not work.
         for i in range(len(lines_expected_output)):
             if '%%guid%%' in lines_expected_output[i]:
                 start_guid_position = lines_expected_output[i].find('%%guid%%')

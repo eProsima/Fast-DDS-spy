@@ -1992,7 +1992,8 @@ TEST(ModelParserTest, simple_topic_dds_endpoints)
 
     // Obtain information from model
     std::vector<spy::participants::SimpleTopicData> result;
-    result = spy::participants::ModelParser::topics(model);
+    result = spy::participants::ModelParser::topics(
+        model, ddspipe::core::types::WildcardDdsFilterTopic());
 
     // Create expected return
     std::vector<spy::participants::SimpleTopicData> expected_result;
@@ -2034,7 +2035,8 @@ TEST(ModelParserTest, simple_topic_dds_endpoints_ros2_types)
 
     // Obtain information from model
     std::vector<spy::participants::SimpleTopicData> result;
-    result = spy::participants::ModelParser::topics(model);
+    result = spy::participants::ModelParser::topics(
+        model, ddspipe::core::types::WildcardDdsFilterTopic());
 
     // Create expected return
     std::vector<spy::participants::SimpleTopicData> expected_result;
@@ -2079,7 +2081,8 @@ TEST(ModelParserTest, simple_topic_ros2_endpoints)
 
     // Obtain information from model
     std::vector<spy::participants::SimpleTopicData> result;
-    result = spy::participants::ModelParser::topics(model);
+    result = spy::participants::ModelParser::topics(
+        model, ddspipe::core::types::WildcardDdsFilterTopic());
 
     // Create expected return
     std::vector<spy::participants::SimpleTopicData> expected_result;
@@ -2124,7 +2127,8 @@ TEST(ModelParserTest, simple_topic_ros2_endpoints_ros2_types)
 
     // Obtain information from model
     std::vector<spy::participants::SimpleTopicData> result;
-    result = spy::participants::ModelParser::topics(model);
+    result = spy::participants::ModelParser::topics(
+        model, ddspipe::core::types::WildcardDdsFilterTopic());
 
     // Create expected return
     std::vector<spy::participants::SimpleTopicData> expected_result;
@@ -2166,7 +2170,8 @@ TEST(ModelParserTest, topics_verbose_dds_endpoints)
 
     // Obtain information from model
     std::vector<spy::participants::ComplexTopicData> result;
-    result = spy::participants::ModelParser::topics_verbose(model);
+    result = spy::participants::ModelParser::topics_verbose(
+        model, ddspipe::core::types::WildcardDdsFilterTopic());
 
     // Create expected return
     std::vector<spy::participants::ComplexTopicData> expected_result;
@@ -2234,7 +2239,8 @@ TEST(ModelParserTest, topics_verbose_dds_endpoints_ros2_types)
 
     // Obtain information from model
     std::vector<spy::participants::ComplexTopicData> result;
-    result = spy::participants::ModelParser::topics_verbose(model);
+    result = spy::participants::ModelParser::topics_verbose(
+        model, ddspipe::core::types::WildcardDdsFilterTopic());
 
     // Create expected return
     std::vector<spy::participants::ComplexTopicData> expected_result;
@@ -2305,7 +2311,8 @@ TEST(ModelParserTest, topics_verbose_ros2_endpoints)
 
     // Obtain information from model
     std::vector<spy::participants::ComplexTopicData> result;
-    result = spy::participants::ModelParser::topics_verbose(model);
+    result = spy::participants::ModelParser::topics_verbose(
+        model, ddspipe::core::types::WildcardDdsFilterTopic());
 
     // Create expected return
     std::vector<spy::participants::ComplexTopicData> expected_result;
@@ -2376,7 +2383,8 @@ TEST(ModelParserTest, topics_verbose_ros2_endpoints_ros2_types)
 
     // Obtain information from model
     std::vector<spy::participants::ComplexTopicData> result;
-    result = spy::participants::ModelParser::topics_verbose(model);
+    result = spy::participants::ModelParser::topics_verbose(
+        model, ddspipe::core::types::WildcardDdsFilterTopic());
 
     // Create expected return
     std::vector<spy::participants::ComplexTopicData> expected_result;
@@ -2444,7 +2452,7 @@ TEST(ModelParserTest, complex_topic_dds_endpoints)
 
     // Obtain information from model
     spy::participants::ComplexTopicData result;
-    result = spy::participants::ModelParser::topics(model, topic.m_topic_name);
+    result = spy::participants::ModelParser::complex_topic_data(model, topic);
 
     // Create expected return
     std::vector<spy::participants::ComplexTopicData::Endpoint> datawriters;
@@ -2504,7 +2512,7 @@ TEST(ModelParserTest, complex_topic_dds_endpoints_ros2_types)
 
     // Obtain information from model
     spy::participants::ComplexTopicData result;
-    result = spy::participants::ModelParser::topics(model, topic.m_topic_name);
+    result = spy::participants::ModelParser::complex_topic_data(model, topic);
 
     // Create expected return
     std::vector<spy::participants::ComplexTopicData::Endpoint> datawriters;
@@ -2567,7 +2575,7 @@ TEST(ModelParserTest, complex_topic_ros2_endpoints)
 
     // Obtain information from model
     spy::participants::ComplexTopicData result;
-    result = spy::participants::ModelParser::topics(model, topic.m_topic_name);
+    result = spy::participants::ModelParser::complex_topic_data(model, topic);
 
     // Create expected return
     std::vector<spy::participants::ComplexTopicData::Endpoint> datawriters;
@@ -2630,7 +2638,7 @@ TEST(ModelParserTest, complex_topic_ros2_endpoints_ros2_types)
 
     // Obtain information from model
     spy::participants::ComplexTopicData result;
-    result = spy::participants::ModelParser::topics(model, topic.m_topic_name);
+    result = spy::participants::ModelParser::complex_topic_data(model, topic);
 
     // Create expected return
     std::vector<spy::participants::ComplexTopicData::Endpoint> datawriters;

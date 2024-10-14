@@ -180,7 +180,7 @@ This argument sets the log verbosity to Info.
 
 .. warning::
 
-    Using this option with :ref:`log filter <user_manual_user_interface_log_filter_argument>` and/or :ref:`log verbosity <user_manual_user_interface_log_verbosity_argument>` will head to undefined behaviour.
+    Using this option with :ref:`log filter <user_manual_user_interface_log_filter_argument>` and/or :ref:`log verbosity <user_manual_user_interface_log_verbosity_argument>` will lead to undefined behavior.
 
 .. _user_manual_user_interface_log_filter_argument:
 
@@ -247,7 +247,7 @@ Using the :ref:`user_manual_user_interface_interactive_app`, this will be the pr
 
 .. code-block:: console
 
-    <path>$ fastddsspy
+    $ fastddsspy
 
      ____|             |        __ \   __ \    ___|        ___|
     |     _` |   __|  __|      |   |  |   | \___ \      \___ \   __ \   |   |
@@ -263,13 +263,13 @@ Using the :ref:`user_manual_user_interface_interactive_app`, this will be the pr
 
     Insert a command for Fast DDS Spy:
     >> quit
-    <path>$
+    $
 
 However, using :ref:`user_manual_user_interface_one_shot` this will be expected result:
 
 .. code-block:: console
 
-    <path>$ fastddsspy participants
+    $ fastddsspy participants
     - name: Fast DDS ShapesDemo Participant
       guid: 01.0f.44.59.21.58.14.d2.00.00.00.00|0.0.1.c1
-    <path>$
+    $

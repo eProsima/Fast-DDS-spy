@@ -39,10 +39,5 @@ configuration_discovery_time.yaml',
             arguments_dds=[],
             arguments_spy=['--config-path', 'configuration', 'topics', 'HelloWorldTopic'],
             commands_spy=[],
-            output="""name: HelloWorldTopic\n\
-type: HelloWorld\n\
-datawriters:\n\
-  - %%guid%%\n\
-rate: %%rate%%\n\
-dynamic_type_discovered: true\n"""
+            output="""- topic: HelloWorldTopic (HelloWorld) (1|0) [%%rate%% Hz]"""
         )
