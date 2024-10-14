@@ -133,7 +133,7 @@ Try out all the commands DDS Spy has to offer:
         echo <name>                     : data of a specific Topic (Data Type must be discovered).
         echo <wildcard_name>            : data of a Topics matching the wildcard name (Data Type must be discovered).
         echo <name> verbose             : data with additional source info of a specific Topic.
-        echo <wildcard_name> verbose    : data with additional source info of Topics with prefix <name_prefix>.
+        echo <wildcard_name> verbose    : data with additional source info of Topics matching the topic name (wildcard allowed (*)).
         echo all                        : verbose data of all topics (only those whose Data Type is discovered).
 
     Notes and comments:

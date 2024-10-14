@@ -58,7 +58,7 @@ Commands available and the information they show:\n\
 \techo <name>                     : data of a specific Topic (Data Type must be discovered).\n\
 \techo <wildcard_name>            : data of Topics matching the wildcard name (and whose Data Type is discovered).\n\
 \techo <name> verbose             : data with additional source info of a specific Topic.\n\
-\techo <wildcard_name> verbose    : data with additional source info of Topics matching the topic name (wildcard allowed (*).\n\
+\techo <wildcard_name> verbose    : data with additional source info of Topics matching the topic name (wildcard allowed (*)).\n\
 \techo all                        : verbose data of all topics (only those whose Data Type is discovered).\n\
 \n\
 Notes and comments:\n\
