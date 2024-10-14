@@ -180,7 +180,7 @@ This argument sets the log verbosity to Info.
 
 .. warning::
 
-    Using this option with :ref:`log filter <user_manual_user_interface_log_filter_argument>` and/or :ref:`log verbosity <user_manual_user_interface_log_verbosity_argument>` will head to undefined behaviour.
+    Using this option with :ref:`log filter <user_manual_user_interface_log_filter_argument>` and/or :ref:`log verbosity <user_manual_user_interface_log_verbosity_argument>` will lead to undefined behavior.
 
 .. _user_manual_user_interface_log_filter_argument:
 
