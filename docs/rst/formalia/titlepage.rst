@@ -15,6 +15,13 @@
 It is possible to query the network about the DomainParticipants connected, their endpoints (DataWriters and DataReaders) and the topics they communicate in.
 It is also possible to see the user data sent through network topics in a schematic format in run time.
 
+##################
+Commercial support
+##################
+
+Looking for commercial support? Write us to info@eprosima.com
+
+Find more about us at `eProsima's webpage <https://eprosima.com/>`_.
 
 ########
 Overview
@@ -30,15 +37,6 @@ It supports to list topics existing, list Participants, DataReaders, DataWriters
 
 *eProsima Fast DDS Spy* is easily configurable and installed with a default setup, so that DDS topics, data types and entities are automatically discovered without the need to specify the types of data.
 This is because this tool exploits the DynamicTypes functionality of `eProsima Fast DDS <https://fast-dds.docs.eprosima.com>`_, the C++ implementation of the `DDS (Data Distribution Service) Specification <https://www.omg.org/spec/DDS/About-DDS/>`_ defined by the `Object Management Group (OMG) <https://www.omg.org/>`_.
-
-
-##################
-Commercial support
-##################
-
-Looking for commercial support? Write us to info@eprosima.com
-
-Find more about us at `eProsima's webpage <https://eprosima.com/>`_.
 
 #################################
 Contributing to the documentation
