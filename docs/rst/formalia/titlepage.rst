@@ -32,16 +32,13 @@ It supports to list topics existing, list Participants, DataReaders, DataWriters
 This is because this tool exploits the DynamicTypes functionality of `eProsima Fast DDS <https://fast-dds.docs.eprosima.com>`_, the C++ implementation of the `DDS (Data Distribution Service) Specification <https://www.omg.org/spec/DDS/About-DDS/>`_ defined by the `Object Management Group (OMG) <https://www.omg.org/>`_.
 
 
-###############################
-Contacts and Commercial support
-###############################
+##################
+Commercial support
+##################
+
+Looking for commercial support? Write us to info@eprosima.com
 
 Find more about us at `eProsima's webpage <https://eprosima.com/>`_.
-
-Support available at:
-
-* Email: support@eprosima.com
-* Phone: +34 91 804 34 48
 
 #################################
 Contributing to the documentation
