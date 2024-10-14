@@ -440,16 +440,14 @@ void Controller::print_command_(
         {
             view_.show_error(STR_ENTRY
                     << "<"
-                    << arguments[1]
+                    << filter_topic.topic_name
                     << "> does not match any topic discovered.");
             return;
         }
         if (!(model_->is_any_topic_type_discovered(topics)))
         {
             view_.show_error(STR_ENTRY
-                    << "No Topic Type matching <"
-                    << filter_topic.topic_name
-                    << "> wildcard has been discovered, and thus cannot print its data.");
+                    << "No type information available and thus cannot print data.");
             return;
         }
 
