@@ -37,6 +37,6 @@ class TestCase_instance (test_class.TestCase):
             arguments_dds=[],
             arguments_spy=[],
             commands_spy=['show topic'],
-            output=""">> \x1b[0m\x1b[1;31mTopic <topic> \
-does not exist.\x1b[0m\n\n\n\n"""
+            output=""">> \x1b[0m\x1b[1;31m<topic> \
+does not match any topic discovered.\x1b[0m\n\n\n\n"""
         )

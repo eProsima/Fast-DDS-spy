@@ -440,7 +440,7 @@ void Controller::print_command_(
         {
             view_.show_error(STR_ENTRY
                     << "<"
-                    << filter_topic.topic_name
+                    << filter_topic.topic_name.get_value()
                     << "> does not match any topic discovered.");
             return;
         }
