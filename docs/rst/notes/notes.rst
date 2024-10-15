@@ -2,27 +2,17 @@
 
 .. _notes:
 
-.. include:: forthcoming_version.rst
+.. .. include:: forthcoming_version.rst
 
 ##############
-Version v1.0.0
+Version v1.1.0
 ##############
 
-This release includes the following **Features**:
+This release includes the following **User Interface features**:
 
-* Add support for Fast DDS v3.
-
-This release includes the following **Configuration Features**:
-
-* New :ref:`domain argument <user_manual_user_interface_domain_argument>` to configure the ``domain`` through the command-line.
-* Change default log filter to ``FASTDDSSPY``.
-* Change default log verbosity to ``error``.
-
-This release includes the following **CI improvements**:
-
-* Upgrade to Ubuntu Noble (24.04).
-* Remove Ubuntu Focal (20.04) from the CI.
-* Empty XTSAN tests list to run all tests with Thread Sanitizer.
+* Support wildcard topic search as argument for :ref:`topics <user_manual_command_topic>` command.
+* Support wildcard topic search as argument for :ref:`echo <user_manual_command_echo>` command.
+* Support display of topics information in three different verbosity levels: simple, verbose, and high verbosity.
 
 This release includes the following **Dependencies Update**:
 
@@ -39,26 +29,27 @@ This release includes the following **Dependencies Update**:
         - `v1.3.1 <https://github.com/eProsima/foonathan_memory_vendor/releases/tag/v1.3.1>`_
     *   - Fast CDR
         - `eProsima/Fast-CDR <https://github.com/eProsima/Fast-CDR>`_
-        - `v2.2.0 <https://github.com/eProsima/Fast-CDR/releases/tag/v2.2.0>`_
         - `v2.2.4 <https://github.com/eProsima/Fast-CDR/releases/tag/v2.2.4>`_
+        - `v2.2.5 <https://github.com/eProsima/Fast-CDR/releases/tag/v2.2.5>`_
     *   - Fast DDS
         - `eProsima/Fast-DDS <https://github.com/eProsima/Fast-DDS>`_
-        - `v2.14.0 <https://github.com/eProsima/Fast-DDS/releases/tag/v2.14.0>`_
         - `v3.0.1 <https://github.com/eProsima/Fast-DDS/releases/tag/v3.0.1>`_
+        - `v3.1.0 <https://github.com/eProsima/Fast-DDS/releases/tag/v3.1.0>`_
     *   - Dev Utils
         - `eProsima/dev-utils <https://github.com/eProsima/dev-utils>`_
-        - `v0.6.0 <https://github.com/eProsima/dev-utils/releases/tag/v0.6.0>`_
         - `v1.0.0 <https://github.com/eProsima/dev-utils/releases/tag/v1.0.0>`_
+        - `v1.1.0 <https://github.com/eProsima/dev-utils/releases/tag/v1.1.0>`_
     *   - DDS Pipe
         - `eProsima/DDS-Pipe <https://github.com/eProsima/DDS-Pipe.git>`_
-        - `v0.4.0 <https://github.com/eProsima/DDS-Pipe/releases/tag/v0.4.0>`__
         - `v1.0.0 <https://github.com/eProsima/DDS-Pipe/releases/tag/v1.0.0>`__
+        - `v1.1.0 <https://github.com/eProsima/DDS-Pipe/releases/tag/v1.1.0>`__
 
 
 #################
 Previous Versions
 #################
 
+.. include:: ./previous_versions/v1.0.0.rst
 .. include:: ./previous_versions/v0.4.0.rst
 .. include:: ./previous_versions/v0.3.0.rst
 .. include:: ./previous_versions/v0.2.0.rst
