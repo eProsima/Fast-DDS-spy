@@ -10,7 +10,9 @@ Version v1.1.0
 
 This release includes the following **User Interface features**:
 
-* Support wildcard topic search as argument for :ref:`topics <user_manual_command_topic>` and :ref:`echo <user_manual_command_echo>` commands.
+* Support wildcard topic search as argument for :ref:`topics <user_manual_command_topic>` command.
+* Support wildcard topic search as argument for :ref:`echo <user_manual_command_echo>` command.
+* Support display of topics information in three different verbosity levels: simple, verbose, and high verbosity.
 
 This release includes the following **Dependencies Update**:
 
