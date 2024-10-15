@@ -23,7 +23,7 @@ Local installation
         mkdir <path\to\user\workspace>\fastdds-spy\src
         mkdir <path\to\user\workspace>\fastdds-spy\build
         cd <path\to\user\workspace>\fastdds-spy
-        wget https://raw.githubusercontent.com/eProsima/Fast-DDS-Spy/main/fastddsspy.repos
+        wget https://raw.githubusercontent.com/eProsima/Fast-DDS-Spy/v1.1.0/fastddsspy.repos
         vcs import src < fastddsspy.repos
 
 #.  Compile all dependencies using CMake_.
