@@ -1,8 +1,6 @@
-.. raw:: html
-
-  <h1>
-    eProsima Fast DDS Spy Documentation
-  </h1>
+###################################
+eProsima Fast DDS Spy Documentation
+###################################
 
 .. image:: /rst/figures/eprosima_logo.svg
   :height: 100px
