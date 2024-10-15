@@ -36,6 +36,11 @@
 It is possible to query the network about the DomainParticipants connected, their endpoints (DataWriters and DataReaders) and the topics they communicate in.
 It is also possible to see the user data sent through network topics in a schematic format in run time.
 
+## Commercial support
+
+Looking for commercial support? Write us to info@eprosima.com
+
+Find more about us at [eProsima’s webpage](https://eprosima.com/).
 
 ## Documentation
 
@@ -110,7 +115,3 @@ source <install-path>/setup.bash
 fastddsspy_tool
 # Use <fastddsspy_tool --help> to see the tool manual
 ```
-
-## Getting Help
-
-If you need support you can reach us by mail at `support@eProsima.com` or by phone at `+34 91 804 34 48`.
