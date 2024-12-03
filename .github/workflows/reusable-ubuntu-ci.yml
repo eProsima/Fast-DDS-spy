@@ -259,12 +259,13 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Build and test documentation
-        uses: eProsima/eProsima-CI/ubuntu/sphinx_docs@main
+        uses: eProsima/eProsima-CI/ubuntu/sphinx_docs@feature/upload-docs-name
         with:
           checkout_path: "src/fastddsspy"
           path_to_requirements: "src/fastddsspy/docs/requirements.txt"
           docs_subpackage_name: ${{ env.docs_packages_names }}
           secret_token: ${{ secrets.GITHUB_TOKEN }}
+          upload_artifact: false
 
 
 #####################################################################
