@@ -112,6 +112,7 @@ jobs:
           secret_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Compile and run tests
+        id: compile_and_test
         uses: eProsima/eProsima-CI/multiplatform/colcon_build_test@feature/test-reporting
         with:
           packages_names: ${{ env.code_packages_names }}
@@ -153,6 +154,7 @@ jobs:
           secret_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Compile and run tests
+        id: compile_and_test
         uses: eProsima/eProsima-CI/multiplatform/colcon_build_test@feature/test-reporting
         env:
           # GCC 11.3 (Ubuntu Jammy default) produces several false positives regarding timed synchronization protocols
@@ -263,6 +265,7 @@ jobs:
           secret_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Compile and run tests
+        id: compile_and_test
         uses: eProsima/eProsima-CI/multiplatform/colcon_build_test@feature/test-reporting
         with:
           packages_names: ${{ env.code_packages_names }}
