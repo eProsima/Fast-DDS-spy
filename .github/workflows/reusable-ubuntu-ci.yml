@@ -265,8 +265,8 @@ jobs:
           path_to_requirements: "src/fastddsspy/docs/requirements.txt"
           docs_subpackage_name: ${{ env.docs_packages_names }}
           secret_token: ${{ secrets.GITHUB_TOKEN }}
-          upload_artifact: false
-
+          upload_artifact: true
+          upload_artifact_name: "docs${{ inputs.dependencies_artifact_postfix }}_${{ inputs.custom_version_build }}"
 
 #####################################################################
 # UNCRUSTIFY
