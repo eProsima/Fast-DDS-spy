@@ -245,7 +245,7 @@ jobs:
           secret_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Compile and run tests
-        uses: eProsima/eProsima-CI/multiplatform/colcon_build_test@main
+        uses: eProsima/eProsima-CI/multiplatform/colcon_build_test@v0
         with:
           packages_names: ${{ env.code_packages_names }}
           workspace_dependencies: './install'
@@ -259,7 +259,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Build and test documentation
-        uses: eProsima/eProsima-CI/ubuntu/sphinx_docs@feature/upload-docs-name
+        uses: eProsima/eProsima-CI/ubuntu/sphinx_docs@v0
         with:
           checkout_path: "src/fastddsspy"
           path_to_requirements: "src/fastddsspy/docs/requirements.txt"
