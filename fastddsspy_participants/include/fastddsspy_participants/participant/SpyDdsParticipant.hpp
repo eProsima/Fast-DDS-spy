@@ -83,9 +83,6 @@ protected:
     void internal_notify_endpoint_discovered_(
             const EndpointInfo& endpoint_discovered);
 
-    bool come_from_this_participant_(
-            const ddspipe::core::types::Guid& guid) const noexcept;
-
     //! Participants Internal Reader
     std::shared_ptr<ddspipe::participants::InternalReader> participants_reader_;
 

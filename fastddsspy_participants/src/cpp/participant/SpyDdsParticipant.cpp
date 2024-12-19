@@ -61,7 +61,7 @@ void SpyDdsParticipant::on_participant_discovery(
         bool& should_be_ignored)
 {
     // If comes from this participant is not interesting
-    if (come_from_this_participant_(info.guid))
+    if (ddspipe::participants::detail::come_from_same_participant_(info.guid, rtps_participant_->getGuid()))
     {
         return;
     }
@@ -85,15 +85,14 @@ void SpyDdsParticipant::on_reader_discovery(
         bool& should_be_ignored)
 {
     // If comes from this participant is not interesting
-    if (come_from_this_participant_(info.guid))
+    if (ddspipe::participants::detail::come_from_same_participant_(info.guid, rtps_participant_->getGuid()))
     {
         return;
     }
 
     EndpointInfo endpoint_info = ddspipe::participants::detail::create_endpoint_from_info_(info, id());
-
-    // If participant left or dropped, this notification arrives as well
-    endpoint_info.active = !(reason == fastdds::rtps::ReaderDiscoveryStatus::REMOVED_READER);
+    endpoint_info.active = (reason == fastdds::rtps::ReaderDiscoveryStatus::DISCOVERED_READER
+            || reason == fastdds::rtps::ReaderDiscoveryStatus::CHANGED_QOS_READER);
 
     ddspipe::participants::DynTypesParticipant::on_reader_discovery(participant, reason, info, should_be_ignored);
 
@@ -107,15 +106,14 @@ void SpyDdsParticipant::on_writer_discovery(
         bool& should_be_ignored)
 {
     // If comes from this participant is not interesting
-    if (come_from_this_participant_(info.guid))
+    if (ddspipe::participants::detail::come_from_same_participant_(info.guid, rtps_participant_->getGuid()))
     {
         return;
     }
 
     EndpointInfo endpoint_info = ddspipe::participants::detail::create_endpoint_from_info_(info, id());
-
-    // If participant left or dropped, this notification arrives as well
-    endpoint_info.active = !(reason == fastdds::rtps::WriterDiscoveryStatus::REMOVED_WRITER);
+    endpoint_info.active = (reason == fastdds::rtps::WriterDiscoveryStatus::DISCOVERED_WRITER
+            || reason == fastdds::rtps::WriterDiscoveryStatus::CHANGED_QOS_WRITER);
 
     ddspipe::participants::DynTypesParticipant::on_writer_discovery(participant, reason, info, should_be_ignored);
 
@@ -142,16 +140,6 @@ void SpyDdsParticipant::internal_notify_endpoint_discovered_(
 
     // Insert new data in internal reader queue
     endpoints_reader_->simulate_data_reception(std::move(data));
-}
-
-/*
- * NOTE: this function is required apart from come_from_same_participant_
- * because this participant has 2 guids, the rtps and the dds participant ones
- */
-bool SpyDdsParticipant::come_from_this_participant_(
-        const ddspipe::core::types::Guid& guid) const noexcept
-{
-    return (guid.guid_prefix() == rtps_participant_->getGuid().guidPrefix);
 }
 
 } /* namespace participants */
