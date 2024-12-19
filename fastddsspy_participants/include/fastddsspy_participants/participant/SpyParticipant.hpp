@@ -17,10 +17,10 @@
 #include <cpp_utils/types/Atomicable.hpp>
 
 #include <ddspipe_participants/participant/dynamic_types/SchemaParticipant.hpp>
+#include <ddspipe_participants/writer/auxiliar/InternalWriter.hpp>
 
 #include <fastddsspy_participants/library/library_dll.h>
 #include <fastddsspy_participants/types/ParticipantInfo.hpp>
-#include <fastddsspy_participants/writer/InternalWriter.hpp>
 #include <fastddsspy_participants/model/SpyModel.hpp>
 
 namespace eprosima {
@@ -56,9 +56,9 @@ protected:
             const ddspipe::core::IRoutingData& data);
 
     //! Participants Internal Reader
-    std::shared_ptr<InternalWriter> participants_writer_;
+    std::shared_ptr<ddspipe::participants::InternalWriter> participants_writer_;
 
-    std::shared_ptr<InternalWriter> endpoints_writer_;
+    std::shared_ptr<ddspipe::participants::InternalWriter> endpoints_writer_;
 
     std::shared_ptr<SpyModel> model_;
 };

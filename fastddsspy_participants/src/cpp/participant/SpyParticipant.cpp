@@ -36,7 +36,7 @@ SpyParticipant::SpyParticipant(
                 return this->new_participant_info_(data);
             };
 
-    participants_writer_ = std::make_shared<InternalWriter>(
+    participants_writer_ = std::make_shared<ddspipe::participants::InternalWriter>(
         participant_configuration->id,
         participant_callback);
 
@@ -45,7 +45,7 @@ SpyParticipant::SpyParticipant(
                 return this->new_endpoint_info_(data);
             };
 
-    endpoints_writer_ = std::make_shared<InternalWriter>(
+    endpoints_writer_ = std::make_shared<ddspipe::participants::InternalWriter>(
         participant_configuration->id,
         endpoint_callback);
 }
