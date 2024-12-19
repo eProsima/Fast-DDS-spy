@@ -91,9 +91,8 @@ void SpyDdsParticipant::on_reader_discovery(
     }
 
     EndpointInfo endpoint_info = ddspipe::participants::detail::create_endpoint_from_info_(info, id());
-
-    // If participant left or dropped, this notification arrives as well
-    endpoint_info.active = !(reason == fastdds::rtps::ReaderDiscoveryStatus::REMOVED_READER);
+    endpoint_info.active = (reason == fastdds::rtps::ReaderDiscoveryStatus::DISCOVERED_READER
+            || reason == fastdds::rtps::ReaderDiscoveryStatus::CHANGED_QOS_READER);
 
     ddspipe::participants::DynTypesParticipant::on_reader_discovery(participant, reason, info, should_be_ignored);
 
@@ -113,9 +112,8 @@ void SpyDdsParticipant::on_writer_discovery(
     }
 
     EndpointInfo endpoint_info = ddspipe::participants::detail::create_endpoint_from_info_(info, id());
-
-    // If participant left or dropped, this notification arrives as well
-    endpoint_info.active = !(reason == fastdds::rtps::WriterDiscoveryStatus::REMOVED_WRITER);
+    endpoint_info.active = (reason == fastdds::rtps::WriterDiscoveryStatus::DISCOVERED_WRITER
+            || reason == fastdds::rtps::WriterDiscoveryStatus::CHANGED_QOS_WRITER);
 
     ddspipe::participants::DynTypesParticipant::on_writer_discovery(participant, reason, info, should_be_ignored);
 
