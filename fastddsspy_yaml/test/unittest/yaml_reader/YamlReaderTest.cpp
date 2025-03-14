@@ -31,6 +31,7 @@ TEST(YamlReaderTest, get_spy_configuration_trivial)
             version: v4.0
             dds:
                 ros2-types: true
+                ros2-easy-mode: '127.0.0.1'
         )";
 
     Yaml yml = YAML::Load(yml_str);
@@ -55,6 +56,8 @@ TEST(YamlReaderTest, get_spy_configuration_trivial)
     ASSERT_EQ(configuration.spy_configuration->app_id, "FASTDDS_SPY");
     ASSERT_EQ(configuration.spy_configuration->app_metadata, "");
     ASSERT_FALSE(configuration.spy_configuration->is_repeater);
+
+    ASSERT_EQ(configuration.simple_configuration->easy_mode_ip, "127.0.0.1");
 }
 
 int main(
