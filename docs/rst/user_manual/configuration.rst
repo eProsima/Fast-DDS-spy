@@ -231,7 +231,7 @@ However, a user may desire to force the use of one of the two, which can be acco
 ROS 2 Easy Mode Configuration
 -----------------------------
 
-Fast DDS Spy allows configuring the address of a remote discovery server when using
+|spy| allows configuring the address of a remote discovery server when using
 `ROS 2 Easy Mode <https://docs.vulcanexus.org/en/latest/rst/enhancements/easy_mode/easy_mode.html>`__
 through the ``ros2-easy-mode`` tag.
 
