@@ -193,6 +193,11 @@ void Configuration::load_dds_configuration_(
         simple_configuration->transport = TransportDescriptors::builtin;
     }
 
+    if (YamlReader::is_tag_present(yml, EASY_MODE_TAG))
+    {
+        simple_configuration->easy_mode_ip = YamlReader::get<IpType>(yml, EASY_MODE_TAG, version);
+    }
+
     // Optional get ignore participant flags
     if (YamlReader::is_tag_present(yml, IGNORE_PARTICIPANT_FLAGS_TAG))
     {
