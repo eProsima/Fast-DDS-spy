@@ -12,6 +12,7 @@ This release includes the following **features**:
 * Support ROS2 Easy Mode.
 
 This release includes the following **internal changes & bugfixes**:
+
 * Fix docs doc8 failing test.
 * Update docs artifact name.
 * Ignore ignored participants and endpoints.
