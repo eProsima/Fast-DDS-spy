@@ -31,7 +31,7 @@ RUN apt update && \
 
 # Download eProsima dependencies
 WORKDIR /fastddsspy
-RUN wget https://raw.githubusercontent.com/eProsima/Fast-DDS-Spy/main/fastddsspy.repos && \
+RUN wget https://raw.githubusercontent.com/eProsima/Fast-DDS-Spy/v1.2.0/fastddsspy.repos && \
     mkdir src && \
     vcs import src < fastddsspy.repos
 
