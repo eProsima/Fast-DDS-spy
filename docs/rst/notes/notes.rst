@@ -1,18 +1,23 @@
-.. include:: ../exports/alias.include
-
 .. _notes:
 
 .. include:: forthcoming_version.rst
 
 ##############
-Version v1.1.0
+Version v1.2.0
 ##############
 
-This release includes the following **User Interface features**:
+This release includes the following **features**:
 
-* Support wildcard topic search as argument for :ref:`topics <user_manual_command_topic>` command.
-* Support wildcard topic search as argument for :ref:`echo <user_manual_command_echo>` command.
-* Support display of topics information in three different verbosity levels: simple, verbose, and high verbosity.
+* Use InternalWriter from DDS-Pipe.
+* Support ROS2 Easy Mode.
+
+This release includes the following **internal changes & bugfixes**:
+
+* Fix docs doc8 failing test.
+* Update docs artifact name.
+* Ignore ignored participants and endpoints.
+* Update GitHub banner.
+
 
 This release includes the following **Dependencies Update**:
 
@@ -29,26 +34,27 @@ This release includes the following **Dependencies Update**:
         - `v1.3.1 <https://github.com/eProsima/foonathan_memory_vendor/releases/tag/v1.3.1>`_
     *   - Fast CDR
         - `eProsima/Fast-CDR <https://github.com/eProsima/Fast-CDR>`_
-        - `v2.2.4 <https://github.com/eProsima/Fast-CDR/releases/tag/v2.2.4>`_
         - `v2.2.5 <https://github.com/eProsima/Fast-CDR/releases/tag/v2.2.5>`_
+        - `v2.3.0 <https://github.com/eProsima/Fast-CDR/releases/tag/v2.3.0>`_
     *   - Fast DDS
         - `eProsima/Fast-DDS <https://github.com/eProsima/Fast-DDS>`_
-        - `v3.0.1 <https://github.com/eProsima/Fast-DDS/releases/tag/v3.0.1>`_
         - `v3.1.0 <https://github.com/eProsima/Fast-DDS/releases/tag/v3.1.0>`_
+        - `v3.2.2 <https://github.com/eProsima/Fast-DDS/releases/tag/v3.2.2>`_
     *   - Dev Utils
         - `eProsima/dev-utils <https://github.com/eProsima/dev-utils>`_
-        - `v1.0.0 <https://github.com/eProsima/dev-utils/releases/tag/v1.0.0>`_
-        - `v1.1.0 <https://github.com/eProsima/dev-utils/releases/tag/v1.1.0>`_
+        - `v1.1.0 <https://github.com/eProsima/dev-utils/releases/tag/v1.1.0>`__
+        - `v1.2.0 <https://github.com/eProsima/dev-utils/releases/tag/v1.2.0>`__
     *   - DDS Pipe
         - `eProsima/DDS-Pipe <https://github.com/eProsima/DDS-Pipe.git>`_
-        - `v1.0.0 <https://github.com/eProsima/DDS-Pipe/releases/tag/v1.0.0>`__
         - `v1.1.0 <https://github.com/eProsima/DDS-Pipe/releases/tag/v1.1.0>`__
+        - `v1.2.0 <https://github.com/eProsima/DDS-Pipe/releases/tag/v1.2.0>`__
 
 
 #################
 Previous Versions
 #################
 
+.. include:: ./previous_versions/v1.1.0.rst
 .. include:: ./previous_versions/v1.0.0.rst
 .. include:: ./previous_versions/v0.4.0.rst
 .. include:: ./previous_versions/v0.3.0.rst
