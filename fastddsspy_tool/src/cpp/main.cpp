@@ -51,6 +51,8 @@ int main(
         int argc,
         char** argv)
 {
+    // Enable ANSI colors fow windows
+    eprosima::utils::enable_ansi_colors();
     // Initialize CommandlineArgs
     eprosima::spy::yaml::CommandlineArgsSpy commandline_args;
 
