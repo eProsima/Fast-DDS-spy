@@ -37,6 +37,18 @@ public:
 protected:
 
     utils::CommandReader<CommandValue> reader_;
+
+public:
+
+    /**
+     * @brief Access the underlying stdin event handler to control input behavior.
+     * Used for temporarily disabling history input (e.g., during interactive commands).
+     */
+    eprosima::utils::event::StdinEventHandler& stdin_handler() noexcept
+    {
+        return reader_.stdin_handler();
+    }
+
 };
 
 } /* namespace spy */
