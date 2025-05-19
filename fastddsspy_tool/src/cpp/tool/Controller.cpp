@@ -496,6 +496,9 @@ void Controller::print_command_(
     input_.wait_something();
     input_.stdin_handler().set_ignore_input(false);
     model_->deactivate();
+
+    // Small delay to allow stdout to flush and avoid prompt overlap
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
 }
 
 void Controller::version_command_(
