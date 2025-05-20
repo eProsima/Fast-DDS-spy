@@ -21,6 +21,7 @@
 #include <cpp_utils/event/MultipleEventHandler.hpp>
 #include <cpp_utils/event/PeriodicEventHandler.hpp>
 #include <cpp_utils/event/SignalEventHandler.hpp>
+#include <cpp_utils/event/StdinEventHandler.hpp>
 #include <cpp_utils/exception/ConfigurationException.hpp>
 #include <cpp_utils/exception/InitializationException.hpp>
 #include <cpp_utils/logging/StdLogConsumer.hpp>
@@ -47,10 +48,20 @@
 #include "user_interface/ProcessReturnCode.hpp"
 #include "tool/Controller.hpp"
 
+void ignore_sigint(int){
+
+    if (eprosima::utils::event::g_sigint_callback)
+    {
+        eprosima::utils::event::g_sigint_callback();
+    }
+    
+}
+
 int main(
         int argc,
         char** argv)
 {
+    signal(SIGINT, ignore_sigint);
     // Enable ANSI colors fow windows
     eprosima::utils::enable_ansi_colors();
     // Initialize CommandlineArgs
@@ -231,6 +242,8 @@ int main(
         {
             file_watcher_handler.reset();
         }
+
+        std::cout << "File watcher and periodic handler finished" << std::endl;
     }
     catch (const eprosima::utils::ConfigurationException& e)
     {
@@ -248,11 +261,16 @@ int main(
         return static_cast<int>(eprosima::spy::ProcessReturnCode::execution_failed);
     }
 
+    std::cout << "Flush started" << std::endl; 
     // Force print every log before closing
     eprosima::utils::Log::Flush();
 
+    std::cout << "Flush finished" << std::endl;
+
     // Delete the consumers before closing
     eprosima::utils::Log::ClearConsumers();
+
+    std::cout << "ClearConsumers finished" << std::endl;
 
     return static_cast<int>(eprosima::spy::ProcessReturnCode::success);
 }
