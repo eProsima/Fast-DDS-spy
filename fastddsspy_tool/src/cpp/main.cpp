@@ -48,20 +48,20 @@
 #include "user_interface/ProcessReturnCode.hpp"
 #include "tool/Controller.hpp"
 
-void ignore_sigint(int){
-
-    if (eprosima::utils::event::g_sigint_callback)
-    {
-        eprosima::utils::event::g_sigint_callback();
-    }
-    
-}
+// void ignore_sigint(int){
+// 
+    // if (eprosima::utils::event::g_sigint_callback)
+    // {
+        // eprosima::utils::event::g_sigint_callback();
+    // }
+    // 
+// }
 
 int main(
         int argc,
         char** argv)
 {
-    signal(SIGINT, ignore_sigint);
+    //signal(SIGINT, ignore_sigint);
     // Enable ANSI colors fow windows
     eprosima::utils::enable_ansi_colors();
     // Initialize CommandlineArgs
