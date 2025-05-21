@@ -179,7 +179,6 @@ class TestCase():
         print(rate)
         return False
 
-
     def extract_cli_output(self, output: str) -> str:
         # Remove ANSI escape sequences
         ansi_escape = re.compile(r'\x1B\[[0-?]*[ -/]*[@-~]')
