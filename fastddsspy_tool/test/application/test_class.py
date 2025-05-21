@@ -179,6 +179,28 @@ class TestCase():
         print(rate)
         return False
 
+
+    def extract_cli_output(self, output: str) -> str:
+        # Remove ANSI escape sequences
+        ansi_escape = re.compile(r'\x1B\[[0-?]*[ -/]*[@-~]')
+        no_ansi = ansi_escape.sub('', output)
+
+        # Find the last occurrence of '>>'
+        last_prompt = no_ansi.rfind('>>')
+        if last_prompt == -1:
+            return no_ansi
+
+        remainder = no_ansi[last_prompt + 2:]
+
+        # Split the remainder into lines and remove the first line
+        lines = remainder.splitlines()
+        if len(lines) > 1:
+            result = '\n'.join(lines[1:]).strip()
+        else:
+            result = ''
+
+        return result + '\n'
+
     def valid_output(self, output) -> bool:
         """
         @brief Check the validity of the output against the expected output.
@@ -202,12 +224,13 @@ class TestCase():
         the 'output' and 'expected_output' for debugging purposes.
 
         """
+        clean_output = self.extract_cli_output(output)
         expected_output = self.output_command()
-        if expected_output == output:
+        if expected_output == clean_output:
             return True
 
         lines_expected_output = expected_output.splitlines()
-        lines_output = output.splitlines()
+        lines_output = clean_output.splitlines()
 
         # TODO (Raul): If guid and rate are on the same line this will not work.
         for i in range(len(lines_expected_output)):
@@ -225,7 +248,7 @@ class TestCase():
 
             elif lines_expected_output[i] != lines_output[i]:
                 print('Output: ')
-                print(output)
+                print(clean_output)
                 print('Expected output: ')
                 print(expected_output)
                 return False

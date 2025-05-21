@@ -37,7 +37,7 @@ class TestCase_instance (test_class.TestCase):
             arguments_dds=[],
             arguments_spy=[],
             commands_spy=['help'],
-            output=""">> \x1b[0mFast DDS Spy is an interactive CLI that allow to instrospect DDS networks.\n\n\
+            output="""Fast DDS Spy is an interactive CLI that allow to instrospect DDS networks.\n\n\
 Each command shows data related with the network in Yaml format.\n\n\
 Commands available and the information they show:\n\n\
 \thelp                            : this help.\n\n\
@@ -67,6 +67,5 @@ Notes and comments:\n\n\
 \tEach command is accessible by using its first letter (h/v/q/p/w/r/t/s).\n\n\
 \n\n\
 For more information about these commands and formats, please refer to the documentation:\n\n\
-https://fast-dds-spy.readthedocs.io/en/latest/\n\n
-"""
+https://fast-dds-spy.readthedocs.io/en/latest/\n"""
         )

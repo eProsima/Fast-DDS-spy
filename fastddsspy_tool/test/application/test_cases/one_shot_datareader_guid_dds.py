@@ -41,6 +41,6 @@ configuration_discovery_time.yaml',
             arguments_spy=['--config-path', 'configuration', 'datareader',
                            '01.0f.d8.74.d5.a0.cf.f4.00.00.00.00|0.0.1.3'],
             commands_spy=[],
-            output="""\x1b[1;31m01.0f.d8.74.d5.a0.cf.f4.00.00.00.00|0.0.1.3 \
-does not match with any known reader.\x1b[0m\n"""
+            output="""01.0f.d8.74.d5.a0.cf.f4.00.00.00.00|0.0.1.3 \
+does not match with any known reader.\n"""
         )

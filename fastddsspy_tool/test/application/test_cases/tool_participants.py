@@ -37,5 +37,5 @@ class TestCase_instance (test_class.TestCase):
             arguments_dds=[],
             arguments_spy=[],
             commands_spy=['participants'],
-            output=""">> \x1b[0m\n\n\n\n"""
+            output="""\n"""
         )

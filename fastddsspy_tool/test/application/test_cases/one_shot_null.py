@@ -36,6 +36,6 @@ class TestCase_instance (test_class.TestCase):
             arguments_dds=[],
             arguments_spy=['nullarg'],
             commands_spy=[],
-            output="""\x1b[1;31m<nullarg> is not a known command. \
-Use <help> command to see valid commands and arguments.\x1b[0m\n"""
+            output="""<nullarg> is not a known command. \
+Use <help> command to see valid commands and arguments.\n"""
         )

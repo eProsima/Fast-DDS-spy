@@ -36,5 +36,5 @@ class TestCase_instance (test_class.TestCase):
             arguments_dds=[],
             arguments_spy=['show', 'hello'],
             commands_spy=[],
-            output="""\x1b[1;31m<hello> does not match any topic discovered.\x1b[0m\n"""
+            output="""<hello> does not match any topic discovered.\n"""
         )
