@@ -498,7 +498,7 @@ void Controller::print_command_(
     model_->deactivate();
 
     // Small delay to allow stdout to flush and avoid prompt overlap
-    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
 }
 
 void Controller::version_command_(
