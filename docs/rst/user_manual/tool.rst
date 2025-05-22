@@ -217,9 +217,7 @@ or use :ref:`help <user_manual_commands_extra_help>` command to get this informa
 Close Application
 -----------------
 
-Use :ref:`user_manual_commands_extra_quit` to stop and close the application.
-
-Pressing ``Ctrl+C`` will **not** terminate the application. Instead, it interrupts any running command and returns to the prompt, allowing you to enter a new one.
+Write ``exit``, ``quit``, or ``q`` to exit the application.
 
 .. _user_manual_user_interface_one_shot:
 
