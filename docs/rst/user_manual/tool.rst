@@ -217,7 +217,7 @@ or use :ref:`help <user_manual_commands_extra_help>` command to get this informa
 Close Application
 -----------------
 
-Use :ref:`user_manual_commands_extra_quit` to stop and close the application.
+Write ``exit``, ``quit``, or ``q`` to exit the application.
 
 .. _user_manual_user_interface_one_shot:
 
