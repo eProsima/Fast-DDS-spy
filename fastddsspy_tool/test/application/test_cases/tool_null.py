@@ -37,6 +37,6 @@ class TestCase_instance (test_class.TestCase):
             arguments_dds=[],
             arguments_spy=[],
             commands_spy=['null'],
-            output=""">> \x1b[0m\x1b[1;31m<null> is not a known command. \
-Use <help> command to see valid commands and arguments.\x1b[0m\n\n\n\n"""
+            output="""<null> is not a known command. \
+Use <help> command to see valid commands and arguments.\n"""
         )

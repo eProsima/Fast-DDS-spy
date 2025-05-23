@@ -40,7 +40,7 @@ configuration_discovery_time.yaml',
             arguments_dds=[],
             arguments_spy=['--config-path', 'configuration'],
             commands_spy=['datawriter'],
-            output=""">> \x1b[0m- guid: %%guid%%\n\
+            output="""- guid: %%guid%%\n\
 \n\
   participant: Participant_pub\n\
 \n\

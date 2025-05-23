@@ -38,5 +38,5 @@ class TestCase_instance (test_class.TestCase):
             arguments_dds=[],
             arguments_spy=[],
             commands_spy=['topics'],
-            output=""">> \x1b[0m- topic: HelloWorldTopic (HelloWorld) (1|0) [%%rate%% Hz]"""
+            output="""- topic: HelloWorldTopic (HelloWorld) (1|0) [%%rate%% Hz]\n"""
         )

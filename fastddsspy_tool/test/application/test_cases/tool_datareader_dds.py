@@ -40,5 +40,5 @@ configuration_discovery_time.yaml',
             arguments_dds=[],
             arguments_spy=['--config-path', 'configuration'],
             commands_spy=['datareader'],
-            output=""">> \x1b[0m\n\n\n\n"""
+            output="""\n"""
         )

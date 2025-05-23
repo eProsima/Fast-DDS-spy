@@ -36,6 +36,6 @@ class TestCase_instance (test_class.TestCase):
             arguments_dds=[],
             arguments_spy=['show'],
             commands_spy=[],
-            output="""\x1b[1;31mCommand <show> requires at least \
-one argument.\x1b[0m\n"""
+            output="""Command <show> requires at least \
+one argument.\n"""
         )

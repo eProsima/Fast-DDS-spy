@@ -492,8 +492,13 @@ void Controller::print_command_(
     }
 
     // Wait for other command to stop printing topics
+    input_.stdin_handler().set_ignore_input(true);
     input_.wait_something();
+    input_.stdin_handler().set_ignore_input(false);
     model_->deactivate();
+
+    // Small delay to allow stdout to flush and avoid prompt overlap
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
 }
 
 void Controller::version_command_(
