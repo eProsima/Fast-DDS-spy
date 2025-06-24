@@ -106,7 +106,8 @@ void SpyDdsParticipant::SpyDdsParticipantListener::on_reader_discovery(
     endpoint_info.active = (reason == fastdds::rtps::ReaderDiscoveryStatus::DISCOVERED_READER
             || reason == fastdds::rtps::ReaderDiscoveryStatus::CHANGED_QOS_READER);
 
-    ddspipe::participants::DynTypesParticipant::DynTypesRtpsListener::on_reader_discovery(participant, reason, info, should_be_ignored);
+    ddspipe::participants::DynTypesParticipant::DynTypesRtpsListener::on_reader_discovery(participant, reason, info,
+            should_be_ignored);
 
     internal_notify_endpoint_discovered_(endpoint_info);
 }
@@ -127,7 +128,8 @@ void SpyDdsParticipant::SpyDdsParticipantListener::on_writer_discovery(
     endpoint_info.active = (reason == fastdds::rtps::WriterDiscoveryStatus::DISCOVERED_WRITER
             || reason == fastdds::rtps::WriterDiscoveryStatus::CHANGED_QOS_WRITER);
 
-    ddspipe::participants::DynTypesParticipant::DynTypesRtpsListener::on_writer_discovery(participant, reason, info, should_be_ignored);
+    ddspipe::participants::DynTypesParticipant::DynTypesRtpsListener::on_writer_discovery(participant, reason, info,
+            should_be_ignored);
 
     internal_notify_endpoint_discovered_(endpoint_info);
 }
@@ -158,7 +160,8 @@ std::unique_ptr<fastdds::rtps::RTPSParticipantListener> SpyDdsParticipant::creat
 {
     // We pass the configuration_ and discovery_database_ attributes from this method to avoid accessing virtual
     // attributes in the constructor
-    return std::make_unique<SpyDdsParticipantListener>(configuration_, discovery_database_, participants_reader_, endpoints_reader_);
+    return std::make_unique<SpyDdsParticipantListener>(configuration_, discovery_database_, participants_reader_,
+                   endpoints_reader_);
 }
 
 } /* namespace participants */
