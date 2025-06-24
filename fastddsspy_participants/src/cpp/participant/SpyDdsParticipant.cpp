@@ -54,14 +54,26 @@ std::shared_ptr<ddspipe::core::IReader> SpyDdsParticipant::create_reader(
     return ddspipe::participants::DynTypesParticipant::create_reader(topic);
 }
 
-void SpyDdsParticipant::on_participant_discovery(
+SpyDdsParticipant::SpyDdsParticipantListener::SpyDdsParticipantListener(
+        std::shared_ptr<ddspipe::participants::ParticipantConfiguration> conf,
+        std::shared_ptr<ddspipe::core::DiscoveryDatabase> ddb,
+        std::shared_ptr<ddspipe::participants::InternalReader> participants_reader,
+        std::shared_ptr<ddspipe::participants::InternalReader> endpoints_reader)
+    : ddspipe::participants::DynTypesParticipant::DynTypesRtpsListener(conf, ddb, conf->id)
+{
+    // Set the internal readers
+    participants_reader_ = participants_reader;
+    endpoints_reader_ = endpoints_reader;
+}
+
+void SpyDdsParticipant::SpyDdsParticipantListener::on_participant_discovery(
         fastdds::rtps::RTPSParticipant* participant,
         fastdds::rtps::ParticipantDiscoveryStatus reason,
         const fastdds::rtps::ParticipantBuiltinTopicData& info,
         bool& should_be_ignored)
 {
     // If comes from this participant is not interesting
-    if (ddspipe::participants::detail::come_from_same_participant_(info.guid, rtps_participant_->getGuid()))
+    if (ddspipe::participants::detail::come_from_same_participant_(info.guid, participant->getGuid()))
     {
         return;
     }
@@ -72,55 +84,55 @@ void SpyDdsParticipant::on_participant_discovery(
     participant_info.name = std::string(info.participant_name);
     participant_info.guid = info.guid;
 
-    ddspipe::participants::rtps::CommonParticipant::on_participant_discovery(participant, reason, info,
+    ddspipe::participants::rtps::CommonParticipant::RtpsListener::on_participant_discovery(participant, reason, info,
             should_be_ignored);
 
     internal_notify_participant_discovered_(participant_info);
 }
 
-void SpyDdsParticipant::on_reader_discovery(
+void SpyDdsParticipant::SpyDdsParticipantListener::on_reader_discovery(
         fastdds::rtps::RTPSParticipant* participant,
         fastdds::rtps::ReaderDiscoveryStatus reason,
         const fastdds::rtps::SubscriptionBuiltinTopicData& info,
         bool& should_be_ignored)
 {
     // If comes from this participant is not interesting
-    if (ddspipe::participants::detail::come_from_same_participant_(info.guid, rtps_participant_->getGuid()))
+    if (ddspipe::participants::detail::come_from_same_participant_(info.guid, participant->getGuid()))
     {
         return;
     }
 
-    EndpointInfo endpoint_info = ddspipe::participants::detail::create_endpoint_from_info_(info, id());
+    EndpointInfo endpoint_info = ddspipe::participants::detail::create_endpoint_from_info_(info, configuration_->id);
     endpoint_info.active = (reason == fastdds::rtps::ReaderDiscoveryStatus::DISCOVERED_READER
             || reason == fastdds::rtps::ReaderDiscoveryStatus::CHANGED_QOS_READER);
 
-    ddspipe::participants::DynTypesParticipant::on_reader_discovery(participant, reason, info, should_be_ignored);
+    ddspipe::participants::DynTypesParticipant::DynTypesRtpsListener::on_reader_discovery(participant, reason, info, should_be_ignored);
 
     internal_notify_endpoint_discovered_(endpoint_info);
 }
 
-void SpyDdsParticipant::on_writer_discovery(
+void SpyDdsParticipant::SpyDdsParticipantListener::on_writer_discovery(
         fastdds::rtps::RTPSParticipant* participant,
         fastdds::rtps::WriterDiscoveryStatus reason,
         const fastdds::rtps::PublicationBuiltinTopicData& info,
         bool& should_be_ignored)
 {
     // If comes from this participant is not interesting
-    if (ddspipe::participants::detail::come_from_same_participant_(info.guid, rtps_participant_->getGuid()))
+    if (ddspipe::participants::detail::come_from_same_participant_(info.guid, participant->getGuid()))
     {
         return;
     }
 
-    EndpointInfo endpoint_info = ddspipe::participants::detail::create_endpoint_from_info_(info, id());
+    EndpointInfo endpoint_info = ddspipe::participants::detail::create_endpoint_from_info_(info, configuration_->id);
     endpoint_info.active = (reason == fastdds::rtps::WriterDiscoveryStatus::DISCOVERED_WRITER
             || reason == fastdds::rtps::WriterDiscoveryStatus::CHANGED_QOS_WRITER);
 
-    ddspipe::participants::DynTypesParticipant::on_writer_discovery(participant, reason, info, should_be_ignored);
+    ddspipe::participants::DynTypesParticipant::DynTypesRtpsListener::on_writer_discovery(participant, reason, info, should_be_ignored);
 
     internal_notify_endpoint_discovered_(endpoint_info);
 }
 
-void SpyDdsParticipant::internal_notify_participant_discovered_(
+void SpyDdsParticipant::SpyDdsParticipantListener::internal_notify_participant_discovered_(
         const ParticipantInfo& participant_discovered)
 {
     // Create data containing Dynamic Type
@@ -131,7 +143,7 @@ void SpyDdsParticipant::internal_notify_participant_discovered_(
     participants_reader_->simulate_data_reception(std::move(data));
 }
 
-void SpyDdsParticipant::internal_notify_endpoint_discovered_(
+void SpyDdsParticipant::SpyDdsParticipantListener::internal_notify_endpoint_discovered_(
         const EndpointInfo& endpoint_discovered)
 {
     // Create data containing Dynamic Type
@@ -140,6 +152,13 @@ void SpyDdsParticipant::internal_notify_endpoint_discovered_(
 
     // Insert new data in internal reader queue
     endpoints_reader_->simulate_data_reception(std::move(data));
+}
+
+std::unique_ptr<fastdds::rtps::RTPSParticipantListener> SpyDdsParticipant::create_listener_()
+{
+    // We pass the configuration_ and discovery_database_ attributes from this method to avoid accessing virtual
+    // attributes in the constructor
+    return std::make_unique<SpyDdsParticipantListener>(configuration_, discovery_database_, participants_reader_, endpoints_reader_);
 }
 
 } /* namespace participants */
