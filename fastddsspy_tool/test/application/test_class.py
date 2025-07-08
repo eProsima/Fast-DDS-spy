@@ -17,6 +17,7 @@
 import re
 import subprocess
 import time
+import signal
 
 
 SLEEP_TIME = 0.2
@@ -85,8 +86,20 @@ class TestCase():
                                 stderr=subprocess.PIPE,
                                 encoding='utf8')
 
-        if (self.one_shot):
+        if self.one_shot and self.arguments_spy[:2] == ['show', 'all']:
+            time.sleep(3)
+            try:
+                proc.send_signal(signal.SIGINT)
+                output = proc.communicate(timeout=10)[0]
+            except subprocess.TimeoutExpired:
+                proc.kill()
+                output = ''
+            if not self.valid_output(output):
+                return None
+            
+        elif (self.one_shot):
             output = ''
+            time.sleep(1)
             try:
                 output = proc.communicate(timeout=10)[0]
             except subprocess.TimeoutExpired:
@@ -95,6 +108,7 @@ class TestCase():
                 return None
 
         else:
+            time.sleep(1)
             self.read_command_output(proc)
         return proc
 
