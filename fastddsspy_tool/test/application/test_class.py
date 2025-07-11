@@ -18,6 +18,7 @@ import re
 import subprocess
 import time
 import signal
+import os
 
 
 SLEEP_TIME = 0.2
@@ -80,16 +81,29 @@ class TestCase():
         """
         self.command = [self.exec_spy] + self.arguments_spy
 
+        creationflags = subprocess.CREATE_NEW_PROCESS_GROUP if os.name == 'nt' else 0
+
         proc = subprocess.Popen(self.command,
                                 stdin=subprocess.PIPE,
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE,
-                                encoding='utf8')
+                                encoding='utf8',
+                                creationflags=creationflags)
 
+        def safe_interrupt(p):
+            if os.name == 'nt':
+                try:
+                    # Solo funciona si está en un nuevo grupo de procesos
+                    os.kill(p.pid, signal.CTRL_C_EVENT)
+                except Exception:
+                    p.terminate()  # Fallback
+            else:
+                p.send_signal(signal.SIGINT)
+            
         if self.one_shot and self.arguments_spy[:2] == ['show', 'all']:
             time.sleep(3)
             try:
-                proc.send_signal(signal.SIGINT)
+                safe_interrupt(proc)
                 output = proc.communicate(timeout=10)[0]
             except subprocess.TimeoutExpired:
                 proc.kill()
@@ -183,8 +197,10 @@ class TestCase():
         """
         # Just find the number or inf
         pattern = r'^(inf|\d+(\.\d+)?)'
+        print('Validating rate: ' + rate)
 
         match = re.match(pattern, rate)
+        print(match if match else 'No match found for rate')
 
         if match:
             return match.group() == 'inf' or float(match.group()) > 0
@@ -244,6 +260,10 @@ class TestCase():
 
         lines_expected_output = expected_output.splitlines()
         lines_output = clean_output.splitlines()
+        print('Output: ')
+        print(clean_output)
+        print('Expected output: ')
+        print(expected_output)
 
         # TODO (Raul): If guid and rate are on the same line this will not work.
         for i in range(len(lines_expected_output)):
@@ -255,6 +275,7 @@ class TestCase():
 
             elif '%%rate%%' in lines_expected_output[i]:
                 start_rate_position = lines_expected_output[i].find('%%rate%%')
+                print('rate' + lines_output[i][start_rate_position:])
 
                 if not self.valid_rate(lines_output[i][start_rate_position:]):
                     return False
