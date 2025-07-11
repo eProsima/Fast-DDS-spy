@@ -23,6 +23,7 @@ import os
 
 SLEEP_TIME = 0.2
 
+
 def safe_interrupt(p):
     if os.name == 'nt':
         try:
@@ -32,6 +33,7 @@ def safe_interrupt(p):
             p.terminate()  # Fallback
     else:
         p.send_signal(signal.SIGINT)
+
 
 class TestCase():
     """Test class."""
@@ -99,10 +101,13 @@ class TestCase():
                                 encoding='utf8',
                                 creationflags=creationflags)
 
-        if self.one_shot and self.arguments_spy[:2] == ['show', 'all']:
-            time.sleep(3)
-            try:
+        if self.one_shot:
+            sleep_time = 3 if self.arguments_spy[:2] == ['show', 'all'] else 1
+            time.sleep(sleep_time)
+            output = ''
+            if self.arguments_spy[:2] == ['show', 'all']:
                 safe_interrupt(proc)
+            try:
                 output = proc.communicate(timeout=10)[0]
             except subprocess.TimeoutExpired:
                 proc.kill()
@@ -110,15 +115,15 @@ class TestCase():
             if not self.valid_output(output):
                 return None
 
-        elif (self.one_shot):
-            output = ''
-            time.sleep(1)
-            try:
-                output = proc.communicate(timeout=10)[0]
-            except subprocess.TimeoutExpired:
-                proc.kill()
-            if not self.valid_output(output):
-                return None
+        # elif (self.one_shot):
+        #     output = ''
+        #     time.sleep(1)
+        #     try:
+        #         output = proc.communicate(timeout=10)[0]
+        #     except subprocess.TimeoutExpired:
+        #         proc.kill()
+        #     if not self.valid_output(output):
+        #         return None
 
         else:
             time.sleep(1)
