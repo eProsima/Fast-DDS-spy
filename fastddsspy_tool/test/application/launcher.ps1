@@ -51,6 +51,7 @@ $test = Start-Process -Passthru -Wait `
         "--exe", $tool_path,
         "--pub", $pub_path,
         "--test", $test_path) `
+    -WindowStyle Hidden
 
 if( $test.ExitCode -ne 0 )
 {
