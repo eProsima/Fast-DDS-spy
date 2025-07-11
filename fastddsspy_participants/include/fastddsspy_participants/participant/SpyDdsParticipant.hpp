@@ -58,6 +58,7 @@ public:
     {
     public:
 
+        FASTDDSSPY_PARTICIPANTS_DllAPI
         explicit SpyDdsParticipantListener(
                 std::shared_ptr<ddspipe::participants::ParticipantConfiguration> conf,
                 std::shared_ptr<ddspipe::core::DiscoveryDatabase> ddb,
