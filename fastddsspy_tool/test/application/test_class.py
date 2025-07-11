@@ -27,10 +27,10 @@ SLEEP_TIME = 0.2
 def safe_interrupt(p):
     if os.name == 'nt':
         try:
-            # Solo funciona si está en un nuevo grupo de procesos
+            # On Windows, use CTRL_C_EVENT to interrupt the process
             os.kill(p.pid, signal.CTRL_C_EVENT)
         except Exception:
-            p.terminate()  # Fallback
+            p.terminate()
     else:
         p.send_signal(signal.SIGINT)
 
@@ -115,16 +115,6 @@ class TestCase():
             if not self.valid_output(output):
                 return None
 
-        # elif (self.one_shot):
-        #     output = ''
-        #     time.sleep(1)
-        #     try:
-        #         output = proc.communicate(timeout=10)[0]
-        #     except subprocess.TimeoutExpired:
-        #         proc.kill()
-        #     if not self.valid_output(output):
-        #         return None
-
         else:
             time.sleep(1)
             self.read_command_output(proc)
@@ -201,10 +191,8 @@ class TestCase():
         """
         # Just find the number or inf
         pattern = r'^(inf|\d+(\.\d+)?)'
-        print('Validating rate: ' + rate)
 
         match = re.match(pattern, rate)
-        print(match if match else 'No match found for rate')
 
         if match:
             return match.group() == 'inf' or float(match.group()) > 0
@@ -264,10 +252,6 @@ class TestCase():
 
         lines_expected_output = expected_output.splitlines()
         lines_output = clean_output.splitlines()
-        print('Output: ')
-        print(clean_output)
-        print('Expected output: ')
-        print(expected_output)
 
         # TODO (Raul): If guid and rate are on the same line this will not work.
         for i in range(len(lines_expected_output)):
@@ -279,7 +263,6 @@ class TestCase():
 
             elif '%%rate%%' in lines_expected_output[i]:
                 start_rate_position = lines_expected_output[i].find('%%rate%%')
-                print('rate' + lines_output[i][start_rate_position:])
 
                 if not self.valid_rate(lines_output[i][start_rate_position:]):
                     return False

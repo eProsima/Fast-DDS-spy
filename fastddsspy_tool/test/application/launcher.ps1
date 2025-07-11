@@ -44,14 +44,6 @@ Param(
     $test_path
 )
 
-$out_file = "$env:TEMP\fastddsspy_stdout.txt"
-$err_file = "$env:TEMP\fastddsspy_stderr.txt"
-
-Write-Host "Running test: $test_path"
-Write-Host "Python path: $python_path"
-Write-Host "Test script: $test_script"
-Write-Host "Tool path: $tool_path"
-Write-Host "Publisher path: $pub_path"
 $test = Start-Process -Passthru -Wait `
     -FilePath $python_path `
     -ArgumentList (
@@ -59,19 +51,9 @@ $test = Start-Process -Passthru -Wait `
         "--exe", $tool_path,
         "--pub", $pub_path,
         "--test", $test_path) `
-    -RedirectStandardOutput $out_file `
-    -RedirectStandardError $err_file `
-    -NoNewWindow
-
-Write-Host "Test process ID: $($test.Id)"
 
 if( $test.ExitCode -ne 0 )
 {
-    Write-Host ">>> STDOUT:"
-    Get-Content $out_file
-    Write-Host ">>> STDERR:"
-    Get-Content $err_file
     $error_message = "Test: $test_path failed with exit code $($test.ExitCode)."
-    Write-Host "we are here"
     throw $error_message
 }
