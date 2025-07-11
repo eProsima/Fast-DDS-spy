@@ -23,6 +23,15 @@ import os
 
 SLEEP_TIME = 0.2
 
+def safe_interrupt(p):
+    if os.name == 'nt':
+        try:
+            # Solo funciona si está en un nuevo grupo de procesos
+            os.kill(p.pid, signal.CTRL_C_EVENT)
+        except Exception:
+            p.terminate()  # Fallback
+    else:
+        p.send_signal(signal.SIGINT)
 
 class TestCase():
     """Test class."""
@@ -90,16 +99,6 @@ class TestCase():
                                 encoding='utf8',
                                 creationflags=creationflags)
 
-        def safe_interrupt(p):
-            if os.name == 'nt':
-                try:
-                    # Solo funciona si está en un nuevo grupo de procesos
-                    os.kill(p.pid, signal.CTRL_C_EVENT)
-                except Exception:
-                    p.terminate()  # Fallback
-            else:
-                p.send_signal(signal.SIGINT)
-            
         if self.one_shot and self.arguments_spy[:2] == ['show', 'all']:
             time.sleep(3)
             try:
@@ -110,7 +109,7 @@ class TestCase():
                 output = ''
             if not self.valid_output(output):
                 return None
-            
+
         elif (self.one_shot):
             output = ''
             time.sleep(1)
