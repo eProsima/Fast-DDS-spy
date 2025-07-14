@@ -59,7 +59,7 @@ SpyDdsParticipant::SpyDdsParticipantListener::SpyDdsParticipantListener(
         std::shared_ptr<ddspipe::core::DiscoveryDatabase> ddb,
         std::shared_ptr<ddspipe::participants::InternalReader> participants_reader,
         std::shared_ptr<ddspipe::participants::InternalReader> endpoints_reader)
-    : ddspipe::participants::DynTypesParticipant::DynTypesRtpsListener(conf, ddb, conf->id)
+    : ddspipe::participants::DynTypesParticipant::DynTypesRtpsListener(conf, ddb, participants_reader)
 {
     // Set the internal readers
     participants_reader_ = participants_reader;
