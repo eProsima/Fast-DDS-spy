@@ -17,9 +17,22 @@
 import re
 import subprocess
 import time
+import signal
+import os
 
 
 SLEEP_TIME = 0.2
+
+
+def safe_interrupt(p):
+    if os.name == 'nt':
+        try:
+            # On Windows, use CTRL_C_EVENT to interrupt the process
+            os.kill(p.pid, signal.CTRL_C_EVENT)
+        except Exception:
+            p.terminate()
+    else:
+        p.send_signal(signal.SIGINT)
 
 
 class TestCase():
@@ -79,22 +92,31 @@ class TestCase():
         """
         self.command = [self.exec_spy] + self.arguments_spy
 
+        creationflags = subprocess.CREATE_NEW_PROCESS_GROUP if os.name == 'nt' else 0
+
         proc = subprocess.Popen(self.command,
                                 stdin=subprocess.PIPE,
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE,
-                                encoding='utf8')
+                                encoding='utf8',
+                                creationflags=creationflags)
 
-        if (self.one_shot):
+        if self.one_shot:
+            sleep_time = 3 if self.arguments_spy[:2] == ['show', 'all'] else 1
+            time.sleep(sleep_time)
             output = ''
+            if self.arguments_spy[:2] == ['show', 'all']:
+                safe_interrupt(proc)
             try:
                 output = proc.communicate(timeout=10)[0]
             except subprocess.TimeoutExpired:
                 proc.kill()
+                output = ''
             if not self.valid_output(output):
                 return None
 
         else:
+            time.sleep(1)
             self.read_command_output(proc)
         return proc
 
