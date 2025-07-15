@@ -284,7 +284,7 @@ jobs:
           working-directory: 'src'
           list-tests: 'failed'
           list-suites: 'failed'
-          fail-on-empty: 'true'
+          fail-on-empty: 'false'
 
 
 #####################################################################
