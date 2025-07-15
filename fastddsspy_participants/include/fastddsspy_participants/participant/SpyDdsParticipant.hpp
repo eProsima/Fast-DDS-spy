@@ -62,6 +62,7 @@ public:
         explicit SpyDdsParticipantListener(
                 std::shared_ptr<ddspipe::participants::ParticipantConfiguration> conf,
                 std::shared_ptr<ddspipe::core::DiscoveryDatabase> ddb,
+                std::shared_ptr<ddspipe::participants::InternalReader> type_object_reader,
                 std::shared_ptr<ddspipe::participants::InternalReader> participants_reader,
                 std::shared_ptr<ddspipe::participants::InternalReader> endpoints_reader);
 
@@ -105,6 +106,7 @@ public:
 protected:
 
     //! Override method from \c CommonParticipant to create the internal RTPS participant listener
+    FASTDDSSPY_PARTICIPANTS_DllAPI
     std::unique_ptr<fastdds::rtps::RTPSParticipantListener> create_listener_() override;
 
     //! Participants Internal Reader

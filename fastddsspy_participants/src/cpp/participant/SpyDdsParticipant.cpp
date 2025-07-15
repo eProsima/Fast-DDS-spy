@@ -57,9 +57,10 @@ std::shared_ptr<ddspipe::core::IReader> SpyDdsParticipant::create_reader(
 SpyDdsParticipant::SpyDdsParticipantListener::SpyDdsParticipantListener(
         std::shared_ptr<ddspipe::participants::ParticipantConfiguration> conf,
         std::shared_ptr<ddspipe::core::DiscoveryDatabase> ddb,
+        std::shared_ptr<ddspipe::participants::InternalReader> type_object_reader,
         std::shared_ptr<ddspipe::participants::InternalReader> participants_reader,
         std::shared_ptr<ddspipe::participants::InternalReader> endpoints_reader)
-    : ddspipe::participants::DynTypesParticipant::DynTypesRtpsListener(conf, ddb, participants_reader)
+    : ddspipe::participants::DynTypesParticipant::DynTypesRtpsListener(conf, ddb, type_object_reader)
 {
     // Set the internal readers
     participants_reader_ = participants_reader;
@@ -160,8 +161,8 @@ std::unique_ptr<fastdds::rtps::RTPSParticipantListener> SpyDdsParticipant::creat
 {
     // We pass the configuration_ and discovery_database_ attributes from this method to avoid accessing virtual
     // attributes in the constructor
-    return std::make_unique<SpyDdsParticipantListener>(configuration_, discovery_database_, participants_reader_,
-                   endpoints_reader_);
+    return std::make_unique<SpyDdsParticipantListener>(configuration_, discovery_database_, type_object_reader_,
+                   participants_reader_, endpoints_reader_);
 }
 
 } /* namespace participants */
