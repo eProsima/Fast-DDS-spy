@@ -46,22 +46,6 @@ public:
     std::shared_ptr<ddspipe::core::IReader> create_reader(
             const ddspipe::core::ITopic& topic) override;
 
-<<<<<<< HEAD
-    FASTDDSSPY_PARTICIPANTS_DllAPI
-    virtual void on_participant_discovery(
-            fastdds::dds::DomainParticipant* participant,
-            fastrtps::rtps::ParticipantDiscoveryInfo&& info) override;
-
-    FASTDDSSPY_PARTICIPANTS_DllAPI
-    virtual void on_subscriber_discovery(
-            fastdds::dds::DomainParticipant* participant,
-            fastrtps::rtps::ReaderDiscoveryInfo&& info);
-
-    FASTDDSSPY_PARTICIPANTS_DllAPI
-    virtual void on_publisher_discovery(
-            fastdds::dds::DomainParticipant* participant,
-            fastrtps::rtps::WriterDiscoveryInfo&& info);
-=======
     class SpyDdsParticipantListener : public ddspipe::participants::DynTypesParticipant::DynTypesRtpsListener
     {
     public:
@@ -72,28 +56,24 @@ public:
                 std::shared_ptr<ddspipe::core::DiscoveryDatabase> ddb,
                 std::shared_ptr<ddspipe::participants::InternalReader> type_object_reader,
                 std::shared_ptr<ddspipe::participants::InternalReader> participants_reader,
-                std::shared_ptr<ddspipe::participants::InternalReader> endpoints_reader);
+                std::shared_ptr<ddspipe::participants::InternalReader> endpoints_reader,
+                fastrtps::rtps::GuidPrefix_t dds_participant_guid_prefix,
+                fastrtps::rtps::GuidPrefix_t rtps_participant_guid_prefix);
 
         FASTDDSSPY_PARTICIPANTS_DllAPI
         void on_participant_discovery(
-                fastdds::rtps::RTPSParticipant* participant,
-                fastdds::rtps::ParticipantDiscoveryStatus reason,
-                const fastdds::rtps::ParticipantBuiltinTopicData& info,
-                bool& should_be_ignored) override;
+                fastdds::dds::DomainParticipant* participant,
+                fastrtps::rtps::ParticipantDiscoveryInfo&& info) override;
 
         FASTDDSSPY_PARTICIPANTS_DllAPI
-        void on_reader_discovery(
-                fastdds::rtps::RTPSParticipant* participant,
-                fastdds::rtps::ReaderDiscoveryStatus reason,
-                const fastdds::rtps::SubscriptionBuiltinTopicData& info,
-                bool& should_be_ignored) override;
+        void on_subscriber_discovery(
+                fastdds::dds::DomainParticipant* participant,
+                fastrtps::rtps::ReaderDiscoveryInfo&& info) override;
 
         FASTDDSSPY_PARTICIPANTS_DllAPI
-        void on_writer_discovery(
-                fastdds::rtps::RTPSParticipant* participant,
-                fastdds::rtps::WriterDiscoveryStatus reason,
-                const fastdds::rtps::PublicationBuiltinTopicData& info,
-                bool& should_be_ignored) override;
+        void on_publisher_discovery(
+                fastdds::dds::DomainParticipant* participant,
+                fastrtps::rtps::WriterDiscoveryInfo&& info) override;
 
     protected:
 
@@ -103,23 +83,28 @@ public:
         void internal_notify_endpoint_discovered_(
                 const EndpointInfo& endpoint_discovered);
 
+        bool come_from_this_participant_(
+                const ddspipe::core::types::Guid& guid) const noexcept;
+
         //! Participants Internal Reader
         std::shared_ptr<ddspipe::participants::InternalReader> participants_reader_;
 
         //! Endpoint Internal Reader
         std::shared_ptr<ddspipe::participants::InternalReader> endpoints_reader_;
 
+        //! DDS participant GUID
+        fastrtps::rtps::GuidPrefix_t dds_participant_guid_prefix_;
+
+        //! RTPS participant GUID
+        fastrtps::rtps::GuidPrefix_t rtps_participant_guid_prefix_;
+
     };
->>>>>>> 6a01d7d (Update Spy Listeners (#121))
 
 protected:
 
     //! Override method from \c CommonParticipant to create the internal RTPS participant listener
     FASTDDSSPY_PARTICIPANTS_DllAPI
-    std::unique_ptr<fastdds::rtps::RTPSParticipantListener> create_listener_() override;
-
-    bool come_from_this_participant_(
-            const ddspipe::core::types::Guid& guid) const noexcept;
+    std::unique_ptr<fastrtps::rtps::RTPSParticipantListener> create_listener_() override;
 
     //! Participants Internal Reader
     std::shared_ptr<ddspipe::participants::InternalReader> participants_reader_;
