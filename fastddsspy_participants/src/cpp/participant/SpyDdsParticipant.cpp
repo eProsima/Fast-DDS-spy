@@ -57,21 +57,18 @@ std::shared_ptr<ddspipe::core::IReader> SpyDdsParticipant::create_reader(
 }
 
 SpyDdsParticipant::SpyDdsParticipantListener::SpyDdsParticipantListener(
-        std::shared_ptr<ddspipe::participants::ParticipantConfiguration> conf,
-        std::shared_ptr<ddspipe::core::DiscoveryDatabase> ddb,
+        ddspipe::core::types::ParticipantId participant_id,
         std::shared_ptr<ddspipe::participants::InternalReader> type_object_reader,
         std::shared_ptr<ddspipe::participants::InternalReader> participants_reader,
         std::shared_ptr<ddspipe::participants::InternalReader> endpoints_reader,
-        fastrtps::rtps::GuidPrefix_t dds_participant_guid_prefix,
-        fastrtps::rtps::GuidPrefix_t rtps_participant_guid_prefix)
-    : ddspipe::participants::DynTypesParticipant::DynTypesRtpsListener(conf, ddb, type_object_reader)
+        fastrtps::rtps::GUID_t rtps_guid)
+    : ddspipe::participants::DynTypesParticipant::DynTypesDdsListener(type_object_reader, participant_id)
 {
     // Set the internal readers
     participants_reader_ = participants_reader;
     endpoints_reader_ = endpoints_reader;
     // Set the participant guid prefixes
-    dds_participant_guid_prefix_ = dds_participant_guid_prefix;
-    rtps_participant_guid_prefix_ = rtps_participant_guid_prefix;
+    rtps_guid = rtps_guid;
 }
 
 void SpyDdsParticipant::SpyDdsParticipantListener::on_participant_discovery(
@@ -79,7 +76,7 @@ void SpyDdsParticipant::SpyDdsParticipantListener::on_participant_discovery(
         fastrtps::rtps::ParticipantDiscoveryInfo&& discovery_info)
 {
     // If comes from this participant is not interesting
-    if (come_from_this_participant_(discovery_info.info.m_guid))
+    if (come_from_this_participant_(discovery_info.info.m_guid, participant->guid()))
     {
         return;
     }
@@ -98,12 +95,12 @@ void SpyDdsParticipant::SpyDdsParticipantListener::on_subscriber_discovery(
         fastrtps::rtps::ReaderDiscoveryInfo&& info)
 {
     // If comes from this participant is not interesting
-    if (come_from_this_participant_(info.info.guid()))
+    if (come_from_this_participant_(info.info.guid(), participant->guid()))
     {
         return;
     }
 
-    EndpointInfo endpoint_info = ddspipe::participants::detail::create_endpoint_from_info_(info, configuration_->id);
+    EndpointInfo endpoint_info = ddspipe::participants::detail::create_endpoint_from_info_(info, participant_id_);
 
     // If participant left or dropped, this notification arrives as well
     endpoint_info.active = !(info.status == fastrtps::rtps::ReaderDiscoveryInfo::DISCOVERY_STATUS::REMOVED_READER);
@@ -116,12 +113,12 @@ void SpyDdsParticipant::SpyDdsParticipantListener::on_publisher_discovery(
         fastrtps::rtps::WriterDiscoveryInfo&& info)
 {
     // If comes from this participant is not interesting
-    if (come_from_this_participant_(info.info.guid()))
+    if (come_from_this_participant_(info.info.guid(), participant->guid()))
     {
         return;
     }
 
-    EndpointInfo endpoint_info = ddspipe::participants::detail::create_endpoint_from_info_(info, configuration_->id);
+    EndpointInfo endpoint_info = ddspipe::participants::detail::create_endpoint_from_info_(info, participant_id_);
 
     // If participant left or dropped, this notification arrives as well
     endpoint_info.active = !(info.status == fastrtps::rtps::WriterDiscoveryInfo::DISCOVERY_STATUS::REMOVED_WRITER);
@@ -156,20 +153,20 @@ void SpyDdsParticipant::SpyDdsParticipantListener::internal_notify_endpoint_disc
  * because this participant has 2 guids, the rtps and the dds participant ones
  */
 bool SpyDdsParticipant::SpyDdsParticipantListener::come_from_this_participant_(
-        const ddspipe::core::types::Guid& guid) const noexcept
+        const ddspipe::core::types::Guid& guid,
+        const ddspipe::core::types::Guid& guid_dds) const noexcept
 {
-    return (guid.guid_prefix() == dds_participant_guid_prefix_
-           ||  guid.guid_prefix() == rtps_participant_guid_prefix_
+    return (guid.guid_prefix() == guid_dds.guid_prefix()
+           ||  guid.guid_prefix() == rtps_guid.guidPrefix
            );
 }
 
-std::unique_ptr<fastrtps::rtps::RTPSParticipantListener> SpyDdsParticipant::create_listener_()
+std::unique_ptr<fastdds::dds::DomainParticipantListener> SpyDdsParticipant::create_dds_listener_()
 {
     // We pass the configuration_ and discovery_database_ attributes from this method to avoid accessing virtual
     // attributes in the constructor
-    return std::make_unique<SpyDdsParticipantListener>(configuration_, discovery_database_, type_object_reader_,
-                   participants_reader_, endpoints_reader_,
-                   dds_participant_->guid().guidPrefix, rtps_participant_->getGuid().guidPrefix);
+    return std::make_unique<SpyDdsParticipantListener>(configuration_->id, type_object_reader_,
+                   participants_reader_, endpoints_reader_, rtps_participant_->getGuid());
 }
 
 } /* namespace participants */
