@@ -98,7 +98,7 @@ public:
         std::shared_ptr<ddspipe::participants::InternalReader> endpoints_reader_;
 
         //! RTPS participant GUID
-        ddspipe::core::types::Guid rtps_guid;;
+        ddspipe::core::types::Guid rtps_guid_;
 
     };
 

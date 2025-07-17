@@ -68,7 +68,7 @@ SpyDdsParticipant::SpyDdsParticipantListener::SpyDdsParticipantListener(
     participants_reader_ = participants_reader;
     endpoints_reader_ = endpoints_reader;
     // Set the participant guid prefixes
-    rtps_guid = rtps_guid;
+    rtps_guid_ = rtps_guid;
 }
 
 void SpyDdsParticipant::SpyDdsParticipantListener::on_participant_discovery(
@@ -157,7 +157,7 @@ bool SpyDdsParticipant::SpyDdsParticipantListener::come_from_this_participant_(
         const ddspipe::core::types::Guid& guid_dds) const noexcept
 {
     return (guid.guid_prefix() == guid_dds.guid_prefix()
-           ||  guid.guid_prefix() == rtps_guid.guid_prefix()
+           ||  guid.guid_prefix() == rtps_guid_.guid_prefix()
            );
 }
 
