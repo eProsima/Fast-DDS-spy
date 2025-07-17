@@ -62,7 +62,7 @@ public:
                 std::shared_ptr<ddspipe::participants::InternalReader> type_object_reader,
                 std::shared_ptr<ddspipe::participants::InternalReader> participants_reader,
                 std::shared_ptr<ddspipe::participants::InternalReader> endpoints_reader,
-                fastrtps::rtps::GUID_t rtps_guid);
+                ddspipe::core::types::Guid rtps_guid);
 
         FASTDDSSPY_PARTICIPANTS_DllAPI
         void on_participant_discovery(
@@ -98,7 +98,7 @@ public:
         std::shared_ptr<ddspipe::participants::InternalReader> endpoints_reader_;
 
         //! RTPS participant GUID
-        fastrtps::rtps::GUID_t rtps_guid;;
+        ddspipe::core::types::Guid rtps_guid;;
 
     };
 

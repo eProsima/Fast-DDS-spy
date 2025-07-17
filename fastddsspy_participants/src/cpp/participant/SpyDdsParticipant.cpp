@@ -61,7 +61,7 @@ SpyDdsParticipant::SpyDdsParticipantListener::SpyDdsParticipantListener(
         std::shared_ptr<ddspipe::participants::InternalReader> type_object_reader,
         std::shared_ptr<ddspipe::participants::InternalReader> participants_reader,
         std::shared_ptr<ddspipe::participants::InternalReader> endpoints_reader,
-        fastrtps::rtps::GUID_t rtps_guid)
+        ddspipe::core::types::Guid rtps_guid)
     : ddspipe::participants::DynTypesParticipant::DynTypesDdsListener(type_object_reader, participant_id)
 {
     // Set the internal readers
@@ -157,12 +157,17 @@ bool SpyDdsParticipant::SpyDdsParticipantListener::come_from_this_participant_(
         const ddspipe::core::types::Guid& guid_dds) const noexcept
 {
     return (guid.guid_prefix() == guid_dds.guid_prefix()
-           ||  guid.guid_prefix() == rtps_guid.guidPrefix
+           ||  guid.guid_prefix() == rtps_guid.guid_prefix()
            );
 }
 
 std::unique_ptr<fastdds::dds::DomainParticipantListener> SpyDdsParticipant::create_dds_listener_()
 {
+    if (rtps_participant_ == nullptr)
+    {
+        logWarning(SPY_PARTICIPANT, "RTPS participant is not created yet. Cannot create SpyDdsParticipantListener.");
+        return nullptr;
+    }
     // We pass the configuration_ and discovery_database_ attributes from this method to avoid accessing virtual
     // attributes in the constructor
     return std::make_unique<SpyDdsParticipantListener>(configuration_->id, type_object_reader_,
