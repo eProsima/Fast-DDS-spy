@@ -84,6 +84,7 @@ class TestCase():
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE,
                                 encoding='utf8')
+        time.sleep(1)
 
         if (self.one_shot):
             output = ''
