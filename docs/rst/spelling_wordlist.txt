@@ -1,6 +1,7 @@
 allowlist
 allowlisting
 Asio
+behaviour
 blocklist
 Chocolatey
 CMake
@@ -30,6 +31,7 @@ gMock
 Gtest
 guid
 idl
+infos
 IPv
 kubernetes
 localhost
