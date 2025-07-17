@@ -84,6 +84,7 @@ class TestCase():
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE,
                                 encoding='utf8')
+        time.sleep(1)
 
         if (self.one_shot):
             output = ''
@@ -207,6 +208,8 @@ class TestCase():
 
         lines_expected_output = expected_output.splitlines()
         lines_output = output.splitlines()
+        print('Expected output' + expected_output)
+        print('output' + output)
 
         for i in range(len(lines_expected_output)):
             if '%%guid%%' in lines_expected_output[i]:
@@ -217,6 +220,7 @@ class TestCase():
 
             elif '%%rate%%' in lines_expected_output[i]:
                 start_rate_position = lines_expected_output[i].find('%%rate%%')
+                print('Rate not valid')
 
                 if not self.valid_rate(lines_output[i][start_rate_position:]):
                     return False
