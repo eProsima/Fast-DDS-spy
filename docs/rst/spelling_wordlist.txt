@@ -31,7 +31,6 @@ gMock
 Gtest
 guid
 idl
-infos
 IPv
 kubernetes
 localhost
