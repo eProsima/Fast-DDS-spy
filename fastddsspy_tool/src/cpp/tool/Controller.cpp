@@ -221,6 +221,7 @@ bool Controller::idl_argument_(
 {
     return (argument == "idl");
 }
+
 bool Controller::all_argument_(
         const std::string& argument) const noexcept
 {
@@ -384,7 +385,7 @@ void Controller::topics_command_(
 
             ddspipe::yaml::set_collection(yml, data);
         }
-        else if(idl_argument_(arg_2))
+        else if (idl_argument_(arg_2))
         {
             auto data = participants::ModelParser::topics_type_idl(*model_, filter_topic);
             if (data.empty())
@@ -543,7 +544,8 @@ void Controller::help_command_(
             << "\tversion                         : tool version.\n"
             << "\tquit                            : exit interactive CLI and close program.\n"
             << "\tparticipants                    : DomainParticipants discovered in the network.\n"
-            << "\tparticipants verbose            : verbose information about DomainParticipants discovered in the network.\n"
+            <<
+                    "\tparticipants verbose            : verbose information about DomainParticipants discovered in the network.\n"
             << "\tparticipants <Guid>             : verbose information related with a specific DomainParticipant.\n"
             << "\twriters                         : DataWriters discovered in the network.\n"
             << "\twriters verbose                 : verbose information about DataWriters discovered in the network.\n"
@@ -554,13 +556,18 @@ void Controller::help_command_(
             << "\ttopics                          : Topics discovered in the network in compact format.\n"
             << "\ttopics v                        : Topics discovered in the network.\n"
             << "\ttopics vv                       : verbose information about Topics discovered in the network.\n"
-            << "\ttopics <name>                   : Topics discovered in the network filtered by name (wildcard allowed (*)).\n"
-            << "\ttopics <name> idl               : Display the IDL type definition for topics matching <name> (wildcards allowed).\n"
+            <<
+                    "\ttopics <name>                   : Topics discovered in the network filtered by name (wildcard allowed (*)).\n"
+            <<
+                    "\ttopics <name> idl               : Display the IDL type definition for topics matching <name> (wildcards allowed).\n"
             << "\techo <name>                     : data of a specific Topic (Data Type must be discovered).\n"
-            << "\techo <wildcard_name>            : data of Topics matching the wildcard name (and whose Data Type is discovered).\n"
+            <<
+                    "\techo <wildcard_name>            : data of Topics matching the wildcard name (and whose Data Type is discovered).\n"
             << "\techo <name> verbose             : data with additional source info of a specific Topic.\n"
-            << "\techo <wildcard_name> verbose    : data with additional source info of Topics matching the topic name (wildcard allowed (*)).\n"
-            << "\techo all                        : verbose data of all topics (only those whose Data Type is discovered).\n"
+            <<
+                    "\techo <wildcard_name> verbose    : data with additional source info of Topics matching the topic name (wildcard allowed (*)).\n"
+            <<
+                    "\techo all                        : verbose data of all topics (only those whose Data Type is discovered).\n"
             << "\n"
             << "Notes and comments:\n"
             << "\tTo exit from data printing, press enter.\n"

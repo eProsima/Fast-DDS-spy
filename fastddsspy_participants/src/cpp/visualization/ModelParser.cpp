@@ -422,7 +422,6 @@ std::string ModelParser::topics_type_idl(
 
 }
 
-
 } /* namespace participants */
 } /* namespace spy */
 } /* namespace eprosima */
