@@ -84,6 +84,10 @@ struct ModelParser
     static std::vector<ComplexTopicData> topics_verbose(
             const SpyModel& model,
             const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic) noexcept;
+    FASTDDSSPY_PARTICIPANTS_DllAPI
+        static std::string topics_type_idl(
+                const SpyModel& model,
+                const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic) noexcept;
 };
 
 } /* namespace participants */
