@@ -400,6 +400,29 @@ std::vector<ComplexTopicData> ModelParser::topics_verbose(
     return result;
 }
 
+std::string ModelParser::topics_type_idl(
+        const SpyModel& model,
+        const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic) noexcept
+{
+    std::set<eprosima::ddspipe::core::types::DdsTopic> topics = get_topics(model, filter_topic);
+    for (const auto& topic : topics)
+    {
+        for (const auto& endpoint : model.endpoint_database_)
+        {
+            if (endpoint.second.active && endpoint.second.topic == topic)
+            {
+                if (!endpoint.second.topic.type_idl.empty())
+                {
+                    return endpoint.second.topic.type_idl;
+                }
+            }
+        }
+    }
+    return "";
+
+}
+
+
 } /* namespace participants */
 } /* namespace spy */
 } /* namespace eprosima */

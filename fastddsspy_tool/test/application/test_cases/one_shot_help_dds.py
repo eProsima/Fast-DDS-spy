@@ -58,6 +58,7 @@ Commands available and the information they show:\n\
 \ttopics v                        : Topics discovered in the network.\n\
 \ttopics vv                       : verbose information about Topics discovered in the network.\n\
 \ttopics <name>                   : Topics discovered in the network filtered by name (wildcard allowed (*)).\n\
+\ttopics <name> idl               : Display the IDL type definition for topics matching <name> (wildcards allowed).\n\
 \techo <name>                     : data of a specific Topic (Data Type must be discovered).\n\
 \techo <wildcard_name>            : data of Topics matching the wildcard name (and whose Data Type is discovered).\n\
 \techo <name> verbose             : data with additional source info of a specific Topic.\n\

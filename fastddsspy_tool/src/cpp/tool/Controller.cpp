@@ -29,6 +29,7 @@
 #include <fastddsspy_participants/visualization/ModelParser.hpp>
 
 #include <fastddsspy_yaml/YamlReaderConfiguration.hpp>
+#include "yaml-cpp/yaml.h"
 
 #include "Controller.hpp"
 #include "Command.hpp"
@@ -215,6 +216,11 @@ bool Controller::verbose_verbose_argument_(
         || (argument == "VV"));
 }
 
+bool Controller::idl_argument_(
+        const std::string& argument) const noexcept
+{
+    return (argument == "idl");
+}
 bool Controller::all_argument_(
         const std::string& argument) const noexcept
 {
@@ -378,13 +384,28 @@ void Controller::topics_command_(
 
             ddspipe::yaml::set_collection(yml, data);
         }
+        else if(idl_argument_(arg_2))
+        {
+            auto data = participants::ModelParser::topics_type_idl(*model_, filter_topic);
+            if (data.empty())
+            {
+                view_.show_error(STR_ENTRY
+                        << "<"
+                        << arguments[1]
+                        << "> does not match any topic in the DDS network.");
+                return;
+            }
+
+            std::cout << '\n' << data << std::endl;
+        }
+
         else
         {
             view_.show_error(STR_ENTRY
                     << "<"
                     << arguments[2]
-                    << "> is not a valid verbosity mode. "
-                    << "Valid options are \"v \" and \"vv\".");
+                    << "> is not a valid topic option. "
+                    << "Valid options are \"v \", \"vv\" (verbosity modes) or or \"idl\".");
             return;
         }
     }
@@ -534,6 +555,7 @@ void Controller::help_command_(
             << "\ttopics v                        : Topics discovered in the network.\n"
             << "\ttopics vv                       : verbose information about Topics discovered in the network.\n"
             << "\ttopics <name>                   : Topics discovered in the network filtered by name (wildcard allowed (*)).\n"
+            << "\ttopics <name> idl               : Display the IDL type definition for topics matching <name> (wildcards allowed).\n"
             << "\techo <name>                     : data of a specific Topic (Data Type must be discovered).\n"
             << "\techo <wildcard_name>            : data of Topics matching the wildcard name (and whose Data Type is discovered).\n"
             << "\techo <name> verbose             : data with additional source info of a specific Topic.\n"
