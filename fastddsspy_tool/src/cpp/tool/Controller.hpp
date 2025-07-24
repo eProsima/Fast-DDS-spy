@@ -75,6 +75,9 @@ protected:
     bool verbose_verbose_argument_(
             const std::string& argument) const noexcept;
 
+    bool idl_argument_(
+            const std::string& argument) const noexcept;
+
     bool all_argument_(
             const std::string& argument) const noexcept;
 

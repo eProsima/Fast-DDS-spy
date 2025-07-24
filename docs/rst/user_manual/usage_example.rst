@@ -105,6 +105,19 @@ Try out all the commands DDS Spy has to offer:
       dynamic_type_discovered: false
 
 
+* ``topics Circle idl``
+
+.. code-block:: output
+
+    @extensibility(APPENDABLE)
+    struct ShapeType
+    {
+        @key string color;
+        long x;
+        long y;
+        long shapesize;
+    };
+
 * ``help``
 
 .. code-block:: output

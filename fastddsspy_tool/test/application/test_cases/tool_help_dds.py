@@ -70,6 +70,8 @@ configuration_discovery_time.yaml',
                 'in the network.\n\n'
                 '\ttopics <name>                   : Topics discovered in the network filtered by '
                 'name (wildcard allowed (*)).\n\n'
+                '\ttopics <name> idl               : Display the IDL type definition for topics '
+                'matching <name> (wildcards allowed).\n\n'
                 '\techo <name>                     : data of a specific Topic '
                 '(Data Type must be discovered).\n\n'
                 '\techo <wildcard_name>            : data of Topics matching the wildcard name '
