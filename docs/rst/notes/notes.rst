@@ -14,10 +14,10 @@ This release includes the following **features**:
 
 This release includes the following **CI improvements**:
 
-* Bump setuptools in /docs
-* Remove deprecated windows 2019 runner
+* Bump `setuptools` in docs
+* Remove deprecated Windows 2019 runner
 * Add test reports to CI
-* Use tsan binaries for TSAN workflow
+* Use `tsan`` binaries for `TSAN` workflow
 
 This release includes the following **Dependencies Update**:
 
