@@ -93,7 +93,8 @@ public:
                 const ParticipantInfo& participant_discovered);
 
         void internal_notify_endpoint_discovered_(
-                const EndpointInfo& endpoint_discovered);
+                const EndpointInfo& endpoint_discovered,
+                const std::string& type_idl);
 
         //! Participants Internal Reader
         std::shared_ptr<ddspipe::participants::InternalReader> participants_reader_;
