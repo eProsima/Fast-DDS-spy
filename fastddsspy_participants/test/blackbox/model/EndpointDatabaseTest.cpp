@@ -290,7 +290,8 @@ TEST(EndpointDatabaseTest, topic)
     std::this_thread::sleep_for(std::chrono::milliseconds(test::WAIT_MS));
 
     // Check information
-    ASSERT_EQ(model->endpoint_database_.at(new_data.info.guid).info.topic.m_topic_name, new_data.info.topic.m_topic_name);
+    ASSERT_EQ(model->endpoint_database_.at(new_data.info.guid).info.topic.m_topic_name,
+            new_data.info.topic.m_topic_name);
     ASSERT_EQ(model->endpoint_database_.at(new_data.info.guid).info.topic.type_name, new_data.info.topic.type_name);
 }
 

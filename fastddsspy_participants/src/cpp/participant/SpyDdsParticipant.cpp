@@ -136,7 +136,7 @@ void SpyDdsParticipant::SpyDdsParticipantListener::on_reader_discovery(
             fastdds::dds::DynamicType::_ref_type remote_type =
                     eprosima::fastdds::dds::DynamicTypeBuilderFactory::get_instance()->create_type_w_type_object(
                 remote_type_object)->build();
-    
+
             // Serialize DynamicType into its IDL representation
             std::stringstream idl;
             idl_serialize(remote_type, idl);
@@ -165,7 +165,7 @@ void SpyDdsParticipant::SpyDdsParticipantListener::on_writer_discovery(
 
     ddspipe::participants::DynTypesParticipant::DynTypesRtpsListener::on_writer_discovery(participant, reason, info,
             should_be_ignored);
-    
+
     std::string type_idl {"No type information available and thus cannot print data."};
 
     if (info.type_information.assigned())
