@@ -31,7 +31,7 @@ void random_participant_info(
         unsigned int seed = 1);
 
 void random_endpoint_info(
-        spy::participants::EndpointInfo& endpoint_data,
+        spy::participants::EndpointInfoData& endpoint_data,
         ddspipe::core::types::EndpointKind kind,
         bool active = true,
         unsigned int seed = 1,
