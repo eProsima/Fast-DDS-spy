@@ -411,10 +411,21 @@ std::string ModelParser::topics_type_idl(
         {
             if (endpoint.second.info.active && endpoint.second.info.topic == topic)
             {
-                return endpoint.second.type_idl;
+                if (!endpoint.second.type_idl.empty())
+                {
+                    return endpoint.second.type_idl;
+                    // return "No type information available and thus cannot print data.";
+                }      
             }
         }
     }
+
+    // Check if the filter topic matches with any topic
+    if (!topics.empty())
+    {
+        return "No type information available and thus cannot print data.";
+    }
+
     return "";
 
 }

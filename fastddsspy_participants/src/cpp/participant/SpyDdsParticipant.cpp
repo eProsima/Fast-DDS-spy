@@ -116,7 +116,7 @@ void SpyDdsParticipant::SpyDdsParticipantListener::on_reader_discovery(
     ddspipe::participants::DynTypesParticipant::DynTypesRtpsListener::on_reader_discovery(participant, reason, info,
             should_be_ignored);
 
-    std::string type_idl {"No type information available and thus cannot print data."};
+    std::string type_idl {};
 
     if (info.type_information.assigned())
     {
@@ -166,7 +166,7 @@ void SpyDdsParticipant::SpyDdsParticipantListener::on_writer_discovery(
     ddspipe::participants::DynTypesParticipant::DynTypesRtpsListener::on_writer_discovery(participant, reason, info,
             should_be_ignored);
 
-    std::string type_idl {"No type information available and thus cannot print data."};
+    std::string type_idl {};
 
     if (info.type_information.assigned())
     {
