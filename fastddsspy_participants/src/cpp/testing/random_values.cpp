@@ -39,17 +39,18 @@ void random_participant_info(
 }
 
 void random_endpoint_info(
-        spy::participants::EndpointInfo& endpoint_data,
+        spy::participants::EndpointInfoData& endpoint_data,
         ddspipe::core::types::EndpointKind kind,
         bool active /* = true */,
         unsigned int seed /* = 0 */,
         ddspipe::core::types::DdsTopic topic /* = ddspipe::core::testing::random_dds_topic() */)
 {
-    endpoint_data.active = active;
-    endpoint_data.kind = kind;
-    endpoint_data.guid = random_guid_same_prefix(seed);
-    endpoint_data.topic = topic;
-    endpoint_data.discoverer_participant_id = ddspipe::core::testing::random_participant_id(seed);
+    endpoint_data.info.active = active;
+    endpoint_data.info.kind = kind;
+    endpoint_data.info.guid = random_guid_same_prefix(seed);
+    endpoint_data.info.topic = topic;
+    endpoint_data.info.discoverer_participant_id = ddspipe::core::testing::random_participant_id(seed);
+    endpoint_data.type_idl = "type_idl";
 }
 
 } /* namespace participants */

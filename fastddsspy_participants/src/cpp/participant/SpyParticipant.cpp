@@ -85,7 +85,7 @@ utils::ReturnCode SpyParticipant::new_endpoint_info_(
     auto& endpoint_info = dynamic_cast<const EndpointInfoData&>(data);
     EndpointInfo info = endpoint_info.info;
     ddspipe::core::types::Guid guid = info.guid;
-    model_->endpoint_database_.add_or_modify(std::move(guid), std::move(info));
+    model_->endpoint_database_.add_or_modify(std::move(guid), std::move(endpoint_info));
     return utils::ReturnCode::RETCODE_OK;
 }
 

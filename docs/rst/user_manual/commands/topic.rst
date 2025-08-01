@@ -52,6 +52,11 @@ Topic name with wildcards
 When a topic name contains wildcards (*), this command retrieves :ref:`verbose information <user_manual_command_topic_output_verbose>` for all topics that match the given filter.
 This allows users to query multiple topics in a single command, making it easier to gather related data quickly.
 
+Topic type IDL definition
+-------------------------
+
+When the argument ``idl`` is appended after a topic name, this command retrieves and displays the **IDL** type definition associated with that topic.
+
 Output Format
 =============
 
@@ -152,3 +157,16 @@ This would be the expected output for the command ``topics Square``:
       - 01.0f.44.59.c9.65.78.e5.00.00.00.00|0.0.2.7
     rate: 13.0418 Hz
     dynamic_type_discovered: true
+
+This would be the expected output for the command ``topics Square idl``:
+
+.. code-block::
+
+    @extensibility(APPENDABLE)
+    struct ShapeType
+    {
+        @key string color;
+        long x;
+        long y;
+        long shapesize;
+    };

@@ -216,7 +216,7 @@ TEST(EndpointDatabaseTest, guid)
     std::this_thread::sleep_for(std::chrono::milliseconds(test::WAIT_MS));
 
     // Check information
-    ASSERT_EQ(model->endpoint_database_.at(new_data.info.guid).guid, new_data.info.guid);
+    ASSERT_EQ(model->endpoint_database_.at(new_data.info.guid).info.guid, new_data.info.guid);
 }
 
 TEST(EndpointDatabaseTest, n_msgs_guid)
@@ -290,8 +290,9 @@ TEST(EndpointDatabaseTest, topic)
     std::this_thread::sleep_for(std::chrono::milliseconds(test::WAIT_MS));
 
     // Check information
-    ASSERT_EQ(model->endpoint_database_.at(new_data.info.guid).topic.m_topic_name, new_data.info.topic.m_topic_name);
-    ASSERT_EQ(model->endpoint_database_.at(new_data.info.guid).topic.type_name, new_data.info.topic.type_name);
+    ASSERT_EQ(model->endpoint_database_.at(new_data.info.guid).info.topic.m_topic_name,
+            new_data.info.topic.m_topic_name);
+    ASSERT_EQ(model->endpoint_database_.at(new_data.info.guid).info.topic.type_name, new_data.info.topic.type_name);
 }
 
 TEST(EndpointDatabaseTest, active_true)
@@ -322,7 +323,7 @@ TEST(EndpointDatabaseTest, active_true)
     std::this_thread::sleep_for(std::chrono::milliseconds(test::WAIT_MS));
 
     // Check information
-    ASSERT_TRUE(model->endpoint_database_.at(new_data.info.guid).active);
+    ASSERT_TRUE(model->endpoint_database_.at(new_data.info.guid).info.active);
 }
 
 TEST(EndpointDatabaseTest, active_false)
@@ -353,7 +354,7 @@ TEST(EndpointDatabaseTest, active_false)
     std::this_thread::sleep_for(std::chrono::milliseconds(test::WAIT_MS));
 
     // Check information
-    ASSERT_FALSE(model->endpoint_database_.at(new_data.info.guid).active);
+    ASSERT_FALSE(model->endpoint_database_.at(new_data.info.guid).info.active);
 }
 
 TEST(EndpointDatabaseTest, change_value)
@@ -392,7 +393,7 @@ TEST(EndpointDatabaseTest, change_value)
     std::this_thread::sleep_for(std::chrono::milliseconds(test::WAIT_MS));
 
     // Check information
-    ASSERT_FALSE(model->endpoint_database_.at(new_data.info.guid).active);
+    ASSERT_FALSE(model->endpoint_database_.at(new_data.info.guid).info.active);
 }
 
 TEST(EndpointDatabaseTest, is_writer)
@@ -423,7 +424,7 @@ TEST(EndpointDatabaseTest, is_writer)
     std::this_thread::sleep_for(std::chrono::milliseconds(test::WAIT_MS));
 
     // Check information
-    ASSERT_EQ(model->endpoint_database_.at(new_data.info.guid).kind, ddspipe::core::types::EndpointKind::writer);
+    ASSERT_EQ(model->endpoint_database_.at(new_data.info.guid).info.kind, ddspipe::core::types::EndpointKind::writer);
 }
 
 TEST(EndpointDatabaseTest, is_reader)
@@ -454,7 +455,7 @@ TEST(EndpointDatabaseTest, is_reader)
     std::this_thread::sleep_for(std::chrono::milliseconds(test::WAIT_MS));
 
     // Check information
-    ASSERT_EQ(model->endpoint_database_.at(new_data.info.guid).kind, ddspipe::core::types::EndpointKind::reader);
+    ASSERT_EQ(model->endpoint_database_.at(new_data.info.guid).info.kind, ddspipe::core::types::EndpointKind::reader);
 }
 
 int main(
