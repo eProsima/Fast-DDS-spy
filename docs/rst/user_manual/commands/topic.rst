@@ -52,8 +52,8 @@ Topic name with wildcards
 When a topic name contains wildcards (*), this command retrieves :ref:`verbose information <user_manual_command_topic_output_verbose>` for all topics that match the given filter.
 This allows users to query multiple topics in a single command, making it easier to gather related data quickly.
 
-Topic name with "idl"
----------------------
+Topic type IDL definition
+-------------------------
 
 When the argument ``idl`` is appended after a topic name, this command retrieves and displays the **IDL** type definition associated with that topic.
 
