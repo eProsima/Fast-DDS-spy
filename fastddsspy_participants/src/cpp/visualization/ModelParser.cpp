@@ -415,7 +415,7 @@ std::string ModelParser::topics_type_idl(
                 {
                     return endpoint.second.type_idl;
                     // return "No type information available and thus cannot print data.";
-                }      
+                }
             }
         }
     }
