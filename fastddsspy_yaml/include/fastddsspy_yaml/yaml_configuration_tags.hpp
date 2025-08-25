@@ -30,6 +30,7 @@ namespace yaml {
 //////////////////////
 constexpr const char* DDS_TAG("dds");
 constexpr const char* ROS2_TYPES_TAG("ros2-types");
+constexpr const char* FASTDDSSPY_PROFILE_TAG("dds-profile");
 
 ////////////////////////
 // Specs related tags

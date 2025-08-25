@@ -38,6 +38,7 @@
 
 #include <ddspipe_participants/participant/dynamic_types/SchemaParticipant.hpp>
 #include <ddspipe_participants/participant/dynamic_types/DynTypesParticipant.hpp>
+#include <ddspipe_participants/xml/XmlHandler.hpp>
 
 #include <fastddsspy_yaml/YamlReaderConfiguration.hpp>
 #include <fastddsspy_yaml/CommandlineArgsSpy.hpp>
@@ -51,7 +52,7 @@ int main(
         int argc,
         char** argv)
 {
-    // Enable ANSI colors fow windows
+    // Enable ANSI colors for windows
     eprosima::utils::enable_ansi_colors();
     // Initialize CommandlineArgs
     eprosima::spy::yaml::CommandlineArgsSpy commandline_args;
@@ -142,6 +143,10 @@ int main(
             // Change it when Log Module is independent and with more extensive API.
             // eprosima::utils::Log::SetCategoryFilter(std::regex("(ddspipe|FASTDDSSPY)"));
         }
+
+        // Load XML profiles
+        participants::XmlHandler::load_xml(configuration.xml_configuration);
+
         // Create the Spy
         eprosima::spy::Controller spy(configuration);
 

@@ -75,7 +75,7 @@ protected:
     std::shared_ptr<eprosima::spy::participants::SpyModel> model_;
 
     //! TODO comment
-    std::shared_ptr<eprosima::spy::participants::SpyDdsParticipant> dds_participant_;
+    std::shared_ptr<eprosima::spy::participants::IParticipant> dds_participant_;
 
     //! TODO comment
     std::shared_ptr<eprosima::spy::participants::SpyParticipant> spy_participant_;

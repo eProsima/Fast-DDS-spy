@@ -18,6 +18,8 @@
 #include <ddspipe_core/types/topic/dds/DdsTopic.hpp>
 #include <ddspipe_core/types/topic/filter/ManualTopic.hpp>
 #include <ddspipe_core/types/topic/filter/WildcardDdsFilterTopic.hpp>
+
+#include <ddspipe_participants/xml/XmlHandlerConfiguration.hpp>
 #include <ddspipe_participants/types/address/Address.hpp>
 
 #include <ddspipe_yaml/yaml_configuration_tags.hpp>
@@ -40,7 +42,7 @@ using namespace eprosima::ddspipe::participants::types;
 using namespace eprosima::ddspipe::yaml;
 
 Configuration::Configuration()
-    : simple_configuration(std::make_shared<ddspipe::participants::SimpleParticipantConfiguration>())
+    : simple_configuration(std::make_shared<ddspipe::participants::XmlParticipantConfiguration>())
     , spy_configuration(std::make_shared<participants::SpyParticipantConfiguration>())
 {
     simple_configuration->id = "SimpleParticipant";
@@ -142,6 +144,23 @@ void Configuration::load_dds_configuration_(
         const Yaml& yml,
         const ddspipe::yaml::YamlReaderVersion& version)
 {
+    /////
+    // Get optional xml configuration
+    if (YamlReader::is_tag_present(yml, XML_TAG))
+    {
+        YamlReader::fill<XmlHandlerConfiguration>(
+            xml_configuration,
+            YamlReader::get_value_in_tag(yml, XML_TAG),
+            version);
+    }
+
+    // Check if FASTDDSSPY_PROFILE_TAG exists
+    if (YamlReader::is_tag_present(yml, FASTDDSSPY_PROFILE_TAG))
+    {
+        simple_configuration->participant_profile = YamlReader::get<std::string>(yml, FASTDDSSPY_PROFILE_TAG, version);
+        xml_enabled = true;
+    }
+
     /////
     // Get optional allowlist
     if (YamlReader::is_tag_present(yml, ALLOWLIST_TAG))
