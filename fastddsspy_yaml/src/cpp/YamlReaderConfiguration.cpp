@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <set>
+
 #include <ddspipe_core/configuration/DdsPipeConfiguration.hpp>
 #include <ddspipe_core/types/dds/TopicQoS.hpp>
 #include <ddspipe_core/types/dynamic_types/types.hpp>
@@ -24,6 +26,7 @@
 #include <ddspipe_yaml/Yaml.hpp>
 #include <ddspipe_yaml/YamlManager.hpp>
 #include <ddspipe_yaml/YamlReader.hpp>
+#include <ddspipe_yaml/YamlValidator.hpp>
 
 #include <fastddsspy_yaml/yaml_configuration_tags.hpp>
 
@@ -76,6 +79,12 @@ void Configuration::load_configuration_(
     try
     {
         YamlReaderVersion version = LATEST;
+
+        static const std::set<TagType> tags{
+            SPECS_TAG,
+            DDS_TAG};
+
+        YamlValidator::validate_tags(yml, tags);
 
         /////
         // Get optional specs configuration options
@@ -142,6 +151,18 @@ void Configuration::load_dds_configuration_(
         const Yaml& yml,
         const ddspipe::yaml::YamlReaderVersion& version)
 {
+    static const std::set<TagType> tags{
+        ALLOWLIST_TAG,
+        BLOCKLIST_TAG,
+        TOPICS_TAG,
+        DOMAIN_ID_TAG,
+        WHITELIST_INTERFACES_TAG,
+        TRANSPORT_DESCRIPTORS_TRANSPORT_TAG,
+        IGNORE_PARTICIPANT_FLAGS_TAG,
+        ROS2_TYPES_TAG};
+
+    YamlValidator::validate_tags(yml, tags);
+
     /////
     // Get optional allowlist
     if (YamlReader::is_tag_present(yml, ALLOWLIST_TAG))
@@ -222,6 +243,14 @@ void Configuration::load_specs_configuration_(
         const Yaml& yml,
         const ddspipe::yaml::YamlReaderVersion& version)
 {
+    static const std::set<TagType> tags{
+        NUMBER_THREADS_TAG,
+        SPECS_QOS_TAG,
+        GATHERING_TIME_TAG,
+        LOG_CONFIGURATION_TAG};
+
+    YamlValidator::validate_tags(yml, tags);
+
     // Get optional number of threads
     if (YamlReader::is_tag_present(yml, NUMBER_THREADS_TAG))
     {
@@ -232,7 +261,7 @@ void Configuration::load_specs_configuration_(
     // Get optional Topic QoS
     if (YamlReader::is_tag_present(yml, SPECS_QOS_TAG))
     {
-        YamlReader::fill<TopicQoS>(topic_qos, YamlReader::get_value_in_tag(yml, SPECS_QOS_TAG), version);
+        topic_qos = YamlReader::get<TopicQoS>(yml, SPECS_QOS_TAG, version);
         TopicQoS::default_topic_qos.set_value(topic_qos);
     }
 
