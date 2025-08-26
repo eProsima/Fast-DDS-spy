@@ -36,7 +36,7 @@ namespace participants {
 /**
  * TODO comment
  */
-class SpyDdsXmlParticipant : public ddspipe::participants::<XmlDynTypesParticipant>
+class SpyDdsXmlParticipant : public ddspipe::participants::XmlDynTypesParticipant
 {
 public:
 

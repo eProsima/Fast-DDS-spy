@@ -26,8 +26,10 @@
 #include <ddspipe_core/dynamic/ParticipantsDatabase.hpp>
 #include <ddspipe_core/dynamic/DiscoveryDatabase.hpp>
 #include <ddspipe_core/efficiency/payload/FastPayloadPool.hpp>
+#include <ddspipe_core/interface/IParticipant.hpp>
 
 #include <fastddsspy_participants/participant/SpyDdsParticipant.hpp>
+#include <fastddsspy_participants/participant/SpyDdsXmlParticipant.hpp>
 #include <fastddsspy_participants/participant/SpyParticipant.hpp>
 
 #include <fastddsspy_yaml/YamlReaderConfiguration.hpp>
@@ -75,7 +77,7 @@ protected:
     std::shared_ptr<eprosima::spy::participants::SpyModel> model_;
 
     //! TODO comment
-    std::shared_ptr<eprosima::spy::participants::IParticipant> dds_participant_;
+    std::shared_ptr<ddspipe::core::IParticipant> dds_participant_;
 
     //! TODO comment
     std::shared_ptr<eprosima::spy::participants::SpyParticipant> spy_participant_;

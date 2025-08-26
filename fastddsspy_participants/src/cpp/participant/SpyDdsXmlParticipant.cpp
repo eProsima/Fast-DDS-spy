@@ -23,7 +23,7 @@ namespace spy {
 namespace participants {
 
 SpyDdsXmlParticipant::SpyDdsXmlParticipant(
-        const std::shared_ptr<ddspipe::participants::SimpleParticipantConfiguration>& participant_configuration,
+        const std::shared_ptr<ddspipe::participants::XmlParticipantConfiguration>& participant_configuration,
         const std::shared_ptr<ddspipe::core::PayloadPool>& payload_pool,
         const std::shared_ptr<ddspipe::core::DiscoveryDatabase>& discovery_database)
     : ddspipe::participants::XmlDynTypesParticipant(participant_configuration, payload_pool, discovery_database)
@@ -74,7 +74,7 @@ void SpyDdsXmlParticipant::SpyDdsXmlParticipantListener::on_participant_discover
         bool& should_be_ignored)
 {
     // If comes from this participant is not interesting
-    if (ddspipe::participants::detail::come_from_same_participant_(info.guid, participant->getGuid()))
+    if (ddspipe::participants::detail::come_from_same_participant_(info.guid, participant->guid()))
     {
         return;
     }
@@ -98,7 +98,7 @@ void SpyDdsXmlParticipant::SpyDdsXmlParticipantListener::on_data_reader_discover
         bool& should_be_ignored)
 {
     // If comes from this participant is not interesting
-    if (ddspipe::participants::detail::come_from_same_participant_(info.guid, participant->getGuid()))
+    if (ddspipe::participants::detail::come_from_same_participant_(info.guid, participant->guid()))
     {
         return;
     }
@@ -120,7 +120,7 @@ void SpyDdsXmlParticipant::SpyDdsXmlParticipantListener::on_data_writer_discover
         bool& should_be_ignored)
 {
     // If comes from this participant is not interesting
-    if (ddspipe::participants::detail::come_from_same_participant_(info.guid, participant->getGuid()))
+    if (ddspipe::participants::detail::come_from_same_participant_(info.guid, participant->guid()))
     {
         return;
     }
@@ -157,7 +157,7 @@ void SpyDdsXmlParticipant::SpyDdsXmlParticipantListener::internal_notify_endpoin
     endpoints_reader_->simulate_data_reception(std::move(data));
 }
 
-std::unique_ptr<fastdds::rtps::RTPSParticipantListener> SpyDdsXmlParticipant::create_listener_()
+std::unique_ptr<fastdds::dds::DomainParticipantListener> SpyDdsXmlParticipant::create_listener_()
 {
     // We pass the configuration_ and discovery_database_ attributes from this method to avoid accessing virtual
     // attributes in the constructor

@@ -145,7 +145,7 @@ int main(
         }
 
         // Load XML profiles
-        participants::XmlHandler::load_xml(configuration.xml_configuration);
+        eprosima::ddspipe::participants::XmlHandler::load_xml(configuration.xml_configuration);
 
         // Create the Spy
         eprosima::spy::Controller spy(configuration);

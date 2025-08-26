@@ -52,8 +52,7 @@ Backend::Backend(
         dds_participant_ = std::make_shared<participants::SpyDdsXmlParticipant>(
             configuration.simple_configuration,
             payload_pool_,
-            discovery_database,
-            configuration.replay_types);
+            discovery_database_);
 
         std::dynamic_pointer_cast<participants::SpyDdsXmlParticipant>(dds_participant_)->init();
     }
@@ -62,14 +61,10 @@ Backend::Backend(
         dds_participant_ = std::make_shared<participants::SpyDdsParticipant>(
             std::dynamic_pointer_cast<ddspipe::participants::SimpleParticipantConfiguration>(configuration.simple_configuration),
             payload_pool_,
-            discovery_database,
-            configuration.replay_types);
+            discovery_database_);
 
         std::dynamic_pointer_cast<participants::SpyDdsParticipant>(dds_participant_)->init();
     }
-
-    // Init Dds Participant
-    dds_participant_->init();
 
     // Populate Participant Database
     participant_database_->add_participant(
