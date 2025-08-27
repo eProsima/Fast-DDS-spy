@@ -47,10 +47,10 @@ Backend::Backend(
 
     load_internal_topics_(configuration_);
 
-    if(configuration.xml_enabled)
+    if (configuration.xml_enabled)
     {
         dds_participant_ = std::make_shared<participants::SpyDdsXmlParticipant>(
-            configuration.simple_configuration,
+            configuration.dds_configuration,
             payload_pool_,
             discovery_database_);
 
@@ -59,7 +59,8 @@ Backend::Backend(
     else
     {
         dds_participant_ = std::make_shared<participants::SpyDdsParticipant>(
-            std::dynamic_pointer_cast<ddspipe::participants::SimpleParticipantConfiguration>(configuration.simple_configuration),
+            std::dynamic_pointer_cast<ddspipe::participants::SimpleParticipantConfiguration>(configuration.
+                    dds_configuration),
             payload_pool_,
             discovery_database_);
 

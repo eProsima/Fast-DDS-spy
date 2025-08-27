@@ -72,7 +72,7 @@ public:
     bool xml_enabled = false;
 
     // Participants configurations
-    std::shared_ptr<ddspipe::participants::XmlParticipantConfiguration> simple_configuration;
+    std::shared_ptr<ddspipe::participants::XmlParticipantConfiguration> dds_configuration;
     std::shared_ptr<participants::SpyParticipantConfiguration> spy_configuration;
 
     //! Whether to generate schemas as OMG IDL or ROS2 msg

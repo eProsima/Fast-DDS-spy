@@ -42,13 +42,13 @@ using namespace eprosima::ddspipe::participants::types;
 using namespace eprosima::ddspipe::yaml;
 
 Configuration::Configuration()
-    : simple_configuration(std::make_shared<ddspipe::participants::XmlParticipantConfiguration>())
+    : dds_configuration(std::make_shared<ddspipe::participants::XmlParticipantConfiguration>())
     , spy_configuration(std::make_shared<participants::SpyParticipantConfiguration>())
 {
-    simple_configuration->id = "SimpleParticipant";
-    simple_configuration->app_id = "FASTDDS_SPY";
-    simple_configuration->app_metadata = "";
-    simple_configuration->is_repeater = false;
+    dds_configuration->id = "SimpleParticipant";
+    dds_configuration->app_id = "FASTDDS_SPY";
+    dds_configuration->app_metadata = "";
+    dds_configuration->is_repeater = false;
     spy_configuration->id = "Fast-Spy-007";
     spy_configuration->app_id = "FASTDDS_SPY";
     spy_configuration->app_metadata = "";
@@ -129,7 +129,7 @@ void Configuration::load_configuration_(
             if (args->domain.is_set())
             {
                 // Set domain from command-line
-                simple_configuration->domain = args->domain.get_value();
+                dds_configuration->domain = args->domain.get_value();
             }
         }
     }
@@ -157,7 +157,7 @@ void Configuration::load_dds_configuration_(
     // Check if FASTDDSSPY_PROFILE_TAG exists
     if (YamlReader::is_tag_present(yml, FASTDDSSPY_PROFILE_TAG))
     {
-        simple_configuration->participant_profile = YamlReader::get<std::string>(yml, FASTDDSSPY_PROFILE_TAG, version);
+        dds_configuration->participant_profile = YamlReader::get<std::string>(yml, FASTDDSSPY_PROFILE_TAG, version);
         xml_enabled = true;
     }
 
@@ -189,44 +189,44 @@ void Configuration::load_dds_configuration_(
     // Set the domain in Simple Participant Configuration
     if (YamlReader::is_tag_present(yml, DOMAIN_ID_TAG))
     {
-        simple_configuration->domain = YamlReader::get<DomainId>(yml, DOMAIN_ID_TAG, version);
+        dds_configuration->domain = YamlReader::get<DomainId>(yml, DOMAIN_ID_TAG, version);
     }
 
     /////
     // Get optional whitelist interfaces
     if (YamlReader::is_tag_present(yml, WHITELIST_INTERFACES_TAG))
     {
-        simple_configuration->whitelist = YamlReader::get_set<WhitelistType>(yml, WHITELIST_INTERFACES_TAG,
+        dds_configuration->whitelist = YamlReader::get_set<WhitelistType>(yml, WHITELIST_INTERFACES_TAG,
                         version);
     }
 
     // Optional get Transport protocol
     if (YamlReader::is_tag_present(yml, TRANSPORT_DESCRIPTORS_TRANSPORT_TAG))
     {
-        simple_configuration->transport = YamlReader::get<TransportDescriptors>(yml,
+        dds_configuration->transport = YamlReader::get<TransportDescriptors>(yml,
                         TRANSPORT_DESCRIPTORS_TRANSPORT_TAG,
                         version);
     }
     else
     {
-        simple_configuration->transport = TransportDescriptors::builtin;
+        dds_configuration->transport = TransportDescriptors::builtin;
     }
 
     if (YamlReader::is_tag_present(yml, EASY_MODE_TAG))
     {
-        simple_configuration->easy_mode_ip = YamlReader::get<IpType>(yml, EASY_MODE_TAG, version);
+        dds_configuration->easy_mode_ip = YamlReader::get<IpType>(yml, EASY_MODE_TAG, version);
     }
 
     // Optional get ignore participant flags
     if (YamlReader::is_tag_present(yml, IGNORE_PARTICIPANT_FLAGS_TAG))
     {
-        simple_configuration->ignore_participant_flags = YamlReader::get<IgnoreParticipantFlags>(yml,
+        dds_configuration->ignore_participant_flags = YamlReader::get<IgnoreParticipantFlags>(yml,
                         IGNORE_PARTICIPANT_FLAGS_TAG,
                         version);
     }
     else
     {
-        simple_configuration->ignore_participant_flags = IgnoreParticipantFlags::no_filter;
+        dds_configuration->ignore_participant_flags = IgnoreParticipantFlags::no_filter;
     }
 
     /////

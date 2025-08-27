@@ -1,3 +1,8 @@
+/**
+ * @file SpyDdsXmlParticipant.cpp
+ * @brief This file contains the implementation of the SpyDdsXmlParticipant class and its listener.
+ */
+
 // Copyright 2023 Proyectos y Sistemas de Mantenimiento SL (eProsima).
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -108,7 +113,7 @@ void SpyDdsXmlParticipant::SpyDdsXmlParticipantListener::on_data_reader_discover
             || reason == fastdds::rtps::ReaderDiscoveryStatus::CHANGED_QOS_READER);
 
     ddspipe::participants::XmlDynTypesParticipant::XmlDynTypesDdsListener::on_data_reader_discovery(
-            participant, reason, info, should_be_ignored);
+        participant, reason, info, should_be_ignored);
 
     internal_notify_endpoint_discovered_(endpoint_info);
 }
@@ -130,7 +135,7 @@ void SpyDdsXmlParticipant::SpyDdsXmlParticipantListener::on_data_writer_discover
             || reason == fastdds::rtps::WriterDiscoveryStatus::CHANGED_QOS_WRITER);
 
     ddspipe::participants::XmlDynTypesParticipant::XmlDynTypesDdsListener::on_data_writer_discovery(
-            participant, reason, info, should_be_ignored);
+        participant, reason, info, should_be_ignored);
 
     internal_notify_endpoint_discovered_(endpoint_info);
 }
@@ -159,8 +164,6 @@ void SpyDdsXmlParticipant::SpyDdsXmlParticipantListener::internal_notify_endpoin
 
 std::unique_ptr<fastdds::dds::DomainParticipantListener> SpyDdsXmlParticipant::create_listener_()
 {
-    // We pass the configuration_ and discovery_database_ attributes from this method to avoid accessing virtual
-    // attributes in the constructor
     return std::make_unique<SpyDdsXmlParticipantListener>(configuration_, discovery_database_, type_object_reader_,
                    participants_reader_, endpoints_reader_);
 }

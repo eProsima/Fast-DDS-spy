@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/**
+ * @file Backend.hpp
+ * @brief This file contains the definition of the Backend class, which manages the Fast DDS Spy backend logic.
+ */
+
 #pragma once
 
 #include <memory>
@@ -39,52 +44,79 @@
 namespace eprosima {
 namespace spy {
 
+/**
+ * @class Backend
+ * @brief Manages the backend logic for the Fast DDS Spy tool.
+ */
 class Backend
 {
 public:
 
+    /**
+     * @brief Constructs the Backend object with the given configuration.
+     *
+     * @param configuration The YAML configuration for the backend.
+     */
     Backend(
             const yaml::Configuration& configuration);
 
+    /**
+     * @brief Destroys the Backend object and releases resources.
+     */
     ~Backend();
 
+    /**
+     * @brief Reloads the backend configuration.
+     *
+     * @param new_configuration The new YAML configuration to load.
+     * @return A ReturnCode indicating the success or failure of the operation.
+     */
     utils::ReturnCode reload_configuration(
             yaml::Configuration& new_configuration);
 
+    /**
+     * @brief Retrieves the SpyModel associated with the backend.
+     *
+     * @return A shared pointer to the SpyModel.
+     */
     std::shared_ptr<eprosima::spy::participants::SpyModel> model() const noexcept;
 
 protected:
 
+    /**
+     * @brief Loads internal topics based on the given configuration.
+     *
+     * @param configuration The YAML configuration to use for loading topics.
+     */
     void load_internal_topics_(
             yaml::Configuration& configuration);
 
-    // TODO comment
+    /// The YAML configuration for the backend.
     yaml::Configuration configuration_;
 
-    //! TODO comment
+    /// The payload pool used for managing DDS payloads.
     std::shared_ptr<ddspipe::core::PayloadPool> payload_pool_;
 
-    //! TODO comment
+    /// The discovery database for managing discovered entities.
     std::shared_ptr<ddspipe::core::DiscoveryDatabase> discovery_database_;
 
-    //! TODO comment
+    /// The thread pool for managing asynchronous tasks.
     std::shared_ptr<eprosima::utils::SlotThreadPool> thread_pool_;
 
-    //! TODO comment
+    /// The database of participants in the DDS system.
     std::shared_ptr<ddspipe::core::ParticipantsDatabase> participant_database_;
 
-    //! TODO comment
+    /// The SpyModel used for interacting with DDS entities.
     std::shared_ptr<eprosima::spy::participants::SpyModel> model_;
 
-    //! TODO comment
+    /// The DDS participant used for communication.
     std::shared_ptr<ddspipe::core::IParticipant> dds_participant_;
 
-    //! TODO comment
+    /// The SpyParticipant used for spying on DDS entities.
     std::shared_ptr<eprosima::spy::participants::SpyParticipant> spy_participant_;
 
-    //! TODO comment
+    /// The DDS pipe used for data routing.
     std::unique_ptr<ddspipe::core::DdsPipe> pipe_;
-
 };
 
 } /* namespace spy */
