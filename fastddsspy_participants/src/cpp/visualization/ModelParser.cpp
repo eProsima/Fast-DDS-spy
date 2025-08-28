@@ -62,20 +62,20 @@ void add_endpoint_to_vector(
         std::map<std::string, int>& already_endpoints_index,
         std::vector<ComplexParticipantData::Endpoint>& endpoints,
         const std::pair<const eprosima::ddspipe::core::types::Guid,
-        eprosima::spy::participants::EndpointInfo>& endpoint,
+        eprosima::spy::participants::EndpointInfoData>& endpoint,
         bool ros2_types = false) noexcept
 {
     // Check if this topic has already endpoints added
-    auto it = already_endpoints_index.find(endpoint.second.topic.m_topic_name);
+    auto it = already_endpoints_index.find(endpoint.second.info.topic.m_topic_name);
     if (it == already_endpoints_index.end())
     {
         // If first for this topic, add new topic
-        already_endpoints_index[endpoint.second.topic.m_topic_name] = endpoints.size();
+        already_endpoints_index[endpoint.second.info.topic.m_topic_name] = endpoints.size();
         endpoints.push_back({
                         ros2_types ? utils::demangle_if_ros_topic(
-                            endpoint.second.topic.m_topic_name) : endpoint.second.topic.m_topic_name,
+                            endpoint.second.info.topic.m_topic_name) : endpoint.second.info.topic.m_topic_name,
                         ros2_types ? utils::demangle_if_ros_type(
-                            endpoint.second.topic.type_name) : endpoint.second.topic.type_name,
+                            endpoint.second.info.topic.type_name) : endpoint.second.info.topic.type_name,
                         1
                     });
     }
@@ -117,14 +117,14 @@ ComplexParticipantData ModelParser::participants(
     for (const auto& endpoint : model.endpoint_database_)
     {
         // Get only for this participant endpoints
-        if (endpoint.second.guid.guid_prefix() == prefix)
+        if (endpoint.second.info.guid.guid_prefix() == prefix)
         {
-            if (endpoint.second.is_reader())
+            if (endpoint.second.info.is_reader())
             {
                 add_endpoint_to_vector(already_endpoints_index_readers, result.readers, endpoint,
                         model.get_ros2_types());
             }
-            else if (endpoint.second.is_writer())
+            else if (endpoint.second.info.is_writer())
             {
                 add_endpoint_to_vector(already_endpoints_index_writers, result.writers, endpoint,
                         model.get_ros2_types());
@@ -193,9 +193,9 @@ void set_endpoint_simple_information(
 {
     for (const auto& endpoint : model.endpoint_database_)
     {
-        if (endpoint.second.active && endpoint.second.kind == kind)
+        if (endpoint.second.info.active && endpoint.second.info.kind == kind)
         {
-            result.push_back(fill_simple_endpoint(model, endpoint.second));
+            result.push_back(fill_simple_endpoint(model, endpoint.second.info));
         }
     }
 }
@@ -208,9 +208,9 @@ void set_endpoint_complex_information(
 {
     for (const auto& endpoint : model.endpoint_database_)
     {
-        if (endpoint.second.active && endpoint.first == guid && endpoint.second.kind == kind)
+        if (endpoint.second.info.active && endpoint.first == guid && endpoint.second.info.kind == kind)
         {
-            fill_complex_endpoint(model, result, endpoint.second);
+            fill_complex_endpoint(model, result, endpoint.second.info);
 
             break;
         }
@@ -234,9 +234,9 @@ std::vector<ComplexEndpointData> ModelParser::writers_verbose(
 
     for (const auto& endpoint : model.endpoint_database_)
     {
-        if (endpoint.second.active && endpoint.second.is_writer())
+        if (endpoint.second.info.active && endpoint.second.info.is_writer())
         {
-            result.push_back(writers(model, endpoint.second.guid));
+            result.push_back(writers(model, endpoint.second.info.guid));
         }
     }
 
@@ -271,9 +271,9 @@ std::vector<ComplexEndpointData> ModelParser::readers_verbose(
 
     for (const auto& endpoint : model.endpoint_database_)
     {
-        if (endpoint.second.active && endpoint.second.is_reader())
+        if (endpoint.second.info.active && endpoint.second.info.is_reader())
         {
-            result.push_back(readers(model, endpoint.second.guid));
+            result.push_back(readers(model, endpoint.second.info.guid));
         }
     }
 
@@ -298,9 +298,9 @@ std::set<eprosima::ddspipe::core::types::DdsTopic> ModelParser::get_topics(
     std::set<eprosima::ddspipe::core::types::DdsTopic> result;
     for (const auto& endpoint : model.endpoint_database_)
     {
-        if (endpoint.second.active && filter_topic.matches(endpoint.second.topic))
+        if (endpoint.second.info.active && filter_topic.matches(endpoint.second.info.topic))
         {
-            result.insert(endpoint.second.topic);
+            result.insert(endpoint.second.info.topic);
         }
     }
     return result;
@@ -316,13 +316,13 @@ SimpleTopicData ModelParser::simple_topic_data(
     int datareaders = 0;
     for (const auto& endpoint : model.endpoint_database_)
     {
-        if (endpoint.second.active && endpoint.second.topic.m_topic_name == topic.m_topic_name)
+        if (endpoint.second.info.active && endpoint.second.info.topic.m_topic_name == topic.m_topic_name)
         {
-            if (endpoint.second.is_reader())
+            if (endpoint.second.info.is_reader())
             {
                 datareaders++;
             }
-            if (endpoint.second.is_writer())
+            if (endpoint.second.info.is_writer())
             {
                 datawriters++;
             }
@@ -354,13 +354,13 @@ ComplexTopicData ModelParser::complex_topic_data(
 
     for (const auto& it : model.endpoint_database_)
     {
-        if (it.second.active && topic.m_topic_name == it.second.topic.m_topic_name)
+        if (it.second.info.active && topic.m_topic_name == it.second.info.topic.m_topic_name)
         {
-            if (it.second.is_reader())
+            if (it.second.info.is_reader())
             {
                 result.datareaders.push_back({it.first});
             }
-            if (it.second.is_writer())
+            if (it.second.info.is_writer())
             {
                 result.datawriters.push_back({it.first});
             }
@@ -398,6 +398,36 @@ std::vector<ComplexTopicData> ModelParser::topics_verbose(
     }
 
     return result;
+}
+
+std::string ModelParser::topics_type_idl(
+        const SpyModel& model,
+        const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic) noexcept
+{
+    std::set<eprosima::ddspipe::core::types::DdsTopic> topics = get_topics(model, filter_topic);
+    for (const auto& topic : topics)
+    {
+        for (const auto& endpoint : model.endpoint_database_)
+        {
+            if (endpoint.second.info.active && endpoint.second.info.topic == topic)
+            {
+                if (!endpoint.second.type_idl.empty())
+                {
+                    return endpoint.second.type_idl;
+                    // return "No type information available and thus cannot print data.";
+                }
+            }
+        }
+    }
+
+    // Check if the filter topic matches with any topic
+    if (!topics.empty())
+    {
+        return "No type information available and thus cannot print data.";
+    }
+
+    return "";
+
 }
 
 } /* namespace participants */

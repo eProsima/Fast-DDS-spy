@@ -38,6 +38,9 @@ struct EndpointInfoData : public ddspipe::core::IRoutingData
 
     //! Info of the endpoint
     EndpointInfo info{};
+
+    //! Endpoint topic type IDL
+    std::string type_idl{};
 };
 
 FASTDDSSPY_PARTICIPANTS_DllAPI

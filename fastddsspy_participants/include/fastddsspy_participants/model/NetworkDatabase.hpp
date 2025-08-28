@@ -34,7 +34,7 @@ public:
 
     utils::SafeDatabase<ddspipe::core::types::Guid, ParticipantInfo> participant_database_;
 
-    utils::SafeDatabase<ddspipe::core::types::Guid, EndpointInfo> endpoint_database_;
+    utils::SafeDatabase<ddspipe::core::types::Guid, EndpointInfoData> endpoint_database_;
 
     FASTDDSSPY_PARTICIPANTS_DllAPI
     bool get_topic(

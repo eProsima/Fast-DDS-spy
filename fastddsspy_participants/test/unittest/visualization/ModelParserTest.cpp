@@ -39,29 +39,29 @@ std::vector<spy::participants::ParticipantInfo> fill_database_participants(
     return participants;
 }
 
-std::vector<spy::participants::EndpointInfo> fill_database_endpoints(
+std::vector<spy::participants::EndpointInfoData> fill_database_endpoints(
         spy::participants::SpyModel& model,
         int n_readers,
         int n_writers,
         ddspipe::core::types::DdsTopic topic = ddspipe::core::testing::random_dds_topic())
 {
     // Fill model
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     for (int i = 0; i < n_readers; i++)
     {
-        spy::participants::EndpointInfo endpoint_reader;
+        spy::participants::EndpointInfoData endpoint_reader;
         spy::participants::random_endpoint_info(endpoint_reader, ddspipe::core::types::EndpointKind::reader, true, i,
                 topic);
-        model.endpoint_database_.add(endpoint_reader.guid, endpoint_reader);
+        model.endpoint_database_.add(endpoint_reader.info.guid, endpoint_reader);
         endpoints.push_back(endpoint_reader);
     }
 
     for (int i = 0; i < n_writers; i++)
     {
-        spy::participants::EndpointInfo endpoint_writer;
+        spy::participants::EndpointInfoData endpoint_writer;
         spy::participants::random_endpoint_info(endpoint_writer, ddspipe::core::types::EndpointKind::writer, true,
                 n_readers + i, topic);
-        model.endpoint_database_.add(endpoint_writer.guid, endpoint_writer);
+        model.endpoint_database_.add(endpoint_writer.info.guid, endpoint_writer);
         endpoints.push_back(endpoint_writer);
     }
     return endpoints;
@@ -157,7 +157,7 @@ TEST(ModelParserTest, participants_verbose_dds_endpoints)
     std::vector<spy::participants::ParticipantInfo> participants;
     participants = fill_database_participants(model, n_participants);
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     endpoints = fill_database_endpoints(model, n_readers, n_writers);
 
     // Obtain information from model
@@ -172,19 +172,19 @@ TEST(ModelParserTest, participants_verbose_dds_endpoints)
     std::vector<spy::participants::ComplexParticipantData::Endpoint> readers;
     for (const auto& it : endpoints)
     {
-        if (it.is_writer())
+        if (it.info.is_writer())
         {
             writers.push_back({
-                it.topic.m_topic_name,
-                it.topic.type_name,
+                it.info.topic.m_topic_name,
+                it.info.topic.type_name,
                 1
             });
         }
-        if (it.is_reader())
+        if (it.info.is_reader())
         {
             readers.push_back({
-                it.topic.m_topic_name,
-                it.topic.type_name,
+                it.info.topic.m_topic_name,
+                it.info.topic.type_name,
                 1
             });
         }
@@ -247,7 +247,7 @@ TEST(ModelParserTest, participants_verbose_ros2_types_dds_endpoints)
     std::vector<spy::participants::ParticipantInfo> participants;
     participants = fill_database_participants(model, n_participants);
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     endpoints = fill_database_endpoints(model, n_readers, n_writers);
 
     // Obtain information from model
@@ -262,19 +262,19 @@ TEST(ModelParserTest, participants_verbose_ros2_types_dds_endpoints)
     std::vector<spy::participants::ComplexParticipantData::Endpoint> readers;
     for (const auto& it : endpoints)
     {
-        if (it.is_writer())
+        if (it.info.is_writer())
         {
             writers.push_back({
-                it.topic.m_topic_name,
-                it.topic.type_name,
+                it.info.topic.m_topic_name,
+                it.info.topic.type_name,
                 1
             });
         }
-        if (it.is_reader())
+        if (it.info.is_reader())
         {
             readers.push_back({
-                it.topic.m_topic_name,
-                it.topic.type_name,
+                it.info.topic.m_topic_name,
+                it.info.topic.type_name,
                 1
             });
         }
@@ -337,7 +337,7 @@ TEST(ModelParserTest, participants_verbose_ros2_endpoints)
     std::vector<spy::participants::ParticipantInfo> participants;
     participants = fill_database_participants(model, n_participants);
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     // Topic
     ddspipe::core::types::DdsTopic topic;
     topic.m_topic_name = "rt/hello";
@@ -357,19 +357,19 @@ TEST(ModelParserTest, participants_verbose_ros2_endpoints)
     std::vector<spy::participants::ComplexParticipantData::Endpoint> readers;
     for (const auto& it : endpoints)
     {
-        if (it.is_writer())
+        if (it.info.is_writer())
         {
             writers.push_back({
-                it.topic.m_topic_name,
-                it.topic.type_name,
+                it.info.topic.m_topic_name,
+                it.info.topic.type_name,
                 1
             });
         }
-        if (it.is_reader())
+        if (it.info.is_reader())
         {
             readers.push_back({
-                it.topic.m_topic_name,
-                it.topic.type_name,
+                it.info.topic.m_topic_name,
+                it.info.topic.type_name,
                 1
             });
         }
@@ -432,7 +432,7 @@ TEST(ModelParserTest, participants_verbose_ros2_types_ros2_endpoints)
     std::vector<spy::participants::ParticipantInfo> participants;
     participants = fill_database_participants(model, n_participants);
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     // Topic
     ddspipe::core::types::DdsTopic topic;
     topic.m_topic_name = "rt/hello";
@@ -453,19 +453,19 @@ TEST(ModelParserTest, participants_verbose_ros2_types_ros2_endpoints)
     std::vector<spy::participants::ComplexParticipantData::Endpoint> readers;
     for (const auto& it : endpoints)
     {
-        if (it.is_writer())
+        if (it.info.is_writer())
         {
             writers.push_back({
-                utils::demangle_if_ros_topic(it.topic.m_topic_name),
-                utils::demangle_if_ros_type(it.topic.type_name),
+                utils::demangle_if_ros_topic(it.info.topic.m_topic_name),
+                utils::demangle_if_ros_type(it.info.topic.type_name),
                 1
             });
         }
-        if (it.is_reader())
+        if (it.info.is_reader())
         {
             readers.push_back({
-                utils::demangle_if_ros_topic(it.topic.m_topic_name),
-                utils::demangle_if_ros_type(it.topic.type_name),
+                utils::demangle_if_ros_topic(it.info.topic.m_topic_name),
+                utils::demangle_if_ros_type(it.info.topic.type_name),
                 1
             });
         }
@@ -528,7 +528,7 @@ TEST(ModelParserTest, complex_participant_dds_endpoints)
     std::vector<spy::participants::ParticipantInfo> participants;
     participants = fill_database_participants(model, n_participants);
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     endpoints = fill_database_endpoints(model, n_readers, n_writers);
 
     // Obtain information from model
@@ -541,19 +541,19 @@ TEST(ModelParserTest, complex_participant_dds_endpoints)
     std::vector<spy::participants::ComplexParticipantData::Endpoint> readers;
     for (const auto& it : endpoints)
     {
-        if (it.is_writer())
+        if (it.info.is_writer())
         {
             writers.push_back({
-                it.topic.m_topic_name,
-                it.topic.type_name,
+                it.info.topic.m_topic_name,
+                it.info.topic.type_name,
                 1
             });
         }
-        if (it.is_reader())
+        if (it.info.is_reader())
         {
             readers.push_back({
-                it.topic.m_topic_name,
-                it.topic.type_name,
+                it.info.topic.m_topic_name,
+                it.info.topic.type_name,
                 1
             });
         }
@@ -609,7 +609,7 @@ TEST(ModelParserTest, complex_participant_ros2_types_dds_endpoints)
     std::vector<spy::participants::ParticipantInfo> participants;
     participants = fill_database_participants(model, n_participants);
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     endpoints = fill_database_endpoints(model, n_readers, n_writers);
 
     // Obtain information from model
@@ -622,19 +622,19 @@ TEST(ModelParserTest, complex_participant_ros2_types_dds_endpoints)
     std::vector<spy::participants::ComplexParticipantData::Endpoint> readers;
     for (const auto& it : endpoints)
     {
-        if (it.is_writer())
+        if (it.info.is_writer())
         {
             writers.push_back({
-                it.topic.m_topic_name,
-                it.topic.type_name,
+                it.info.topic.m_topic_name,
+                it.info.topic.type_name,
                 1
             });
         }
-        if (it.is_reader())
+        if (it.info.is_reader())
         {
             readers.push_back({
-                it.topic.m_topic_name,
-                it.topic.type_name,
+                it.info.topic.m_topic_name,
+                it.info.topic.type_name,
                 1
             });
         }
@@ -690,7 +690,7 @@ TEST(ModelParserTest, complex_participant_ros2_endpoints)
     // Fill model
     participants = fill_database_participants(model, n_participants);
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     // Topic
     ddspipe::core::types::DdsTopic topic;
     topic.m_topic_name = "rt/hello";
@@ -709,19 +709,19 @@ TEST(ModelParserTest, complex_participant_ros2_endpoints)
     std::vector<spy::participants::ComplexParticipantData::Endpoint> readers;
     for (const auto& it : endpoints)
     {
-        if (it.is_writer())
+        if (it.info.is_writer())
         {
             writers.push_back({
-                it.topic.m_topic_name,
-                it.topic.type_name,
+                it.info.topic.m_topic_name,
+                it.info.topic.type_name,
                 1
             });
         }
-        if (it.is_reader())
+        if (it.info.is_reader())
         {
             readers.push_back({
-                it.topic.m_topic_name,
-                it.topic.type_name,
+                it.info.topic.m_topic_name,
+                it.info.topic.type_name,
                 1
             });
         }
@@ -777,7 +777,7 @@ TEST(ModelParserTest, complex_participant_ros2_types_ros2_endpoints)
     std::vector<spy::participants::ParticipantInfo> participants;
     participants = fill_database_participants(model, n_participants);
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     // Topic
     ddspipe::core::types::DdsTopic topic;
     topic.m_topic_name = "rt/hello";
@@ -795,19 +795,19 @@ TEST(ModelParserTest, complex_participant_ros2_types_ros2_endpoints)
     std::vector<spy::participants::ComplexParticipantData::Endpoint> readers;
     for (const auto& it : endpoints)
     {
-        if (it.is_writer())
+        if (it.info.is_writer())
         {
             writers.push_back({
-                utils::demangle_if_ros_topic(it.topic.m_topic_name),
-                utils::demangle_if_ros_type(it.topic.type_name),
+                utils::demangle_if_ros_topic(it.info.topic.m_topic_name),
+                utils::demangle_if_ros_type(it.info.topic.type_name),
                 1
             });
         }
-        if (it.is_reader())
+        if (it.info.is_reader())
         {
             readers.push_back({
-                utils::demangle_if_ros_topic(it.topic.m_topic_name),
-                utils::demangle_if_ros_type(it.topic.type_name),
+                utils::demangle_if_ros_topic(it.info.topic.m_topic_name),
+                utils::demangle_if_ros_type(it.info.topic.type_name),
                 1
             });
         }
@@ -854,7 +854,7 @@ TEST(ModelParserTest, simple_dds_endpoint_writer)
     // Create model
     spy::participants::SpyModel model;
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     // Fill model
     endpoints = fill_database_endpoints(model, 0, 1);
 
@@ -867,11 +867,11 @@ TEST(ModelParserTest, simple_dds_endpoint_writer)
     for (const auto& it : endpoints)
     {
         expected_result.push_back({
-            it.guid,
-            it.discoverer_participant_id,
+            it.info.guid,
+            it.info.discoverer_participant_id,
             {
-                it.topic.m_topic_name,
-                it.topic.type_name
+                it.info.topic.m_topic_name,
+                it.info.topic.type_name
             }
 
         });
@@ -892,7 +892,7 @@ TEST(ModelParserTest, simple_dds_endpoint_writer_ros2_types)
     // Create model
     spy::participants::SpyModel model(true);
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     // Fill model
     endpoints = fill_database_endpoints(model, 0, 1);
 
@@ -905,11 +905,11 @@ TEST(ModelParserTest, simple_dds_endpoint_writer_ros2_types)
     for (const auto& it : endpoints)
     {
         expected_result.push_back({
-            it.guid,
-            it.discoverer_participant_id,
+            it.info.guid,
+            it.info.discoverer_participant_id,
             {
-                it.topic.m_topic_name,
-                it.topic.type_name
+                it.info.topic.m_topic_name,
+                it.info.topic.type_name
             }
 
         });
@@ -930,7 +930,7 @@ TEST(ModelParserTest, simple_ros2_endpoint_writer)
     // Create model
     spy::participants::SpyModel model;
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     // Topic
     ddspipe::core::types::DdsTopic topic;
     topic.m_topic_name = "rt/hello";
@@ -948,11 +948,11 @@ TEST(ModelParserTest, simple_ros2_endpoint_writer)
     for (const auto& it : endpoints)
     {
         expected_result.push_back({
-            it.guid,
-            it.discoverer_participant_id,
+            it.info.guid,
+            it.info.discoverer_participant_id,
             {
-                it.topic.m_topic_name,
-                it.topic.type_name
+                it.info.topic.m_topic_name,
+                it.info.topic.type_name
             }
 
         });
@@ -973,7 +973,7 @@ TEST(ModelParserTest, simple_ros2_endpoint_writer_ros2_types)
     // Create model
     spy::participants::SpyModel model(true);
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     // Topic
     ddspipe::core::types::DdsTopic topic;
     topic.m_topic_name = "rt/hello";
@@ -991,11 +991,11 @@ TEST(ModelParserTest, simple_ros2_endpoint_writer_ros2_types)
     for (const auto& it : endpoints)
     {
         expected_result.push_back({
-            it.guid,
-            it.discoverer_participant_id,
+            it.info.guid,
+            it.info.discoverer_participant_id,
             {
-                utils::demangle_if_ros_topic(it.topic.m_topic_name),
-                utils::demangle_if_ros_type(it.topic.type_name)
+                utils::demangle_if_ros_topic(it.info.topic.m_topic_name),
+                utils::demangle_if_ros_type(it.info.topic.type_name)
             }
 
         });
@@ -1016,7 +1016,7 @@ TEST(ModelParserTest, simple_dds_endpoint_reader)
     // Create model
     spy::participants::SpyModel model;
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     // Fill model
     endpoints = fill_database_endpoints(model, 1, 0);
 
@@ -1029,11 +1029,11 @@ TEST(ModelParserTest, simple_dds_endpoint_reader)
     for (const auto& it : endpoints)
     {
         expected_result.push_back({
-            it.guid,
-            it.discoverer_participant_id,
+            it.info.guid,
+            it.info.discoverer_participant_id,
             {
-                it.topic.m_topic_name,
-                it.topic.type_name
+                it.info.topic.m_topic_name,
+                it.info.topic.type_name
             }
 
         });
@@ -1054,7 +1054,7 @@ TEST(ModelParserTest, simple_dds_endpoint_reader_ros2_types)
     // Create model
     spy::participants::SpyModel model(true);
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     // Fill model
     endpoints = fill_database_endpoints(model, 1, 0);
 
@@ -1067,11 +1067,11 @@ TEST(ModelParserTest, simple_dds_endpoint_reader_ros2_types)
     for (const auto& it : endpoints)
     {
         expected_result.push_back({
-            it.guid,
-            it.discoverer_participant_id,
+            it.info.guid,
+            it.info.discoverer_participant_id,
             {
-                it.topic.m_topic_name,
-                it.topic.type_name
+                it.info.topic.m_topic_name,
+                it.info.topic.type_name
             }
 
         });
@@ -1092,7 +1092,7 @@ TEST(ModelParserTest, simple_ros2_endpoint_reader)
     // Create model
     spy::participants::SpyModel model;
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     // Topic
     ddspipe::core::types::DdsTopic topic;
     topic.m_topic_name = "rt/hello";
@@ -1110,11 +1110,11 @@ TEST(ModelParserTest, simple_ros2_endpoint_reader)
     for (const auto& it : endpoints)
     {
         expected_result.push_back({
-            it.guid,
-            it.discoverer_participant_id,
+            it.info.guid,
+            it.info.discoverer_participant_id,
             {
-                it.topic.m_topic_name,
-                it.topic.type_name
+                it.info.topic.m_topic_name,
+                it.info.topic.type_name
             }
 
         });
@@ -1135,7 +1135,7 @@ TEST(ModelParserTest, simple_ros2_endpoint_reader_ros2_types)
     // Create model
     spy::participants::SpyModel model(true);
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     // Topic
     ddspipe::core::types::DdsTopic topic;
     topic.m_topic_name = "rt/hello";
@@ -1153,11 +1153,11 @@ TEST(ModelParserTest, simple_ros2_endpoint_reader_ros2_types)
     for (const auto& it : endpoints)
     {
         expected_result.push_back({
-            it.guid,
-            it.discoverer_participant_id,
+            it.info.guid,
+            it.info.discoverer_participant_id,
             {
-                utils::demangle_if_ros_topic(it.topic.m_topic_name),
-                utils::demangle_if_ros_type(it.topic.type_name)
+                utils::demangle_if_ros_topic(it.info.topic.m_topic_name),
+                utils::demangle_if_ros_type(it.info.topic.type_name)
             }
 
         });
@@ -1223,7 +1223,7 @@ TEST(ModelParserTest, dds_endpoint_reader_verbose)
     std::vector<spy::participants::ParticipantInfo> participants;
     participants = fill_database_participants(model, 1);
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     endpoints = fill_database_endpoints(model, 1, 0);
 
     // Obtain information from model
@@ -1235,11 +1235,11 @@ TEST(ModelParserTest, dds_endpoint_reader_verbose)
     for (const auto& it : endpoints)
     {
         spy::participants::ComplexEndpointData fill_expected_result;
-        fill_expected_result.guid = it.guid;
-        fill_expected_result.topic.topic_name = it.topic.m_topic_name;
-        fill_expected_result.topic.topic_type = it.topic.type_name;
-        fill_expected_result.qos.durability = it.topic.topic_qos.durability_qos;
-        fill_expected_result.qos.reliability = it.topic.topic_qos.reliability_qos;
+        fill_expected_result.guid = it.info.guid;
+        fill_expected_result.topic.topic_name = it.info.topic.m_topic_name;
+        fill_expected_result.topic.topic_type = it.info.topic.type_name;
+        fill_expected_result.qos.durability = it.info.topic.topic_qos.durability_qos;
+        fill_expected_result.qos.reliability = it.info.topic.topic_qos.reliability_qos;
         expected_result.push_back(fill_expected_result);
     }
 
@@ -1273,7 +1273,7 @@ TEST(ModelParserTest, dds_endpoint_reader_verbose_ros2_types)
     std::vector<spy::participants::ParticipantInfo> participants;
     participants = fill_database_participants(model, 1);
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     endpoints = fill_database_endpoints(model, 1, 0);
 
     // Obtain information from model
@@ -1285,11 +1285,11 @@ TEST(ModelParserTest, dds_endpoint_reader_verbose_ros2_types)
     for (const auto& it : endpoints)
     {
         spy::participants::ComplexEndpointData fill_expected_result;
-        fill_expected_result.guid = it.guid;
-        fill_expected_result.topic.topic_name = it.topic.m_topic_name;
-        fill_expected_result.topic.topic_type = it.topic.type_name;
-        fill_expected_result.qos.durability = it.topic.topic_qos.durability_qos;
-        fill_expected_result.qos.reliability = it.topic.topic_qos.reliability_qos;
+        fill_expected_result.guid = it.info.guid;
+        fill_expected_result.topic.topic_name = it.info.topic.m_topic_name;
+        fill_expected_result.topic.topic_type = it.info.topic.type_name;
+        fill_expected_result.qos.durability = it.info.topic.topic_qos.durability_qos;
+        fill_expected_result.qos.reliability = it.info.topic.topic_qos.reliability_qos;
         expected_result.push_back(fill_expected_result);
     }
 
@@ -1323,7 +1323,7 @@ TEST(ModelParserTest, ros2_endpoint_reader_verbose)
     std::vector<spy::participants::ParticipantInfo> participants;
     participants = fill_database_participants(model, 1);
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     // Topic
     ddspipe::core::types::DdsTopic topic;
     topic.m_topic_name = "rt/hello";
@@ -1340,11 +1340,11 @@ TEST(ModelParserTest, ros2_endpoint_reader_verbose)
     for (const auto& it : endpoints)
     {
         spy::participants::ComplexEndpointData fill_expected_result;
-        fill_expected_result.guid = it.guid;
-        fill_expected_result.topic.topic_name = it.topic.m_topic_name;
-        fill_expected_result.topic.topic_type = it.topic.type_name;
-        fill_expected_result.qos.durability = it.topic.topic_qos.durability_qos;
-        fill_expected_result.qos.reliability = it.topic.topic_qos.reliability_qos;
+        fill_expected_result.guid = it.info.guid;
+        fill_expected_result.topic.topic_name = it.info.topic.m_topic_name;
+        fill_expected_result.topic.topic_type = it.info.topic.type_name;
+        fill_expected_result.qos.durability = it.info.topic.topic_qos.durability_qos;
+        fill_expected_result.qos.reliability = it.info.topic.topic_qos.reliability_qos;
         expected_result.push_back(fill_expected_result);
     }
 
@@ -1378,7 +1378,7 @@ TEST(ModelParserTest, ros2_endpoint_reader_verbose_ros2_types)
     std::vector<spy::participants::ParticipantInfo> participants;
     participants = fill_database_participants(model, 1);
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     // Topic
     ddspipe::core::types::DdsTopic topic;
     topic.m_topic_name = "rt/hello";
@@ -1395,11 +1395,11 @@ TEST(ModelParserTest, ros2_endpoint_reader_verbose_ros2_types)
     for (const auto& it : endpoints)
     {
         spy::participants::ComplexEndpointData fill_expected_result;
-        fill_expected_result.guid = it.guid;
-        fill_expected_result.topic.topic_name = utils::demangle_if_ros_topic(it.topic.m_topic_name);
-        fill_expected_result.topic.topic_type = utils::demangle_if_ros_type(it.topic.type_name);
-        fill_expected_result.qos.durability = it.topic.topic_qos.durability_qos;
-        fill_expected_result.qos.reliability = it.topic.topic_qos.reliability_qos;
+        fill_expected_result.guid = it.info.guid;
+        fill_expected_result.topic.topic_name = utils::demangle_if_ros_topic(it.info.topic.m_topic_name);
+        fill_expected_result.topic.topic_type = utils::demangle_if_ros_type(it.info.topic.type_name);
+        fill_expected_result.qos.durability = it.info.topic.topic_qos.durability_qos;
+        fill_expected_result.qos.reliability = it.info.topic.topic_qos.reliability_qos;
         expected_result.push_back(fill_expected_result);
     }
 
@@ -1433,7 +1433,7 @@ TEST(ModelParserTest, dds_endpoint_writer_verbose)
     std::vector<spy::participants::ParticipantInfo> participants;
     participants = fill_database_participants(model, 1);
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     endpoints = fill_database_endpoints(model, 0, 1);
 
     // Obtain information from model
@@ -1445,11 +1445,11 @@ TEST(ModelParserTest, dds_endpoint_writer_verbose)
     for (const auto& it : endpoints)
     {
         spy::participants::ComplexEndpointData fill_expected_result;
-        fill_expected_result.guid = it.guid;
-        fill_expected_result.topic.topic_name = it.topic.m_topic_name;
-        fill_expected_result.topic.topic_type = it.topic.type_name;
-        fill_expected_result.qos.durability = it.topic.topic_qos.durability_qos;
-        fill_expected_result.qos.reliability = it.topic.topic_qos.reliability_qos;
+        fill_expected_result.guid = it.info.guid;
+        fill_expected_result.topic.topic_name = it.info.topic.m_topic_name;
+        fill_expected_result.topic.topic_type = it.info.topic.type_name;
+        fill_expected_result.qos.durability = it.info.topic.topic_qos.durability_qos;
+        fill_expected_result.qos.reliability = it.info.topic.topic_qos.reliability_qos;
         expected_result.push_back(fill_expected_result);
     }
 
@@ -1482,7 +1482,7 @@ TEST(ModelParserTest, dds_endpoint_writer_verbose_ros2_types)
     std::vector<spy::participants::ParticipantInfo> participants;
     participants = fill_database_participants(model, 1);
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     endpoints = fill_database_endpoints(model, 0, 1);
 
     // Obtain information from model
@@ -1494,11 +1494,11 @@ TEST(ModelParserTest, dds_endpoint_writer_verbose_ros2_types)
     for (const auto& it : endpoints)
     {
         spy::participants::ComplexEndpointData fill_expected_result;
-        fill_expected_result.guid = it.guid;
-        fill_expected_result.topic.topic_name = it.topic.m_topic_name;
-        fill_expected_result.topic.topic_type = it.topic.type_name;
-        fill_expected_result.qos.durability = it.topic.topic_qos.durability_qos;
-        fill_expected_result.qos.reliability = it.topic.topic_qos.reliability_qos;
+        fill_expected_result.guid = it.info.guid;
+        fill_expected_result.topic.topic_name = it.info.topic.m_topic_name;
+        fill_expected_result.topic.topic_type = it.info.topic.type_name;
+        fill_expected_result.qos.durability = it.info.topic.topic_qos.durability_qos;
+        fill_expected_result.qos.reliability = it.info.topic.topic_qos.reliability_qos;
         expected_result.push_back(fill_expected_result);
     }
 
@@ -1531,7 +1531,7 @@ TEST(ModelParserTest, ros2_endpoint_writer_verbose)
     std::vector<spy::participants::ParticipantInfo> participants;
     participants = fill_database_participants(model, 1);
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     // Topic
     ddspipe::core::types::DdsTopic topic;
     topic.m_topic_name = "rt/hello";
@@ -1548,11 +1548,11 @@ TEST(ModelParserTest, ros2_endpoint_writer_verbose)
     for (const auto& it : endpoints)
     {
         spy::participants::ComplexEndpointData fill_expected_result;
-        fill_expected_result.guid = it.guid;
-        fill_expected_result.topic.topic_name = it.topic.m_topic_name;
-        fill_expected_result.topic.topic_type = it.topic.type_name;
-        fill_expected_result.qos.durability = it.topic.topic_qos.durability_qos;
-        fill_expected_result.qos.reliability = it.topic.topic_qos.reliability_qos;
+        fill_expected_result.guid = it.info.guid;
+        fill_expected_result.topic.topic_name = it.info.topic.m_topic_name;
+        fill_expected_result.topic.topic_type = it.info.topic.type_name;
+        fill_expected_result.qos.durability = it.info.topic.topic_qos.durability_qos;
+        fill_expected_result.qos.reliability = it.info.topic.topic_qos.reliability_qos;
         expected_result.push_back(fill_expected_result);
     }
 
@@ -1585,7 +1585,7 @@ TEST(ModelParserTest, ros2_endpoint_writer_verbose_ros2_types)
     std::vector<spy::participants::ParticipantInfo> participants;
     participants = fill_database_participants(model, 1);
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     // Topic
     ddspipe::core::types::DdsTopic topic;
     topic.m_topic_name = "rt/hello";
@@ -1602,11 +1602,11 @@ TEST(ModelParserTest, ros2_endpoint_writer_verbose_ros2_types)
     for (const auto& it : endpoints)
     {
         spy::participants::ComplexEndpointData fill_expected_result;
-        fill_expected_result.guid = it.guid;
-        fill_expected_result.topic.topic_name = utils::demangle_if_ros_topic(it.topic.m_topic_name);
-        fill_expected_result.topic.topic_type = utils::demangle_if_ros_type(it.topic.type_name);
-        fill_expected_result.qos.durability = it.topic.topic_qos.durability_qos;
-        fill_expected_result.qos.reliability = it.topic.topic_qos.reliability_qos;
+        fill_expected_result.guid = it.info.guid;
+        fill_expected_result.topic.topic_name = utils::demangle_if_ros_topic(it.info.topic.m_topic_name);
+        fill_expected_result.topic.topic_type = utils::demangle_if_ros_type(it.info.topic.type_name);
+        fill_expected_result.qos.durability = it.info.topic.topic_qos.durability_qos;
+        fill_expected_result.qos.reliability = it.info.topic.topic_qos.reliability_qos;
         expected_result.push_back(fill_expected_result);
     }
 
@@ -1640,22 +1640,22 @@ TEST(ModelParserTest, complex_dds_endpoint_writer)
     std::vector<spy::participants::ParticipantInfo> participants;
     participants = fill_database_participants(model, 1);
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     endpoints = fill_database_endpoints(model, 0, 1);
 
     // Obtain information from model
     spy::participants::ComplexEndpointData result;
-    result = spy::participants::ModelParser::writers(model, endpoints[0].guid);
+    result = spy::participants::ModelParser::writers(model, endpoints[0].info.guid);
 
     // Create expected return
     spy::participants::ComplexEndpointData expected_result;
     for (const auto& it : endpoints)
     {
-        expected_result.guid = it.guid;
-        expected_result.topic.topic_name = it.topic.m_topic_name;
-        expected_result.topic.topic_type = it.topic.type_name;
-        expected_result.qos.durability = it.topic.topic_qos.durability_qos;
-        expected_result.qos.reliability = it.topic.topic_qos.reliability_qos;
+        expected_result.guid = it.info.guid;
+        expected_result.topic.topic_name = it.info.topic.m_topic_name;
+        expected_result.topic.topic_type = it.info.topic.type_name;
+        expected_result.qos.durability = it.info.topic.topic_qos.durability_qos;
+        expected_result.qos.reliability = it.info.topic.topic_qos.reliability_qos;
     }
 
     // Check information
@@ -1681,22 +1681,22 @@ TEST(ModelParserTest, complex_dds_endpoint_writer_ros2_types)
     std::vector<spy::participants::ParticipantInfo> participants;
     participants = fill_database_participants(model, 1);
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     endpoints = fill_database_endpoints(model, 0, 1);
 
     // Obtain information from model
     spy::participants::ComplexEndpointData result;
-    result = spy::participants::ModelParser::writers(model, endpoints[0].guid);
+    result = spy::participants::ModelParser::writers(model, endpoints[0].info.guid);
 
     // Create expected return
     spy::participants::ComplexEndpointData expected_result;
     for (const auto& it : endpoints)
     {
-        expected_result.guid = it.guid;
-        expected_result.topic.topic_name = it.topic.m_topic_name;
-        expected_result.topic.topic_type = it.topic.type_name;
-        expected_result.qos.durability = it.topic.topic_qos.durability_qos;
-        expected_result.qos.reliability = it.topic.topic_qos.reliability_qos;
+        expected_result.guid = it.info.guid;
+        expected_result.topic.topic_name = it.info.topic.m_topic_name;
+        expected_result.topic.topic_type = it.info.topic.type_name;
+        expected_result.qos.durability = it.info.topic.topic_qos.durability_qos;
+        expected_result.qos.reliability = it.info.topic.topic_qos.reliability_qos;
     }
 
     // Check information
@@ -1722,7 +1722,7 @@ TEST(ModelParserTest, complex_ros2_endpoint_writer)
     std::vector<spy::participants::ParticipantInfo> participants;
     participants = fill_database_participants(model, 1);
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     // Topic
     ddspipe::core::types::DdsTopic topic;
     topic.m_topic_name = "rt/hello";
@@ -1732,17 +1732,17 @@ TEST(ModelParserTest, complex_ros2_endpoint_writer)
 
     // Obtain information from model
     spy::participants::ComplexEndpointData result;
-    result = spy::participants::ModelParser::writers(model, endpoints[0].guid);
+    result = spy::participants::ModelParser::writers(model, endpoints[0].info.guid);
 
     // Create expected return
     spy::participants::ComplexEndpointData expected_result;
     for (const auto& it : endpoints)
     {
-        expected_result.guid = it.guid;
-        expected_result.topic.topic_name = it.topic.m_topic_name;
-        expected_result.topic.topic_type = it.topic.type_name;
-        expected_result.qos.durability = it.topic.topic_qos.durability_qos;
-        expected_result.qos.reliability = it.topic.topic_qos.reliability_qos;
+        expected_result.guid = it.info.guid;
+        expected_result.topic.topic_name = it.info.topic.m_topic_name;
+        expected_result.topic.topic_type = it.info.topic.type_name;
+        expected_result.qos.durability = it.info.topic.topic_qos.durability_qos;
+        expected_result.qos.reliability = it.info.topic.topic_qos.reliability_qos;
     }
 
     // Check information
@@ -1768,7 +1768,7 @@ TEST(ModelParserTest, complex_ros2_endpoint_writer_ros2_types)
     std::vector<spy::participants::ParticipantInfo> participants;
     participants = fill_database_participants(model, 1);
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     // Topic
     ddspipe::core::types::DdsTopic topic;
     topic.m_topic_name = "rt/hello";
@@ -1778,17 +1778,17 @@ TEST(ModelParserTest, complex_ros2_endpoint_writer_ros2_types)
 
     // Obtain information from model
     spy::participants::ComplexEndpointData result;
-    result = spy::participants::ModelParser::writers(model, endpoints[0].guid);
+    result = spy::participants::ModelParser::writers(model, endpoints[0].info.guid);
 
     // Create expected return
     spy::participants::ComplexEndpointData expected_result;
     for (const auto& it : endpoints)
     {
-        expected_result.guid = it.guid;
-        expected_result.topic.topic_name = utils::demangle_if_ros_topic(it.topic.m_topic_name);
-        expected_result.topic.topic_type = utils::demangle_if_ros_type(it.topic.type_name);
-        expected_result.qos.durability = it.topic.topic_qos.durability_qos;
-        expected_result.qos.reliability = it.topic.topic_qos.reliability_qos;
+        expected_result.guid = it.info.guid;
+        expected_result.topic.topic_name = utils::demangle_if_ros_topic(it.info.topic.m_topic_name);
+        expected_result.topic.topic_type = utils::demangle_if_ros_type(it.info.topic.type_name);
+        expected_result.qos.durability = it.info.topic.topic_qos.durability_qos;
+        expected_result.qos.reliability = it.info.topic.topic_qos.reliability_qos;
     }
 
     // Check information
@@ -1814,22 +1814,22 @@ TEST(ModelParserTest, complex_dds_endpoint_reader)
     std::vector<spy::participants::ParticipantInfo> participants;
     participants = fill_database_participants(model, 1);
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     endpoints = fill_database_endpoints(model, 1, 0);
 
     // Obtain information from model
     spy::participants::ComplexEndpointData result;
-    result = spy::participants::ModelParser::readers(model, endpoints[0].guid);
+    result = spy::participants::ModelParser::readers(model, endpoints[0].info.guid);
 
     // Create expected return
     spy::participants::ComplexEndpointData expected_result;
     for (const auto& it : endpoints)
     {
-        expected_result.guid = it.guid;
-        expected_result.topic.topic_name = it.topic.m_topic_name;
-        expected_result.topic.topic_type = it.topic.type_name;
-        expected_result.qos.durability = it.topic.topic_qos.durability_qos;
-        expected_result.qos.reliability = it.topic.topic_qos.reliability_qos;
+        expected_result.guid = it.info.guid;
+        expected_result.topic.topic_name = it.info.topic.m_topic_name;
+        expected_result.topic.topic_type = it.info.topic.type_name;
+        expected_result.qos.durability = it.info.topic.topic_qos.durability_qos;
+        expected_result.qos.reliability = it.info.topic.topic_qos.reliability_qos;
     }
 
     // Check information
@@ -1855,22 +1855,22 @@ TEST(ModelParserTest, complex_dds_endpoint_reader_ros2_types)
     std::vector<spy::participants::ParticipantInfo> participants;
     participants = fill_database_participants(model, 1);
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     endpoints = fill_database_endpoints(model, 1, 0);
 
     // Obtain information from model
     spy::participants::ComplexEndpointData result;
-    result = spy::participants::ModelParser::readers(model, endpoints[0].guid);
+    result = spy::participants::ModelParser::readers(model, endpoints[0].info.guid);
 
     // Create expected return
     spy::participants::ComplexEndpointData expected_result;
     for (const auto& it : endpoints)
     {
-        expected_result.guid = it.guid;
-        expected_result.topic.topic_name = it.topic.m_topic_name;
-        expected_result.topic.topic_type = it.topic.type_name;
-        expected_result.qos.durability = it.topic.topic_qos.durability_qos;
-        expected_result.qos.reliability = it.topic.topic_qos.reliability_qos;
+        expected_result.guid = it.info.guid;
+        expected_result.topic.topic_name = it.info.topic.m_topic_name;
+        expected_result.topic.topic_type = it.info.topic.type_name;
+        expected_result.qos.durability = it.info.topic.topic_qos.durability_qos;
+        expected_result.qos.reliability = it.info.topic.topic_qos.reliability_qos;
     }
 
     // Check information
@@ -1896,7 +1896,7 @@ TEST(ModelParserTest, complex_ros2_endpoint_reader)
     std::vector<spy::participants::ParticipantInfo> participants;
     participants = fill_database_participants(model, 1);
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     // Topic
     ddspipe::core::types::DdsTopic topic;
     topic.m_topic_name = "rt/hello";
@@ -1906,17 +1906,17 @@ TEST(ModelParserTest, complex_ros2_endpoint_reader)
 
     // Obtain information from model
     spy::participants::ComplexEndpointData result;
-    result = spy::participants::ModelParser::readers(model, endpoints[0].guid);
+    result = spy::participants::ModelParser::readers(model, endpoints[0].info.guid);
 
     // Create expected return
     spy::participants::ComplexEndpointData expected_result;
     for (const auto& it : endpoints)
     {
-        expected_result.guid = it.guid;
-        expected_result.topic.topic_name = it.topic.m_topic_name;
-        expected_result.topic.topic_type = it.topic.type_name;
-        expected_result.qos.durability = it.topic.topic_qos.durability_qos;
-        expected_result.qos.reliability = it.topic.topic_qos.reliability_qos;
+        expected_result.guid = it.info.guid;
+        expected_result.topic.topic_name = it.info.topic.m_topic_name;
+        expected_result.topic.topic_type = it.info.topic.type_name;
+        expected_result.qos.durability = it.info.topic.topic_qos.durability_qos;
+        expected_result.qos.reliability = it.info.topic.topic_qos.reliability_qos;
     }
 
     // Check information
@@ -1942,7 +1942,7 @@ TEST(ModelParserTest, complex_ros2_endpoint_reader_ros2_types)
     std::vector<spy::participants::ParticipantInfo> participants;
     participants = fill_database_participants(model, 1);
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     // Topic
     ddspipe::core::types::DdsTopic topic;
     topic.m_topic_name = "rt/hello";
@@ -1952,17 +1952,17 @@ TEST(ModelParserTest, complex_ros2_endpoint_reader_ros2_types)
 
     // Obtain information from model
     spy::participants::ComplexEndpointData result;
-    result = spy::participants::ModelParser::readers(model, endpoints[0].guid);
+    result = spy::participants::ModelParser::readers(model, endpoints[0].info.guid);
 
     // Create expected return
     spy::participants::ComplexEndpointData expected_result;
     for (const auto& it : endpoints)
     {
-        expected_result.guid = it.guid;
-        expected_result.topic.topic_name = utils::demangle_if_ros_topic(it.topic.m_topic_name);
-        expected_result.topic.topic_type = utils::demangle_if_ros_type(it.topic.type_name);
-        expected_result.qos.durability = it.topic.topic_qos.durability_qos;
-        expected_result.qos.reliability = it.topic.topic_qos.reliability_qos;
+        expected_result.guid = it.info.guid;
+        expected_result.topic.topic_name = utils::demangle_if_ros_topic(it.info.topic.m_topic_name);
+        expected_result.topic.topic_type = utils::demangle_if_ros_type(it.info.topic.type_name);
+        expected_result.qos.durability = it.info.topic.topic_qos.durability_qos;
+        expected_result.qos.reliability = it.info.topic.topic_qos.reliability_qos;
     }
 
     // Check information
@@ -1987,7 +1987,7 @@ TEST(ModelParserTest, simple_topic_dds_endpoints)
     ddspipe::core::types::DdsTopic topic;
     topic = ddspipe::core::testing::random_dds_topic();
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     endpoints = fill_database_endpoints(model, 1, 2, topic);
 
     // Obtain information from model
@@ -2030,7 +2030,7 @@ TEST(ModelParserTest, simple_topic_dds_endpoints_ros2_types)
     ddspipe::core::types::DdsTopic topic;
     topic = ddspipe::core::testing::random_dds_topic();
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     endpoints = fill_database_endpoints(model, 1, 2, topic);
 
     // Obtain information from model
@@ -2076,7 +2076,7 @@ TEST(ModelParserTest, simple_topic_ros2_endpoints)
     topic.type_name = "std_msgs::msg::dds_::String_";
     topic.topic_qos = ddspipe::core::testing::random_topic_qos();
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     endpoints = fill_database_endpoints(model, 1, 2, topic);
 
     // Obtain information from model
@@ -2122,7 +2122,7 @@ TEST(ModelParserTest, simple_topic_ros2_endpoints_ros2_types)
     topic.type_name = "std_msgs::msg::dds_::String_";
     topic.topic_qos = ddspipe::core::testing::random_topic_qos();
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     endpoints = fill_database_endpoints(model, 1, 2, topic);
 
     // Obtain information from model
@@ -2165,7 +2165,7 @@ TEST(ModelParserTest, topics_verbose_dds_endpoints)
     ddspipe::core::types::DdsTopic topic;
     topic = ddspipe::core::testing::random_dds_topic();
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     endpoints = fill_database_endpoints(model, 1, 2, topic);
 
     // Obtain information from model
@@ -2180,13 +2180,13 @@ TEST(ModelParserTest, topics_verbose_dds_endpoints)
     std::vector<spy::participants::ComplexTopicData::Endpoint> datareaders;
     for (const auto& it : endpoints)
     {
-        if (it.is_reader())
+        if (it.info.is_reader())
         {
-            datareaders.push_back({it.guid});
+            datareaders.push_back({it.info.guid});
         }
-        if (it.is_writer())
+        if (it.info.is_writer())
         {
-            datawriters.push_back({it.guid});
+            datawriters.push_back({it.info.guid});
         }
     }
     fill_expected_result.name = topic.m_topic_name;
@@ -2234,7 +2234,7 @@ TEST(ModelParserTest, topics_verbose_dds_endpoints_ros2_types)
     ddspipe::core::types::DdsTopic topic;
     topic = ddspipe::core::testing::random_dds_topic();
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     endpoints = fill_database_endpoints(model, 1, 2, topic);
 
     // Obtain information from model
@@ -2249,13 +2249,13 @@ TEST(ModelParserTest, topics_verbose_dds_endpoints_ros2_types)
     std::vector<spy::participants::ComplexTopicData::Endpoint> datareaders;
     for (const auto& it : endpoints)
     {
-        if (it.is_reader())
+        if (it.info.is_reader())
         {
-            datareaders.push_back({it.guid});
+            datareaders.push_back({it.info.guid});
         }
-        if (it.is_writer())
+        if (it.info.is_writer())
         {
-            datawriters.push_back({it.guid});
+            datawriters.push_back({it.info.guid});
         }
     }
     fill_expected_result.name = topic.m_topic_name;
@@ -2306,7 +2306,7 @@ TEST(ModelParserTest, topics_verbose_ros2_endpoints)
     topic.type_name = "std_msgs::msg::dds_::String_";
     topic.topic_qos = ddspipe::core::testing::random_topic_qos();
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     endpoints = fill_database_endpoints(model, 1, 2, topic);
 
     // Obtain information from model
@@ -2321,13 +2321,13 @@ TEST(ModelParserTest, topics_verbose_ros2_endpoints)
     std::vector<spy::participants::ComplexTopicData::Endpoint> datareaders;
     for (const auto& it : endpoints)
     {
-        if (it.is_reader())
+        if (it.info.is_reader())
         {
-            datareaders.push_back({it.guid});
+            datareaders.push_back({it.info.guid});
         }
-        if (it.is_writer())
+        if (it.info.is_writer())
         {
-            datawriters.push_back({it.guid});
+            datawriters.push_back({it.info.guid});
         }
     }
     fill_expected_result.name = topic.m_topic_name;
@@ -2378,7 +2378,7 @@ TEST(ModelParserTest, topics_verbose_ros2_endpoints_ros2_types)
     topic.type_name = "std_msgs::msg::dds_::String_";
     topic.topic_qos = ddspipe::core::testing::random_topic_qos();
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     endpoints = fill_database_endpoints(model, 1, 2, topic);
 
     // Obtain information from model
@@ -2393,13 +2393,13 @@ TEST(ModelParserTest, topics_verbose_ros2_endpoints_ros2_types)
     std::vector<spy::participants::ComplexTopicData::Endpoint> datareaders;
     for (const auto& it : endpoints)
     {
-        if (it.is_reader())
+        if (it.info.is_reader())
         {
-            datareaders.push_back({it.guid});
+            datareaders.push_back({it.info.guid});
         }
-        if (it.is_writer())
+        if (it.info.is_writer())
         {
-            datawriters.push_back({it.guid});
+            datawriters.push_back({it.info.guid});
         }
     }
     fill_expected_result.name = utils::demangle_if_ros_topic(topic.m_topic_name);
@@ -2447,7 +2447,7 @@ TEST(ModelParserTest, complex_topic_dds_endpoints)
     ddspipe::core::types::DdsTopic topic;
     topic = ddspipe::core::testing::random_dds_topic();
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     endpoints = fill_database_endpoints(model, 1, 2, topic);
 
     // Obtain information from model
@@ -2459,13 +2459,13 @@ TEST(ModelParserTest, complex_topic_dds_endpoints)
     std::vector<spy::participants::ComplexTopicData::Endpoint> datareaders;
     for (const auto& it : endpoints)
     {
-        if (it.is_reader())
+        if (it.info.is_reader())
         {
-            datareaders.push_back({it.guid});
+            datareaders.push_back({it.info.guid});
         }
-        if (it.is_writer())
+        if (it.info.is_writer())
         {
-            datawriters.push_back({it.guid});
+            datawriters.push_back({it.info.guid});
         }
     }
     spy::participants::ComplexTopicData expected_result;
@@ -2507,7 +2507,7 @@ TEST(ModelParserTest, complex_topic_dds_endpoints_ros2_types)
     ddspipe::core::types::DdsTopic topic;
     topic = ddspipe::core::testing::random_dds_topic();
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     endpoints = fill_database_endpoints(model, 1, 2, topic);
 
     // Obtain information from model
@@ -2519,13 +2519,13 @@ TEST(ModelParserTest, complex_topic_dds_endpoints_ros2_types)
     std::vector<spy::participants::ComplexTopicData::Endpoint> datareaders;
     for (const auto& it : endpoints)
     {
-        if (it.is_reader())
+        if (it.info.is_reader())
         {
-            datareaders.push_back({it.guid});
+            datareaders.push_back({it.info.guid});
         }
-        if (it.is_writer())
+        if (it.info.is_writer())
         {
-            datawriters.push_back({it.guid});
+            datawriters.push_back({it.info.guid});
         }
     }
     spy::participants::ComplexTopicData expected_result;
@@ -2570,7 +2570,7 @@ TEST(ModelParserTest, complex_topic_ros2_endpoints)
     topic.type_name = "std_msgs::msg::dds_::String_";
     topic.topic_qos = ddspipe::core::testing::random_topic_qos();
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     endpoints = fill_database_endpoints(model, 1, 2, topic);
 
     // Obtain information from model
@@ -2582,13 +2582,13 @@ TEST(ModelParserTest, complex_topic_ros2_endpoints)
     std::vector<spy::participants::ComplexTopicData::Endpoint> datareaders;
     for (const auto& it : endpoints)
     {
-        if (it.is_reader())
+        if (it.info.is_reader())
         {
-            datareaders.push_back({it.guid});
+            datareaders.push_back({it.info.guid});
         }
-        if (it.is_writer())
+        if (it.info.is_writer())
         {
-            datawriters.push_back({it.guid});
+            datawriters.push_back({it.info.guid});
         }
     }
     spy::participants::ComplexTopicData expected_result;
@@ -2633,7 +2633,7 @@ TEST(ModelParserTest, complex_topic_ros2_endpoints_ros2_types)
     topic.type_name = "std_msgs::msg::dds_::String_";
     topic.topic_qos = ddspipe::core::testing::random_topic_qos();
     // Endpoints
-    std::vector<spy::participants::EndpointInfo> endpoints;
+    std::vector<spy::participants::EndpointInfoData> endpoints;
     endpoints = fill_database_endpoints(model, 1, 2, topic);
 
     // Obtain information from model
@@ -2645,13 +2645,13 @@ TEST(ModelParserTest, complex_topic_ros2_endpoints_ros2_types)
     std::vector<spy::participants::ComplexTopicData::Endpoint> datareaders;
     for (const auto& it : endpoints)
     {
-        if (it.is_reader())
+        if (it.info.is_reader())
         {
-            datareaders.push_back({it.guid});
+            datareaders.push_back({it.info.guid});
         }
-        if (it.is_writer())
+        if (it.info.is_writer())
         {
-            datawriters.push_back({it.guid});
+            datawriters.push_back({it.info.guid});
         }
     }
     spy::participants::ComplexTopicData expected_result;
