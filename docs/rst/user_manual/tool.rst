@@ -9,11 +9,6 @@ User Interface
 
 |espy| is a :term:`CLI` user application executed from command line and configured through a :term:`YAML` configuration file.
 
-.. contents::
-    :local:
-    :backlinks: none
-    :depth: 1
-
 Run application
 ===============
 
