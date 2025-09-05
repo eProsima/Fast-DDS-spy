@@ -47,17 +47,17 @@ TEST(YamlReaderTest, get_spy_configuration_trivial)
     ASSERT_EQ(configuration.ros2_types, true);
 
     // Check app data
-    ASSERT_EQ(configuration.simple_configuration->id, "SimpleParticipant");
-    ASSERT_EQ(configuration.simple_configuration->app_id, "FASTDDS_SPY");
-    ASSERT_EQ(configuration.simple_configuration->app_metadata, "");
-    ASSERT_FALSE(configuration.simple_configuration->is_repeater);
+    ASSERT_EQ(configuration.dds_configuration->id, "SimpleParticipant");
+    ASSERT_EQ(configuration.dds_configuration->app_id, "FASTDDS_SPY");
+    ASSERT_EQ(configuration.dds_configuration->app_metadata, "");
+    ASSERT_FALSE(configuration.dds_configuration->is_repeater);
 
     ASSERT_EQ(configuration.spy_configuration->id, "Fast-Spy-007");
     ASSERT_EQ(configuration.spy_configuration->app_id, "FASTDDS_SPY");
     ASSERT_EQ(configuration.spy_configuration->app_metadata, "");
     ASSERT_FALSE(configuration.spy_configuration->is_repeater);
 
-    ASSERT_EQ(configuration.simple_configuration->easy_mode_ip, "127.0.0.1");
+    ASSERT_EQ(configuration.dds_configuration->easy_mode_ip, "127.0.0.1");
 }
 
 int main(

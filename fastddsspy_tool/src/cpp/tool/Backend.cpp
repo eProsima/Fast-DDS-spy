@@ -31,11 +31,6 @@ Backend::Backend(
     , participant_database_(std::make_shared<ddspipe::core::ParticipantsDatabase>())
     , model_(
         std::make_shared<participants::SpyModel>(configuration.ros2_types))
-    , dds_participant_(
-        std::make_shared<participants::SpyDdsParticipant>(
-            configuration.simple_configuration,
-            payload_pool_,
-            discovery_database_))
     , spy_participant_(
         std::make_shared<participants::SpyParticipant>(
             configuration.spy_configuration,
@@ -52,8 +47,25 @@ Backend::Backend(
 
     load_internal_topics_(configuration_);
 
-    // Init Dds Participant
-    dds_participant_->init();
+    if (configuration.xml_enabled)
+    {
+        dds_participant_ = std::make_shared<participants::SpyDdsXmlParticipant>(
+            configuration.dds_configuration,
+            payload_pool_,
+            discovery_database_);
+
+        std::dynamic_pointer_cast<participants::SpyDdsXmlParticipant>(dds_participant_)->init();
+    }
+    else
+    {
+        dds_participant_ = std::make_shared<participants::SpyDdsParticipant>(
+            std::dynamic_pointer_cast<ddspipe::participants::SimpleParticipantConfiguration>(configuration.
+                    dds_configuration),
+            payload_pool_,
+            discovery_database_);
+
+        std::dynamic_pointer_cast<participants::SpyDdsParticipant>(dds_participant_)->init();
+    }
 
     // Populate Participant Database
     participant_database_->add_participant(

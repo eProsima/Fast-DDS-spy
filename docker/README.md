@@ -62,7 +62,7 @@ There is also the possibility to just run the application with a specific comman
 There are some configurations already available in the container under directory `/fastddsspy/resources/`.
 However the application could be run without a configuration and default configuration is used.
 
-- `simple_configuration.yaml` Configuration with just basic configuration.
+- `dds_configuration.yaml` Configuration with just basic configuration.
 - `complete_configuration.yaml` Configuration with all the possible configurations available.
 
 

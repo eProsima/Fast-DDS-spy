@@ -1,0 +1,173 @@
+/**
+ * @file SpyDdsXmlParticipant.cpp
+ * @brief This file contains the implementation of the SpyDdsXmlParticipant class and its listener.
+ */
+
+// Copyright 2023 Proyectos y Sistemas de Mantenimiento SL (eProsima).
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#include <ddspipe_participants/utils/utils.hpp>
+
+#include <fastddsspy_participants/participant/SpyDdsXmlParticipant.hpp>
+#include <fastddsspy_participants/types/ParticipantInfo.hpp>
+#include <fastddsspy_participants/types/EndpointInfo.hpp>
+
+namespace eprosima {
+namespace spy {
+namespace participants {
+
+SpyDdsXmlParticipant::SpyDdsXmlParticipant(
+        const std::shared_ptr<ddspipe::participants::XmlParticipantConfiguration>& participant_configuration,
+        const std::shared_ptr<ddspipe::core::PayloadPool>& payload_pool,
+        const std::shared_ptr<ddspipe::core::DiscoveryDatabase>& discovery_database)
+    : ddspipe::participants::XmlDynTypesParticipant(participant_configuration, payload_pool, discovery_database)
+    , participants_reader_(std::make_shared<ddspipe::participants::InternalReader>(
+                this->id()))
+    , endpoints_reader_(std::make_shared<ddspipe::participants::InternalReader>(
+                this->id()))
+{
+    // Do nothing
+}
+
+std::shared_ptr<ddspipe::core::IReader> SpyDdsXmlParticipant::create_reader(
+        const ddspipe::core::ITopic& topic)
+{
+    // If participant info topic, return the internal reader for it
+    if (is_participant_info_topic(topic))
+    {
+        return this->participants_reader_;
+    }
+
+    // If endpoint info topic, return the internal reader for it
+    if (is_endpoint_info_topic(topic))
+    {
+        return this->endpoints_reader_;
+    }
+
+    // If not type object, use the parent method
+    return ddspipe::participants::XmlDynTypesParticipant::create_reader(topic);
+}
+
+SpyDdsXmlParticipant::SpyDdsXmlParticipantListener::SpyDdsXmlParticipantListener(
+        std::shared_ptr<ddspipe::participants::SimpleParticipantConfiguration> conf,
+        std::shared_ptr<ddspipe::core::DiscoveryDatabase> ddb,
+        std::shared_ptr<ddspipe::participants::InternalReader> type_object_reader,
+        std::shared_ptr<ddspipe::participants::InternalReader> participants_reader,
+        std::shared_ptr<ddspipe::participants::InternalReader> endpoints_reader)
+    : ddspipe::participants::XmlDynTypesParticipant::XmlDynTypesDdsListener(conf, ddb, type_object_reader)
+{
+    // Set the internal readers
+    participants_reader_ = participants_reader;
+    endpoints_reader_ = endpoints_reader;
+}
+
+void SpyDdsXmlParticipant::SpyDdsXmlParticipantListener::on_participant_discovery(
+        fastdds::dds::DomainParticipant* participant,
+        fastdds::rtps::ParticipantDiscoveryStatus reason,
+        const fastdds::rtps::ParticipantBuiltinTopicData& info,
+        bool& should_be_ignored)
+{
+    // If comes from this participant is not interesting
+    if (ddspipe::participants::detail::come_from_same_participant_(info.guid, participant->guid()))
+    {
+        return;
+    }
+
+    ParticipantInfo participant_info;
+    participant_info.active = (reason == fastdds::rtps::ParticipantDiscoveryStatus::DISCOVERED_PARTICIPANT
+            || reason == fastdds::rtps::ParticipantDiscoveryStatus::CHANGED_QOS_PARTICIPANT);
+    participant_info.name = std::string(info.participant_name);
+    participant_info.guid = info.guid;
+
+    ddspipe::participants::dds::CommonParticipant::DdsListener::on_participant_discovery(participant, reason, info,
+            should_be_ignored);
+
+    internal_notify_participant_discovered_(participant_info);
+}
+
+void SpyDdsXmlParticipant::SpyDdsXmlParticipantListener::on_data_reader_discovery(
+        fastdds::dds::DomainParticipant* participant,
+        fastdds::rtps::ReaderDiscoveryStatus reason,
+        const fastdds::dds::SubscriptionBuiltinTopicData& info,
+        bool& should_be_ignored)
+{
+    // If comes from this participant is not interesting
+    if (ddspipe::participants::detail::come_from_same_participant_(info.guid, participant->guid()))
+    {
+        return;
+    }
+
+    EndpointInfo endpoint_info = ddspipe::participants::detail::create_endpoint_from_info_(info, configuration_->id);
+    endpoint_info.active = (reason == fastdds::rtps::ReaderDiscoveryStatus::DISCOVERED_READER
+            || reason == fastdds::rtps::ReaderDiscoveryStatus::CHANGED_QOS_READER);
+
+    ddspipe::participants::XmlDynTypesParticipant::XmlDynTypesDdsListener::on_data_reader_discovery(
+        participant, reason, info, should_be_ignored);
+
+    internal_notify_endpoint_discovered_(endpoint_info);
+}
+
+void SpyDdsXmlParticipant::SpyDdsXmlParticipantListener::on_data_writer_discovery(
+        fastdds::dds::DomainParticipant* participant,
+        fastdds::rtps::WriterDiscoveryStatus reason,
+        const fastdds::dds::PublicationBuiltinTopicData& info,
+        bool& should_be_ignored)
+{
+    // If comes from this participant is not interesting
+    if (ddspipe::participants::detail::come_from_same_participant_(info.guid, participant->guid()))
+    {
+        return;
+    }
+
+    EndpointInfo endpoint_info = ddspipe::participants::detail::create_endpoint_from_info_(info, configuration_->id);
+    endpoint_info.active = (reason == fastdds::rtps::WriterDiscoveryStatus::DISCOVERED_WRITER
+            || reason == fastdds::rtps::WriterDiscoveryStatus::CHANGED_QOS_WRITER);
+
+    ddspipe::participants::XmlDynTypesParticipant::XmlDynTypesDdsListener::on_data_writer_discovery(
+        participant, reason, info, should_be_ignored);
+
+    internal_notify_endpoint_discovered_(endpoint_info);
+}
+
+void SpyDdsXmlParticipant::SpyDdsXmlParticipantListener::internal_notify_participant_discovered_(
+        const ParticipantInfo& participant_discovered)
+{
+    // Create data containing Dynamic Type
+    auto data = std::make_unique<ParticipantInfoData>();
+    data->info = participant_discovered;
+
+    // Insert new data in internal reader queue
+    participants_reader_->simulate_data_reception(std::move(data));
+}
+
+void SpyDdsXmlParticipant::SpyDdsXmlParticipantListener::internal_notify_endpoint_discovered_(
+        const EndpointInfo& endpoint_discovered)
+{
+    // Create data containing Dynamic Type
+    auto data = std::make_unique<EndpointInfoData>();
+    data->info = endpoint_discovered;
+
+    // Insert new data in internal reader queue
+    endpoints_reader_->simulate_data_reception(std::move(data));
+}
+
+std::unique_ptr<fastdds::dds::DomainParticipantListener> SpyDdsXmlParticipant::create_listener_()
+{
+    return std::make_unique<SpyDdsXmlParticipantListener>(configuration_, discovery_database_, type_object_reader_,
+                   participants_reader_, endpoints_reader_);
+}
+
+} /* namespace participants */
+} /* namespace spy */
+} /* namespace eprosima */
