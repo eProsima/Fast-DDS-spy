@@ -101,6 +101,11 @@ protected:
             const std::vector<std::string>& arguments) noexcept;
 
     /////////////////////
+    // FILTER
+    void filter_command_(
+            const std::vector<std::string>& arguments) noexcept;
+
+    /////////////////////
     // AUXILIARY
     void version_command_(
             const std::vector<std::string>& arguments) noexcept;
@@ -131,7 +136,12 @@ private:
             specificF specific_function,
             const char* entity_name) noexcept;
 
+    /*bool check_filter_ditc_category(
+        std::string category) noexcept;*/
+
     std::mutex view_mutex_;
+
+    std::map<std::string, std::set<std::string>> filter_dict;
 
 };
 

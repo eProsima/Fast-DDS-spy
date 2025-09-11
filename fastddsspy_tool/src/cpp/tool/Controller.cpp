@@ -198,6 +198,10 @@ void Controller::run_command_(
             error_command_(command.arguments);
             break;
 
+        case CommandValue::filter:
+            filter_command_(command.arguments);
+            break;
+
         default:
             break;
     }
@@ -400,7 +404,7 @@ void Controller::topics_command_(
     {
         // All participants simple
         ddspipe::yaml::set(yml, participants::ModelParser::topics(
-                    *model_, ddspipe::core::types::WildcardDdsFilterTopic()), true);
+                    *model_, ddspipe::core::types::WildcardDdsFilterTopic(), filter_dict), true);
     }
     else if (arguments.size() == 2)
     {
@@ -410,13 +414,13 @@ void Controller::topics_command_(
         {
             // Handle 'topics verbose'
             ddspipe::yaml::set(yml, participants::ModelParser::topics(
-                        *model_, ddspipe::core::types::WildcardDdsFilterTopic()), false);
+                        *model_, ddspipe::core::types::WildcardDdsFilterTopic(), filter_dict), false);
         }
         else if (verbose_verbose_argument_(arg_1))
         {
             // Handle 'topics verbose2'
             ddspipe::yaml::set(yml, participants::ModelParser::topics_verbose(
-                        *model_, ddspipe::core::types::WildcardDdsFilterTopic()));
+                        *model_, ddspipe::core::types::WildcardDdsFilterTopic(), filter_dict));
         }
         else
         {
@@ -424,7 +428,7 @@ void Controller::topics_command_(
             ddspipe::core::types::WildcardDdsFilterTopic filter_topic;
             filter_topic.topic_name = arg_1;
 
-            auto data = participants::ModelParser::topics(*model_, filter_topic);
+            auto data = participants::ModelParser::topics(*model_, filter_topic, filter_dict);
 
             if (data.empty())
             {
@@ -450,7 +454,7 @@ void Controller::topics_command_(
         if (verbose_argument_(arg_2))
         {
             // Handle 'topics <name> verbose'
-            auto data = participants::ModelParser::topics(*model_, filter_topic);
+            auto data = participants::ModelParser::topics(*model_, filter_topic, filter_dict);
 
             if (data.empty())
             {
@@ -466,7 +470,7 @@ void Controller::topics_command_(
         else if (verbose_verbose_argument_(arg_2))
         {
             // Handle 'topics <name> verbose2'
-            auto data = participants::ModelParser::topics_verbose(*model_, filter_topic);
+            auto data = participants::ModelParser::topics_verbose(*model_, filter_topic, filter_dict);
 
             if (data.empty())
             {
@@ -481,7 +485,7 @@ void Controller::topics_command_(
         }
         else if (idl_argument_(arg_2))
         {
-            auto data = participants::ModelParser::topics_type_idl(*model_, filter_topic);
+            auto data = participants::ModelParser::topics_type_idl(*model_, filter_topic, filter_dict);
             if (data.empty())
             {
                 view_.show_error(STR_ENTRY
@@ -551,7 +555,7 @@ void Controller::print_command_(
         filter_topic.topic_name = arguments[1];
 
         std::set<eprosima::ddspipe::core::types::DdsTopic> topics =
-                participants::ModelParser::get_topics(*model_, filter_topic);
+                participants::ModelParser::get_topics(*model_, filter_topic, filter_dict);
         if (topics.empty())
         {
             view_.show_error(STR_ENTRY
@@ -678,6 +682,258 @@ void Controller::error_command_(
     view_.show_error(STR_ENTRY
             << "<" << arguments[0] << "> is not a known command. "
             << "Use <help> command to see valid commands and arguments.");
+}
+
+/*bool Controller::check_filter_ditc_category(std::string category)
+{
+    if(filter_dict.find(category) == filter_dict.end())
+    {
+        view_.show_error(STR_ENTRY
+                << "Command <"
+                << arguments[0]
+                << "> requires 1 or 2 arguments.");
+        return false;
+    }
+
+    return true;
+}*/
+
+void Controller::filter_command_(
+        const std::vector<std::string>& arguments) noexcept
+{
+    const auto& check_filter_dict_contains_category = [&](std::string category, bool& ret)
+    {
+        if(filter_dict.find(category) == filter_dict.end())
+        {
+            view_.show_error(STR_ENTRY
+                    << "Filter list do not contains category: "
+                    << category
+                    << ".");
+            ret = false;
+        }
+        else
+        {
+            ret = true;
+        }
+    };
+
+    
+
+    bool pass;
+    std::string operation;
+    std::string category;
+    std::string filter_str;
+
+
+    if(arguments.size() == 1) // print filters
+    {
+        if(arguments[0] != "filters" && arguments[0] != "partitions")
+        {
+            view_.show_error(STR_ENTRY
+                << "Command <"
+                << arguments[0]
+                << "> requires 3 or 4 arguments.");
+            return;
+        }
+
+        // print the filters list
+        // TODO. danip
+
+        if(arguments[0] == "filters")
+        {
+            for(const auto& category: filter_dict)
+            {
+                std::cout << "-- "<< category.first << " --\n";
+                for(std::string filter: category.second)
+                {
+                    std::cout << "  - " << filter << "\n";
+                }
+            }
+        }
+
+
+        // TODO. danip remove?
+        // print the partitions of the topics
+        if(arguments[0] == "partitions")
+        {
+            std::map<std::string, std::vector<std::string>> partitions_dict;
+
+            for (const auto& endpoint : model_->endpoint_database_)
+            {
+                for(const auto& pair: endpoint.second.info.specific_partitions)
+                {
+                    for(const auto& pair_2: pair.second)
+                    {
+                        if(partitions_dict.find(pair.first)==partitions_dict.end())
+                        {
+                            partitions_dict[pair.first] = std::vector<std::string>{pair_2.second};
+                        }
+                        else
+                        {
+                            partitions_dict[pair.first].push_back(pair_2.second);
+                        }
+                    }
+                }
+            }
+
+            for(const auto& pair: partitions_dict)
+            {
+                std::cout << "- topic: " << pair.first << " [" << (pair.second[0] == "" ? "\"\"": ("\"" + pair.second[0]) + "\"");
+                for(int i = 1; i < pair.second.size(); i++)
+                {
+                    std::cout << " ; \"" << pair.second[i] << "\"";
+                }
+                std::cout << "]\n";
+            }
+        }
+
+        
+
+    }
+    else if(arguments.size() == 2) // clear filters
+    {
+        if(arguments[0] != "filters")
+        {
+            view_.show_error(STR_ENTRY
+                << "Command <"
+                << arguments[0]
+                << "> requires 3 or 4 arguments.");
+            return;
+        }
+        if(arguments[1] != "clear")
+        {
+            view_.show_error(STR_ENTRY
+                << "To clear filters list do: \"filters clear\".");
+            return;
+        }
+
+        // clear ther filters list
+
+        filter_dict.clear();
+    }
+    else if(arguments.size() == 3) // filter <category> clear
+    {
+        if(arguments[0] != "filter")
+        {
+            view_.show_error(STR_ENTRY
+                << "Command <"
+                << arguments[0]
+                << "> requires 1 or 2 arguments.");
+            return;
+        }
+
+        if(arguments[1] != "clear")
+        {
+            view_.show_error(STR_ENTRY
+                << "To clear a filter category do: \"filters clear <category>\".");
+            return;
+        }
+
+        bool pass;
+        check_filter_dict_contains_category(category, pass);
+        if(!pass)
+        {
+            // filter_dict do not contains the category
+            return;
+        }
+
+        filter_dict[category].clear();
+    }
+    else if(arguments.size() == 4)
+    {
+        if(arguments[0] != "filter")
+        {
+            view_.show_error(STR_ENTRY
+                << "Command <"
+                << arguments[0]
+                << "> requires 1 or 2 arguments.");
+            return;
+        }
+
+        operation = arguments[1];
+        category = arguments[2];
+        filter_str = arguments[3];
+
+        if(operation == "set")
+        {
+            // set filter category
+            if(filter_dict.find(category) != filter_dict.end())
+            {
+                view_.show_error(STR_ENTRY
+                        << "Filter list already contains category: "
+                        << category
+                        << ".");
+                return;
+            }
+
+            filter_dict[category] = std::set<std::string>{filter_str};
+        }
+        else if(operation == "add")
+        {
+            // add filter category
+
+            bool pass;
+            check_filter_dict_contains_category(category, pass);
+            if(!pass)
+            {
+                // filter_dict do not contains the category
+                return;
+            }
+
+            // check if filter_str is not in the filter list of the category
+            if(filter_dict[category].find(category) != filter_dict[category].end())
+            {
+                view_.show_error(STR_ENTRY
+                        << "Filter list already contains filter_str: " << filter_str
+                        << " in category: " << category
+                        << ".");
+                return;
+            }
+
+            filter_dict[category].insert(filter_str);
+        }
+        else if(operation == "remove")
+        {
+            // remove filter category
+
+            bool pass;
+            check_filter_dict_contains_category(category, pass);
+            if(!pass)
+            {
+                // filter_dict do not contains the category
+                return;
+            }
+
+            // check if filter_str is in the filter list of the category
+            if(filter_dict[category].find(category) == filter_dict[category].end())
+            {
+                view_.show_error(STR_ENTRY
+                        << "Filter list do not contains filter_str: " << filter_str
+                        << " in category: " << category
+                        << ".");
+                return;
+            }
+
+            filter_dict[category].erase(filter_str);
+        }
+        else
+        {
+            view_.show_error(STR_ENTRY
+                << "Command <"
+                << arguments[0]
+                << "> with 4 arguments have the following format: "
+                << arguments[0] << "<set/add/remove> <category> <filter_str>.");
+            return;
+        }
+    }
+    else
+    {
+        view_.show_error(STR_ENTRY
+                << "Command <"
+                << arguments[0]
+                << "> requires less than 5 argument.");
+        return;
+    }
 }
 
 } /* namespace spy */
