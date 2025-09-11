@@ -83,7 +83,9 @@ Backend::Backend(
         discovery_database_,
         payload_pool_,
         participant_database_,
-        thread_pool_);
+        thread_pool_,
+        std::set<std::string>{}); // empty set for yaml partitions filter.
+        // the partition filter is added via runtime commands.
 
     pipe_->enable();
 }

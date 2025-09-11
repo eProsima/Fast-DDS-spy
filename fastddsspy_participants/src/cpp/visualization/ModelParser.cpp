@@ -15,6 +15,7 @@
 #include <utility>
 
 #include <cpp_utils/ros2_mangling.hpp>
+#include <cpp_utils/utils.hpp>
 
 #include <fastddsspy_participants/visualization/ModelParser.hpp>
 
@@ -293,15 +294,45 @@ ComplexEndpointData ModelParser::readers(
 
 std::set<eprosima::ddspipe::core::types::DdsTopic> ModelParser::get_topics(
         const SpyModel& model,
-        const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic) noexcept
+        const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic,
+        const std::map<std::string, std::set<std::string>> filter_dict) noexcept
 {
     std::set<eprosima::ddspipe::core::types::DdsTopic> result;
     for (const auto& endpoint : model.endpoint_database_)
     {
-        if (endpoint.second.info.active && filter_topic.matches(endpoint.second.info.topic))
+        if (!endpoint.second.info.active || !filter_topic.matches(endpoint.second.info.topic))
         {
-            result.insert(endpoint.second.info.topic);
+            continue;
         }
+
+        auto it = filter_dict.find("partitions");
+
+        // check if there is a partitions filter
+        if (it != filter_dict.end())
+        {
+            bool pass_filter = false;
+
+            for(std::string partition: it->second)
+            {
+                /*or(std::string endpoint_partitions: endpoint.second.info.specific_partitions)
+                {
+                    if (utils::match_pattern(partition, endpoint_partitions))
+                    {
+                        pass_filter = true;
+                        break;
+                    }
+                }*/
+                
+            }
+
+            if(!pass_filter)
+            {
+                continue;
+            }
+        }
+
+
+        result.insert(endpoint.second.info.topic);
     }
     return result;
 }
@@ -372,11 +403,12 @@ ComplexTopicData ModelParser::complex_topic_data(
 
 std::vector<SimpleTopicData> ModelParser::topics(
         const SpyModel& model,
-        const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic) noexcept
+        const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic,
+        const std::map<std::string, std::set<std::string>> filter_dict) noexcept
 {
     std::vector<SimpleTopicData> result;
 
-    std::set<eprosima::ddspipe::core::types::DdsTopic> endpoints_topics = get_topics(model, filter_topic);
+    std::set<eprosima::ddspipe::core::types::DdsTopic> endpoints_topics = get_topics(model, filter_topic, filter_dict);
     for (const auto& topic : endpoints_topics)
     {
         result.push_back(simple_topic_data(model, topic));
@@ -387,11 +419,12 @@ std::vector<SimpleTopicData> ModelParser::topics(
 
 std::vector<ComplexTopicData> ModelParser::topics_verbose(
         const SpyModel& model,
-        const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic) noexcept
+        const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic,
+        const std::map<std::string, std::set<std::string>> filter_dict) noexcept
 {
     std::vector<ComplexTopicData> result;
 
-    std::set<eprosima::ddspipe::core::types::DdsTopic> topics = get_topics(model, filter_topic);
+    std::set<eprosima::ddspipe::core::types::DdsTopic> topics = get_topics(model, filter_topic, filter_dict);
     for (const auto& topic : topics)
     {
         result.push_back(complex_topic_data(model, topic));
@@ -402,9 +435,10 @@ std::vector<ComplexTopicData> ModelParser::topics_verbose(
 
 std::string ModelParser::topics_type_idl(
         const SpyModel& model,
-        const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic) noexcept
+        const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic,
+        const std::map<std::string, std::set<std::string>> filter_dict) noexcept
 {
-    std::set<eprosima::ddspipe::core::types::DdsTopic> topics = get_topics(model, filter_topic);
+    std::set<eprosima::ddspipe::core::types::DdsTopic> topics = get_topics(model, filter_topic, filter_dict);
     for (const auto& topic : topics)
     {
         for (const auto& endpoint : model.endpoint_database_)
