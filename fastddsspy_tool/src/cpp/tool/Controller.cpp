@@ -261,10 +261,20 @@ void Controller::data_stream_callback_verbose_(
     // Block entrance so prints does not collapse
     std::lock_guard<std::mutex> _(view_mutex_);
 
+    std::ostringstream guid_ss;
+    std::string partitions = "";
+    guid_ss << data.source_guid;
+    const auto partition_it = topic.partition_name.find(guid_ss.str());
+    if(partition_it != topic.partition_name.end())
+    {
+        partitions = partition_it->second;
+    }
+
     // Prepare info data
     participants::DdsDataData data_info{
         {topic.m_topic_name, topic.type_name},
         data.source_guid,
+        partitions,
         data.source_timestamp
     };
 
@@ -746,13 +756,13 @@ void Controller::filter_command_(
                 std::cout << "-- "<< category.first << " --\n";
                 for(std::string filter: category.second)
                 {
-                    std::cout << "  - " << filter << "\n";
+                    std::cout << "  - " << (filter == "" ? "\"\"" : filter) << "\n";
                 }
             }
         }
 
 
-        // TODO. danip remove?
+        // TODO. danip (move to topic verbose)
         // print the partitions of the topics
         if(arguments[0] == "partitions")
         {
@@ -762,16 +772,13 @@ void Controller::filter_command_(
             {
                 for(const auto& pair: endpoint.second.info.specific_partitions)
                 {
-                    for(const auto& pair_2: pair.second)
+                    if(partitions_dict.find(endpoint.second.info.topic.m_topic_name)==partitions_dict.end())
                     {
-                        if(partitions_dict.find(pair.first)==partitions_dict.end())
-                        {
-                            partitions_dict[pair.first] = std::vector<std::string>{pair_2.second};
-                        }
-                        else
-                        {
-                            partitions_dict[pair.first].push_back(pair_2.second);
-                        }
+                        partitions_dict[endpoint.second.info.topic.m_topic_name] = std::vector<std::string>{pair.second};
+                    }
+                    else
+                    {
+                        partitions_dict[endpoint.second.info.topic.m_topic_name].push_back(pair.second);
                     }
                 }
             }
@@ -811,7 +818,7 @@ void Controller::filter_command_(
 
         filter_dict.clear();
     }
-    else if(arguments.size() == 3) // filter <category> clear
+    else if(arguments.size() == 3) // filter <clear/removes> <category>
     {
         if(arguments[0] != "filter")
         {
@@ -822,12 +829,8 @@ void Controller::filter_command_(
             return;
         }
 
-        if(arguments[1] != "clear")
-        {
-            view_.show_error(STR_ENTRY
-                << "To clear a filter category do: \"filters clear <category>\".");
-            return;
-        }
+        operation = arguments[1];
+        category = arguments[2];
 
         bool pass;
         check_filter_dict_contains_category(category, pass);
@@ -837,7 +840,22 @@ void Controller::filter_command_(
             return;
         }
 
-        filter_dict[category].clear();
+        if(operation == "clear")
+        {
+            filter_dict[category].clear();
+        }
+        else if(operation == "remove")
+        {
+            filter_dict.erase(category);
+        }
+        else
+        {
+            view_.show_error(STR_ENTRY
+                << "To clear or remove a filter category do: \"filters <clear/remove> <category>\".");
+            return;
+        }
+
+        
     }
     else if(arguments.size() == 4)
     {
@@ -867,6 +885,20 @@ void Controller::filter_command_(
             }
 
             filter_dict[category] = std::set<std::string>{filter_str};
+            std::string filter = "A", topic_name; // TODO. danip get the filter from the above dictionary
+            std::set<std::string> topic_set;
+            for(const auto& pair: model_->endpoint_database_)
+            {
+                topic_name = pair.second.info.topic.m_topic_name;
+                //for(const auto& endpoint: )
+                if(topic_set.find(topic_name) == topic_set.end())
+                {
+                    backend_.update_readers_track(topic_name, filter);
+                    topic_set.insert(topic_name);
+                }
+            }
+
+            //backend_.pipe_->
         }
         else if(operation == "add")
         {
@@ -905,7 +937,7 @@ void Controller::filter_command_(
             }
 
             // check if filter_str is in the filter list of the category
-            if(filter_dict[category].find(category) == filter_dict[category].end())
+            if(filter_dict[category].find(filter_str) == filter_dict[category].end())
             {
                 view_.show_error(STR_ENTRY
                         << "Filter list do not contains filter_str: " << filter_str

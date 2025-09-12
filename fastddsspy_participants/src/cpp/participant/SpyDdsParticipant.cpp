@@ -60,6 +60,26 @@ std::shared_ptr<ddspipe::core::IReader> SpyDdsParticipant::create_reader(
     return ddspipe::participants::DynTypesParticipant::create_reader(topic);
 }
 
+std::shared_ptr<ddspipe::core::IReader> SpyDdsParticipant::create_reader_with_filter(
+        const ddspipe::core::ITopic& topic,
+        const std::string filter)
+{
+    // If participant info topic, return the internal reader for it
+    if (is_participant_info_topic(topic))
+    {
+        return this->participants_reader_;
+    }
+
+    // If endpoint info topic, return the internal reader for it
+    if (is_endpoint_info_topic(topic))
+    {
+        return this->endpoints_reader_;
+    }
+
+    // If not type object, use the parent method
+    return ddspipe::participants::DynTypesParticipant::create_reader_with_filter(topic, filter);
+}
+
 SpyDdsParticipant::SpyDdsParticipantListener::SpyDdsParticipantListener(
         std::shared_ptr<ddspipe::participants::ParticipantConfiguration> conf,
         std::shared_ptr<ddspipe::core::DiscoveryDatabase> ddb,

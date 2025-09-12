@@ -83,9 +83,7 @@ Backend::Backend(
         discovery_database_,
         payload_pool_,
         participant_database_,
-        thread_pool_,
-        std::set<std::string>{}); // empty set for yaml partitions filter.
-        // the partition filter is added via runtime commands.
+        thread_pool_);
 
     pipe_->enable();
 }
@@ -150,6 +148,14 @@ utils::ReturnCode Backend::reload_configuration(
 std::shared_ptr<eprosima::spy::participants::SpyModel> Backend::model() const noexcept
 {
     return model_;
+}
+
+void Backend::update_readers_track(
+        //utils::Heritable<eprosima::ddspipe::core::types::DistributedTopic> topic,
+        const std::string topic_name,
+        const std::string filter)
+{
+    pipe_->update_readers_track(topic_name, filter);
 }
 
 } /* namespace spy */

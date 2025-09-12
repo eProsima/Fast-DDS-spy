@@ -113,6 +113,7 @@ void set(
 {
     set_in_tag(yml, "name", value.topic_name);
     set_in_tag(yml, "type", value.topic_type);
+    set_in_tag(yml, "partitions", value.partition);
 }
 
 template <>
@@ -203,6 +204,7 @@ void set(
     set_in_tag(yml, "type", value.type);
     set_in_tag(yml, "datawriters", value.datawriters);
     set_in_tag(yml, "datareaders", value.datareaders);
+    set_in_tag(yml, "partitions", value.partitions);
     set_in_tag(yml, "rate", value.rate);
     set_in_tag(yml, "dynamic_type_discovered", value.discovered);
 }
@@ -214,6 +216,7 @@ void set(
 {
     set_in_tag(yml, "topic", value.topic);
     set_in_tag(yml, "writer", value.writer);
+    set_in_tag(yml, "partitions", value.partitions);
     set_in_tag(yml, "timestamp", value.timestamp);
 }
 

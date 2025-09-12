@@ -143,6 +143,8 @@ private:
 
     std::map<std::string, std::set<std::string>> filter_dict;
 
+    std::set<std::string> allowed_filters_categories_;
+
 };
 
 } /* namespace spy */
