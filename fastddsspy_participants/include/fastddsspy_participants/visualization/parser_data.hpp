@@ -65,6 +65,7 @@ struct ComplexEndpointData
     {
         std::string topic_name;
         std::string topic_type;
+        std::string partition;
     };
 
     struct QoS
@@ -107,12 +108,15 @@ struct ComplexTopicData
     std::vector<Endpoint> datareaders;
     SimpleTopicData::Rate rate;
     bool discovered;
+    std::vector<std::string> partitions;
+    //std::string partitions;
 };
 
 struct DdsDataData
 {
     SimpleEndpointData::Topic topic;
     ddspipe::core::types::Guid writer;
+    std::string partitions;
     TimestampData timestamp;
 };
 

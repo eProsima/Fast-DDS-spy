@@ -183,6 +183,15 @@ void fill_complex_endpoint(
     result.topic.topic_type =
             model.get_ros2_types() ? utils::demangle_if_ros_type(endpoint.topic.type_name) : endpoint.topic.
                     type_name;
+    // partition
+    std::ostringstream guid_ss;
+    guid_ss << endpoint.guid;
+    const auto partition_it = endpoint.specific_partitions.find(guid_ss.str());
+    if(partition_it != endpoint.specific_partitions.end())
+    {
+        result.topic.partition = partition_it->second;
+    }
+
     result.qos.durability = endpoint.topic.topic_qos.durability_qos;
     result.qos.reliability = endpoint.topic.topic_qos.reliability_qos;
 }
@@ -305,31 +314,71 @@ std::set<eprosima::ddspipe::core::types::DdsTopic> ModelParser::get_topics(
             continue;
         }
 
-        auto it = filter_dict.find("partitions");
+        /*auto it = filter_dict.find("partitions"); // TODO. danip remove and add the filter in the DataReaders
 
         // check if there is a partitions filter
         if (it != filter_dict.end())
         {
-            bool pass_filter = false;
+            /*bool pass_filter = false;
 
-            for(std::string partition: it->second)
+            // iterate throw the added filter partition list
+            for(std::string allowed_partition: it->second)
             {
-                /*or(std::string endpoint_partitions: endpoint.second.info.specific_partitions)
+                // iterate throw the partitions set of the endpoint
+                for(const auto& pair: endpoint.second.info.specific_partitions)
                 {
-                    if (utils::match_pattern(partition, endpoint_partitions))
+                    std::string curr_partition = "";
+                    std::string partition_names = pair.second;
+                    int i = 0, curr_partition_n = partition_names.size();
+                    // get the partitions
+                    while(i < curr_partition_n)
                     {
-                        pass_filter = true;
-                        break;
+                        // gets a partition from the string of partitions
+                        while(i < curr_partition_n && partition_names[i]!='|')
+                        {
+                            curr_partition += partition_names[i++];
+                        }
+
+                        // check if the current partition is the wildcard
+                        if(curr_partition == "*")
+                        {
+                            pass_filter = true;
+                            break;
+                        }
+
+                        if (utils::match_pattern(allowed_partition, curr_partition))
+                        {
+                            pass_filter = true;
+                            break;
+                        }
+
+                        curr_partition = "";
+                        i++;
                     }
-                }*/
-                
+
+                    // check if the writer has the empty partition
+                    if(partition_names == "")
+                    {
+                        if (utils::match_pattern(allowed_partition, ""))
+                        {
+                            // the empty partition is allowed
+                            pass_filter = true;
+                            break;
+                        }
+                    }
+                }
+
+                if(pass_filter)
+                {
+                    break;
+                }
             }
 
             if(!pass_filter)
             {
                 continue;
             }
-        }
+        }*/
 
 
         result.insert(endpoint.second.info.topic);
@@ -387,6 +436,15 @@ ComplexTopicData ModelParser::complex_topic_data(
     {
         if (it.second.info.active && topic.m_topic_name == it.second.info.topic.m_topic_name)
         {
+            // add partitions // TODO. danip
+            std::ostringstream guid_ss;
+            guid_ss << it.first;
+            const auto partition_it = it.second.info.specific_partitions.find(guid_ss.str());
+            if(partition_it != it.second.info.specific_partitions.end())
+            {
+                result.partitions.push_back(partition_it->second);
+            }
+
             if (it.second.info.is_reader())
             {
                 result.datareaders.push_back({it.first});
