@@ -62,7 +62,7 @@ std::shared_ptr<ddspipe::core::IReader> SpyDdsParticipant::create_reader(
 
 std::shared_ptr<ddspipe::core::IReader> SpyDdsParticipant::create_reader_with_filter(
         const ddspipe::core::ITopic& topic,
-        const std::string filter)
+        const std::set<std::string> partitions)
 {
     // If participant info topic, return the internal reader for it
     if (is_participant_info_topic(topic))
@@ -76,8 +76,10 @@ std::shared_ptr<ddspipe::core::IReader> SpyDdsParticipant::create_reader_with_fi
         return this->endpoints_reader_;
     }
 
+    bool tmp;
+
     // If not type object, use the parent method
-    return ddspipe::participants::DynTypesParticipant::create_reader_with_filter(topic, filter);
+    return ddspipe::participants::DynTypesParticipant::create_reader_with_filter(topic, partitions);
 }
 
 SpyDdsParticipant::SpyDdsParticipantListener::SpyDdsParticipantListener(

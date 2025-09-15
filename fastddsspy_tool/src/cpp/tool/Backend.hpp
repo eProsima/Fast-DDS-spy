@@ -81,10 +81,13 @@ public:
      */
     std::shared_ptr<eprosima::spy::participants::SpyModel> model() const noexcept;
 
-    void update_readers_track(
+    bool update_readers_track(
         //utils::Heritable<eprosima::ddspipe::core::types::DistributedTopic> topic,
         const std::string topic_name,
-        const std::string filter);
+        const std::set<std::string> filter_partition_set);
+
+    void update_pipeline_filter(
+        const std::set<std::string> filter_partition_set);
 
 protected:
 

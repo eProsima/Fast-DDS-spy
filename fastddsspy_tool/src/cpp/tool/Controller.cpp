@@ -144,6 +144,7 @@ void Controller::run()
     while (command.command != CommandValue::exit)
     {
         command = input_.wait_next_command();
+        refresh_database();
         run_command_(command);
     }
 }
@@ -153,6 +154,81 @@ void Controller::one_shot_run(
 {
     utils::sleep_for(configuration_.one_shot_wait_time_ms);
     run_command_(input_.parse_as_command(args));
+}
+
+void Controller::refresh_database()
+{
+    std::vector<ddspipe::core::types::Guid> v_guid_inactive;
+    // refresh the database
+    // for possible new endpoints without being disabled
+    if(filter_dict.find("partitions") != filter_dict.end())
+    {
+        for(const auto& pair: model_->endpoint_database_)
+        {
+            if(!pair.second.info.active)
+            {
+                continue;
+            }
+
+            
+            std::ostringstream ss_guid;
+            ss_guid << pair.second.info.guid;
+            
+            std::string curr_specific_partition = pair.second.info.specific_partitions.find(ss_guid.str())->second;
+            std::string tmp = "";
+            bool pass = false;
+            int i = 0, n = curr_specific_partition.size();
+            while(i < n)
+            {
+                if(curr_specific_partition[i] == '|')
+                {
+                    for(std::string filter_p: filter_dict["partitions"])
+                    {
+                        if(utils::match_pattern(filter_p, tmp))
+                        {
+                            pass = true;
+                            break;
+                        }
+                    }
+
+                    if(pass)
+                    {
+                        break;
+                    }
+
+                    tmp = "";
+                }
+                else
+                {
+                    tmp += curr_specific_partition[i];
+                }
+                i++;
+            }
+
+            // empty or last partition
+            for(std::string filter_p: filter_dict["partitions"])
+            {
+                if(utils::match_pattern(filter_p, tmp))
+                {
+                    pass = true;
+                    break;
+                }
+            }
+
+            if(!pass)
+            {
+                v_guid_inactive.push_back(pair.first);
+            }
+
+        }
+        
+        for(const auto& curr_guid: v_guid_inactive)
+        {
+            auto endpoint_tmp = model_->endpoint_database_.find(curr_guid)->second;
+            endpoint_tmp.info.active = false;
+            model_->endpoint_database_.add_or_modify(curr_guid, endpoint_tmp);
+        }
+    }
 }
 
 utils::ReturnCode Controller::reload_configuration(
@@ -737,7 +813,7 @@ void Controller::filter_command_(
 
     if(arguments.size() == 1) // print filters
     {
-        if(arguments[0] != "filters" && arguments[0] != "partitions")
+        if(arguments[0] != "filters")
         {
             view_.show_error(STR_ENTRY
                 << "Command <"
@@ -747,55 +823,14 @@ void Controller::filter_command_(
         }
 
         // print the filters list
-        // TODO. danip
-
-        if(arguments[0] == "filters")
+        for(const auto& category: filter_dict)
         {
-            for(const auto& category: filter_dict)
+            std::cout << "-- "<< category.first << " --\n";
+            for(std::string filter: category.second)
             {
-                std::cout << "-- "<< category.first << " --\n";
-                for(std::string filter: category.second)
-                {
-                    std::cout << "  - " << (filter == "" ? "\"\"" : filter) << "\n";
-                }
+                std::cout << "  - " << (filter == "" ? "\"\"" : filter) << "\n";
             }
         }
-
-
-        // TODO. danip (move to topic verbose)
-        // print the partitions of the topics
-        if(arguments[0] == "partitions")
-        {
-            std::map<std::string, std::vector<std::string>> partitions_dict;
-
-            for (const auto& endpoint : model_->endpoint_database_)
-            {
-                for(const auto& pair: endpoint.second.info.specific_partitions)
-                {
-                    if(partitions_dict.find(endpoint.second.info.topic.m_topic_name)==partitions_dict.end())
-                    {
-                        partitions_dict[endpoint.second.info.topic.m_topic_name] = std::vector<std::string>{pair.second};
-                    }
-                    else
-                    {
-                        partitions_dict[endpoint.second.info.topic.m_topic_name].push_back(pair.second);
-                    }
-                }
-            }
-
-            for(const auto& pair: partitions_dict)
-            {
-                std::cout << "- topic: " << pair.first << " [" << (pair.second[0] == "" ? "\"\"": ("\"" + pair.second[0]) + "\"");
-                for(int i = 1; i < pair.second.size(); i++)
-                {
-                    std::cout << " ; \"" << pair.second[i] << "\"";
-                }
-                std::cout << "]\n";
-            }
-        }
-
-        
-
     }
     else if(arguments.size() == 2) // clear filters
     {
@@ -817,6 +852,23 @@ void Controller::filter_command_(
         // clear ther filters list
 
         filter_dict.clear();
+
+        // activate all endpoints
+        /*std::string topic_name;
+        std::vector<ddspipe::core::types::Guid> v_guid;
+
+        for(const auto& pair: model_->endpoint_database_)
+        {
+            v_guid.push_back(pair.first);
+        }
+
+        for(const auto& curr_guid: v_guid)
+        {
+            auto endpoint_tmp = model_->endpoint_database_.find(curr_guid)->second;
+            endpoint_tmp.info.active = true;
+            model_->endpoint_database_.add_or_modify(curr_guid, endpoint_tmp);
+        }*/
+        update_filter_partitions();
     }
     else if(arguments.size() == 3) // filter <clear/removes> <category>
     {
@@ -855,7 +907,26 @@ void Controller::filter_command_(
             return;
         }
 
-        
+        if(category == "partitions")
+        {
+            // no filter list, or filter list empty
+            // activate all endpoints
+            /*std::string topic_name;
+            std::vector<ddspipe::core::types::Guid> v_guid;
+
+            for(const auto& pair: model_->endpoint_database_)
+            {
+                v_guid.push_back(pair.first);
+            }
+
+            for(const auto& curr_guid: v_guid)
+            {
+                auto endpoint_tmp = model_->endpoint_database_.find(curr_guid)->second;
+                endpoint_tmp.info.active = true;
+                model_->endpoint_database_.add_or_modify(curr_guid, endpoint_tmp);
+            }*/
+           update_filter_partitions();
+        }
     }
     else if(arguments.size() == 4)
     {
@@ -885,20 +956,11 @@ void Controller::filter_command_(
             }
 
             filter_dict[category] = std::set<std::string>{filter_str};
-            std::string filter = "A", topic_name; // TODO. danip get the filter from the above dictionary
-            std::set<std::string> topic_set;
-            for(const auto& pair: model_->endpoint_database_)
-            {
-                topic_name = pair.second.info.topic.m_topic_name;
-                //for(const auto& endpoint: )
-                if(topic_set.find(topic_name) == topic_set.end())
-                {
-                    backend_.update_readers_track(topic_name, filter);
-                    topic_set.insert(topic_name);
-                }
-            }
 
-            //backend_.pipe_->
+            if(category == "partitions")
+            {
+                update_filter_partitions();
+            }
         }
         else if(operation == "add")
         {
@@ -923,6 +985,47 @@ void Controller::filter_command_(
             }
 
             filter_dict[category].insert(filter_str);
+
+            if(category == "partitions")
+            {
+                update_filter_partitions();
+
+                /*std::string topic_name;
+                std::set<std::string> topic_set;
+                std::vector<ddspipe::core::types::Guid> v_guid_inactive, v_guid_active;
+
+                for(const auto& pair: model_->endpoint_database_)
+                {
+                    topic_name = pair.second.info.topic.m_topic_name;
+
+                    if(topic_set.find(topic_name) == topic_set.end())
+                    {
+                        bool active = backend_.update_readers_track(topic_name, filter_dict[category]);
+                        topic_set.insert(topic_name);
+                        if(!active)
+                        {
+                            v_guid_inactive.push_back(pair.first);
+                        }
+                        else if(!pair.second.info.active) // the endpoint was disable, but pass the new filter
+                        {
+                            v_guid_active.push_back(pair.first);
+                        }
+                    }
+                }
+
+                for(const auto& curr_guid: v_guid_inactive)
+                {
+                    auto endpoint_tmp = model_->endpoint_database_.find(curr_guid)->second;
+                    endpoint_tmp.info.active = false;
+                    model_->endpoint_database_.add_or_modify(curr_guid, endpoint_tmp);
+                }
+                for(const auto& curr_guid: v_guid_active)
+                {
+                    auto endpoint_tmp = model_->endpoint_database_.find(curr_guid)->second;
+                    endpoint_tmp.info.active = true;
+                    model_->endpoint_database_.add_or_modify(curr_guid, endpoint_tmp);
+                }*/
+            }
         }
         else if(operation == "remove")
         {
@@ -947,6 +1050,47 @@ void Controller::filter_command_(
             }
 
             filter_dict[category].erase(filter_str);
+
+            if(category == "partitions")
+            {
+                update_filter_partitions();
+
+                /*std::string topic_name;
+                std::set<std::string> topic_set;
+                std::vector<ddspipe::core::types::Guid> v_guid_inactive, v_guid_active;
+
+                for(const auto& pair: model_->endpoint_database_)
+                {
+                    topic_name = pair.second.info.topic.m_topic_name;
+
+                    if(topic_set.find(topic_name) == topic_set.end())
+                    {
+                        bool active = backend_.update_readers_track(topic_name, filter_dict[category]);
+                        topic_set.insert(topic_name);
+                        if(!active)
+                        {
+                            v_guid_inactive.push_back(pair.first);
+                        }
+                        else if(!pair.second.info.active) // the endpoint was disable, but pass the new filter
+                        {
+                            v_guid_active.push_back(pair.first);
+                        }
+                    }
+                }
+
+                for(const auto& curr_guid: v_guid_inactive)
+                {
+                    auto endpoint_tmp = model_->endpoint_database_.find(curr_guid)->second;
+                    endpoint_tmp.info.active = false;
+                    model_->endpoint_database_.add_or_modify(curr_guid, endpoint_tmp);
+                }
+                for(const auto& curr_guid: v_guid_active)
+                {
+                    auto endpoint_tmp = model_->endpoint_database_.find(curr_guid)->second;
+                    endpoint_tmp.info.active = true;
+                    model_->endpoint_database_.add_or_modify(curr_guid, endpoint_tmp);
+                }*/
+            }
         }
         else
         {
@@ -965,6 +1109,97 @@ void Controller::filter_command_(
                 << arguments[0]
                 << "> requires less than 5 argument.");
         return;
+    }
+}
+
+void Controller::update_filter_partitions()
+{
+    std::string topic_name;
+    std::set<std::string> topic_set;
+    std::vector<ddspipe::core::types::Guid> v_guid_active, v_guid_inactive;
+
+    int i, n;
+    std::string curr_partition;
+    bool endpoint_active;
+
+    bool partitions_exists = filter_dict.find("partitions") != filter_dict.end();
+
+    for(const auto& pair: model_->endpoint_database_)
+    {
+        topic_name = pair.second.info.topic.m_topic_name;
+        for(const auto& pair_2: pair.second.info.specific_partitions)
+        {
+            i = 0;
+            n = pair_2.second.size();
+            curr_partition = "";
+            endpoint_active = filter_dict["partitions"].empty();
+            while(i < n)
+            {
+                if(pair_2.second[i] == '|')
+                {
+                    for(std::string filter_p: filter_dict["partitions"])
+                    {
+                        if(utils::match_pattern(filter_p, curr_partition))
+                        {
+                            endpoint_active = true;
+                            break;
+                        }
+                    }
+
+                    curr_partition = "";
+                }
+                else
+                {
+                    curr_partition += pair_2.second[i];
+                }
+                i++;
+            }
+
+            // empty or last partition
+            for(std::string filter_p: filter_dict["partitions"])
+            {
+                if(utils::match_pattern(filter_p, curr_partition))
+                {
+                    endpoint_active = true;
+                    break;
+                }
+            }
+        }
+
+        if(!endpoint_active)
+        {
+            v_guid_inactive.push_back(pair.first);
+        }
+        else
+        {
+            v_guid_active.push_back(pair.first);
+        }
+
+        if(topic_set.find(topic_name) == topic_set.end())
+        {
+            backend_.update_readers_track(topic_name, filter_dict["partitions"]);
+            topic_set.insert(topic_name);
+        }
+    }
+
+    backend_.update_pipeline_filter(filter_dict["partitions"]);
+
+    if(!partitions_exists)
+    {
+        filter_dict.erase("partitions");
+    }
+
+    for(const auto& curr_guid: v_guid_inactive)
+    {
+        auto endpoint_tmp = model_->endpoint_database_.find(curr_guid)->second;
+        endpoint_tmp.info.active = false;
+        model_->endpoint_database_.add_or_modify(curr_guid, endpoint_tmp);
+    }
+    for(const auto& curr_guid: v_guid_active)
+    {
+        auto endpoint_tmp = model_->endpoint_database_.find(curr_guid)->second;
+        endpoint_tmp.info.active = true;
+        model_->endpoint_database_.add_or_modify(curr_guid, endpoint_tmp);
     }
 }
 

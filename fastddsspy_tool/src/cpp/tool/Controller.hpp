@@ -114,6 +114,8 @@ protected:
     void error_command_(
             const std::vector<std::string>& arguments) noexcept;
 
+    void update_filter_partitions();
+
     /////////////////////
     // VARIABLES
     Backend backend_;
@@ -135,6 +137,8 @@ private:
             VerboseF verbose_function,
             specificF specific_function,
             const char* entity_name) noexcept;
+
+    void refresh_database();
 
     /*bool check_filter_ditc_category(
         std::string category) noexcept;*/
