@@ -35,6 +35,16 @@ This commands show user data being received by the application in real time.
 
    /rst/user_manual/commands/data.rst
 
+Filter commands
+===============
+
+This command enables the user to filter the information observed by the application.
+
+.. toctree::
+   :maxdepth: 2
+
+   /rst/user_manual/commands/filter.rst
+
 Extra commands
 ==============
 
@@ -104,6 +114,17 @@ Summary
           ``<topic name>``
         - ``topic`` ``topics`` |br|
           ``t`` ``T``
+
+    *   - :ref:`user_manual_command_filter`
+        - Filter related commands
+        - ``set`` |br|
+          ``add`` |br|
+          ``remove`` |br|
+          ``clear`` |br|
+          ``<category>`` |br|
+          ``<filter_str>`` |br|
+        - ``filter`` ``filters`` |br|
+          ``f`` ``F``
 
     *   - :ref:`user_manual_command_echo`
         - Show real-time receiving user data.
