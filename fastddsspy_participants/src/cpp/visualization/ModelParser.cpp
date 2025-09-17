@@ -185,10 +185,11 @@ void fill_complex_endpoint(
                     type_name;
     // partition
     std::ostringstream guid_ss;
-    guid_ss << endpoint.guid;
+    guid_ss << endpoint.guid; // get the source guid
     const auto partition_it = endpoint.specific_partitions.find(guid_ss.str());
     if(partition_it != endpoint.specific_partitions.end())
     {
+        // the endpoint has a partition set
         result.topic.partition = partition_it->second;
     }
 
@@ -303,8 +304,7 @@ ComplexEndpointData ModelParser::readers(
 
 std::set<eprosima::ddspipe::core::types::DdsTopic> ModelParser::get_topics(
         const SpyModel& model,
-        const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic,
-        const std::map<std::string, std::set<std::string>> filter_dict) noexcept
+        const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic) noexcept
 {
     std::set<eprosima::ddspipe::core::types::DdsTopic> result;
     for (const auto& endpoint : model.endpoint_database_)
@@ -313,73 +313,6 @@ std::set<eprosima::ddspipe::core::types::DdsTopic> ModelParser::get_topics(
         {
             continue;
         }
-
-        /*auto it = filter_dict.find("partitions"); // TODO. danip remove and add the filter in the DataReaders
-
-        // check if there is a partitions filter
-        if (it != filter_dict.end())
-        {
-            /*bool pass_filter = false;
-
-            // iterate throw the added filter partition list
-            for(std::string allowed_partition: it->second)
-            {
-                // iterate throw the partitions set of the endpoint
-                for(const auto& pair: endpoint.second.info.specific_partitions)
-                {
-                    std::string curr_partition = "";
-                    std::string partition_names = pair.second;
-                    int i = 0, curr_partition_n = partition_names.size();
-                    // get the partitions
-                    while(i < curr_partition_n)
-                    {
-                        // gets a partition from the string of partitions
-                        while(i < curr_partition_n && partition_names[i]!='|')
-                        {
-                            curr_partition += partition_names[i++];
-                        }
-
-                        // check if the current partition is the wildcard
-                        if(curr_partition == "*")
-                        {
-                            pass_filter = true;
-                            break;
-                        }
-
-                        if (utils::match_pattern(allowed_partition, curr_partition))
-                        {
-                            pass_filter = true;
-                            break;
-                        }
-
-                        curr_partition = "";
-                        i++;
-                    }
-
-                    // check if the writer has the empty partition
-                    if(partition_names == "")
-                    {
-                        if (utils::match_pattern(allowed_partition, ""))
-                        {
-                            // the empty partition is allowed
-                            pass_filter = true;
-                            break;
-                        }
-                    }
-                }
-
-                if(pass_filter)
-                {
-                    break;
-                }
-            }
-
-            if(!pass_filter)
-            {
-                continue;
-            }
-        }*/
-
 
         result.insert(endpoint.second.info.topic);
     }
@@ -436,22 +369,23 @@ ComplexTopicData ModelParser::complex_topic_data(
     {
         if (it.second.info.active && topic.m_topic_name == it.second.info.topic.m_topic_name)
         {
-            // add partitions // TODO. danip
+            // add partitions
             std::ostringstream guid_ss;
-            guid_ss << it.first;
+            guid_ss << it.first; // get the source guid
             const auto partition_it = it.second.info.specific_partitions.find(guid_ss.str());
-            if(partition_it != it.second.info.specific_partitions.end())
+            /*if(partition_it != it.second.info.specific_partitions.end())
             {
+                // the endpoint has a partition set
                 result.partitions.push_back(partition_it->second);
-            }
+            }*/
 
             if (it.second.info.is_reader())
             {
-                result.datareaders.push_back({it.first});
+                result.datareaders.push_back({it.first, partition_it->second});
             }
             if (it.second.info.is_writer())
             {
-                result.datawriters.push_back({it.first});
+                result.datawriters.push_back({it.first, partition_it->second});
             }
         }
     }
@@ -461,12 +395,11 @@ ComplexTopicData ModelParser::complex_topic_data(
 
 std::vector<SimpleTopicData> ModelParser::topics(
         const SpyModel& model,
-        const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic,
-        const std::map<std::string, std::set<std::string>> filter_dict) noexcept
+        const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic) noexcept
 {
     std::vector<SimpleTopicData> result;
 
-    std::set<eprosima::ddspipe::core::types::DdsTopic> endpoints_topics = get_topics(model, filter_topic, filter_dict);
+    std::set<eprosima::ddspipe::core::types::DdsTopic> endpoints_topics = get_topics(model, filter_topic);
     for (const auto& topic : endpoints_topics)
     {
         result.push_back(simple_topic_data(model, topic));
@@ -477,12 +410,11 @@ std::vector<SimpleTopicData> ModelParser::topics(
 
 std::vector<ComplexTopicData> ModelParser::topics_verbose(
         const SpyModel& model,
-        const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic,
-        const std::map<std::string, std::set<std::string>> filter_dict) noexcept
+        const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic) noexcept
 {
     std::vector<ComplexTopicData> result;
 
-    std::set<eprosima::ddspipe::core::types::DdsTopic> topics = get_topics(model, filter_topic, filter_dict);
+    std::set<eprosima::ddspipe::core::types::DdsTopic> topics = get_topics(model, filter_topic);
     for (const auto& topic : topics)
     {
         result.push_back(complex_topic_data(model, topic));
@@ -493,10 +425,9 @@ std::vector<ComplexTopicData> ModelParser::topics_verbose(
 
 std::string ModelParser::topics_type_idl(
         const SpyModel& model,
-        const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic,
-        const std::map<std::string, std::set<std::string>> filter_dict) noexcept
+        const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic) noexcept
 {
-    std::set<eprosima::ddspipe::core::types::DdsTopic> topics = get_topics(model, filter_topic, filter_dict);
+    std::set<eprosima::ddspipe::core::types::DdsTopic> topics = get_topics(model, filter_topic);
     for (const auto& topic : topics)
     {
         for (const auto& endpoint : model.endpoint_database_)

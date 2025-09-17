@@ -151,7 +151,6 @@ std::shared_ptr<eprosima::spy::participants::SpyModel> Backend::model() const no
 }
 
 bool Backend::update_readers_track(
-        //utils::Heritable<eprosima::ddspipe::core::types::DistributedTopic> topic,
         const std::string topic_name,
         const std::set<std::string> filter_partition_set)
 {

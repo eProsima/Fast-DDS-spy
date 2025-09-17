@@ -192,7 +192,13 @@ void set(
         Yaml& yml,
         const ComplexTopicData::Endpoint& value)
 {
-    set(yml, value.guid);
+    std::string guid_and_partition = "";
+    std::ostringstream guid_ss;
+    guid_ss << value.guid;
+    guid_and_partition = guid_ss.str() + " [" +
+        (value.partition == "" ? "\"\"": value.partition)+ "]";
+
+    set(yml, guid_and_partition);
 }
 
 template <>
@@ -204,7 +210,6 @@ void set(
     set_in_tag(yml, "type", value.type);
     set_in_tag(yml, "datawriters", value.datawriters);
     set_in_tag(yml, "datareaders", value.datareaders);
-    set_in_tag(yml, "partitions", value.partitions);
     set_in_tag(yml, "rate", value.rate);
     set_in_tag(yml, "dynamic_type_discovered", value.discovered);
 }

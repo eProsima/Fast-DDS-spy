@@ -100,6 +100,7 @@ struct ComplexTopicData
     struct Endpoint
     {
         ddspipe::core::types::Guid guid;
+        std::string partition;
     };
 
     std::string name;
@@ -108,8 +109,7 @@ struct ComplexTopicData
     std::vector<Endpoint> datareaders;
     SimpleTopicData::Rate rate;
     bool discovered;
-    std::vector<std::string> partitions;
-    //std::string partitions;
+    //std::vector<std::string> partitions;
 };
 
 struct DdsDataData

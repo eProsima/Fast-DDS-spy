@@ -144,6 +144,9 @@ void Controller::run()
     while (command.command != CommandValue::exit)
     {
         command = input_.wait_next_command();
+        // refresh the database if a filter partition is active.
+        // this checks if there is a new endpoint that does not
+        // pass the filter and disable it
         refresh_database();
         run_command_(command);
     }
@@ -158,34 +161,47 @@ void Controller::one_shot_run(
 
 void Controller::refresh_database()
 {
-    std::vector<ddspipe::core::types::Guid> v_guid_inactive;
-    // refresh the database
-    // for possible new endpoints without being disabled
+    // vector of inactive endpoints to disable it after
+    // the filter is applied in all active endpoints
+    std::vector<ddspipe::core::types::Guid> v_guid_disable;
+
+    // check if there is a filter partition
     if(filter_dict.find("partitions") != filter_dict.end())
     {
-        for(const auto& pair: model_->endpoint_database_)
+        for(const auto& endpoint: model_->endpoint_database_)
         {
-            if(!pair.second.info.active)
+            if(!endpoint.second.info.active)
             {
+                // the curent endpoint is not active
                 continue;
             }
 
-            
+            // get the source guid of the endpoint
             std::ostringstream ss_guid;
-            ss_guid << pair.second.info.guid;
-            
-            std::string curr_specific_partition = pair.second.info.specific_partitions.find(ss_guid.str())->second;
-            std::string tmp = "";
+            ss_guid << endpoint.second.info.guid;
+
+            // get the partition set of the endpoint
+            std::string endpoint_partitions, curr_partition;
+            int i, n;
             bool pass = false;
-            int i = 0, n = curr_specific_partition.size();
+
+            endpoint_partitions = endpoint.second.info.specific_partitions.find(ss_guid.str())->second;
+            curr_partition = "";
+            i = 0;
+            n = endpoint_partitions.size();
+            // iterate to separete the partitions from the set
             while(i < n)
             {
-                if(curr_specific_partition[i] == '|')
+                if(endpoint_partitions[i] == '|')
                 {
+                    // check if the current partition is in the filter
                     for(std::string filter_p: filter_dict["partitions"])
                     {
-                        if(utils::match_pattern(filter_p, tmp))
+                        if(utils::match_pattern(filter_p, curr_partition) ||
+                            utils::match_pattern(curr_partition, filter_p))
                         {
+                            // the current partition matches
+                            // with one partition of the filter
                             pass = true;
                             break;
                         }
@@ -193,23 +209,29 @@ void Controller::refresh_database()
 
                     if(pass)
                     {
+                        // it is not necessary to check other partitions
+                        // already satisfies the filter partition
                         break;
                     }
 
-                    tmp = "";
+                    // reset and check more
+                    curr_partition = "";
                 }
                 else
                 {
-                    tmp += curr_specific_partition[i];
+                    curr_partition += endpoint_partitions[i];
                 }
+
                 i++;
             }
 
-            // empty or last partition
+            // empty or last partition of the set
             for(std::string filter_p: filter_dict["partitions"])
             {
-                if(utils::match_pattern(filter_p, tmp))
+                if(utils::match_pattern(filter_p, curr_partition) ||
+                    utils::match_pattern(curr_partition, filter_p))
                 {
+                    // matches with one partition of the filter
                     pass = true;
                     break;
                 }
@@ -217,15 +239,21 @@ void Controller::refresh_database()
 
             if(!pass)
             {
-                v_guid_inactive.push_back(pair.first);
+                // the active endpoint does not pass the filter
+                // (this endpoint is recently discovered
+                // without using a filter command)
+                v_guid_disable.push_back(endpoint.first);
             }
 
         }
-        
-        for(const auto& curr_guid: v_guid_inactive)
+
+        // disable the endpoints that did not pass the filter
+        for(const auto& curr_guid: v_guid_disable)
         {
+            // get the endpoint associated with the guid and disable it.
             auto endpoint_tmp = model_->endpoint_database_.find(curr_guid)->second;
             endpoint_tmp.info.active = false;
+            // modify with the new active value
             model_->endpoint_database_.add_or_modify(curr_guid, endpoint_tmp);
         }
     }
@@ -337,12 +365,14 @@ void Controller::data_stream_callback_verbose_(
     // Block entrance so prints does not collapse
     std::lock_guard<std::mutex> _(view_mutex_);
 
+    // get the source guid
     std::ostringstream guid_ss;
     std::string partitions = "";
     guid_ss << data.source_guid;
     const auto partition_it = topic.partition_name.find(guid_ss.str());
     if(partition_it != topic.partition_name.end())
     {
+        // add the partition set
         partitions = partition_it->second;
     }
 
@@ -490,7 +520,7 @@ void Controller::topics_command_(
     {
         // All participants simple
         ddspipe::yaml::set(yml, participants::ModelParser::topics(
-                    *model_, ddspipe::core::types::WildcardDdsFilterTopic(), filter_dict), true);
+                    *model_, ddspipe::core::types::WildcardDdsFilterTopic()), true);
     }
     else if (arguments.size() == 2)
     {
@@ -500,13 +530,13 @@ void Controller::topics_command_(
         {
             // Handle 'topics verbose'
             ddspipe::yaml::set(yml, participants::ModelParser::topics(
-                        *model_, ddspipe::core::types::WildcardDdsFilterTopic(), filter_dict), false);
+                        *model_, ddspipe::core::types::WildcardDdsFilterTopic()), false);
         }
         else if (verbose_verbose_argument_(arg_1))
         {
             // Handle 'topics verbose2'
             ddspipe::yaml::set(yml, participants::ModelParser::topics_verbose(
-                        *model_, ddspipe::core::types::WildcardDdsFilterTopic(), filter_dict));
+                        *model_, ddspipe::core::types::WildcardDdsFilterTopic()));
         }
         else
         {
@@ -514,7 +544,7 @@ void Controller::topics_command_(
             ddspipe::core::types::WildcardDdsFilterTopic filter_topic;
             filter_topic.topic_name = arg_1;
 
-            auto data = participants::ModelParser::topics(*model_, filter_topic, filter_dict);
+            auto data = participants::ModelParser::topics(*model_, filter_topic);
 
             if (data.empty())
             {
@@ -540,7 +570,7 @@ void Controller::topics_command_(
         if (verbose_argument_(arg_2))
         {
             // Handle 'topics <name> verbose'
-            auto data = participants::ModelParser::topics(*model_, filter_topic, filter_dict);
+            auto data = participants::ModelParser::topics(*model_, filter_topic);
 
             if (data.empty())
             {
@@ -556,7 +586,7 @@ void Controller::topics_command_(
         else if (verbose_verbose_argument_(arg_2))
         {
             // Handle 'topics <name> verbose2'
-            auto data = participants::ModelParser::topics_verbose(*model_, filter_topic, filter_dict);
+            auto data = participants::ModelParser::topics_verbose(*model_, filter_topic);
 
             if (data.empty())
             {
@@ -571,7 +601,7 @@ void Controller::topics_command_(
         }
         else if (idl_argument_(arg_2))
         {
-            auto data = participants::ModelParser::topics_type_idl(*model_, filter_topic, filter_dict);
+            auto data = participants::ModelParser::topics_type_idl(*model_, filter_topic);
             if (data.empty())
             {
                 view_.show_error(STR_ENTRY
@@ -641,7 +671,7 @@ void Controller::print_command_(
         filter_topic.topic_name = arguments[1];
 
         std::set<eprosima::ddspipe::core::types::DdsTopic> topics =
-                participants::ModelParser::get_topics(*model_, filter_topic, filter_dict);
+                participants::ModelParser::get_topics(*model_, filter_topic);
         if (topics.empty())
         {
             view_.show_error(STR_ENTRY
@@ -724,38 +754,46 @@ void Controller::help_command_(
             << "Fast DDS Spy is an interactive CLI that allow to instrospect DDS networks.\n"
             << "Each command shows data related with the network in Yaml format.\n"
             << "Commands available and the information they show:\n"
-            << "\thelp                            : this help.\n"
-            << "\tversion                         : tool version.\n"
-            << "\tquit                            : exit interactive CLI and close program.\n"
-            << "\tparticipants                    : DomainParticipants discovered in the network.\n"
+            << "\thelp                                      : this help.\n"
+            << "\tversion                                   : tool version.\n"
+            << "\tquit                                      : exit interactive CLI and close program.\n"
+            << "\tparticipants                              : DomainParticipants discovered in the network.\n"
             <<
-            "\tparticipants verbose            : verbose information about DomainParticipants discovered in the network.\n"
-            << "\tparticipants <Guid>             : verbose information related with a specific DomainParticipant.\n"
-            << "\twriters                         : DataWriters discovered in the network.\n"
-            << "\twriters verbose                 : verbose information about DataWriters discovered in the network.\n"
-            << "\twriters <Guid>                  : verbose information related with a specific DataWriter.\n"
-            << "\treader                          : DataReaders discovered in the network.\n"
-            << "\treader verbose                  : verbose information about DataReaders discovered in the network.\n"
-            << "\treader <Guid>                   : verbose information related with a specific DataReader.\n"
-            << "\ttopics                          : Topics discovered in the network in compact format.\n"
-            << "\ttopics v                        : Topics discovered in the network.\n"
-            << "\ttopics vv                       : verbose information about Topics discovered in the network.\n"
+            "\tparticipants verbose                      : verbose information about DomainParticipants discovered in the network.\n"
+            << "\tparticipants <Guid>                       : verbose information related with a specific DomainParticipant.\n"
+            << "\twriters                                   : DataWriters discovered in the network.\n"
+            << "\twriters verbose                           : verbose information about DataWriters discovered in the network.\n"
+            << "\twriters <Guid>                            : verbose information related with a specific DataWriter.\n"
+            << "\treader                                    : DataReaders discovered in the network.\n"
+            << "\treader verbose                            : verbose information about DataReaders discovered in the network.\n"
+            << "\treader <Guid>                             : verbose information related with a specific DataReader.\n"
+            << "\ttopics                                    : Topics discovered in the network in compact format.\n"
+            << "\ttopics v                                  : Topics discovered in the network.\n"
+            << "\ttopics vv                                 : verbose information about Topics discovered in the network.\n"
             <<
-            "\ttopics <name>                   : Topics discovered in the network filtered by name (wildcard allowed (*)).\n"
+            "\ttopics <name>                             : Topics discovered in the network filtered by name (wildcard allowed (*)).\n"
             <<
-            "\ttopics <name> idl               : Display the IDL type definition for topics matching <name> (wildcards allowed).\n"
-            << "\techo <name>                     : data of a specific Topic (Data Type must be discovered).\n"
+            "\ttopics <name> idl                         : Display the IDL type definition for topics matching <name> (wildcards allowed).\n"
+            << "\tfilters                                   : Display the active filters.\n"
+            << "\tfilters clear                             : Clear all the filter lists.\n"
+            << "\tfilters remove                            : Remove all the filter lists.\n"
+            << "\tfilter clear <category>                   : Clear <category> filter list.\n"
+            << "\tfilter remove <category>                  : Remove <category> filter list.\n"
+            << "\tfilter set <category> <filter_str>        : Set <category> filter list with <filter_str> as first value.\n"
+            << "\tfilter add <category> <filter_str>        : Add <filter_str> in <category> filter list.\n"
+            << "\tfilter remove <category> <filter_str>     : Remove <filter_str> in <category> filter list.\n"
+            << "\techo <name>                               : data of a specific Topic (Data Type must be discovered).\n"
             <<
-            "\techo <wildcard_name>            : data of Topics matching the wildcard name (and whose Data Type is discovered).\n"
-            << "\techo <name> verbose             : data with additional source info of a specific Topic.\n"
+            "\techo <wildcard_name>                      : data of Topics matching the wildcard name (and whose Data Type is discovered).\n"
+            << "\techo <name> verbose                       : data with additional source info of a specific Topic.\n"
             <<
-            "\techo <wildcard_name> verbose    : data with additional source info of Topics matching the topic name (wildcard allowed (*)).\n"
+            "\techo <wildcard_name> verbose              : data with additional source info of Topics matching the topic name (wildcard allowed (*)).\n"
             <<
-            "\techo all                        : verbose data of all topics (only those whose Data Type is discovered).\n"
+            "\techo all                                  : verbose data of all topics (only those whose Data Type is discovered).\n"
             << "\n"
             << "Notes and comments:\n"
             << "\tTo exit from data printing, press enter.\n"
-            << "\tEach command is accessible by using its first letter (h/v/q/p/w/r/t/s).\n"
+            << "\tEach command is accessible by using its first letter (h/v/q/p/w/r/t/s/f).\n"
             << "\n"
             << "For more information about these commands and formats, please refer to the documentation:\n"
             << "https://fast-dds-spy.readthedocs.io/en/latest/\n"
@@ -769,20 +807,6 @@ void Controller::error_command_(
             << "<" << arguments[0] << "> is not a known command. "
             << "Use <help> command to see valid commands and arguments.");
 }
-
-/*bool Controller::check_filter_ditc_category(std::string category)
-{
-    if(filter_dict.find(category) == filter_dict.end())
-    {
-        view_.show_error(STR_ENTRY
-                << "Command <"
-                << arguments[0]
-                << "> requires 1 or 2 arguments.");
-        return false;
-    }
-
-    return true;
-}*/
 
 void Controller::filter_command_(
         const std::vector<std::string>& arguments) noexcept
@@ -803,17 +827,14 @@ void Controller::filter_command_(
         }
     };
 
-    
-
     bool pass;
     std::string operation;
     std::string category;
     std::string filter_str;
 
-
     if(arguments.size() == 1) // print filters
     {
-        if(arguments[0] != "filters")
+        if(arguments[0] == "filter")
         {
             view_.show_error(STR_ENTRY
                 << "Command <"
@@ -823,18 +844,19 @@ void Controller::filter_command_(
         }
 
         // print the filters list
+        std::cout << "Filter lists (" << filter_dict.size() << ")\n";
         for(const auto& category: filter_dict)
         {
-            std::cout << "-- "<< category.first << " --\n";
+            std::cout << "\n  " << category.first << " (" << category.second.size() << "):\n";
             for(std::string filter: category.second)
             {
-                std::cout << "  - " << (filter == "" ? "\"\"" : filter) << "\n";
+                std::cout << "    - " << (filter == "" ? "\"\"" : filter) << "\n";
             }
         }
     }
     else if(arguments.size() == 2) // clear filters
     {
-        if(arguments[0] != "filters")
+        if(arguments[0] == "filter")
         {
             view_.show_error(STR_ENTRY
                 << "Command <"
@@ -850,29 +872,13 @@ void Controller::filter_command_(
         }
 
         // clear ther filters list
-
         filter_dict.clear();
 
-        // activate all endpoints
-        /*std::string topic_name;
-        std::vector<ddspipe::core::types::Guid> v_guid;
-
-        for(const auto& pair: model_->endpoint_database_)
-        {
-            v_guid.push_back(pair.first);
-        }
-
-        for(const auto& curr_guid: v_guid)
-        {
-            auto endpoint_tmp = model_->endpoint_database_.find(curr_guid)->second;
-            endpoint_tmp.info.active = true;
-            model_->endpoint_database_.add_or_modify(curr_guid, endpoint_tmp);
-        }*/
         update_filter_partitions();
     }
     else if(arguments.size() == 3) // filter <clear/removes> <category>
     {
-        if(arguments[0] != "filter")
+        if(arguments[0] == "filters")
         {
             view_.show_error(STR_ENTRY
                 << "Command <"
@@ -909,28 +915,12 @@ void Controller::filter_command_(
 
         if(category == "partitions")
         {
-            // no filter list, or filter list empty
-            // activate all endpoints
-            /*std::string topic_name;
-            std::vector<ddspipe::core::types::Guid> v_guid;
-
-            for(const auto& pair: model_->endpoint_database_)
-            {
-                v_guid.push_back(pair.first);
-            }
-
-            for(const auto& curr_guid: v_guid)
-            {
-                auto endpoint_tmp = model_->endpoint_database_.find(curr_guid)->second;
-                endpoint_tmp.info.active = true;
-                model_->endpoint_database_.add_or_modify(curr_guid, endpoint_tmp);
-            }*/
            update_filter_partitions();
         }
     }
     else if(arguments.size() == 4)
     {
-        if(arguments[0] != "filter")
+        if(arguments[0] == "filters")
         {
             view_.show_error(STR_ENTRY
                 << "Command <"
@@ -989,42 +979,6 @@ void Controller::filter_command_(
             if(category == "partitions")
             {
                 update_filter_partitions();
-
-                /*std::string topic_name;
-                std::set<std::string> topic_set;
-                std::vector<ddspipe::core::types::Guid> v_guid_inactive, v_guid_active;
-
-                for(const auto& pair: model_->endpoint_database_)
-                {
-                    topic_name = pair.second.info.topic.m_topic_name;
-
-                    if(topic_set.find(topic_name) == topic_set.end())
-                    {
-                        bool active = backend_.update_readers_track(topic_name, filter_dict[category]);
-                        topic_set.insert(topic_name);
-                        if(!active)
-                        {
-                            v_guid_inactive.push_back(pair.first);
-                        }
-                        else if(!pair.second.info.active) // the endpoint was disable, but pass the new filter
-                        {
-                            v_guid_active.push_back(pair.first);
-                        }
-                    }
-                }
-
-                for(const auto& curr_guid: v_guid_inactive)
-                {
-                    auto endpoint_tmp = model_->endpoint_database_.find(curr_guid)->second;
-                    endpoint_tmp.info.active = false;
-                    model_->endpoint_database_.add_or_modify(curr_guid, endpoint_tmp);
-                }
-                for(const auto& curr_guid: v_guid_active)
-                {
-                    auto endpoint_tmp = model_->endpoint_database_.find(curr_guid)->second;
-                    endpoint_tmp.info.active = true;
-                    model_->endpoint_database_.add_or_modify(curr_guid, endpoint_tmp);
-                }*/
             }
         }
         else if(operation == "remove")
@@ -1054,42 +1008,6 @@ void Controller::filter_command_(
             if(category == "partitions")
             {
                 update_filter_partitions();
-
-                /*std::string topic_name;
-                std::set<std::string> topic_set;
-                std::vector<ddspipe::core::types::Guid> v_guid_inactive, v_guid_active;
-
-                for(const auto& pair: model_->endpoint_database_)
-                {
-                    topic_name = pair.second.info.topic.m_topic_name;
-
-                    if(topic_set.find(topic_name) == topic_set.end())
-                    {
-                        bool active = backend_.update_readers_track(topic_name, filter_dict[category]);
-                        topic_set.insert(topic_name);
-                        if(!active)
-                        {
-                            v_guid_inactive.push_back(pair.first);
-                        }
-                        else if(!pair.second.info.active) // the endpoint was disable, but pass the new filter
-                        {
-                            v_guid_active.push_back(pair.first);
-                        }
-                    }
-                }
-
-                for(const auto& curr_guid: v_guid_inactive)
-                {
-                    auto endpoint_tmp = model_->endpoint_database_.find(curr_guid)->second;
-                    endpoint_tmp.info.active = false;
-                    model_->endpoint_database_.add_or_modify(curr_guid, endpoint_tmp);
-                }
-                for(const auto& curr_guid: v_guid_active)
-                {
-                    auto endpoint_tmp = model_->endpoint_database_.find(curr_guid)->second;
-                    endpoint_tmp.info.active = true;
-                    model_->endpoint_database_.add_or_modify(curr_guid, endpoint_tmp);
-                }*/
             }
         }
         else
@@ -1114,9 +1032,12 @@ void Controller::filter_command_(
 
 void Controller::update_filter_partitions()
 {
+    // new filter partition list
+    // update the endpoints active variable
+
     std::string topic_name;
     std::set<std::string> topic_set;
-    std::vector<ddspipe::core::types::Guid> v_guid_active, v_guid_inactive;
+    std::vector<ddspipe::core::types::Guid> v_guid_active, v_guid_disable;
 
     int i, n;
     std::string curr_partition;
@@ -1124,23 +1045,29 @@ void Controller::update_filter_partitions()
 
     bool partitions_exists = filter_dict.find("partitions") != filter_dict.end();
 
-    for(const auto& pair: model_->endpoint_database_)
+    for(const auto& endpoint: model_->endpoint_database_)
     {
-        topic_name = pair.second.info.topic.m_topic_name;
-        for(const auto& pair_2: pair.second.info.specific_partitions)
+        topic_name = endpoint.second.info.topic.m_topic_name;
+
+        // get the partition set of the current endpoint
+        for(const auto& guid_partition_pair: endpoint.second.info.specific_partitions)
         {
             i = 0;
-            n = pair_2.second.size();
+            n = guid_partition_pair.second.size();
             curr_partition = "";
             endpoint_active = filter_dict["partitions"].empty();
+            // iterate in the partition set
             while(i < n)
             {
-                if(pair_2.second[i] == '|')
+                if(guid_partition_pair.second[i] == '|')
                 {
                     for(std::string filter_p: filter_dict["partitions"])
                     {
-                        if(utils::match_pattern(filter_p, curr_partition))
+                        if(utils::match_pattern(filter_p, curr_partition) ||
+                            utils::match_pattern(curr_partition, filter_p))
                         {
+                            // the current partition matches with a partition
+                            // from the filter, the endpoint is active
                             endpoint_active = true;
                             break;
                         }
@@ -1150,31 +1077,38 @@ void Controller::update_filter_partitions()
                 }
                 else
                 {
-                    curr_partition += pair_2.second[i];
+                    curr_partition += guid_partition_pair.second[i];
                 }
+
                 i++;
             }
 
             // empty or last partition
             for(std::string filter_p: filter_dict["partitions"])
             {
-                if(utils::match_pattern(filter_p, curr_partition))
+                if(utils::match_pattern(filter_p, curr_partition) ||
+                    utils::match_pattern(curr_partition, filter_p))
                 {
+                    // the current partition matches with a partition
+                    // from the filter, the endpoint is active
                     endpoint_active = true;
                     break;
                 }
             }
         }
 
+        // store the information of the active/disable endpoins,
+        // later used for changing the active variable of all endpoints.
         if(!endpoint_active)
         {
-            v_guid_inactive.push_back(pair.first);
+            v_guid_disable.push_back(endpoint.first);
         }
         else
         {
-            v_guid_active.push_back(pair.first);
+            v_guid_active.push_back(endpoint.first);
         }
 
+        // update tracker if it has not being updated before
         if(topic_set.find(topic_name) == topic_set.end())
         {
             backend_.update_readers_track(topic_name, filter_dict["partitions"]);
@@ -1182,14 +1116,17 @@ void Controller::update_filter_partitions()
         }
     }
 
+    // update the filter of partitions in the pipeline
     backend_.update_pipeline_filter(filter_dict["partitions"]);
 
     if(!partitions_exists)
     {
+        // remove the partition list if it was not created before.
         filter_dict.erase("partitions");
     }
 
-    for(const auto& curr_guid: v_guid_inactive)
+    // change the active variable of the dabase
+    for(const auto& curr_guid: v_guid_disable)
     {
         auto endpoint_tmp = model_->endpoint_database_.find(curr_guid)->second;
         endpoint_tmp.info.active = false;

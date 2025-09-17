@@ -48,7 +48,7 @@ eProsima_ENUMERATION_BUILDER(
             { CommandValue::datareader COMMA {"datareader" COMMA "datareaders" COMMA "r" COMMA "R" COMMA "reader" COMMA "readers" COMMA "subscription" COMMA "subscriptions"}} COMMA
             { CommandValue::topic COMMA {"topic"  COMMA "topics" COMMA "t" COMMA "T"}} COMMA
             { CommandValue::print COMMA {"echo" COMMA "print" COMMA "show" COMMA "s" COMMA "S"}} COMMA
-            { CommandValue::filter COMMA {"filter" COMMA "filters" COMMA "partitions"/*COMMA "f" COMMA "F"*/}} COMMA
+            { CommandValue::filter COMMA {"filter" COMMA "filters" COMMA "partitions" COMMA "f" COMMA "F"}} COMMA
         }
     );
 

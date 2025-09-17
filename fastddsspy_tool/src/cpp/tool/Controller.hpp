@@ -140,9 +140,6 @@ private:
 
     void refresh_database();
 
-    /*bool check_filter_ditc_category(
-        std::string category) noexcept;*/
-
     std::mutex view_mutex_;
 
     std::map<std::string, std::set<std::string>> filter_dict;
