@@ -68,6 +68,42 @@ set(TEST_LIST
         complex_topic_dds_endpoints_ros2_types
         complex_topic_ros2_endpoints
         complex_topic_ros2_endpoints_ros2_types
+        simple_dds_endpoint_writer_filtered
+        simple_dds_endpoint_writer_ros2_types_filtered
+        simple_ros2_endpoint_writer_filtered
+        simple_ros2_endpoint_writer_ros2_types_filtered
+        simple_dds_endpoint_reader_filtered
+        simple_dds_endpoint_reader_ros2_types_filtered
+        simple_ros2_endpoint_reader_filtered
+        simple_ros2_endpoint_reader_ros2_types_filtered
+        dds_endpoint_reader_verbose_filtered
+        dds_endpoint_reader_verbose_ros2_types_filtered
+        ros2_endpoint_reader_verbose_filtered
+        ros2_endpoint_reader_verbose_ros2_types_filtered
+        dds_endpoint_writer_verbose_filtered
+        dds_endpoint_writer_verbose_ros2_types_filtered
+        ros2_endpoint_writer_verbose_filtered
+        ros2_endpoint_writer_verbose_ros2_types_filtered
+        complex_dds_endpoint_writer_filtered
+        complex_dds_endpoint_writer_ros2_types_filtered
+        complex_ros2_endpoint_writer_filtered
+        complex_ros2_endpoint_writer_ros2_types_filtered
+        complex_dds_endpoint_reader_filtered
+        complex_dds_endpoint_reader_ros2_types_filtered
+        complex_ros2_endpoint_reader_filtered
+        complex_ros2_endpoint_reader_ros2_types_filtered
+        simple_topic_dds_endpoints_filtered
+        simple_topic_dds_endpoints_ros2_types_filtered
+        simple_topic_ros2_endpoints_filtered
+        simple_topic_ros2_endpoints_ros2_types_filtered
+        topics_verbose_dds_endpoints_filtered
+        topics_verbose_dds_endpoints_ros2_types_filtered
+        topics_verbose_ros2_endpoints_filtered
+        topics_verbose_ros2_endpoints_ros2_types_filtered
+        complex_topic_dds_endpoints_filtered
+        complex_topic_dds_endpoints_ros2_types_filtered
+        complex_topic_ros2_endpoints_filtered
+        complex_topic_ros2_endpoints_ros2_types_filtered
     )
 
 set(TEST_EXTRA_LIBRARIES

@@ -44,6 +44,7 @@ configuration_discovery_time.yaml',
   topic:\n\
     name: HelloWorldTopic\n\
     type: HelloWorld\n\
+    partitions: ""\n\
   qos:\n\
     durability: transient-local\n\
     reliability: reliable\n"""

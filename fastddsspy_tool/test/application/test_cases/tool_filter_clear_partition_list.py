@@ -1,4 +1,4 @@
-# Copyright 2023 Proyectos y Sistemas de Mantenimiento SL (eProsima).
+# Copyright 2025 Proyectos y Sistemas de Mantenimiento SL (eProsima).
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,25 +24,33 @@ class TestCase_instance (test_class.TestCase):
         """
         @brief Initialize the TestCase_instance object.
 
+        This TestCase creates two filter lists "partitions" and "topics", and clear "partitions" filter.
+
+        And prints the list of filters
+
         This test launch:
-            fastddsspy --config-path fastddsspy_tool/test/application/configuration/\
-                configuration_discovery_time.yaml topics verbose
-            AdvancedConfigurationExample publisher
+            fastddsspy
+            >> filter set partitions A
+            >> filter set topics Square
+            >> filter clear partitions
+            >> filters
         """
         super().__init__(
-            name='TopicsVerboseDDSCommand',
-            one_shot=True,
+            name='ToolFilterClearPartitionList',
+            one_shot=False,
             command=[],
-            dds=True,
-            config='fastddsspy_tool/test/application/configuration/\
-configuration_discovery_time.yaml',
+            dds=False,
+            config='',
             arguments_dds=[],
-            arguments_spy=['--config-path', 'configuration', 'topics', 'vv'],
-            commands_spy=[],
-            output="""- name: HelloWorldTopic\n\
-  type: HelloWorld\n\
-  datawriters:\n\
-    - %%guid%% [""]\n\
-  rate: %%rate%%\n\
-  dynamic_type_discovered: true\n"""
+            arguments_spy=[],
+            commands_spy=['filter set partitions A', 'filter set topics Square', 'filter clear partitions', 'filters'],
+            output=(
+                'Filter lists (2)\n'
+                '\n\n\n'
+                '  partitions (0):\n'
+                '\n\n\n'
+                '  topics (1):\n'
+                '\n'
+                '    - Square\n'
+            )
         )

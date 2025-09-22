@@ -109,7 +109,6 @@ struct ComplexTopicData
     std::vector<Endpoint> datareaders;
     SimpleTopicData::Rate rate;
     bool discovered;
-    //std::vector<std::string> partitions;
 };
 
 struct DdsDataData

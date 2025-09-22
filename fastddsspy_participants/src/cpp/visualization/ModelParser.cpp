@@ -373,19 +373,20 @@ ComplexTopicData ModelParser::complex_topic_data(
             std::ostringstream guid_ss;
             guid_ss << it.first; // get the source guid
             const auto partition_it = it.second.info.specific_partitions.find(guid_ss.str());
-            /*if(partition_it != it.second.info.specific_partitions.end())
+            std::string partition = "";
+            if(partition_it != it.second.info.specific_partitions.end())
             {
                 // the endpoint has a partition set
-                result.partitions.push_back(partition_it->second);
-            }*/
+                partition = partition_it->second;
+            }
 
             if (it.second.info.is_reader())
             {
-                result.datareaders.push_back({it.first, partition_it->second});
+                result.datareaders.push_back({it.first, partition});
             }
             if (it.second.info.is_writer())
             {
-                result.datawriters.push_back({it.first, partition_it->second});
+                result.datawriters.push_back({it.first, partition});
             }
         }
     }

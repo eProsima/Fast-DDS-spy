@@ -154,8 +154,7 @@ def main():
         sys.exit(1)
 
     if not test_class.one_shot:
-
-        output = test_class.send_command_tool(spy)
+        output = test_class.send_commands_tool(spy)
 
         if not test_class.valid_output(output):
             test_class.stop_tool(spy)
