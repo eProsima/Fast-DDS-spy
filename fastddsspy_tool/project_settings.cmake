@@ -38,7 +38,11 @@ set(MODULE_DEPENDENCIES
     ${MODULE_FIND_PACKAGES})
 
 set(MODULE_THIRDPARTY_HEADERONLY
-    optionparser)
+    optionparser
+    nlohmann-json)
+
+set(MODULE_THIRDPARTY_PATH
+"../thirdparty")
 
 set(MODULE_TARGET_NAME
     "fastddsspy")

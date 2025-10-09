@@ -34,8 +34,98 @@
 #include "Controller.hpp"
 #include "Command.hpp"
 
+#include <nlohmann/json.hpp>
+using nlohmann::json;
+
 namespace eprosima {
 namespace spy {
+
+// Braces + indentation, arrays single-line
+static void print_json_arrays_inline(
+        const json& j,
+        std::ostream& o,
+        int indent,
+        int step)
+{
+    if (j.is_object())
+    {
+        o << "{\n";
+        auto it = j.begin();
+        if (it != j.end())
+        {
+            o << std::string(indent + step, ' ');
+            o << json(it.key()).dump() << ": ";              // Quoted key
+            print_json_arrays_inline(it.value(), o, indent + step, step);
+            ++it;
+            for (; it != j.end(); ++it)
+            {
+                o << ",\n";
+                o << std::string(indent + step, ' ');
+                o << json(it.key()).dump() << ": ";              // Quoted key
+                print_json_arrays_inline(it.value(), o, indent + step, step);
+            }
+        }
+        o << "\n" << std::string(indent, ' ') << "}";
+    }
+    else if (j.is_array())
+    {
+        // Inline if all elements are primitives; otherwise, pretty multi-line.
+        bool all_primitives = std::all_of(j.begin(), j.end(),
+                        [](const json& e)
+                        {
+                            return e.is_primitive();
+                        });
+
+        std::size_t i = 0;
+        if (all_primitives)
+        {
+            o << "[";
+            if (i < j.size())
+            {
+                // Primitives: let nlohmann handle quoting/escaping
+                o << j[i++].dump();
+                for (; i < j.size(); ++i)
+                {
+                    // Primitives: let nlohmann handle quoting/escaping
+                    o << ", " << j[i].dump();
+                }
+            }
+            o << "]";
+        }
+        else
+        {
+            // Structured elements -> readable multi-line
+            o << "[\n";
+            if (i < j.size())
+            {
+                o << std::string(indent + step, ' ');
+                print_json_arrays_inline(j[i++], o, indent + step, step);
+                for (; i < j.size(); ++i)
+                {
+                    o << ",\n" << std::string(indent + step, ' ');
+                    print_json_arrays_inline(j[i], o, indent + step, step);
+                }
+            }
+            o << "\n" << std::string(indent, ' ') << "]";
+        }
+    }
+    else
+    {
+        // Scalars: let nlohmann handle quoting/escaping/types
+        o << j.dump();
+    }
+}
+
+// Wrapper
+static std::string format_json_arrays_inline(
+        const std::string& json_str,
+        int indent_step = 4)
+{
+    json j = json::parse(json_str);
+    std::ostringstream out;
+    print_json_arrays_inline(j, out, /*indent*/ 0, indent_step);
+    return out.str();
+}
 
 Controller::Controller(
         const yaml::Configuration& configuration)
@@ -145,7 +235,6 @@ void Controller::data_stream_callback_(
     // change in dyn types to be able to print it in view
     view_.show("---");
     std::stringstream ss;
-    ss << std::setw(4);
     if (fastdds::dds::RETCODE_OK !=
             fastdds::dds::json_serialize(dyn_data, fastdds::dds::DynamicDataJsonFormat::EPROSIMA, ss))
     {
@@ -153,7 +242,10 @@ void Controller::data_stream_callback_(
                 "Not able to serialize data of topic " << topic.topic_name() << " into JSON format.");
         return;
     }
-    std::cout << ss.str() << std::endl;
+
+    // Reformat: arrays single-line
+    const std::string pretty = format_json_arrays_inline(ss.str(), /*indent_step*/ 4);
+    std::cout << pretty << std::endl;
     view_.show("---\n");
 }
 
@@ -183,7 +275,6 @@ void Controller::data_stream_callback_verbose_(
     // Print data
     view_.show("data:\n---");
     std::stringstream ss;
-    ss << std::setw(4);
     if (fastdds::dds::RETCODE_OK !=
             fastdds::dds::json_serialize(dyn_data, fastdds::dds::DynamicDataJsonFormat::EPROSIMA, ss))
     {
@@ -191,7 +282,10 @@ void Controller::data_stream_callback_verbose_(
                 "Not able to serialize data of topic " << topic.topic_name() << " into JSON format.");
         return;
     }
-    std::cout << ss.str() << std::endl;
+
+    // Reformat: arrays single-line
+    const std::string pretty = format_json_arrays_inline(ss.str(), /*indent_step*/ 4);
+    std::cout << pretty << std::endl;
     view_.show("---\n");
 }
 
