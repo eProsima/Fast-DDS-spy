@@ -398,7 +398,7 @@ void Controller::topics_command_(
     // Handle 'topics' command without arguments
     if (arguments.size() == 1)
     {
-        // all participants simple
+        // All participants simple
         ddspipe::yaml::set(yml, participants::ModelParser::topics(
                     *model_, ddspipe::core::types::WildcardDdsFilterTopic()), true);
     }
