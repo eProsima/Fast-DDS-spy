@@ -152,11 +152,7 @@ class TestCase():
             # returns the output for this command
             outputs.append(self.read_command_output(proc))
 
-        # join with a blank line or return list if you prefer structured data
-        #return '\n'.join(outputs)
         return outputs[-1]
-
-
 
     def read_command_output(self, proc):
         """

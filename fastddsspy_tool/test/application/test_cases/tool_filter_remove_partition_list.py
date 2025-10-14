@@ -43,7 +43,8 @@ class TestCase_instance (test_class.TestCase):
             config='',
             arguments_dds=[],
             arguments_spy=[],
-            commands_spy=['filter set partitions A', 'filter set topics Square', 'filter remove partitions', 'filters'],
+            commands_spy=
+            ['filter set partitions A', 'filter set topics Square', 'filter remove partitions', 'filters'],
             output=(
                 'Filter lists (1)\n'
                 '\n\n\n'

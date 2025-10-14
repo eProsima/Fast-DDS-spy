@@ -30,7 +30,7 @@ class TestCase_instance (test_class.TestCase):
         This test launch:
             fastddsspy --config-path fastddsspy_tool/test/application/configuration/\
                 configuration_discovery_time.yaml
-            >> filter set partitions 
+            >> filter set partitions
             >> topics
             AdvancedConfigurationExample publisher
         """

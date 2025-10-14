@@ -45,7 +45,10 @@ class TestCase_instance (test_class.TestCase):
             arguments_dds=[],
             arguments_spy=[],
             commands_spy=
-            ['filter set partitions A', 'filter set topics Square', 'filter clear partitions', 'filters'],
+                ['filter set partitions A',
+                 'filter set topics Square',
+                 'filter clear partitions',
+                 'filters'],
             output=(
                 'Filter lists (2)\n'
                 '\n\n\n'
