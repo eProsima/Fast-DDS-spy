@@ -24,7 +24,8 @@ class TestCase_instance (test_class.TestCase):
         """
         @brief Initialize the TestCase_instance object.
 
-        This TestCase creates three filter list "partitions", "partition", "topics" and remove "partition" list.
+        This TestCase creates three filter list
+        "partitions", "partition", "topics" and remove "partition" list.
 
         And prints the list of filters
 
