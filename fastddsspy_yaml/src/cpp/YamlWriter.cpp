@@ -196,7 +196,7 @@ void set(
     std::ostringstream guid_ss;
     guid_ss << value.guid;
     guid_and_partition = guid_ss.str() + " [" +
-        (value.partition == "" ? "\"\"": value.partition)+ "]";
+            (value.partition == "" ? "\"\"": value.partition) + "]";
 
     set(yml, guid_and_partition);
 }

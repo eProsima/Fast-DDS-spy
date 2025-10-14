@@ -190,7 +190,7 @@ void Controller::refresh_database()
             i = 0;
             n = endpoint_partitions.size();
             // iterate to separete the partitions from the set
-            while(i < n)
+            while (i < n)
             {
                 if (endpoint_partitions[i] == '|')
                 {
@@ -198,7 +198,7 @@ void Controller::refresh_database()
                     for (std::string filter_p: filter_dict["partitions"])
                     {
                         if (utils::match_pattern(filter_p, curr_partition) ||
-                            utils::match_pattern(curr_partition, filter_p))
+                                utils::match_pattern(curr_partition, filter_p))
                         {
                             // the current partition matches
                             // with one partition of the filter
@@ -229,7 +229,7 @@ void Controller::refresh_database()
             for (std::string filter_p: filter_dict["partitions"])
             {
                 if (utils::match_pattern(filter_p, curr_partition) ||
-                    utils::match_pattern(curr_partition, filter_p))
+                        utils::match_pattern(curr_partition, filter_p))
                 {
                     // matches with one partition of the filter
                     pass = true;
@@ -812,20 +812,20 @@ void Controller::filter_command_(
         const std::vector<std::string>& arguments) noexcept
 {
     const auto& check_filter_dict_contains_category = [&](std::string category, bool& ret)
-    {
-        if (filter_dict.find(category) == filter_dict.end())
-        {
-            view_.show_error(STR_ENTRY
-                    << "Filter list do not contains category: "
-                    << category
-                    << ".");
-            ret = false;
-        }
-        else
-        {
-            ret = true;
-        }
-    };
+            {
+                if (filter_dict.find(category) == filter_dict.end())
+                {
+                    view_.show_error(STR_ENTRY
+                            << "Filter list do not contains category: "
+                            << category
+                            << ".");
+                    ret = false;
+                }
+                else
+                {
+                    ret = true;
+                }
+            };
 
     bool pass;
     std::string operation;
@@ -837,9 +837,9 @@ void Controller::filter_command_(
         if (arguments[0] == "filter")
         {
             view_.show_error(STR_ENTRY
-                << "Command <"
-                << arguments[0]
-                << "> requires 3 or 4 arguments.");
+                    << "Command <"
+                    << arguments[0]
+                    << "> requires 3 or 4 arguments.");
             return;
         }
 
@@ -859,15 +859,15 @@ void Controller::filter_command_(
         if (arguments[0] == "filter")
         {
             view_.show_error(STR_ENTRY
-                << "Command <"
-                << arguments[0]
-                << "> requires 3 or 4 arguments.");
+                    << "Command <"
+                    << arguments[0]
+                    << "> requires 3 or 4 arguments.");
             return;
         }
         if (arguments[1] != "clear")
         {
             view_.show_error(STR_ENTRY
-                << "To clear filters list do: \"filters clear\".");
+                    << "To clear filters list do: \"filters clear\".");
             return;
         }
 
@@ -881,9 +881,9 @@ void Controller::filter_command_(
         if (arguments[0] == "filters")
         {
             view_.show_error(STR_ENTRY
-                << "Command <"
-                << arguments[0]
-                << "> requires 1 or 2 arguments.");
+                    << "Command <"
+                    << arguments[0]
+                    << "> requires 1 or 2 arguments.");
             return;
         }
 
@@ -909,13 +909,13 @@ void Controller::filter_command_(
         else
         {
             view_.show_error(STR_ENTRY
-                << "To clear or remove a filter category do: \"filters <clear/remove> <category>\".");
+                    << "To clear or remove a filter category do: \"filters <clear/remove> <category>\".");
             return;
         }
 
         if (category == "partitions")
         {
-           update_filter_partitions();
+            update_filter_partitions();
         }
     }
     else if (arguments.size() == 4)
@@ -923,9 +923,9 @@ void Controller::filter_command_(
         if (arguments[0] == "filters")
         {
             view_.show_error(STR_ENTRY
-                << "Command <"
-                << arguments[0]
-                << "> requires 1 or 2 arguments.");
+                    << "Command <"
+                    << arguments[0]
+                    << "> requires 1 or 2 arguments.");
             return;
         }
 
@@ -1013,10 +1013,10 @@ void Controller::filter_command_(
         else
         {
             view_.show_error(STR_ENTRY
-                << "Command <"
-                << arguments[0]
-                << "> with 4 arguments have the following format: "
-                << arguments[0] << "<set/add/remove> <category> <filter_str>.");
+                    << "Command <"
+                    << arguments[0]
+                    << "> with 4 arguments have the following format: "
+                    << arguments[0] << "<set/add/remove> <category> <filter_str>.");
             return;
         }
     }
@@ -1057,14 +1057,14 @@ void Controller::update_filter_partitions()
             curr_partition = "";
             endpoint_active = filter_dict["partitions"].empty();
             // iterate in the partition set
-            while(i < n)
+            while (i < n)
             {
                 if (guid_partition_pair.second[i] == '|')
                 {
                     for (std::string filter_p: filter_dict["partitions"])
                     {
                         if (utils::match_pattern(filter_p, curr_partition) ||
-                            utils::match_pattern(curr_partition, filter_p))
+                                utils::match_pattern(curr_partition, filter_p))
                         {
                             // the current partition matches with a partition
                             // from the filter, the endpoint is active
@@ -1087,7 +1087,7 @@ void Controller::update_filter_partitions()
             for (std::string filter_p: filter_dict["partitions"])
             {
                 if (utils::match_pattern(filter_p, curr_partition) ||
-                    utils::match_pattern(curr_partition, filter_p))
+                        utils::match_pattern(curr_partition, filter_p))
                 {
                     // the current partition matches with a partition
                     // from the filter, the endpoint is active

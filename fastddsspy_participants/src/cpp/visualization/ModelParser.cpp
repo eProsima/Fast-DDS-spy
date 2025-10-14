@@ -187,7 +187,7 @@ void fill_complex_endpoint(
     std::ostringstream guid_ss;
     guid_ss << endpoint.guid; // get the source guid
     const auto partition_it = endpoint.specific_partitions.find(guid_ss.str());
-    if(partition_it != endpoint.specific_partitions.end())
+    if (partition_it != endpoint.specific_partitions.end())
     {
         // the endpoint has a partition set
         result.topic.partition = partition_it->second;
@@ -374,7 +374,7 @@ ComplexTopicData ModelParser::complex_topic_data(
             guid_ss << it.first; // get the source guid
             const auto partition_it = it.second.info.specific_partitions.find(guid_ss.str());
             std::string partition = "";
-            if(partition_it != it.second.info.specific_partitions.end())
+            if (partition_it != it.second.info.specific_partitions.end())
             {
                 // the endpoint has a partition set
                 partition = partition_it->second;
