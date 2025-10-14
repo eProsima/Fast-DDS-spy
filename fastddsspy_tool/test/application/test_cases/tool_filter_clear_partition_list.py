@@ -44,7 +44,7 @@ class TestCase_instance (test_class.TestCase):
             config='',
             arguments_dds=[],
             arguments_spy=[],
-                        commands_spy=[
+            commands_spy=[
                 'filter set partitions A',
                 'filter set topics Square',
                 'filter clear',
