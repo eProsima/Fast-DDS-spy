@@ -36,7 +36,7 @@ class TestCase_instance (test_class.TestCase):
             dds=True,
             config='fastddsspy_tool/test/application/configuration/\
 configuration_discovery_time.yaml',
-            arguments_dds=[''], # TODO. change dds arguments adding volatile and best-effort
+            arguments_dds=[''],
             arguments_spy=['--config-path', 'configuration', 'datawriter', 'verbose'],
             commands_spy=[],
             output="""- guid: %%guid%%\n\

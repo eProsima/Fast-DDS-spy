@@ -24,7 +24,8 @@ class TestCase_instance (test_class.TestCase):
         """
         @brief Initialize the TestCase_instance object.
 
-        This TestCase creates two filter lists "partitions" and "topics", and clear "partitions" filter.
+        This TestCase creates two filter lists "partitions" and "topics",
+        and clear "partitions" filter.
 
         And prints the list of filters
 
@@ -43,7 +44,8 @@ class TestCase_instance (test_class.TestCase):
             config='',
             arguments_dds=[],
             arguments_spy=[],
-            commands_spy=['filter set partitions A', 'filter set topics Square', 'filter clear partitions', 'filters'],
+            commands_spy=
+            ['filter set partitions A', 'filter set topics Square', 'filter clear partitions', 'filters'],
             output=(
                 'Filter lists (2)\n'
                 '\n\n\n'

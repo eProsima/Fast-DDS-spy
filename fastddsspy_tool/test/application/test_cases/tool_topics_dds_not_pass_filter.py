@@ -44,5 +44,5 @@ configuration_discovery_time.yaml',
             arguments_dds=[],
             arguments_spy=['--config-path', 'configuration'],
             commands_spy=['filter set partitions A', 'topics'],
-            output=""
+            output=''
         )

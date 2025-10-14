@@ -63,7 +63,7 @@ class TestCase():
         self.commands_spy = commands_spy
         self.output = output
         self.exec_spy = ''
-        self.exec_dds = ""
+        self.exec_dds = ''
 
     def run_dds(self):
         """
@@ -204,7 +204,6 @@ class TestCase():
 
             # check if the guid contains it partitions
             pattern = r'^(([0-9a-f]{2}\.){11}[0-9a-f]{2})\|(([0-9a-f]\.){3}[0-9a-f]{1,})\s+\[".*"\]$'
-            print("\t\t\tGUID: {}:".format(guid))
             if not re.match(pattern, guid):
                 print('Not valid guid: ')
                 print(guid)
