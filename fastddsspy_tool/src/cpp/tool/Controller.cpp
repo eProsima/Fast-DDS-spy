@@ -864,7 +864,9 @@ void Controller::filter_command_(
                     << "> requires 3 or 4 arguments.");
             return;
         }
-        if (arguments[1] != "clear")
+
+        std::set<std::string> allowed_args = {"clear"};
+        if(allowed_args.find(arguments[1]) == allowed_args.end())
         {
             view_.show_error(STR_ENTRY
                     << "To clear filters list do: \"filters clear\".");
@@ -897,6 +899,13 @@ void Controller::filter_command_(
             // filter_dict do not contains the category
             return;
         }
+        std::set<std::string> allowed_args = {"clear", "remove"};
+        if(allowed_args.find(arguments[1]) == allowed_args.end())
+        {
+            view_.show_error(STR_ENTRY
+                    << "To clear or remove a filter category do: \"filters <clear/remove> <category>\".");
+            return;
+        }
 
         if (operation == "clear")
         {
@@ -905,12 +914,6 @@ void Controller::filter_command_(
         else if (operation == "remove")
         {
             filter_dict.erase(category);
-        }
-        else
-        {
-            view_.show_error(STR_ENTRY
-                    << "To clear or remove a filter category do: \"filters <clear/remove> <category>\".");
-            return;
         }
 
         if (category == "partitions")
@@ -932,6 +935,17 @@ void Controller::filter_command_(
         operation = arguments[1];
         category = arguments[2];
         filter_str = arguments[3];
+
+        std::set<std::string> allowed_args = {"set", "add", "remove"};
+        if(allowed_args.find(arguments[1]) == allowed_args.end())
+        {
+            view_.show_error(STR_ENTRY
+                    << "Command <"
+                    << arguments[0]
+                    << "> with 4 arguments have the following format: "
+                    << arguments[0] << "<set/add/remove> <category> <filter_str>.");
+            return;
+        }
 
         if (operation == "set")
         {
@@ -1009,15 +1023,6 @@ void Controller::filter_command_(
             {
                 update_filter_partitions();
             }
-        }
-        else
-        {
-            view_.show_error(STR_ENTRY
-                    << "Command <"
-                    << arguments[0]
-                    << "> with 4 arguments have the following format: "
-                    << arguments[0] << "<set/add/remove> <category> <filter_str>.");
-            return;
         }
     }
     else

@@ -81,7 +81,7 @@ public:
      */
     std::shared_ptr<eprosima::spy::participants::SpyModel> model() const noexcept;
 
-    bool update_readers_track(
+    void update_readers_track(
             const std::string topic_name,
             const std::set<std::string> filter_partition_set);
 
