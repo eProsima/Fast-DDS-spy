@@ -866,7 +866,7 @@ void Controller::filter_command_(
         }
 
         std::set<std::string> allowed_args = {"clear"};
-        if(allowed_args.find(arguments[1]) == allowed_args.end())
+        if (allowed_args.find(arguments[1]) == allowed_args.end())
         {
             view_.show_error(STR_ENTRY
                     << "To clear filters list do: \"filters clear\".");
@@ -900,7 +900,7 @@ void Controller::filter_command_(
             return;
         }
         std::set<std::string> allowed_args = {"clear", "remove"};
-        if(allowed_args.find(arguments[1]) == allowed_args.end())
+        if (allowed_args.find(arguments[1]) == allowed_args.end())
         {
             view_.show_error(STR_ENTRY
                     << "To clear or remove a filter category do: \"filters <clear/remove> <category>\".");
@@ -937,7 +937,7 @@ void Controller::filter_command_(
         filter_str = arguments[3];
 
         std::set<std::string> allowed_args = {"set", "add", "remove"};
-        if(allowed_args.find(arguments[1]) == allowed_args.end())
+        if (allowed_args.find(arguments[1]) == allowed_args.end())
         {
             view_.show_error(STR_ENTRY
                     << "Command <"

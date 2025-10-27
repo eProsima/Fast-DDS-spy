@@ -47,8 +47,9 @@ class TestCase_instance (test_class.TestCase):
             arguments_spy=[],
             commands_spy=[
                 'filter set partitions A',
-                'filter set topics Square',
-                'filter clear',
+                'filter add partitions B',
+                'filter add partitions C',
+                'filter remove partitions A',
                 'filters',
             ],
             output=(
