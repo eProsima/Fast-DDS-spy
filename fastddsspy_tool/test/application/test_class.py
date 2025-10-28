@@ -199,8 +199,10 @@ class TestCase():
         if not re.match(pattern, guid):
 
             # check if the guid contains it partitions
-            pattern = r'^(([0-9a-f]{2}\.){11}[0-9a-f]{2}) \
-                \|(([0-9a-f]\.){3}[0-9a-f]{1,})\s+\[".*"\]$'
+            pattern = (
+                r'^(([0-9a-f]{2}\.){11}[0-9a-f]{2})\|'
+                r'(([0-9a-f]\.){3}[0-9a-f]{1,})\s+\[".*"\]$'
+            )
             if not re.match(pattern, guid):
                 print('Not valid guid: ')
                 print(guid)
