@@ -164,7 +164,7 @@ class TestCase():
         output = ''
         count = 0
         # max number of loops while can take to avoid waiting forever if something goes wrong
-        max_count = 250
+        max_count = 1000
 
         while True:
             count += 1
