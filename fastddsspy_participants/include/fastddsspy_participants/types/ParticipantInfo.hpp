@@ -45,7 +45,7 @@ struct ParticipantInfo
  */
 struct ParticipantInfoData : public ddspipe::core::IRoutingData
 {
-
+    FASTDDSSPY_PARTICIPANTS_DllAPI
     virtual ddspipe::core::types::TopicInternalTypeDiscriminator internal_type_discriminator() const noexcept override;
 
     //! Info of the participant
