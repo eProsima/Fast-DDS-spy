@@ -24,28 +24,24 @@ class TestCase_instance (test_class.TestCase):
         """
         @brief Initialize the TestCase_instance object.
 
+        Add filter partitions, and does not print the information.
+
         This test launch:
             fastddsspy --config-path fastddsspy_tool/test/application/configuration/\
-                configuration_discovery_time.yaml datawriter verbose
+                configuration_discovery_time.yaml
+            >> filter set partitions A
+            >> datawriter
             AdvancedConfigurationExample publisher
         """
         super().__init__(
-            name='DatawriterVerboseDDSCommand',
-            one_shot=True,
+            name='ToolDatawriterDDSFilter',
+            one_shot=False,
             command=[],
             dds=True,
             config='fastddsspy_tool/test/application/configuration/\
 configuration_discovery_time.yaml',
             arguments_dds=[],
-            arguments_spy=['--config-path', 'configuration', 'datawriter', 'verbose'],
-            commands_spy=[],
-            output="""- guid: %%guid%%\n\
-  participant: Participant_pub\n\
-  topic:\n\
-    name: HelloWorldTopic\n\
-    type: HelloWorld\n\
-    partitions: ""\n\
-  qos:\n\
-    durability: volatile\n\
-    reliability: best-effort\n"""
+            arguments_spy=['--config-path', 'configuration'],
+            commands_spy=['filter set partitions A', 'datawriter'],
+            output=''
         )

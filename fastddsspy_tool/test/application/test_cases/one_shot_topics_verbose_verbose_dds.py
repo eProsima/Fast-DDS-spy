@@ -42,7 +42,7 @@ configuration_discovery_time.yaml',
             output="""- name: HelloWorldTopic\n\
   type: HelloWorld\n\
   datawriters:\n\
-    - %%guid%%\n\
+    - %%guid%% [""]\n\
   rate: %%rate%%\n\
   dynamic_type_discovered: true\n"""
         )

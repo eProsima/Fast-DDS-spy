@@ -90,3 +90,10 @@ DDS nomenclature
 
         See `Fast DDS documentation <https://fast-dds.docs.eprosima.com/en/v2.4.1/fastdds/dds_layer/topic/topic.html>`__
         for further information.
+
+    Partition
+        Logical domain that helps organize communication between publishers and subscribers.
+        Each Partition is uniquely identified by a name.
+
+        See `Fast DDS documentation <https://fast-dds.docs.eprosima.com/en/v2.10.1/fastdds/dds_layer/domain/domainParticipant/partition.html>`__
+        for further information.

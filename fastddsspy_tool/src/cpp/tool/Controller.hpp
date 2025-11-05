@@ -101,6 +101,11 @@ protected:
             const std::vector<std::string>& arguments) noexcept;
 
     /////////////////////
+    // FILTER
+    void filter_command_(
+            const std::vector<std::string>& arguments) noexcept;
+
+    /////////////////////
     // AUXILIARY
     void version_command_(
             const std::vector<std::string>& arguments) noexcept;
@@ -108,6 +113,8 @@ protected:
             const std::vector<std::string>& arguments) noexcept;
     void error_command_(
             const std::vector<std::string>& arguments) noexcept;
+
+    void update_filter_partitions();
 
     /////////////////////
     // VARIABLES
@@ -131,7 +138,13 @@ private:
             specificF specific_function,
             const char* entity_name) noexcept;
 
+    void refresh_database();
+
     std::mutex view_mutex_;
+
+    std::map<std::string, std::set<std::string>> filter_dict;
+
+    std::set<std::string> allowed_filters_categories_;
 
 };
 

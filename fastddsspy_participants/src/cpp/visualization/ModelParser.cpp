@@ -15,6 +15,7 @@
 #include <utility>
 
 #include <cpp_utils/ros2_mangling.hpp>
+#include <cpp_utils/utils.hpp>
 
 #include <fastddsspy_participants/visualization/ModelParser.hpp>
 
@@ -182,6 +183,16 @@ void fill_complex_endpoint(
     result.topic.topic_type =
             model.get_ros2_types() ? utils::demangle_if_ros_type(endpoint.topic.type_name) : endpoint.topic.
                     type_name;
+    // partition
+    std::ostringstream guid_ss;
+    guid_ss << endpoint.guid; // get the source guid
+    const auto partition_it = endpoint.specific_partitions.find(guid_ss.str());
+    if (partition_it != endpoint.specific_partitions.end())
+    {
+        // the endpoint has a partition set
+        result.topic.partition = partition_it->second;
+    }
+
     result.qos.durability = endpoint.topic.topic_qos.durability_qos;
     result.qos.reliability = endpoint.topic.topic_qos.reliability_qos;
 }
@@ -298,10 +309,12 @@ std::set<eprosima::ddspipe::core::types::DdsTopic> ModelParser::get_topics(
     std::set<eprosima::ddspipe::core::types::DdsTopic> result;
     for (const auto& endpoint : model.endpoint_database_)
     {
-        if (endpoint.second.info.active && filter_topic.matches(endpoint.second.info.topic))
+        if (!endpoint.second.info.active || !filter_topic.matches(endpoint.second.info.topic))
         {
-            result.insert(endpoint.second.info.topic);
+            continue;
         }
+
+        result.insert(endpoint.second.info.topic);
     }
     return result;
 }
@@ -356,13 +369,24 @@ ComplexTopicData ModelParser::complex_topic_data(
     {
         if (it.second.info.active && topic.m_topic_name == it.second.info.topic.m_topic_name)
         {
+            // add partitions
+            std::ostringstream guid_ss;
+            guid_ss << it.first; // get the source guid
+            const auto partition_it = it.second.info.specific_partitions.find(guid_ss.str());
+            std::string partition = "";
+            if (partition_it != it.second.info.specific_partitions.end())
+            {
+                // the endpoint has a partition set
+                partition = partition_it->second;
+            }
+
             if (it.second.info.is_reader())
             {
-                result.datareaders.push_back({it.first});
+                result.datareaders.push_back({it.first, partition});
             }
             if (it.second.info.is_writer())
             {
-                result.datawriters.push_back({it.first});
+                result.datawriters.push_back({it.first, partition});
             }
         }
     }

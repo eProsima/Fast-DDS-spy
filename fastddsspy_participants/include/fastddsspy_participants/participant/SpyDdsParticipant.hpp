@@ -54,6 +54,12 @@ public:
     std::shared_ptr<ddspipe::core::IReader> create_reader(
             const ddspipe::core::ITopic& topic) override;
 
+    //! Override create_reader_() IParticipant method
+    FASTDDSSPY_PARTICIPANTS_DllAPI
+    std::shared_ptr<ddspipe::core::IReader> create_reader_with_filter(
+            const ddspipe::core::ITopic& topic,
+            const std::set<std::string> partitions) override;
+
     class SpyDdsParticipantListener : public ddspipe::participants::DynTypesParticipant::DynTypesRtpsListener
     {
     public:

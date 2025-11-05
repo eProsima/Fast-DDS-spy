@@ -27,6 +27,12 @@ set(TEST_LIST
         test_SimpleParticipantData
         test_ComplexParticipantData
         test_ComplexParticipantData_Endpoint
+        test_SimpleEndpointData
+        test_ComplexEndpointData
+        test_SimpleTopicData_compact_false
+        test_SimpleTopicData_compact_true
+        test_ComplexTopicData
+        test_DdsDataData
     )
 
 set(TEST_EXTRA_LIBRARIES

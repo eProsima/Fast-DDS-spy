@@ -65,6 +65,7 @@ struct ComplexEndpointData
     {
         std::string topic_name;
         std::string topic_type;
+        std::string partition;
     };
 
     struct QoS
@@ -99,6 +100,7 @@ struct ComplexTopicData
     struct Endpoint
     {
         ddspipe::core::types::Guid guid;
+        std::string partition;
     };
 
     std::string name;
@@ -113,6 +115,7 @@ struct DdsDataData
 {
     SimpleEndpointData::Topic topic;
     ddspipe::core::types::Guid writer;
+    std::string partitions;
     TimestampData timestamp;
 };
 

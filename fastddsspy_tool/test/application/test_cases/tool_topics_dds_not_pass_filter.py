@@ -24,28 +24,25 @@ class TestCase_instance (test_class.TestCase):
         """
         @brief Initialize the TestCase_instance object.
 
+        Add filter partition ("A"), and the topic does not pass the filter,
+        the information is not printed.
+
         This test launch:
             fastddsspy --config-path fastddsspy_tool/test/application/configuration/\
-                configuration_discovery_time.yaml datawriter verbose
+                configuration_discovery_time.yaml
+            >> filter set partitions A
+            >> topics
             AdvancedConfigurationExample publisher
         """
         super().__init__(
-            name='DatawriterVerboseDDSCommand',
-            one_shot=True,
+            name='ToolTopicsDDSNotPassFilter',
+            one_shot=False,
             command=[],
             dds=True,
             config='fastddsspy_tool/test/application/configuration/\
 configuration_discovery_time.yaml',
             arguments_dds=[],
-            arguments_spy=['--config-path', 'configuration', 'datawriter', 'verbose'],
-            commands_spy=[],
-            output="""- guid: %%guid%%\n\
-  participant: Participant_pub\n\
-  topic:\n\
-    name: HelloWorldTopic\n\
-    type: HelloWorld\n\
-    partitions: ""\n\
-  qos:\n\
-    durability: volatile\n\
-    reliability: best-effort\n"""
+            arguments_spy=['--config-path', 'configuration'],
+            commands_spy=['filter set partitions A', 'topics'],
+            output=''
         )

@@ -134,6 +134,26 @@ class TestCase():
         output = self.read_command_output(proc)
         return (output)
 
+    def send_commands_tool(self, proc):
+        """
+        @brief Send all the commands to the running Spy.
+
+        @param proc: The subprocess object representing the running Spy.
+        @return Returns the output received after sending the last command.
+        """
+
+        outputs = []
+
+        for cmd in self.commands_spy:
+            time.sleep(SLEEP_TIME)
+            proc.stdin.write(cmd + '\n')
+            proc.stdin.flush()
+            # read_command_output waits until the 'Insert a command...' prompt, so it
+            # returns the output for this command
+            outputs.append(self.read_command_output(proc))
+
+        return outputs[-1]
+
     def read_command_output(self, proc):
         """
         @brief Read the output from the subprocess.
@@ -144,7 +164,7 @@ class TestCase():
         output = ''
         count = 0
         # max number of loops while can take to avoid waiting forever if something goes wrong
-        max_count = 250
+        max_count = 1000
 
         while True:
             count += 1
@@ -177,9 +197,17 @@ class TestCase():
         """
         pattern = r'^(([0-9a-f]{2}\.){11}[0-9a-f]{2}\|([0-9a-f]\.){3}[0-9a-f]{1,})$'
         if not re.match(pattern, guid):
-            print('Not valid guid: ')
-            print(guid)
-            return False
+
+            # check if the guid contains it partitions
+            pattern = (
+                r'^(([0-9a-f]{2}\.){11}[0-9a-f]{2})\|'
+                r'(([0-9a-f]\.){3}[0-9a-f]{1,})\s+\[".*"\]$'
+            )
+            if not re.match(pattern, guid):
+                print('Not valid guid: ')
+                print(guid)
+                return False
+
         return True
 
     def valid_rate(self, rate) -> bool:

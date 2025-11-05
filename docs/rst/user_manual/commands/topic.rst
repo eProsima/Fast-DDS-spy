@@ -93,10 +93,10 @@ It adds the Guid of each endpoint on the topic and the whether the type has been
     name: <topic name>
     type: <data type name>
     datawriters:
-        - <Guid>
+        - <Guid> [<partitions>]
         - ...
     datareaders:
-        - <Guid>
+        - <Guid> [<partitions>]
         - ...
     rate: <samples per second> Hz
     dynamic_type_discovered: <bool>
@@ -110,37 +110,44 @@ This would be the expected output for the command ``topics``:
 
 .. code-block::
 
+    - topic: Circle (ShapeType) (1|1) [13.0298 Hz]
+    - topic: Square (ShapeType) (2|2) [26.6975 Hz]
+
+This would be the expected output for the command ``topics v``:
+
+.. code-block::
+
     - name: Circle
       type: ShapeType
-      datawriters: 2
-      datareaders: 2
+      datawriters: 1
+      datareaders: 1
       rate: 13.0298 Hz
     - name: Square
       type: ShapeType
-      datawriters: 3
+      datawriters: 2
       datareaders: 2
       rate: 26.6975 Hz
 
-This would be the expected output for the command ``topics verbose``:
+This would be the expected output for the command ``topics vv``:
 
 .. code-block::
 
     - name: Circle
       type: ShapeType
       datawriters:
-        - 01.0f.44.59.da.57.de.ec.00.00.00.00|0.0.3.2
+        - 01.0f.44.59.da.57.de.ec.00.00.00.00|0.0.3.2 ["A"]
       datareaders:
-        - 01.0f.44.59.c9.65.78.e5.00.00.00.00|0.0.2.7
+        - 01.0f.44.59.c9.65.78.e5.00.00.00.00|0.0.2.7 ["A"]
       rate: 13.0286 Hz
       dynamic_type_discovered: true
     - name: Square
       type: ShapeType
       datawriters:
-        - 01.0f.44.59.da.57.de.ec.00.00.00.00|0.0.1.2
-        - 01.0f.44.59.da.57.de.ec.00.00.00.00|0.0.2.2
+        - 01.0f.44.59.da.57.de.ec.00.00.00.00|0.0.1.2 ["A"]
+        - 01.0f.44.59.da.57.de.ec.00.00.00.00|0.0.2.2 ["A|B"]
       datareaders:
-        - 01.0f.44.59.21.58.14.d2.00.00.00.00|0.0.2.7
-        - 01.0f.44.59.da.57.de.ec.00.00.00.00|0.0.4.7
+        - 01.0f.44.59.21.58.14.d2.00.00.00.00|0.0.2.7 ["A"]
+        - 01.0f.44.59.da.57.de.ec.00.00.00.00|0.0.4.7 ["B"]
       rate: 26.685 Hz
       dynamic_type_discovered: true
 

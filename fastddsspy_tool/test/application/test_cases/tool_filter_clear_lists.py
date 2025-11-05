@@ -1,4 +1,4 @@
-# Copyright 2023 Proyectos y Sistemas de Mantenimiento SL (eProsima).
+# Copyright 2025 Proyectos y Sistemas de Mantenimiento SL (eProsima).
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,28 +24,31 @@ class TestCase_instance (test_class.TestCase):
         """
         @brief Initialize the TestCase_instance object.
 
+        This TestCase creates two filter lists "partitions" and "topics" and clear all the filters.
+
+        And prints the list of filters (empty)
+
         This test launch:
-            fastddsspy --config-path fastddsspy_tool/test/application/configuration/\
-                configuration_discovery_time.yaml datawriter verbose
-            AdvancedConfigurationExample publisher
+            fastddsspy
+            >> filter set partitions A
+            >> filter set partitions A
+            >> filter set topics Square
+            >> filter clear
+            >> filters
         """
         super().__init__(
-            name='DatawriterVerboseDDSCommand',
-            one_shot=True,
+            name='ToolFilterClearLists',
+            one_shot=False,
             command=[],
-            dds=True,
-            config='fastddsspy_tool/test/application/configuration/\
-configuration_discovery_time.yaml',
+            dds=False,
+            config='',
             arguments_dds=[],
-            arguments_spy=['--config-path', 'configuration', 'datawriter', 'verbose'],
-            commands_spy=[],
-            output="""- guid: %%guid%%\n\
-  participant: Participant_pub\n\
-  topic:\n\
-    name: HelloWorldTopic\n\
-    type: HelloWorld\n\
-    partitions: ""\n\
-  qos:\n\
-    durability: volatile\n\
-    reliability: best-effort\n"""
+            arguments_spy=[],
+            commands_spy=[
+                'filter set partitions A',
+                'filter set topics Square',
+                'filter clear',
+                'filters',
+            ],
+            output=''
         )
