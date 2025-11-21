@@ -36,7 +36,7 @@ class TestCase_instance (test_class.TestCase):
             arguments_dds=[],
             arguments_spy=['--version'],
             commands_spy=[],
-            output="""Fast DDS Spy v1.3.0\
+            output="""Fast DDS Spy v1.4.0\
 commit hash: 16ed7e8c93d7481d8b426746af9ec3ffa323f451\n"""
         )
 
