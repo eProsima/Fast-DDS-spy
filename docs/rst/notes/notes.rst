@@ -10,12 +10,12 @@ This release includes the following **features**:
 
 * New command: `topics <name> idl`
 * Support configuring the Fast DDS Spy using XML profiles
-* Update documentation theme to `Furo`
 * New formatting for `long arrays` and `nested objects`
 * Support `partitions`
 
-This release includes the following **fixes**:
+This release includes the following **documentation updates**:
 
+* Update documentation theme to `Furo`
 * Fix release tag in documentation
 
 This release includes the following **Dependencies Update**:
