@@ -166,7 +166,7 @@ Colcon installation
 
         mkdir -p ~/fastdds-spy/src
         cd ~/fastdds-spy
-        wget https://raw.githubusercontent.com/eProsima/Fast-DDS-Spy/main/fastddsspy.repos
+        wget https://raw.githubusercontent.com/eProsima/Fast-DDS-Spy/v1.4.0/fastddsspy.repos
         vcs import src < fastddsspy.repos
 
     .. note::
