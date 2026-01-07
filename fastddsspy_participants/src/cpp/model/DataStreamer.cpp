@@ -86,29 +86,10 @@ void DataStreamer::add_data(
     TopicRateCalculator::add_data(topic, data);
 
     fastdds::dds::DynamicType::_ref_type dyn_type;
+    bool should_call_callback = false;
 
     {
         std::shared_lock<std::shared_timed_mutex> _(mutex_);
-
-        if (!activated_)
-        {
-            // If not activated, do nothing.
-            return;
-        }
-
-        if (!activated_all_ && !activated_topic_.matches(topic))
-        {
-            // If not all activated, and this is not the activated topic skip
-            EPROSIMA_LOG_INFO(
-                FASTDDSSPY_DATASTREAMER,
-                "Received data for topic '" << topic << "'. Note: This topic is not activated. " <<
-                    "Not all topics activated.");
-            return;
-        }
-
-        EPROSIMA_LOG_INFO(
-            FASTDDSSPY_DATASTREAMER,
-            "Adding data in topic " << topic);
 
         auto it = types_discovered_.find(topic.type_name);
         if (it == types_discovered_.end())
@@ -118,15 +99,26 @@ void DataStreamer::add_data(
                 "Data received on topic <" << topic << "> while its type has not been registered.");
             return;
         }
-        else
+        dyn_type = it->second;
+
+        if (activated_)
         {
-            dyn_type = it->second;
+            if (activated_all_ || activated_topic_.matches(topic))
+            {
+                should_call_callback = true;
+            }
         }
     }
 
-    // This should be called without mutex taken
-    // Here should only arrive if it must call callback. Otherwise must return somewhere before
-    (*callback_)(topic, dyn_type, data);
+    instance_cache_.add_or_update_instance(topic, dyn_type, data);
+
+    if (should_call_callback)
+    {
+        EPROSIMA_LOG_INFO(
+            FASTDDSSPY_DATASTREAMER,
+            "Adding data in topic " << topic);
+        (*callback_)(topic, dyn_type, data);
+    }
 }
 
 bool DataStreamer::is_topic_type_discovered(
@@ -162,6 +154,26 @@ bool DataStreamer::is_any_topic_type_discovered_nts_(
     }
 
     return false;
+}
+
+std::set<std::string> DataStreamer::get_topic_instances(
+        const std::string& topic_name) const noexcept
+{
+    return instance_cache_.get_active_instances(topic_name);
+}
+
+std::vector<std::string> DataStreamer::get_topic_key_fields(
+        const std::string& topic_name) const noexcept
+{
+    return instance_cache_.get_key_fields(topic_name);
+}
+
+void DataStreamer::on_writer_discovered(
+        const ddspipe::core::types::Guid& writer_guid,
+        const std::string& topic_name,
+        bool active) noexcept
+{
+    instance_cache_.on_writer_changed(writer_guid, topic_name, active);
 }
 
 } /* namespace participants */

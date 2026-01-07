@@ -124,6 +124,13 @@ void set(
         Yaml& yml,
         const DdsDataData& value);
 
+template <>
+FASTDDSSPY_YAML_DllAPI
+void set(
+        Yaml& yml,
+        const TopicKeysData& value,
+        bool is_compact);
+
 } /* namespace yaml */
 } /* namespace ddspipe */
 } /* namespace eprosima */
