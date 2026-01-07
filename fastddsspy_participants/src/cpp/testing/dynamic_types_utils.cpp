@@ -33,9 +33,9 @@ fastdds::dds::DynamicType::_ref_type create_test_type_with_keys(
     auto type_desc = fastdds::dds::traits<fastdds::dds::TypeDescriptor>::make_shared();
     type_desc->kind(fastdds::dds::TK_STRUCTURE);
     type_desc->name(type_name);
-    
+
     auto type_builder = factory->create_type(type_desc);
-    
+
     // Add key fields
     for (size_t i = 0; i < key_field_names.size(); ++i)
     {
@@ -46,7 +46,7 @@ fastdds::dds::DynamicType::_ref_type create_test_type_with_keys(
         member_desc->is_key(true);
         type_builder->add_member(member_desc);
     }
-    
+
     // Add a non-key field
     auto value_desc = fastdds::dds::traits<fastdds::dds::MemberDescriptor>::make_shared();
     value_desc->name("value");
@@ -54,7 +54,7 @@ fastdds::dds::DynamicType::_ref_type create_test_type_with_keys(
     value_desc->id(key_field_names.size());
     value_desc->is_key(false);
     type_builder->add_member(value_desc);
-    
+
     return type_builder->build();
 }
 
@@ -65,13 +65,13 @@ std::unique_ptr<ddspipe::core::types::RtpsPayloadData> create_test_data_with_key
 {
     // Create DynamicData
     auto dyn_data = fastdds::dds::DynamicDataFactory::get_instance()->create_data(dyn_type);
-    
+
     // Set key values
     for (const auto& kv : key_values)
     {
         fastdds::dds::DynamicTypeMembersById members;
         dyn_type->get_all_members(members);
-        
+
         for (const auto& member_pair : members)
         {
             if (member_pair.second->get_name().to_string() == kv.first)
@@ -81,24 +81,24 @@ std::unique_ptr<ddspipe::core::types::RtpsPayloadData> create_test_data_with_key
             }
         }
     }
-    
+
     // Set non-key value
     dyn_data->set_int32_value(key_values.size(), 42);
-    
+
     // Serialize to payload
     fastdds::dds::DynamicPubSubType pubsub_type(dyn_type);
-    
+
     auto data = std::make_unique<ddspipe::core::types::RtpsPayloadData>();
-    
+
     data->payload.reserve(pubsub_type.calculate_serialized_size(
-        &dyn_data, fastdds::dds::DEFAULT_DATA_REPRESENTATION));
-    
+                &dyn_data, fastdds::dds::DEFAULT_DATA_REPRESENTATION));
+
     pubsub_type.serialize(&dyn_data, data->payload, fastdds::dds::DEFAULT_DATA_REPRESENTATION);
-    
+
     data->source_guid = writer_guid;
-    
+
     pubsub_type.compute_key(&dyn_data, data->instanceHandle, false);
-    
+
     return data;
 }
 

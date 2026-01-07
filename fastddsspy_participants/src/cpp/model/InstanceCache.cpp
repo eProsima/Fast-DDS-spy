@@ -44,7 +44,7 @@ bool InstanceCache::add_or_update_instance(
 
         auto instance_it = topic_instances.find(instance_handle);
         bool instance_already_cached = (instance_it != topic_instances.end() &&
-                                       !instance_it->second.key_representation.empty());
+                !instance_it->second.key_representation.empty());
 
         // Fast path: instance already cached
         if (instance_already_cached)
@@ -56,10 +56,10 @@ bool InstanceCache::add_or_update_instance(
 
         // Check instance limit
         if (topic_instances.size() >= MAX_INSTANCES_PER_TOPIC &&
-            instance_it == topic_instances.end())
+                instance_it == topic_instances.end())
         {
             EPROSIMA_LOG_WARNING(FASTDDSSPY_INSTANCECACHE,
-                "Maximum instances reached for topic: " << topic.m_topic_name);
+                    "Maximum instances reached for topic: " << topic.m_topic_name);
             return false;
         }
 
@@ -85,13 +85,13 @@ bool InstanceCache::add_or_update_instance(
     catch (const std::exception& e)
     {
         EPROSIMA_LOG_WARNING(FASTDDSSPY_INSTANCECACHE,
-            "Exception in add_or_update_instance: " << e.what());
+                "Exception in add_or_update_instance: " << e.what());
         return false;
     }
     catch (...)
     {
         EPROSIMA_LOG_WARNING(FASTDDSSPY_INSTANCECACHE,
-            "Unknown exception in add_or_update_instance");
+                "Unknown exception in add_or_update_instance");
         return false;
     }
 }
@@ -161,8 +161,8 @@ void InstanceCache::on_writer_changed(
         if (it->second.active_writers.empty())
         {
             EPROSIMA_LOG_INFO(FASTDDSSPY_INSTANCECACHE,
-                "Removing instance on topic " << topic_name
-                << " - no more active writers");
+                    "Removing instance on topic " << topic_name
+                                                  << " - no more active writers");
             it = topic_instances.erase(it);
         }
         else
@@ -203,7 +203,7 @@ void InstanceCache::extract_key_field_names_(
                 const auto& member = member_pair.second;
                 auto descriptor = fastdds::dds::traits<fastdds::dds::MemberDescriptor>::make_shared();
                 if (fastdds::dds::RETCODE_OK == member->get_descriptor(descriptor) &&
-                    descriptor->is_key())
+                        descriptor->is_key())
                 {
                     key_names.push_back(member->get_name().to_string());
                 }
@@ -215,7 +215,7 @@ void InstanceCache::extract_key_field_names_(
     catch (const std::exception& e)
     {
         EPROSIMA_LOG_WARNING(FASTDDSSPY_INSTANCECACHE,
-            "Exception extracting key fields: " << e.what());
+                "Exception extracting key fields: " << e.what());
     }
 }
 
@@ -233,7 +233,7 @@ std::string InstanceCache::serialize_key_to_json_(
         if (!pubsub_type.deserialize(data_no_const.payload, &dyn_data))
         {
             EPROSIMA_LOG_WARNING(FASTDDSSPY_INSTANCECACHE,
-                "Failed to deserialize payload");
+                    "Failed to deserialize payload");
             return "";
         }
 
@@ -242,19 +242,19 @@ std::string InstanceCache::serialize_key_to_json_(
         if (!key_data)
         {
             EPROSIMA_LOG_WARNING(FASTDDSSPY_INSTANCECACHE,
-                "Failed to create key-only DynamicData");
+                    "Failed to create key-only DynamicData");
             return "";
         }
 
         // Serialize to JSON
         std::stringstream key_json_stream;
         if (fastdds::dds::RETCODE_OK != fastdds::dds::json_serialize(
-            key_data,
-            fastdds::dds::DynamicDataJsonFormat::EPROSIMA,
-            key_json_stream))
+                    key_data,
+                    fastdds::dds::DynamicDataJsonFormat::EPROSIMA,
+                    key_json_stream))
         {
             EPROSIMA_LOG_WARNING(FASTDDSSPY_INSTANCECACHE,
-                "Failed to serialize keys to JSON");
+                    "Failed to serialize keys to JSON");
             return "";
         }
 
@@ -263,7 +263,7 @@ std::string InstanceCache::serialize_key_to_json_(
     catch (const std::exception& e)
     {
         EPROSIMA_LOG_WARNING(FASTDDSSPY_INSTANCECACHE,
-            "Exception serializing key to JSON: " << e.what());
+                "Exception serializing key to JSON: " << e.what());
         return "";
     }
 }
@@ -327,7 +327,7 @@ fastdds::dds::DynamicData::_ref_type InstanceCache::create_key_only_dynamic_data
             auto member_desc = fastdds::dds::traits<fastdds::dds::MemberDescriptor>::make_shared();
 
             if (fastdds::dds::RETCODE_OK != member->get_descriptor(member_desc) ||
-                !member_desc->is_key())
+                    !member_desc->is_key())
             {
                 continue;
             }
@@ -345,7 +345,7 @@ fastdds::dds::DynamicData::_ref_type InstanceCache::create_key_only_dynamic_data
     catch (const std::exception& e)
     {
         EPROSIMA_LOG_WARNING(FASTDDSSPY_INSTANCECACHE,
-            "Exception in create_key_only_dynamic_data: " << e.what());
+                "Exception in create_key_only_dynamic_data: " << e.what());
         return nullptr;
     }
     catch (...)

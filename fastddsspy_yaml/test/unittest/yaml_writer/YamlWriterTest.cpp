@@ -438,49 +438,49 @@ TEST(YamlWriterTest, test_TopicKeysData_json_comprehensive)
 
     ASSERT_EQ(yml["instances"].size(), 1);
     const auto& instance = yml["instances"][0]["data"];
-    
+
     // Test null (is_null path)
     ASSERT_TRUE(instance["null_value"].IsNull());
-    
+
     // Test booleans (is_boolean path)
     ASSERT_TRUE(instance["boolean_true"].as<bool>());
     ASSERT_FALSE(instance["boolean_false"].as<bool>());
-    
+
     // Test integers (is_number_integer path)
     ASSERT_EQ(instance["integer_positive"].as<int>(), 42);
     ASSERT_EQ(instance["integer_negative"].as<int>(), -123);
     ASSERT_EQ(instance["integer_zero"].as<int>(), 0);
-    
+
     // Test unsigned (is_number_unsigned path)
     // Use a value that fits in uint32_t to avoid conversion issues
     ASSERT_EQ(instance["unsigned_value"].as<unsigned int>(), 4294967295u);
-    
+
     // Test floats (is_number_float path)
     ASSERT_DOUBLE_EQ(instance["float_positive"].as<double>(), 3.14159);
     ASSERT_DOUBLE_EQ(instance["float_negative"].as<double>(), -2.71828);
     ASSERT_NEAR(instance["float_scientific"].as<double>(), 1.23e-10, 1e-15);
-    
+
     // Test strings (is_string path)
     ASSERT_EQ(instance["string_simple"].as<std::string>(), "Hello World");
     ASSERT_EQ(instance["string_empty"].as<std::string>(), "");
     ASSERT_EQ(instance["string_special"].as<std::string>(), "With \"quotes\" and \n newlines");
-    
+
     // Test primitive arrays (is_array + is_primitive_array=true, flow style)
     ASSERT_TRUE(instance["primitive_array_int"].IsSequence());
     ASSERT_EQ(instance["primitive_array_int"].size(), 5);
     ASSERT_EQ(instance["primitive_array_int"][0].as<int>(), 1);
     ASSERT_EQ(instance["primitive_array_int"][4].as<int>(), 5);
     ASSERT_EQ(instance["primitive_array_int"].Style(), YAML::EmitterStyle::Flow);
-    
+
     ASSERT_TRUE(instance["primitive_array_string"].IsSequence());
     ASSERT_EQ(instance["primitive_array_string"][0].as<std::string>(), "a");
     ASSERT_EQ(instance["primitive_array_string"].Style(), YAML::EmitterStyle::Flow);
-    
+
     ASSERT_TRUE(instance["primitive_array_bool"].IsSequence());
     ASSERT_TRUE(instance["primitive_array_bool"][0].as<bool>());
     ASSERT_FALSE(instance["primitive_array_bool"][1].as<bool>());
     ASSERT_EQ(instance["primitive_array_bool"].Style(), YAML::EmitterStyle::Flow);
-    
+
     // Test mixed primitive array (is_array + is_primitive_array=true, flow style)
     ASSERT_TRUE(instance["primitive_array_mixed"].IsSequence());
     ASSERT_EQ(instance["primitive_array_mixed"].size(), 5);
@@ -490,12 +490,12 @@ TEST(YamlWriterTest, test_TopicKeysData_json_comprehensive)
     ASSERT_TRUE(instance["primitive_array_mixed"][3].as<bool>());
     ASSERT_TRUE(instance["primitive_array_mixed"][4].IsNull());
     ASSERT_EQ(instance["primitive_array_mixed"].Style(), YAML::EmitterStyle::Flow);
-    
+
     // Test empty array (is_array + is_primitive_array=false due to empty, block style)
     ASSERT_TRUE(instance["empty_array"].IsSequence());
     ASSERT_EQ(instance["empty_array"].size(), 0);
     // Empty arrays go through block style path (is_primitive_array returns false for empty)
-    
+
     // Test object array (is_array + is_primitive_array=false, block style)
     ASSERT_TRUE(instance["object_array"].IsSequence());
     ASSERT_EQ(instance["object_array"].size(), 2);
@@ -503,13 +503,13 @@ TEST(YamlWriterTest, test_TopicKeysData_json_comprehensive)
     ASSERT_EQ(instance["object_array"][0]["name"].as<std::string>(), "first");
     ASSERT_EQ(instance["object_array"][1]["id"].as<int>(), 2);
     ASSERT_NE(instance["object_array"].Style(), YAML::EmitterStyle::Flow);
-    
+
     // Test nested objects (is_object path)
     ASSERT_TRUE(instance["nested_object"].IsMap());
     ASSERT_TRUE(instance["nested_object"]["level1"].IsMap());
     ASSERT_TRUE(instance["nested_object"]["level1"]["level2"].IsMap());
     ASSERT_EQ(instance["nested_object"]["level1"]["level2"]["value"].as<std::string>(), "deep");
-    
+
     // Test nested arrays (is_array + is_primitive_array=false, contains arrays not primitives)
     ASSERT_TRUE(instance["nested_array"].IsSequence());
     ASSERT_EQ(instance["nested_array"].size(), 3);
@@ -519,11 +519,11 @@ TEST(YamlWriterTest, test_TopicKeysData_json_comprehensive)
     ASSERT_EQ(instance["nested_array"][2][1].as<int>(), 6);
     // Inner arrays are primitive arrays, so they use flow style
     ASSERT_EQ(instance["nested_array"][0].Style(), YAML::EmitterStyle::Flow);
-    
+
     // Test empty object (is_object path with empty)
     ASSERT_TRUE(instance["empty_object"].IsMap());
     ASSERT_EQ(instance["empty_object"].size(), 0);
-    
+
     // Test object containing empty object (is_object path)
     ASSERT_TRUE(instance["object_with_empty"].IsMap());
     ASSERT_TRUE(instance["object_with_empty"]["empty_nested"].IsMap());

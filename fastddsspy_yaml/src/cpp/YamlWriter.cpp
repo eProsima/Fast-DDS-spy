@@ -31,9 +31,10 @@ namespace eprosima {
 namespace ddspipe {
 namespace yaml {
 
-static bool is_primitive_array(const nlohmann::json& j)
+static bool is_primitive_array(
+        const nlohmann::json& j)
 {
-    if (! j.is_array() || j.empty())
+    if (!j.is_array() || j.empty())
     {
         return false;
     }
@@ -47,7 +48,8 @@ static bool is_primitive_array(const nlohmann::json& j)
     return true;
 }
 
-static YAML::Node json_to_yaml(const nlohmann::json& j)
+static YAML::Node json_to_yaml(
+        const nlohmann::json& j)
 {
     YAML::Node node;
     if (j.is_null())
@@ -71,7 +73,7 @@ static YAML::Node json_to_yaml(const nlohmann::json& j)
     {
         node = j.get<double>();
     }
-    else if (j. is_string())
+    else if (j.is_string())
     {
         node = j.get<std::string>();
     }
@@ -105,7 +107,7 @@ static YAML::Node json_to_yaml(const nlohmann::json& j)
             node[it.key()] = json_to_yaml(it.value());
         }
     }
-    
+
     return node;
 }
 
@@ -303,7 +305,6 @@ void set(
     set_in_tag(yml, "partitions", value.partitions);
     set_in_tag(yml, "timestamp", value.timestamp);
 }
-
 
 template <>
 void set(

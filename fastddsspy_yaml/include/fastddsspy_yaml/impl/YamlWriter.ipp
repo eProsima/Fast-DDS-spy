@@ -28,109 +28,109 @@
 #include <fastddsspy_yaml/yaml_configuration_tags.hpp>
 
 namespace eprosima {
-namespace ddspipe {
-namespace yaml {
+    namespace ddspipe {
+        namespace yaml {
 
-using namespace eprosima::spy::participants;
+            using namespace eprosima::spy::participants;
 
-template <>
-FASTDDSSPY_YAML_DllAPI
-void set(
-        Yaml& yml,
-        const ddspipe::core::types::Guid& value);
+            template < >
+            FASTDDSSPY_YAML_DllAPI
+            void set(
+                    Yaml& yml,
+                    const ddspipe::core::types::Guid& value);
 
-template <>
-FASTDDSSPY_YAML_DllAPI
-void set(
-        Yaml& yml,
-        const TimestampData& value);
+            template < >
+            FASTDDSSPY_YAML_DllAPI
+            void set(
+                    Yaml& yml,
+                    const TimestampData& value);
 
-template <>
-FASTDDSSPY_YAML_DllAPI
-void set(
-        Yaml& yml,
-        const SimpleParticipantData& value);
+            template < >
+            FASTDDSSPY_YAML_DllAPI
+            void set(
+                    Yaml& yml,
+                    const SimpleParticipantData& value);
 
-template <>
-FASTDDSSPY_YAML_DllAPI
-void set(
-        Yaml& yml,
-        const ComplexParticipantData::Endpoint& value);
+            template < >
+            FASTDDSSPY_YAML_DllAPI
+            void set(
+                    Yaml& yml,
+                    const ComplexParticipantData::Endpoint& value);
 
-template <>
-FASTDDSSPY_YAML_DllAPI
-void set(
-        Yaml& yml,
-        const ComplexParticipantData& value);
+            template < >
+            FASTDDSSPY_YAML_DllAPI
+            void set(
+                    Yaml& yml,
+                    const ComplexParticipantData& value);
 
-template <>
-FASTDDSSPY_YAML_DllAPI
-void set(
-        Yaml& yml,
-        const SimpleEndpointData::Topic& value);
+            template < >
+            FASTDDSSPY_YAML_DllAPI
+            void set(
+                    Yaml& yml,
+                    const SimpleEndpointData::Topic& value);
 
-template <>
-FASTDDSSPY_YAML_DllAPI
-void set(
-        Yaml& yml,
-        const SimpleEndpointData& value);
+            template < >
+            FASTDDSSPY_YAML_DllAPI
+            void set(
+                    Yaml& yml,
+                    const SimpleEndpointData& value);
 
-template <>
-FASTDDSSPY_YAML_DllAPI
-void set(
-        Yaml& yml,
-        const ComplexEndpointData::ExtendedTopic& value);
+            template < >
+            FASTDDSSPY_YAML_DllAPI
+            void set(
+                    Yaml& yml,
+                    const ComplexEndpointData::ExtendedTopic& value);
 
-template <>
-FASTDDSSPY_YAML_DllAPI
-void set(
-        Yaml& yml,
-        const ComplexEndpointData::QoS& value);
+            template < >
+            FASTDDSSPY_YAML_DllAPI
+            void set(
+                    Yaml& yml,
+                    const ComplexEndpointData::QoS& value);
 
-template <>
-FASTDDSSPY_YAML_DllAPI
-void set(
-        Yaml& yml,
-        const ComplexEndpointData& value);
+            template < >
+            FASTDDSSPY_YAML_DllAPI
+            void set(
+                    Yaml& yml,
+                    const ComplexEndpointData& value);
 
-template <>
-FASTDDSSPY_YAML_DllAPI
-void set(
-        Yaml& yml,
-        const SimpleTopicData::Rate& value);
+            template < >
+            FASTDDSSPY_YAML_DllAPI
+            void set(
+                    Yaml& yml,
+                    const SimpleTopicData::Rate& value);
 
-template <>
-FASTDDSSPY_YAML_DllAPI
-void set(
-        Yaml& yml,
-        const SimpleTopicData& value,
-        bool is_compact);
+            template < >
+            FASTDDSSPY_YAML_DllAPI
+            void set(
+                    Yaml& yml,
+                    const SimpleTopicData& value,
+                    bool is_compact);
 
-template <>
-FASTDDSSPY_YAML_DllAPI
-void set(
-        Yaml& yml,
-        const ComplexTopicData::Endpoint& value);
+            template < >
+            FASTDDSSPY_YAML_DllAPI
+            void set(
+                    Yaml& yml,
+                    const ComplexTopicData::Endpoint& value);
 
-template <>
-FASTDDSSPY_YAML_DllAPI
-void set(
-        Yaml& yml,
-        const ComplexTopicData& value);
+            template < >
+            FASTDDSSPY_YAML_DllAPI
+            void set(
+                    Yaml& yml,
+                    const ComplexTopicData& value);
 
-template <>
-FASTDDSSPY_YAML_DllAPI
-void set(
-        Yaml& yml,
-        const DdsDataData& value);
+            template < >
+            FASTDDSSPY_YAML_DllAPI
+            void set(
+                    Yaml& yml,
+                    const DdsDataData& value);
 
-template <>
-FASTDDSSPY_YAML_DllAPI
-void set(
-        Yaml& yml,
-        const TopicKeysData& value,
-        bool is_compact);
+            template < >
+            FASTDDSSPY_YAML_DllAPI
+            void set(
+                    Yaml& yml,
+                    const TopicKeysData& value,
+                    bool is_compact);
 
-} /* namespace yaml */
-} /* namespace ddspipe */
+        } /* namespace yaml */
+    } /* namespace ddspipe */
 } /* namespace eprosima */

@@ -475,8 +475,8 @@ std::vector<TopicKeysData> ModelParser::topics_keys(
         }
 
         TopicKeysData topic_data;
-        topic_data.topic_name = model.get_ros2_types() 
-            ? utils::demangle_if_ros_topic(topic.m_topic_name) 
+        topic_data.topic_name = model.get_ros2_types()
+            ? utils::demangle_if_ros_topic(topic.m_topic_name)
             : topic.m_topic_name;
 
         auto key_field_names = model.get_topic_key_fields(topic.m_topic_name);

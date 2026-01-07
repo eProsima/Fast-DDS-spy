@@ -632,7 +632,7 @@ void Controller::topics_command_(
 
             if (data.empty())
             {
-                view_. show_error(STR_ENTRY
+                view_.show_error(STR_ENTRY
                         << "<"
                         << arguments[1]
                         << "> does not match any topic in the DDS network or no type information available.");
@@ -668,7 +668,7 @@ void Controller::topics_command_(
 
             if (data.empty())
             {
-                view_. show_error(STR_ENTRY
+                view_.show_error(STR_ENTRY
                         << "<"
                         << arguments[1]
                         << "> does not match any topic in the DDS network or no type information available.");

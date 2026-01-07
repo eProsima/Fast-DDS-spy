@@ -39,7 +39,7 @@ namespace participants {
 
 /**
  * @brief Manages instance tracking for DDS topics
- * 
+ *
  * This class is responsible for:
  * - Tracking unique instances per topic using instanceHandle
  * - Caching key field representations as JSON
@@ -70,7 +70,7 @@ public:
 
     /**
      * @brief Add or update an instance in the cache
-     * 
+     *
      * @param topic The DDS topic
      * @param dyn_type The dynamic type of the topic
      * @param data The RTPS payload data
@@ -83,7 +83,7 @@ public:
 
     /**
      * @brief Get all active instances for a topic
-     * 
+     *
      * @param topic_name The name of the topic
      * @return Set of JSON key representations for active instances
      */
@@ -92,7 +92,7 @@ public:
 
     /**
      * @brief Get the key field names for a topic
-     * 
+     *
      * @param topic_name The name of the topic
      * @return Vector of key field names
      */
@@ -101,7 +101,7 @@ public:
 
     /**
      * @brief Handle writer discovery/removal
-     * 
+     *
      * @param writer_guid The GUID of the writer
      * @param topic_name The name of the topic
      * @param active true if writer is active, false if removed
