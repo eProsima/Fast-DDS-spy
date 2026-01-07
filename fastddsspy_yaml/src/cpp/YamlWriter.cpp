@@ -79,7 +79,7 @@ static YAML::Node json_to_yaml(const nlohmann::json& j)
     {
         if (is_primitive_array(j))
         {
-            YAML::Node array_node(YAML::NodeType:: Sequence);
+            YAML::Node array_node(YAML::NodeType::Sequence);
             for (const auto& element : j)
             {
                 array_node.push_back(json_to_yaml(element));
@@ -90,6 +90,7 @@ static YAML::Node json_to_yaml(const nlohmann::json& j)
         else
         {
             // Use block style for arrays containing objects
+            node = YAML::Node(YAML::NodeType::Sequence);
             for (const auto& element : j)
             {
                 node.push_back(json_to_yaml(element));
@@ -98,6 +99,7 @@ static YAML::Node json_to_yaml(const nlohmann::json& j)
     }
     else if (j.is_object())
     {
+        node = YAML::Node(YAML::NodeType::Map);
         for (auto it = j.begin(); it != j.end(); ++it)
         {
             node[it.key()] = json_to_yaml(it.value());
