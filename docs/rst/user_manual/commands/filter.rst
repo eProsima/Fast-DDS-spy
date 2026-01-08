@@ -39,7 +39,7 @@ Arguments
 When no arguments are given to this command, the information shown is a **list** with all the list of filters
 added during runtime.
 
-The information shown is divided into lists, one for each category added at runtime.
+The information shown is divided into lists, one for each ``category`` added at runtime.
 For each list, the added filters are displayed.
 
 The output format is as follows: :ref:`user_manual_command_filter_output`.
@@ -53,8 +53,8 @@ The output format is as follows: :ref:`user_manual_command_filter_output`.
 *2 argument:* `<clear/remove> <category>`
 -----------------------------------------
 
-- ``clear``: This argument **clear** the list "category" added to the filters.
-- ``remove``: This argument **delete** the list "category" from the filters.
+- ``clear``: This argument **clear** the list ``category`` added to the filters.
+- ``remove``: This argument **delete** the list ``category`` from the filters.
 
 *3 argument:* `<set/add/remove> <category> <filter_str>`
 --------------------------------------------------------
