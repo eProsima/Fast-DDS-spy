@@ -648,7 +648,7 @@ void Controller::topics_command_(
                     << "<"
                     << arguments[2]
                     << "> is not a valid topic option. "
-                    << "Valid options are \"v \", \"vv\" (verbosity modes) or or \"idl\".");
+                    << "Valid options are \"v \", \"vv\" (verbosity modes), \"idl\" or \"keys\".");
             return;
         }
     }
@@ -663,7 +663,7 @@ void Controller::topics_command_(
 
         if (keys_argument_(arg_2))
         {
-            // Handle 'topics <name> keys'
+            // Handle 'topics <name> keys v'
             auto data = participants:: ModelParser::topics_keys(*model_, filter_topic);
 
             if (data.empty())
@@ -835,7 +835,7 @@ void Controller::help_command_(
             <<
             "\ttopics <name> keys                        : Display the keys for topics matching <name> (wildcards allowed).\n"
             <<
-            "\ttopics <name> keys                        : verbose information about keys discovered in the network.\n"
+            "\ttopics <name> keys v                      : verbose information about keys discovered in the network.\n"
             << "\tfilters                                   : Display the active filters.\n"
             << "\tfilters clear                             : Clear all the filter lists.\n"
             << "\tfilters remove                            : Remove all the filter lists.\n"

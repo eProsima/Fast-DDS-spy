@@ -94,7 +94,7 @@ configuration_discovery_time.yaml',
                 '\ttopics <name> keys                        : '
                 'Display the keys for topics '
                 'matching <name> (wildcards allowed).\n\n'
-                '\ttopics <name> keys                        : '
+                '\ttopics <name> keys v                      : '
                 'verbose information about keys '
                 'discovered in the network.\n\n'
                 '\tfilters                                   : '
