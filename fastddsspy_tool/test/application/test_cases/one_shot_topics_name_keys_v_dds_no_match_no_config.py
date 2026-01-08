@@ -25,7 +25,7 @@ class TestCase_instance (test_class.TestCase):
         @brief Initialize the TestCase_instance object.
 
         Launch this test with:
-            fastddsspy topics HelloWorldTopic key v
+            fastddsspy topics HelloWorldTopic K -v
             AdvancedConfigurationExample publisher
         """
         super().__init__(
@@ -35,8 +35,8 @@ class TestCase_instance (test_class.TestCase):
             dds=True,
             config='',
             arguments_dds=[],
-            arguments_spy=['topics', 'HelloWorldTopic', 'key', 'v'],
+            arguments_spy=['topics', 'NonexistingTopic', 'K', '-v'],
             commands_spy=[],
-            output="""- topic: HelloWorldTopic
-  keys:\n    []\n  instances:\n    []\n  instance_count: 0\n"""
+            output="<NonexistingTopic> does not match any topic in \
+the DDS network or no type information available."
         )
