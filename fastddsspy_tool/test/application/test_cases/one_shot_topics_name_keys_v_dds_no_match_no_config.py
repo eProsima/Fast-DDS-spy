@@ -37,6 +37,6 @@ class TestCase_instance (test_class.TestCase):
             arguments_dds=[],
             arguments_spy=['topics', 'NonexistingTopic', 'K', '-v'],
             commands_spy=[],
-            output="<NonexistingTopic> does not match any topic in \
-the DDS network or no type information available."
+            output='<NonexistingTopic> does not match any topic in \
+the DDS network or no type information available.'
         )
