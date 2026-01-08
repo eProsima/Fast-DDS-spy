@@ -7,9 +7,7 @@
 Filter
 ######
 
-**Filter** is a command that adds filters
-
-retrieves information of the :term:`Topics <Topic>` with at least one endpoint currently active in the network.
+**Filter** is a command that adds filters to restrict the spied information based on user-defined criteria.
 
 Key-words
 =========
