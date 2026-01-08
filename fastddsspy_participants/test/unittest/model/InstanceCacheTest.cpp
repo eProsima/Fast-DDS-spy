@@ -29,9 +29,6 @@
 
 using namespace eprosima;
 
-/**
- * Test: Basic instance addition
- */
 TEST(InstanceCacheTest, add_single_instance)
 {
     spy::participants::InstanceCache cache;
@@ -65,9 +62,6 @@ TEST(InstanceCacheTest, add_single_instance)
     ASSERT_EQ(key_fields[0], "id");
 }
 
-/**
- * Test: Multiple instances
- */
 TEST(InstanceCacheTest, add_multiple_instances)
 {
     spy::participants::InstanceCache cache;
@@ -94,9 +88,6 @@ TEST(InstanceCacheTest, add_multiple_instances)
     ASSERT_EQ(instances.size(), 3);
 }
 
-/**
- * Test: Update existing instance
- */
 TEST(InstanceCacheTest, update_existing_instance)
 {
     spy::participants::InstanceCache cache;
@@ -128,9 +119,6 @@ TEST(InstanceCacheTest, update_existing_instance)
     ASSERT_EQ(instances_after.size(), 1);
 }
 
-/**
- * Test: Multiple writers for same instance
- */
 TEST(InstanceCacheTest, multiple_writers_same_instance)
 {
     spy::participants::InstanceCache cache;
@@ -176,9 +164,6 @@ TEST(InstanceCacheTest, multiple_writers_same_instance)
     ASSERT_EQ(instances.size(), 0);
 }
 
-/**
- * Test: Writer removal
- */
 TEST(InstanceCacheTest, writer_removal)
 {
     spy::participants::InstanceCache cache;
@@ -209,9 +194,6 @@ TEST(InstanceCacheTest, writer_removal)
     ASSERT_EQ(instances_after.size(), 0);
 }
 
-/**
- * Test: Multiple key fields
- */
 TEST(InstanceCacheTest, multiple_key_fields)
 {
     spy::participants::InstanceCache cache;
@@ -252,9 +234,6 @@ TEST(InstanceCacheTest, multiple_key_fields)
     ASSERT_TRUE(instance_json.find("5000") != std::string::npos);
 }
 
-/**
- * Test: Type without keys
- */
 TEST(InstanceCacheTest, type_without_keys)
 {
     spy::participants::InstanceCache cache;
@@ -305,9 +284,6 @@ TEST(InstanceCacheTest, type_without_keys)
     ASSERT_EQ(instances.size(), 0);
 }
 
-/**
- * Test: Clear cache
- */
 TEST(InstanceCacheTest, clear_cache)
 {
     spy::participants::InstanceCache cache;
@@ -342,9 +318,6 @@ TEST(InstanceCacheTest, clear_cache)
     ASSERT_EQ(key_fields_after.size(), 0);
 }
 
-/**
- * Test: Non-existent topic
- */
 TEST(InstanceCacheTest, non_existent_topic)
 {
     spy::participants::InstanceCache cache;
@@ -357,9 +330,6 @@ TEST(InstanceCacheTest, non_existent_topic)
     ASSERT_EQ(key_fields.size(), 0);
 }
 
-/**
- * Test: Writer removal for non-existent topic
- */
 TEST(InstanceCacheTest, writer_removal_non_existent_topic)
 {
     spy::participants::InstanceCache cache;
@@ -374,9 +344,6 @@ TEST(InstanceCacheTest, writer_removal_non_existent_topic)
     ASSERT_EQ(instances.size(), 0);
 }
 
-/**
- * Test: Multiple topics
- */
 TEST(InstanceCacheTest, multiple_topics)
 {
     spy::participants::InstanceCache cache;
@@ -422,6 +389,151 @@ TEST(InstanceCacheTest, multiple_topics)
     auto key_fields2 = cache.get_key_fields(topic2.m_topic_name);
     ASSERT_EQ(key_fields2.size(), 1);
     ASSERT_EQ(key_fields2[0], "sensor_id");
+}
+
+TEST(InstanceCacheTest, serialization_failure)
+{
+    spy::participants::InstanceCache cache;
+
+    ddspipe::core::types::DdsTopic topic;
+    topic.m_topic_name = "FailTopic";
+    topic.type_name = "FailType";
+
+    std::vector<std::string> key_names = {"id"};
+    auto dyn_type = eprosima::spy::participants::testing::create_test_type_with_keys("FailType", key_names);
+
+    // Create corrupt/invalid data
+    auto data = std::make_unique<ddspipe::core::types::RtpsPayloadData>();
+    data->source_guid = ddspipe::core::testing::random_guid();
+    // Empty payload - should cause deserialization to fail
+
+    // Should handle gracefully
+    bool result = cache.add_or_update_instance(topic, dyn_type, *data);
+    ASSERT_FALSE(result);
+}
+
+TEST(InstanceCacheTest, max_instances_limit)
+{
+    spy::participants::InstanceCache cache;
+
+    ddspipe::core::types::DdsTopic topic;
+    topic.m_topic_name = "MaxTopic";
+    topic.type_name = "MaxType";
+
+    std::vector<std::string> key_names = {"id"};
+    auto dyn_type = eprosima::spy::participants::testing::create_test_type_with_keys("MaxType", key_names);
+
+    auto writer_guid = ddspipe::core::testing::random_guid();
+
+    const int MAX_LIMIT = cache.MAX_INSTANCES_PER_TOPIC;
+
+    for (int i = 0; i < MAX_LIMIT + 10; ++i)
+    {
+        std::map<std::string, int32_t> key_values = {{"id", i}};
+        auto data = eprosima::spy::participants::testing::create_test_data_with_keys(dyn_type, key_values, writer_guid);
+        cache.add_or_update_instance(topic, dyn_type, *data);
+    }
+
+    auto instances = cache.get_active_instances(topic.m_topic_name);
+
+    // Should not exceed maximum
+    ASSERT_LE(instances.size(), MAX_LIMIT);
+}
+
+TEST(InstanceCacheTest, multiple_writers_all_removed)
+{
+    spy::participants::InstanceCache cache;
+
+    ddspipe::core::types::DdsTopic topic;
+    topic.m_topic_name = "MultiRemoveTopic";
+    topic.type_name = "MultiRemoveType";
+
+    std::vector<std::string> key_names = {"id"};
+    auto dyn_type = eprosima::spy::participants::testing::create_test_type_with_keys("MultiRemoveType", key_names);
+
+    std::map<std::string, int32_t> key_values = {{"id", 555}};
+
+    std::vector<ddspipe::core::types::Guid> writers;
+
+    // Add same instance from 5 writers
+    for (int i = 1; i <= 5; ++i)
+    {
+        auto writer_guid = ddspipe::core::testing::random_guid(i);
+        writers.push_back(writer_guid);
+        auto data = eprosima::spy::participants::testing::create_test_data_with_keys(dyn_type, key_values, writer_guid);
+        cache.add_or_update_instance(topic, dyn_type, *data);
+    }
+
+    auto instances = cache.get_active_instances(topic.m_topic_name);
+    ASSERT_EQ(instances.size(), 1);
+
+    // Remove 4 writers - instance should remain
+    for (int i = 0; i < 4; ++i)
+    {
+        cache.on_writer_changed(writers[i], topic.m_topic_name, false);
+    }
+
+    instances = cache.get_active_instances(topic.m_topic_name);
+    ASSERT_EQ(instances.size(), 1);
+
+    // Remove last writer - instance should be removed
+    cache.on_writer_changed(writers[4], topic.m_topic_name, false);
+
+    instances = cache.get_active_instances(topic.m_topic_name);
+    ASSERT_EQ(instances.size(), 0);
+}
+
+TEST(InstanceCacheTest, readd_after_removal)
+{
+    spy::participants::InstanceCache cache;
+
+    ddspipe::core::types::DdsTopic topic;
+    topic.m_topic_name = "ReaddTopic";
+    topic.type_name = "ReaddType";
+
+    std::vector<std::string> key_names = {"id"};
+    auto dyn_type = eprosima::spy::participants::testing::create_test_type_with_keys("ReaddType", key_names);
+
+    auto writer_guid = ddspipe::core::testing::random_guid();
+    std::map<std::string, int32_t> key_values = {{"id", 888}};
+
+    // Add instance
+    auto data1 = eprosima::spy::participants::testing::create_test_data_with_keys(dyn_type, key_values, writer_guid);
+    cache.add_or_update_instance(topic, dyn_type, *data1);
+
+    auto instances1 = cache.get_active_instances(topic.m_topic_name);
+    ASSERT_EQ(instances1.size(), 1);
+
+    // Remove writer
+    cache.on_writer_changed(writer_guid, topic.m_topic_name, false);
+
+    auto instances2 = cache.get_active_instances(topic.m_topic_name);
+    ASSERT_EQ(instances2.size(), 0);
+
+    // Re-add same instance
+    auto data2 = eprosima::spy::participants::testing::create_test_data_with_keys(dyn_type, key_values, writer_guid);
+    cache.add_or_update_instance(topic, dyn_type, *data2);
+
+    auto instances3 = cache.get_active_instances(topic.m_topic_name);
+    ASSERT_EQ(instances3.size(), 1);
+}
+
+TEST(InstanceCacheTest, writer_activation)
+{
+    spy::participants::InstanceCache cache;
+
+    ddspipe::core::types::DdsTopic topic;
+    topic.m_topic_name = "ActivationTopic";
+    topic.type_name = "ActivationType";
+
+    auto writer_guid = ddspipe::core::testing::random_guid();
+
+    // Calling on_writer_changed with active=true should be no-op
+    // (instances are added via add_or_update_instance)
+    cache.on_writer_changed(writer_guid, topic.m_topic_name, true);
+
+    auto instances = cache.get_active_instances(topic.m_topic_name);
+    ASSERT_EQ(instances.size(), 0);
 }
 
 int main(

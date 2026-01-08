@@ -68,6 +68,11 @@ set(TEST_LIST
         non_existent_topic
         writer_removal_non_existent_topic
         multiple_topics
+        serialization_failure
+        max_instances_limit
+        multiple_writers_all_removed
+        readd_after_removal
+        writer_activation
     )
 
 set(TEST_EXTRA_LIBRARIES
