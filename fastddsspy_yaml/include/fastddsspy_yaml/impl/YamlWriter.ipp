@@ -33,98 +33,98 @@ namespace yaml {
 
 using namespace eprosima::spy::participants;
 
-template < >
+template <>
 FASTDDSSPY_YAML_DllAPI
 void set(
         Yaml& yml,
         const ddspipe::core::types::Guid& value);
 
-template < >
+template <>
 FASTDDSSPY_YAML_DllAPI
 void set(
         Yaml& yml,
         const TimestampData& value);
 
-template < >
+template <>
 FASTDDSSPY_YAML_DllAPI
 void set(
         Yaml& yml,
         const SimpleParticipantData& value);
 
-template < >
+template <>
 FASTDDSSPY_YAML_DllAPI
 void set(
         Yaml& yml,
         const ComplexParticipantData::Endpoint& value);
 
-template < >
+template <>
 FASTDDSSPY_YAML_DllAPI
 void set(
         Yaml& yml,
         const ComplexParticipantData& value);
 
-template < >
+template <>
 FASTDDSSPY_YAML_DllAPI
 void set(
         Yaml& yml,
         const SimpleEndpointData::Topic& value);
 
-template < >
+template <>
 FASTDDSSPY_YAML_DllAPI
 void set(
         Yaml& yml,
         const SimpleEndpointData& value);
 
-template < >
+template <>
 FASTDDSSPY_YAML_DllAPI
 void set(
         Yaml& yml,
         const ComplexEndpointData::ExtendedTopic& value);
 
-template < >
+template <>
 FASTDDSSPY_YAML_DllAPI
 void set(
         Yaml& yml,
         const ComplexEndpointData::QoS& value);
 
-template < >
+template <>
 FASTDDSSPY_YAML_DllAPI
 void set(
         Yaml& yml,
         const ComplexEndpointData& value);
 
-template < >
+template <>
 FASTDDSSPY_YAML_DllAPI
 void set(
         Yaml& yml,
         const SimpleTopicData::Rate& value);
 
-template < >
+template <>
 FASTDDSSPY_YAML_DllAPI
 void set(
         Yaml& yml,
         const SimpleTopicData& value,
         bool is_compact);
 
-template < >
+template <>
 FASTDDSSPY_YAML_DllAPI
 void set(
         Yaml& yml,
         const ComplexTopicData::Endpoint& value);
 
-template < >
+template <>
 FASTDDSSPY_YAML_DllAPI
 void set(
         Yaml& yml,
         const ComplexTopicData& value);
 
-template < >
+template <>
 FASTDDSSPY_YAML_DllAPI
 void set(
         Yaml& yml,
         const DdsDataData& value);
 
-template < >
+template <>
 FASTDDSSPY_YAML_DllAPI
 void set(
         Yaml& yml,
