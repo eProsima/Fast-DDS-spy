@@ -7,15 +7,24 @@
 Filter
 ######
 
-**Filter** is a command that adds filters
-
-retrieves information of the :term:`Topics <Topic>` with at least one endpoint currently active in the network.
+**Filter** is a command that adds filters to restrict the spied information based on user-defined criteria.
 
 Key-words
 =========
 
 These are the key-words recognize as this command:
 ``filter`` ``filters`` ``f`` ``F``.
+
+Categories
+==========
+
+Defines a category filter used to restrict the spied information.
+Each category can include one or more filter strings,
+and information is printed if it matches any of the strings within the category.
+
+The current categories supported by the **filter** command are:
+
+- ``partitions``
 
 Arguments
 =========
@@ -28,7 +37,7 @@ Arguments
 When no arguments are given to this command, the information shown is a **list** with all the list of filters
 added during runtime.
 
-The information shown is divided into lists, one for each category added at runtime.
+The information shown is divided into lists, one for each ``category`` added at runtime.
 For each list, the added filters are displayed.
 
 The output format is as follows: :ref:`user_manual_command_filter_output`.
@@ -36,21 +45,21 @@ The output format is as follows: :ref:`user_manual_command_filter_output`.
 *1 argument:* `<clear/remove>`
 ------------------------------
 
-- clear: This argument clear all the list of categories added to the filters.
-- remove: This argument delete all the list of categories added to the filters.
+- ``clear``: This argument **clear** all the list of categories added to the filters.
+- ``remove``: This argument **delete** all the list of categories added to the filters.
 
 *2 argument:* `<clear/remove> <category>`
 -----------------------------------------
 
-- clear: This argument clear the list "category" added to the filters.
-- remove: This argument delete the list "category" from the filters.
+- ``clear``: This argument **clear** the list ``category`` added to the filters.
+- ``remove``: This argument **delete** the list ``category`` from the filters.
 
-*3 argument:* `<clear/remove> <category> <filter_str>`
-------------------------------------------------------
+*3 argument:* `<set/add/remove> <category> <filter_str>`
+--------------------------------------------------------
 
-- set: This argument create the `category` filter list with `filter_str` as first element.
-- add: This argument add `filter_str` to `category` filter list.
-- remove: This argument delete `filter_str` from `category` filter list.
+- ``set``: This argument **create** the ``category`` filter list with ``filter_str`` as first element.
+- ``add``: This argument **add** ``filter_str`` to ``category`` filter list.
+- ``remove``: This argument **delete** ``filter_str`` from ``category`` filter list.
 
 .. _user_manual_command_filter_output:
 
@@ -74,7 +83,8 @@ Example
 =======
 
 Let's assume we have a DDS network where a ShapesDemo applications is running with
-the following 2 DataWriters:
+the following two DataWriters:
+
 - Circle (partition A)
 - Square (partitions B and C).
 
