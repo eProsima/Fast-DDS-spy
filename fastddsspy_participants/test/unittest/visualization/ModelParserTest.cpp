@@ -3103,12 +3103,12 @@ TEST(ModelParserTest, topics_keys_no_keys)
 TEST(ModelParserTest, topics_keys_empty_model)
 {
     spy::participants::SpyModel model;
-    
+
     // Execute topics_keys
     std::vector<spy::participants::TopicKeysData> result;
     result = spy::participants::ModelParser::topics_keys(
         model, ddspipe::core::types::WildcardDdsFilterTopic());
-    
+
     // Should return empty
     ASSERT_EQ(result.size(), 0);
 }
