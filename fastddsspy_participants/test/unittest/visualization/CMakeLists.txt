@@ -75,6 +75,7 @@ set(TEST_LIST
         topics_keys_with_topic_filter
         topics_keys_writer_removal
         topics_keys_no_keys
+        topics_keys_empty_model
         simple_dds_endpoint_writer_filtered
         simple_dds_endpoint_writer_ros2_types_filtered
         simple_ros2_endpoint_writer_filtered

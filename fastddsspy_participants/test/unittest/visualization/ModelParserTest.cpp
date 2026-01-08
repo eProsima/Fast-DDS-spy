@@ -3097,6 +3097,21 @@ TEST(ModelParserTest, topics_keys_no_keys)
     ASSERT_EQ(result[0].instance_count, 0);
 }
 
+/**
+ * Test topics_keys returns empty when model has no endpoints
+ */
+TEST(ModelParserTest, topics_keys_empty_model)
+{
+    spy::participants::SpyModel model;
+    
+    // Execute topics_keys
+    std::vector<spy::participants::TopicKeysData> result;
+    result = spy::participants::ModelParser::topics_keys(
+        model, ddspipe::core::types::WildcardDdsFilterTopic());
+    
+    // Should return empty
+    ASSERT_EQ(result.size(), 0);
+}
 
 /**
  * Add two DDS writers (with ros2-types = false) to the database

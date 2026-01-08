@@ -326,7 +326,7 @@ TEST(YamlWriterTest, test_TopicKeysData_compact_true)
         R"({"Key1":"Value1", "Key2":"Value2"})",
         R"({"Key1":"Value1", "Key2":"Value3"})"
     };
-    data.instance_count = 1;
+    data.instance_count = 2;
 
     // Set yaml using set
     Yaml yml;
@@ -337,7 +337,7 @@ TEST(YamlWriterTest, test_TopicKeysData_compact_true)
     yml_expected["topic"] = "Name";
     yml_expected["keys"][0] = "Key1";
     yml_expected["keys"][1] = "Key2";
-    yml_expected["instance_count"] = 1;
+    yml_expected["instance_count"] = 2;
 
     // Check they are the same
     ASSERT_EQ(
@@ -359,7 +359,7 @@ TEST(YamlWriterTest, test_TopicKeysData_compact_false)
         R"({"Key1":"Value1", "Key2":"Value2"})",
         R"({"Key1":"Value1", "Key2":"Value3"})"
     };
-    data.instance_count = 1;
+    data.instance_count = 2;
 
     // Set yaml using set
     Yaml yml;
@@ -374,7 +374,7 @@ TEST(YamlWriterTest, test_TopicKeysData_compact_false)
     yml_expected["instances"][0]["Key2"] = "Value2";
     yml_expected["instances"][1]["Key1"] = "Value1";
     yml_expected["instances"][1]["Key2"] = "Value3";
-    yml_expected["instance_count"] = 1;
+    yml_expected["instance_count"] = 2;
 
     // Check they are the same
     ASSERT_EQ(
@@ -528,6 +528,38 @@ TEST(YamlWriterTest, test_TopicKeysData_json_comprehensive)
     ASSERT_TRUE(instance["object_with_empty"].IsMap());
     ASSERT_TRUE(instance["object_with_empty"]["empty_nested"].IsMap());
     ASSERT_EQ(instance["object_with_empty"]["empty_nested"].size(), 0);
+}
+
+/**
+ * Convert a TopicKeysData with malformed json to yaml
+ */
+TEST(YamlWriterTest, test_TopicKeysData_json_malformed)
+{
+    TopicKeysData data;
+
+    data.topic_name = "Name";
+    data.key_fields = {"Key1", "Key2"};
+    data.instances = {"MALFORMED JSON", "{ALSO MALFORMED JSON}"};
+    data.instance_count = 2;
+
+    // Set yaml using set
+    Yaml yml;
+    set(yml, data, false);
+
+    // Set yaml using Yaml functions
+    Yaml yml_expected;
+    yml_expected["topic"] = "Name";
+    yml_expected["keys"][0] = "Key1";
+    yml_expected["keys"][1] = "Key2";
+    yml_expected["instances"][0] = "MALFORMED JSON";
+    yml_expected["instances"][1] = "{ALSO MALFORMED JSON}";
+    yml_expected["instance_count"] = 2;
+
+    // Check they are the same
+    ASSERT_EQ(
+        utils::generic_to_string(yml),
+        utils::generic_to_string(yml_expected)
+        );
 }
 
 int main(

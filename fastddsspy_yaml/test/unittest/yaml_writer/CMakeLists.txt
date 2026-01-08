@@ -36,6 +36,7 @@ set(TEST_LIST
         test_TopicKeysData_compact_true
         test_TopicKeysData_compact_false
         test_TopicKeysData_json_comprehensive
+        test_TopicKeysData_json_malformed
     )
 
 set(TEST_EXTRA_LIBRARIES
