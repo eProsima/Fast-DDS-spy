@@ -33,6 +33,13 @@ bool InstanceCache::add_or_update_instance(
 {
     try
     {
+        if (!dyn_type)
+        {
+            EPROSIMA_LOG_WARNING(FASTDDSSPY_INSTANCECACHE,
+                    "Null type provided for topic: " << topic.m_topic_name);
+            return false;
+        }
+
         std::unique_lock<std::shared_timed_mutex> lock(mutex_);
 
         auto writer_guid = data.source_guid;

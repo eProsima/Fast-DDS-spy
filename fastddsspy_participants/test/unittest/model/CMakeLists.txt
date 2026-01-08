@@ -73,6 +73,7 @@ set(TEST_LIST
         multiple_writers_all_removed
         readd_after_removal
         writer_activation
+        null_type_handling
     )
 
 set(TEST_EXTRA_LIBRARIES

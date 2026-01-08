@@ -536,6 +536,26 @@ TEST(InstanceCacheTest, writer_activation)
     ASSERT_EQ(instances.size(), 0);
 }
 
+TEST(InstanceCacheTest, null_type_handling)
+{
+    spy::participants::InstanceCache cache;
+
+    ddspipe::core::types::DdsTopic topic;
+    topic.m_topic_name = "NullTypeTopic";
+    topic.type_name = "NullType";
+
+    // Pass nullptr as type - should handle gracefully
+    fastdds::dds::DynamicType::_ref_type null_type = nullptr;
+
+    auto data = std::make_unique<ddspipe::core::types::RtpsPayloadData>();
+    data->source_guid = ddspipe::core::testing::random_guid();
+
+    // Should not crash, should return false
+    bool result = cache.add_or_update_instance(topic, null_type, *data);
+
+    ASSERT_FALSE(result);
+}
+
 int main(
         int argc,
         char** argv)
