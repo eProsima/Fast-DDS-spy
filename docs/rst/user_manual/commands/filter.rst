@@ -85,7 +85,7 @@ Example
 =======
 
 Let's assume we have a DDS network where a ShapesDemo applications is running with
-the following 2 DataWriters:
+the following two DataWriters:
 
 - Circle (partition A)
 - Square (partitions B and C).
