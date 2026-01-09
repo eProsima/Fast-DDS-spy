@@ -305,14 +305,6 @@ TEST(YamlWriterTest, test_DdsDataData)
         );
 }
 
-// struct TopicKeysData
-// {
-//     std::string topic_name;
-//     std::vector<std::string> key_fields;
-//     std::vector<std::string> instances;
-//     size_t instance_count;
-// };
-
 /**
  * Convert a TopicKeysData to yaml
  */
