@@ -18,7 +18,7 @@ These are the key-words recognize as this command:
 Arguments
 =========
 
-**Topic** command supports from 0 to 2 arguments:
+**Topic** command supports from 0 to 3 arguments:
 
 *No argument*
 -------------
@@ -56,6 +56,12 @@ Topic type IDL definition
 -------------------------
 
 When the argument ``idl`` is appended after a topic name, this command retrieves and displays the **IDL** type definition associated with that topic.
+
+Topic keys
+----------
+
+When the argument ``keys`` is appended after a topic name, this command retrieves and displays the **key fields** of the data type associated with that topic, along with the number of discovered instances.
+An optional ``v`` argument provides verbose output including the actual key values of each discovered instance.
 
 Output Format
 =============
@@ -177,3 +183,24 @@ This would be the expected output for the command ``topics Square idl``:
         long y;
         long shapesize;
     };
+
+This would be the expected output for the command ``topics Square keys``:
+
+.. code-block::
+
+    - topic: Square
+      keys:
+        - color
+      instance_count: 2
+
+This would be the expected output for the command ``topics Square keys v``:
+
+.. code-block::
+
+    - topic: Square
+      keys:
+        - color
+      instances:
+        - color: RED
+        - color: BLUE
+      instance_count: 2
