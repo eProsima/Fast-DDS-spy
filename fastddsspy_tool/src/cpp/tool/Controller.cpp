@@ -984,7 +984,7 @@ void Controller::filter_command_(
             filter_dict.erase(category);
         }
 
-        if (category == "partitions")
+        if (category == "partitions" || category == "keys")
         {
             update_filter_partitions();
         }
@@ -1029,7 +1029,7 @@ void Controller::filter_command_(
 
             filter_dict[category] = std::set<std::string>{filter_str};
 
-            if (category == "partitions")
+            if (category == "partitions" || category == "keys")
             {
                 update_filter_partitions();
             }
@@ -1058,7 +1058,7 @@ void Controller::filter_command_(
 
             filter_dict[category].insert(filter_str);
 
-            if (category == "partitions")
+            if (category == "partitions" || category == "keys")
             {
                 update_filter_partitions();
             }
@@ -1087,7 +1087,7 @@ void Controller::filter_command_(
 
             filter_dict[category].erase(filter_str);
 
-            if (category == "partitions")
+            if (category == "partitions" || category == "keys")
             {
                 update_filter_partitions();
             }
@@ -1101,6 +1101,39 @@ void Controller::filter_command_(
                 << "> requires less than 5 argument.");
         return;
     }
+}
+
+static inline std::pair<std::string, std::string> split_once(const std::string& s, char delim = ':')
+{
+    // Splits "name:value" → {"name","value"}
+
+    const std::size_t pos = s.find(delim);
+    if (pos == std::string::npos)
+    {
+        return std::make_pair(s, std::string());
+    }
+    return std::make_pair(s.substr(0, pos), s.substr(pos + 1));
+}
+
+static inline std::string extract_instance_value(const std::string& instance)
+{
+    // Extracts value from: {\"flight_number\":111} → "111"
+
+    const std::size_t colon = instance.find(':');
+    if (colon == std::string::npos)
+    {
+        return std::string();
+    }
+
+    std::size_t start = colon + 1;
+    std::size_t end = instance.find('}', start);
+
+    if (end == std::string::npos)
+    {
+        end = instance.size();
+    }
+
+    return instance.substr(start, end - start);
 }
 
 void Controller::update_filter_partitions()
@@ -1117,57 +1150,121 @@ void Controller::update_filter_partitions()
     bool endpoint_active;
 
     bool partitions_exists = filter_dict.find("partitions") != filter_dict.end();
+    bool keys_exists = filter_dict.find("keys") != filter_dict.end();
 
     for (const auto& endpoint: model_->endpoint_database_)
     {
         topic_name = endpoint.second.info.topic.m_topic_name;
 
-        // get the partition set of the current endpoint
-        for (const auto& guid_partition_pair: endpoint.second.info.specific_partitions)
+        endpoint_active = true;
+
+        if(partitions_exists)
         {
-            i = 0;
-            n = guid_partition_pair.second.size();
-            curr_partition = "";
-            endpoint_active = filter_dict["partitions"].empty();
-            // iterate in the partition set
-            while (i < n)
+            // get the partition set of the current endpoint
+            for (const auto& guid_partition_pair: endpoint.second.info.specific_partitions)
             {
-                if (guid_partition_pair.second[i] == '|')
+                i = 0;
+                n = guid_partition_pair.second.size();
+                curr_partition = "";
+                endpoint_active = filter_dict["partitions"].empty();
+                // iterate in the partition set
+                while (i < n)
                 {
-                    for (std::string filter_p: filter_dict["partitions"])
+                    if (guid_partition_pair.second[i] == '|')
                     {
-                        if (utils::match_pattern(filter_p, curr_partition) ||
-                                utils::match_pattern(curr_partition, filter_p))
+                        for (std::string filter_p: filter_dict["partitions"])
                         {
-                            // the current partition matches with a partition
-                            // from the filter, the endpoint is active
-                            endpoint_active = true;
+                            if (utils::match_pattern(filter_p, curr_partition) ||
+                                    utils::match_pattern(curr_partition, filter_p))
+                            {
+                                // the current partition matches with a partition
+                                // from the filter, the endpoint is active
+                                endpoint_active = true;
+                                break;
+                            }
+                        }
+
+                        curr_partition = "";
+                    }
+                    else
+                    {
+                        curr_partition += guid_partition_pair.second[i];
+                    }
+
+                    i++;
+                }
+
+                // empty or last partition
+                for (std::string filter_p: filter_dict["partitions"])
+                {
+                    if (utils::match_pattern(filter_p, curr_partition) ||
+                            utils::match_pattern(curr_partition, filter_p))
+                    {
+                        // the current partition matches with a partition
+                        // from the filter, the endpoint is active
+                        endpoint_active = true;
+                        break;
+                    }
+                }
+            }
+
+        }
+
+        if(keys_exists)
+        {
+            std::set<ddspipe::core::types::DdsTopic> topic_set = {endpoint.second.info.topic};
+            auto topic_keys = participants::ModelParser::topics_keys_by_ddstopic(*model_, topic_set);
+            bool topic_pass_filter = false;
+            std::string key_name, key_val;
+
+
+            for (const auto& topic_key_data : topic_keys)
+            {
+                topic_pass_filter = false;
+
+                for (const auto& key_filter_str : filter_dict["keys"])
+                {
+                    const auto key_pair = split_once(key_filter_str, ':');
+                    const std::string& key_name = key_pair.first;
+                    const std::string& key_val  = key_pair.second;
+
+                    bool has_key = false;
+                    for (const auto& topic_key : topic_key_data.key_fields)
+                    {
+                        if (topic_key == key_name)
+                        {
+                            has_key = true;
                             break;
                         }
                     }
 
-                    curr_partition = "";
-                }
-                else
-                {
-                    curr_partition += guid_partition_pair.second[i];
+                    if (!has_key)
+                    {
+                        continue;
+                    }
+
+                    for (const auto& inst : topic_key_data.instances)
+                    {
+                        if (extract_instance_value(inst) == key_val)
+                        {
+                            topic_pass_filter = true;
+                            break;
+                        }
+                    }
+
+                    if (topic_pass_filter)
+                    {
+                        break;
+                    }
                 }
 
-                i++;
-            }
-
-            // empty or last partition
-            for (std::string filter_p: filter_dict["partitions"])
-            {
-                if (utils::match_pattern(filter_p, curr_partition) ||
-                        utils::match_pattern(curr_partition, filter_p))
+                if (topic_pass_filter)
                 {
-                    // the current partition matches with a partition
-                    // from the filter, the endpoint is active
-                    endpoint_active = true;
                     break;
                 }
             }
+
+            endpoint_active &= topic_pass_filter;
         }
 
         // store the information of the active/disable endpoins,
