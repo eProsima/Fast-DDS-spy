@@ -89,6 +89,10 @@ struct ModelParser
             const SpyModel& model,
             const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic) noexcept;
     FASTDDSSPY_PARTICIPANTS_DllAPI
+    static std::vector<TopicKeysData> topics_keys_by_ddstopic(
+            SpyModel& model,
+            const std::set<eprosima::ddspipe::core::types::DdsTopic>& topics) noexcept;
+    FASTDDSSPY_PARTICIPANTS_DllAPI
     static std::vector<TopicKeysData> topics_keys(
             SpyModel& model,
             const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic) noexcept;
