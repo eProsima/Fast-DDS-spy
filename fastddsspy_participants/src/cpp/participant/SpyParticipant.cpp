@@ -86,6 +86,10 @@ utils::ReturnCode SpyParticipant::new_endpoint_info_(
     EndpointInfo info = endpoint_info.info;
     ddspipe::core::types::Guid guid = info.guid;
     model_->endpoint_database_.add_or_modify(std::move(guid), std::move(endpoint_info));
+    if (info.is_writer())
+    {
+        model_->on_writer_discovered(guid, info.topic.m_topic_name, info.active);
+    }
     return utils::ReturnCode::RETCODE_OK;
 }
 

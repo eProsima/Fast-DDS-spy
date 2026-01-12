@@ -18,6 +18,7 @@
 #include <cpp_utils/ros2_mangling.hpp>
 
 #include <fastddsspy_participants/testing/random_values.hpp>
+#include <fastddsspy_participants/testing/dynamic_types_utils.hpp>
 
 #include <fastddsspy_participants/visualization/ModelParser.hpp>
 
@@ -2780,6 +2781,336 @@ TEST(ModelParserTest, complex_topic_ros2_endpoints_ros2_types)
     }
     ASSERT_FALSE(result.rate.rate);
     ASSERT_FALSE(result.discovered);
+}
+
+/**
+ * Test topics_keys returns empty for topics without type discovered
+ */
+TEST(ModelParserTest, topics_keys_type_not_discovered)
+{
+    spy::participants::SpyModel model;
+
+    // Create topic
+    ddspipe::core::types::DdsTopic topic;
+    topic.m_topic_name = "TestTopic";
+    topic.type_name = "TestType";
+    topic.topic_qos = ddspipe::core::testing::random_topic_qos();
+
+    // Add endpoints but don't register type
+    fill_database_endpoints(model, 1, 2, topic);
+
+    // Execute topics_keys
+    std::vector<spy::participants::TopicKeysData> result;
+    result = spy::participants::ModelParser::topics_keys(
+        model, ddspipe::core::types::WildcardDdsFilterTopic());
+
+    // Should return empty because type is not discovered
+    ASSERT_EQ(result.size(), 0);
+}
+
+/**
+ * Test topics_keys with single key field and single instance
+ */
+TEST(ModelParserTest, topics_keys_single_key_single_instance)
+{
+    spy::participants::SpyModel model;
+
+    // Create topic
+    ddspipe::core::types::DdsTopic topic;
+    topic.m_topic_name = "TestTopic";
+    topic.type_name = "TestType";
+    topic.topic_qos = ddspipe::core::testing::random_topic_qos();
+
+    // Create type with single key
+    std::vector<std::string> key_names = {"id"};
+    auto dyn_type = eprosima::spy::participants::testing::create_test_type_with_keys("TestType", key_names);
+
+    // Register type
+    fastdds::dds::xtypes::TypeIdentifier type_id;
+    model.add_schema(dyn_type, type_id);
+
+    // Add endpoints
+    std::vector<spy::participants::EndpointInfoData> endpoints;
+    endpoints = fill_database_endpoints(model, 1, 1, topic);
+
+    // Create and add data with specific key
+    auto writer_guid = endpoints[1].info.guid; // Get writer GUID
+    std::map<std::string, int32_t> key_values = {{"id", 123}};
+    auto data_ptr = eprosima::spy::participants::testing::create_test_data_with_keys(dyn_type, key_values, writer_guid);
+
+    // Move the data to add_data (since RtpsPayloadData has deleted copy)
+    model.add_data(topic, *data_ptr);
+
+    // Execute topics_keys
+    std::vector<spy::participants::TopicKeysData> result;
+    result = spy::participants::ModelParser::topics_keys(
+        model, ddspipe::core::types::WildcardDdsFilterTopic());
+
+    // Verify results
+    ASSERT_EQ(result.size(), 1);
+    ASSERT_EQ(result[0].topic_name, "TestTopic");
+    ASSERT_EQ(result[0].key_fields.size(), 1);
+    ASSERT_EQ(result[0].key_fields[0], "id");
+    ASSERT_EQ(result[0].instance_count, 1);
+    ASSERT_EQ(result[0].instances.size(), 1);
+
+    // Verify instance contains key value (JSON format)
+    ASSERT_TRUE(result[0].instances[0].find("123") != std::string::npos);
+}
+
+/**
+ * Test topics_keys with multiple key fields and multiple instances
+ */
+TEST(ModelParserTest, topics_keys_multiple_keys_multiple_instances)
+{
+    spy::participants::SpyModel model;
+
+    // Create topic
+    ddspipe::core::types::DdsTopic topic;
+    topic.m_topic_name = "MultiKeyTopic";
+    topic.type_name = "MultiKeyType";
+    topic.topic_qos = ddspipe::core::testing::random_topic_qos();
+
+    // Create type with multiple keys
+    std::vector<std::string> key_names = {"sensor_id", "location_id"};
+    auto dyn_type = eprosima::spy::participants::testing::create_test_type_with_keys("MultiKeyType", key_names);
+
+    // Register type
+    fastdds::dds::xtypes::TypeIdentifier type_id;
+    model.add_schema(dyn_type, type_id);
+
+    // Add endpoints
+    std::vector<spy::participants::EndpointInfoData> endpoints;
+    endpoints = fill_database_endpoints(model, 1, 1, topic);
+    auto writer_guid = endpoints[1].info.guid;
+
+    // Add multiple instances
+    std::vector<std::map<std::string, int32_t>> instances_keys = {
+        {{"sensor_id", 1}, {"location_id", 100}},
+        {{"sensor_id", 2}, {"location_id", 100}},
+        {{"sensor_id", 1}, {"location_id", 200}}
+    };
+
+    for (const auto& keys : instances_keys)
+    {
+        auto data_ptr = eprosima::spy::participants::testing::create_test_data_with_keys(dyn_type, keys, writer_guid);
+        model.add_data(topic, *data_ptr);
+    }
+
+    // Execute topics_keys
+    std::vector<spy::participants::TopicKeysData> result;
+    result = spy::participants::ModelParser::topics_keys(
+        model, ddspipe::core::types::WildcardDdsFilterTopic());
+
+    // Verify results
+    ASSERT_EQ(result.size(), 1);
+    ASSERT_EQ(result[0].topic_name, "MultiKeyTopic");
+    ASSERT_EQ(result[0].key_fields.size(), 2);
+    ASSERT_TRUE(std::find(result[0].key_fields.begin(), result[0].key_fields.end(), "sensor_id")
+            != result[0].key_fields.end());
+    ASSERT_TRUE(std::find(result[0].key_fields.begin(), result[0].key_fields.end(), "location_id")
+            != result[0].key_fields.end());
+    ASSERT_EQ(result[0].instance_count, 3);
+    ASSERT_EQ(result[0].instances.size(), 3);
+}
+
+/**
+ * Test topics_keys with ROS2 types enabled
+ */
+TEST(ModelParserTest, topics_keys_ros2_types)
+{
+    spy::participants::SpyModel model(true); // Enable ROS2 types
+
+    // Create ROS2 topic
+    ddspipe::core::types::DdsTopic topic;
+    topic.m_topic_name = "rt/sensor_data";
+    topic.type_name = "sensor_msgs::msg::dds_::Temperature_";
+    topic.topic_qos = ddspipe::core::testing::random_topic_qos();
+
+    // Create type with key
+    std::vector<std::string> key_names = {"sensor_id"};
+    auto dyn_type = eprosima::spy::participants::testing::create_test_type_with_keys(
+        "sensor_msgs::msg::dds_::Temperature_", key_names);
+
+    // Register type
+    fastdds::dds::xtypes::TypeIdentifier type_id;
+    model.add_schema(dyn_type, type_id);
+
+    // Add endpoints
+    std::vector<spy::participants::EndpointInfoData> endpoints;
+    endpoints = fill_database_endpoints(model, 1, 1, topic);
+
+    // Add data
+    auto writer_guid = endpoints[1].info.guid;
+    std::map<std::string, int32_t> key_values = {{"sensor_id", 42}};
+    auto data_ptr = eprosima::spy::participants::testing::create_test_data_with_keys(dyn_type, key_values, writer_guid);
+    model.add_data(topic, *data_ptr);
+
+    // Execute topics_keys
+    std::vector<spy::participants::TopicKeysData> result;
+    result = spy::participants::ModelParser::topics_keys(
+        model, ddspipe::core::types::WildcardDdsFilterTopic());
+
+    // Verify ROS2 demangling
+    ASSERT_EQ(result.size(), 1);
+    ASSERT_EQ(result[0].topic_name, "/sensor_data"); // Demangled
+    ASSERT_EQ(result[0].instance_count, 1);
+}
+
+/**
+ * Test topics_keys with wildcard filter matching specific topics
+ */
+TEST(ModelParserTest, topics_keys_with_topic_filter)
+{
+    spy::participants::SpyModel model;
+
+    // Create two topics
+    ddspipe::core::types::DdsTopic topic1;
+    topic1.m_topic_name = "MatchingTopic";
+    topic1.type_name = "Type1";
+    topic1.topic_qos = ddspipe::core::testing::random_topic_qos();
+
+    ddspipe::core::types::DdsTopic topic2;
+    topic2.m_topic_name = "OtherTopic";
+    topic2.type_name = "Type2";
+    topic2.topic_qos = ddspipe::core::testing::random_topic_qos();
+
+    // Create types and register
+    auto dyn_type1 = eprosima::spy::participants::testing::create_test_type_with_keys("Type1", {"id"});
+    auto dyn_type2 = eprosima::spy::participants::testing::create_test_type_with_keys("Type2", {"key"});
+
+    fastdds::dds::xtypes::TypeIdentifier type_id;
+    model.add_schema(dyn_type1, type_id);
+    model.add_schema(dyn_type2, type_id);
+
+    // Add endpoints for both topics
+    fill_database_endpoints(model, 1, 1, topic1);
+    fill_database_endpoints(model, 1, 1, topic2);
+
+    // Create filter that only matches first topic
+    ddspipe::core::types::WildcardDdsFilterTopic filter;
+    filter.topic_name.set_value("Matching*");
+
+    // Execute topics_keys with filter
+    std::vector<spy::participants::TopicKeysData> result;
+    result = spy::participants::ModelParser::topics_keys(model, filter);
+
+    // Should only return matching topic
+    ASSERT_EQ(result.size(), 1);
+    ASSERT_EQ(result[0].topic_name, "MatchingTopic");
+}
+
+/**
+ * Test topics_keys instance cleanup when writer disappears
+ */
+TEST(ModelParserTest, topics_keys_writer_removal)
+{
+    spy::participants::SpyModel model;
+
+    // Create topic
+    ddspipe::core::types::DdsTopic topic;
+    topic.m_topic_name = "TestTopic";
+    topic.type_name = "TestType";
+    topic.topic_qos = ddspipe::core::testing::random_topic_qos();
+
+    // Create type with key
+    std::vector<std::string> key_names = {"id"};
+    auto dyn_type = eprosima::spy::participants::testing::create_test_type_with_keys("TestType", key_names);
+
+    // Register type
+    fastdds::dds::xtypes::TypeIdentifier type_id;
+    model.add_schema(dyn_type, type_id);
+
+    // Add endpoints
+    std::vector<spy::participants::EndpointInfoData> endpoints;
+    endpoints = fill_database_endpoints(model, 1, 1, topic);
+    auto writer_guid = endpoints[1].info.guid;
+
+    // Add data
+    std::map<std::string, int32_t> key_values = {{"id", 123}};
+    auto data_ptr = eprosima::spy::participants::testing::create_test_data_with_keys(dyn_type, key_values, writer_guid);
+    model.add_data(topic, *data_ptr);
+
+    // Verify instance exists
+    std::vector<spy::participants::TopicKeysData> result1;
+    result1 = spy::participants::ModelParser::topics_keys(
+        model, ddspipe::core::types::WildcardDdsFilterTopic());
+    ASSERT_EQ(result1[0].instance_count, 1);
+
+    // Simulate writer going inactive
+    model.on_writer_discovered(writer_guid, topic.m_topic_name, false);
+
+    // Verify instance removed
+    std::vector<spy::participants::TopicKeysData> result2;
+    result2 = spy::participants::ModelParser::topics_keys(
+        model, ddspipe::core::types::WildcardDdsFilterTopic());
+    ASSERT_EQ(result2[0].instance_count, 0);
+}
+
+/**
+ * Test topics_keys with type without keys
+ */
+TEST(ModelParserTest, topics_keys_no_keys)
+{
+    spy::participants::SpyModel model;
+
+    // Create topic
+    ddspipe::core::types::DdsTopic topic;
+    topic.m_topic_name = "NoKeyTopic";
+    topic.type_name = "NoKeyType";
+    topic.topic_qos = ddspipe::core::testing::random_topic_qos();
+
+    // Create type with NO keys
+    auto factory = fastdds::dds::DynamicTypeBuilderFactory::get_instance();
+    auto type_desc = fastdds::dds::traits<fastdds::dds::TypeDescriptor>::make_shared();
+    type_desc->kind(fastdds::dds::TK_STRUCTURE);
+    type_desc->name("NoKeyType");
+
+    auto type_builder = factory->create_type(type_desc);
+
+    // Add only non-key field
+    auto value_desc = fastdds::dds::traits<fastdds::dds::MemberDescriptor>::make_shared();
+    value_desc->name("value");
+    value_desc->type(factory->get_primitive_type(fastdds::dds::TK_INT32));
+    value_desc->id(0);
+    value_desc->is_key(false);
+    type_builder->add_member(value_desc);
+
+    auto dyn_type = type_builder->build();
+
+    // Register type
+    fastdds::dds::xtypes::TypeIdentifier type_id;
+    model.add_schema(dyn_type, type_id);
+
+    // Add endpoints
+    fill_database_endpoints(model, 1, 1, topic);
+
+    // Execute topics_keys
+    std::vector<spy::participants::TopicKeysData> result;
+    result = spy::participants::ModelParser::topics_keys(
+        model, ddspipe::core::types::WildcardDdsFilterTopic());
+
+    // Should return topic with empty key fields
+    ASSERT_EQ(result.size(), 1);
+    ASSERT_EQ(result[0].topic_name, "NoKeyTopic");
+    ASSERT_EQ(result[0].key_fields.size(), 0);
+    ASSERT_EQ(result[0].instance_count, 0);
+}
+
+/**
+ * Test topics_keys returns empty when model has no endpoints
+ */
+TEST(ModelParserTest, topics_keys_empty_model)
+{
+    spy::participants::SpyModel model;
+
+    // Execute topics_keys
+    std::vector<spy::participants::TopicKeysData> result;
+    result = spy::participants::ModelParser::topics_keys(
+        model, ddspipe::core::types::WildcardDdsFilterTopic());
+
+    // Should return empty
+    ASSERT_EQ(result.size(), 0);
 }
 
 /**

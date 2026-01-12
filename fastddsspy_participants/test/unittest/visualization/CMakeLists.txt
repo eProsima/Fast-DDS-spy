@@ -68,6 +68,14 @@ set(TEST_LIST
         complex_topic_dds_endpoints_ros2_types
         complex_topic_ros2_endpoints
         complex_topic_ros2_endpoints_ros2_types
+        topics_keys_type_not_discovered
+        topics_keys_single_key_single_instance
+        topics_keys_multiple_keys_multiple_instances
+        topics_keys_ros2_types
+        topics_keys_with_topic_filter
+        topics_keys_writer_removal
+        topics_keys_no_keys
+        topics_keys_empty_model
         simple_dds_endpoint_writer_filtered
         simple_dds_endpoint_writer_ros2_types_filtered
         simple_ros2_endpoint_writer_filtered

@@ -36,5 +36,9 @@ set(MODULE_DEPENDENCIES
     $<$<BOOL:${WIN32}>:iphlpapi$<SEMICOLON>Shlwapi>
     ${MODULE_FIND_PACKAGES})
 
+set(MODULE_THIRDPARTY_HEADERONLY
+    optionparser
+    nlohmann-json)
+
 set(MODULE_CPP_VERSION
     C++14)

@@ -78,6 +78,9 @@ protected:
     bool idl_argument_(
             const std::string& argument) const noexcept;
 
+    bool keys_argument_(
+            const std::string& argument) const noexcept;
+
     bool all_argument_(
             const std::string& argument) const noexcept;
 

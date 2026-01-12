@@ -30,6 +30,7 @@
 
 #include <fastddsspy_participants/library/library_dll.h>
 #include <fastddsspy_participants/model/TopicRateCalculator.hpp>
+#include <fastddsspy_participants/model/InstanceCache.hpp>
 
 namespace eprosima {
 namespace spy {
@@ -77,6 +78,20 @@ public:
     bool is_any_topic_type_discovered(
             const std::set<eprosima::ddspipe::core::types::DdsTopic>& topics) const noexcept;
 
+    FASTDDSSPY_PARTICIPANTS_DllAPI
+    std::set<std::string> get_topic_instances(
+            const std::string& topic_name) const noexcept;
+
+    FASTDDSSPY_PARTICIPANTS_DllAPI
+    std::vector<std::string> get_topic_key_fields(
+            const std::string& topic_name) const noexcept;
+
+    FASTDDSSPY_PARTICIPANTS_DllAPI
+    void on_writer_discovered(
+            const ddspipe::core::types:: Guid& writer_guid,
+            const std::string& topic_name,
+            bool active) noexcept;
+
 protected:
 
     bool is_topic_type_discovered_nts_(
@@ -96,6 +111,11 @@ protected:
     std::map<std::string, fastdds::dds::DynamicType::_ref_type> types_discovered_;
 
     mutable std::shared_timed_mutex mutex_;
+
+private:
+
+    InstanceCache instance_cache_;
+
 };
 
 } /* namespace participants */

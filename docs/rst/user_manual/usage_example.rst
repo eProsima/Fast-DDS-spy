@@ -118,6 +118,27 @@ Try out all the commands DDS Spy has to offer:
         long shapesize;
     };
 
+* ``topics Circle keys``
+
+.. code-block:: output
+
+    - topic: Circle
+      keys:
+        - color
+      instance_count: 2
+
+* ``topics Circle keys v``
+
+.. code-block:: output
+
+    - topic: Circle
+      keys:
+        - color
+      instances:
+        - color: RED
+        - color: BLUE
+      instance_count: 2
+
 * ``help``
 
 .. code-block:: output
@@ -144,6 +165,8 @@ Try out all the commands DDS Spy has to offer:
         topics vv                                 : verbose information about Topics discovered in the network.
         topics <name>                             : Topics discovered in the network filtered by name (wildcard allowed (*)).
         topics <name> idl                         : Display the IDL type definition for topics matching <name> (wildcards allowed).
+        topics <name> keys                        : Display the keys for topics matching <name> (wildcards allowed).
+        topics <name> keys v                      : verbose information about keys discovered in the network.
         filters                                   : Display the active filters.
         filters clear                             : Clear all the filter lists.
         filters remove                            : Remove all the filter lists.

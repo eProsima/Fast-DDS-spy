@@ -1,2 +1,5 @@
 fixes:
   - "src/Fast-DDS-spy/::"
+
+ignore:
+  - "fastddsspy_participants/src/cpp/testing/**"

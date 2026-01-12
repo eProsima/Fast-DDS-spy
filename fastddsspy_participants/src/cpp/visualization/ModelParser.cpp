@@ -454,6 +454,44 @@ std::string ModelParser::topics_type_idl(
 
 }
 
+std::vector<TopicKeysData> ModelParser::topics_keys(
+        SpyModel& model,
+        const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic) noexcept
+{
+    std::vector<TopicKeysData> result;
+    std::set<eprosima::ddspipe::core::types::DdsTopic> topics = get_topics(model, filter_topic);
+
+    if (topics.empty())
+    {
+        return result;
+    }
+
+    for (const auto& topic : topics)
+    {
+        std::set<eprosima::ddspipe::core::types::DdsTopic> topic_set = {topic};
+        if (!model.is_any_topic_type_discovered(topic_set))
+        {
+            continue;
+        }
+
+        TopicKeysData topic_data;
+        topic_data.topic_name = model.get_ros2_types()
+            ? utils::demangle_if_ros_topic(topic.m_topic_name)
+            : topic.m_topic_name;
+
+        auto key_field_names = model.get_topic_key_fields(topic.m_topic_name);
+        topic_data.key_fields = key_field_names;
+
+        auto instances = model.get_topic_instances(topic.m_topic_name);
+        topic_data.instances = std::vector<std::string>(instances.begin(), instances.end());
+        topic_data.instance_count = instances.size();
+
+        result.push_back(topic_data);
+    }
+
+    return result;
+}
+
 } /* namespace participants */
 } /* namespace spy */
 } /* namespace eprosima */

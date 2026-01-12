@@ -25,10 +25,91 @@
 #include <fastddsspy_yaml/library/library_dll.h>
 #include <fastddsspy_yaml/yaml_configuration_tags.hpp>
 #include <fastddsspy_yaml/YamlWriter.hpp>
+#include <nlohmann/json.hpp>
 
 namespace eprosima {
 namespace ddspipe {
 namespace yaml {
+
+static bool is_primitive_array(
+        const nlohmann::json& j)
+{
+    if (!j.is_array() || j.empty())
+    {
+        return false;
+    }
+    for (const auto& element : j)
+    {
+        if (!element.is_primitive())
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+static YAML::Node json_to_yaml(
+        const nlohmann::json& j)
+{
+    YAML::Node node;
+    if (j.is_null())
+    {
+        // Return empty/null node
+        return node;
+    }
+    else if (j.is_boolean())
+    {
+        node = j.get<bool>();
+    }
+    else if (j.is_number_integer())
+    {
+        node = j.get<int64_t>();
+    }
+    else if (j.is_number_unsigned())
+    {
+        node = j.get<uint64_t>();
+    }
+    else if (j.is_number_float())
+    {
+        node = j.get<double>();
+    }
+    else if (j.is_string())
+    {
+        node = j.get<std::string>();
+    }
+    else if (j.is_array())
+    {
+        if (is_primitive_array(j))
+        {
+            YAML::Node array_node(YAML::NodeType::Sequence);
+            for (const auto& element : j)
+            {
+                array_node.push_back(json_to_yaml(element));
+            }
+            array_node.SetStyle(YAML::EmitterStyle::Flow);
+            return array_node;
+        }
+        else
+        {
+            // Use block style for arrays containing objects
+            node = YAML::Node(YAML::NodeType::Sequence);
+            for (const auto& element : j)
+            {
+                node.push_back(json_to_yaml(element));
+            }
+        }
+    }
+    else if (j.is_object())
+    {
+        node = YAML::Node(YAML::NodeType::Map);
+        for (auto it = j.begin(); it != j.end(); ++it)
+        {
+            node[it.key()] = json_to_yaml(it.value());
+        }
+    }
+
+    return node;
+}
 
 using namespace eprosima::spy::participants;
 
@@ -223,6 +304,49 @@ void set(
     set_in_tag(yml, "writer", value.writer);
     set_in_tag(yml, "partitions", value.partitions);
     set_in_tag(yml, "timestamp", value.timestamp);
+}
+
+template <>
+void set(
+        Yaml& yml,
+        const TopicKeysData& value,
+        bool is_compact)
+{
+    set_in_tag(yml, "topic", value.topic_name);
+    if (value.key_fields.empty())
+    {
+        yml["keys"] = YAML::Node(YAML::NodeType:: Sequence);
+    }
+    else
+    {
+        set_in_tag(yml, "keys", value.key_fields);
+    }
+    if (!is_compact)
+    {
+        if (value.instances.empty())
+        {
+            yml["instances"] = YAML::Node(YAML::NodeType:: Sequence);
+        }
+        else
+        {
+            YAML::Node instances_node;
+            for (const auto& instance_json_str : value.instances)
+            {
+                try
+                {
+                    nlohmann::json j = nlohmann::json::parse(instance_json_str);
+                    YAML::Node yaml_instance = json_to_yaml(j);
+                    instances_node.push_back(yaml_instance);
+                }
+                catch (const std::exception& e)
+                {
+                    instances_node.push_back(instance_json_str);
+                }
+            }
+            yml["instances"] = instances_node;
+        }
+    }
+    yml["instance_count"] = value.instance_count;
 }
 
 } /* namespace yaml */

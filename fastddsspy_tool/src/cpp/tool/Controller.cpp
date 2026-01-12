@@ -436,6 +436,16 @@ bool Controller::idl_argument_(
     return (argument == "idl");
 }
 
+bool Controller::keys_argument_(
+        const std::string& argument) const noexcept
+{
+    return (
+        (argument == "keys")
+        || (argument == "key")
+        || (argument == "k")
+        || (argument == "K"));
+}
+
 bool Controller::all_argument_(
         const std::string& argument) const noexcept
 {
@@ -601,7 +611,9 @@ void Controller::topics_command_(
         }
         else if (idl_argument_(arg_2))
         {
+            // Handle 'topics <name> idl'
             auto data = participants::ModelParser::topics_type_idl(*model_, filter_topic);
+
             if (data.empty())
             {
                 view_.show_error(STR_ENTRY
@@ -613,6 +625,22 @@ void Controller::topics_command_(
 
             std::cout << '\n' << data << std::endl;
         }
+        else if (keys_argument_(arg_2))
+        {
+            // Handle 'topics <name> keys'
+            auto data = participants:: ModelParser::topics_keys(*model_, filter_topic);
+
+            if (data.empty())
+            {
+                view_.show_error(STR_ENTRY
+                        << "<"
+                        << arguments[1]
+                        << "> does not match any topic in the DDS network or no type information available.");
+                return;
+            }
+
+            ddspipe::yaml::set(yml, data, true);
+        }
 
         else
         {
@@ -620,8 +648,44 @@ void Controller::topics_command_(
                     << "<"
                     << arguments[2]
                     << "> is not a valid topic option. "
-                    << "Valid options are \"v \", \"vv\" (verbosity modes) or or \"idl\".");
+                    << "Valid options are \"v \", \"vv\" (verbosity modes), \"idl\" or \"keys\".");
             return;
+        }
+    }
+    else if (arguments.size() == 4)
+    {
+        const std::string& arg_1 = arguments[1];
+
+        ddspipe::core::types::WildcardDdsFilterTopic filter_topic;
+        filter_topic.topic_name = arg_1;
+
+        const std::string& arg_2 = arguments[2];
+
+        if (keys_argument_(arg_2))
+        {
+            // Handle 'topics <name> keys v'
+            auto data = participants:: ModelParser::topics_keys(*model_, filter_topic);
+
+            if (data.empty())
+            {
+                view_.show_error(STR_ENTRY
+                        << "<"
+                        << arguments[1]
+                        << "> does not match any topic in the DDS network or no type information available.");
+                return;
+            }
+
+            const std::string& arg_3 = arguments[3];
+            if (verbose_argument_(arg_3))
+            {
+                ddspipe::yaml::set(yml, data, false);
+            }
+            else
+            {
+                view_.show_error(STR_ENTRY
+                        << "Last argument <" << arg_3 << "> is not valid. "
+                        << "Only \"v\" (verbosity mdode) is allowed after \"keys\".");
+            }
         }
     }
 
@@ -774,6 +838,10 @@ void Controller::help_command_(
             "\ttopics <name>                             : Topics discovered in the network filtered by name (wildcard allowed (*)).\n"
             <<
             "\ttopics <name> idl                         : Display the IDL type definition for topics matching <name> (wildcards allowed).\n"
+            <<
+            "\ttopics <name> keys                        : Display the keys for topics matching <name> (wildcards allowed).\n"
+            <<
+            "\ttopics <name> keys v                      : verbose information about keys discovered in the network.\n"
             << "\tfilters                                   : Display the active filters.\n"
             << "\tfilters clear                             : Clear all the filter lists.\n"
             << "\tfilters remove                            : Remove all the filter lists.\n"

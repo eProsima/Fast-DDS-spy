@@ -33,6 +33,10 @@ set(TEST_LIST
         test_SimpleTopicData_compact_true
         test_ComplexTopicData
         test_DdsDataData
+        test_TopicKeysData_compact_true
+        test_TopicKeysData_compact_false
+        test_TopicKeysData_json_comprehensive
+        test_TopicKeysData_json_malformed
     )
 
 set(TEST_EXTRA_LIBRARIES
