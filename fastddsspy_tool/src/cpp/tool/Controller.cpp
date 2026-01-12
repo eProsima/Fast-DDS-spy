@@ -825,16 +825,20 @@ void Controller::help_command_(
             << "\tparticipants                              : DomainParticipants discovered in the network.\n"
             <<
             "\tparticipants verbose                      : verbose information about DomainParticipants discovered in the network.\n"
-            << "\tparticipants <Guid>                       : verbose information related with a specific DomainParticipant.\n"
+            <<
+                    "\tparticipants <Guid>                       : verbose information related with a specific DomainParticipant.\n"
             << "\twriters                                   : DataWriters discovered in the network.\n"
-            << "\twriters verbose                           : verbose information about DataWriters discovered in the network.\n"
+            <<
+                    "\twriters verbose                           : verbose information about DataWriters discovered in the network.\n"
             << "\twriters <Guid>                            : verbose information related with a specific DataWriter.\n"
             << "\treader                                    : DataReaders discovered in the network.\n"
-            << "\treader verbose                            : verbose information about DataReaders discovered in the network.\n"
+            <<
+                    "\treader verbose                            : verbose information about DataReaders discovered in the network.\n"
             << "\treader <Guid>                             : verbose information related with a specific DataReader.\n"
             << "\ttopics                                    : Topics discovered in the network in compact format.\n"
             << "\ttopics v                                  : Topics discovered in the network.\n"
-            << "\ttopics vv                                 : verbose information about Topics discovered in the network.\n"
+            <<
+                    "\ttopics vv                                 : verbose information about Topics discovered in the network.\n"
             <<
             "\ttopics <name>                             : Topics discovered in the network filtered by name (wildcard allowed (*)).\n"
             <<
@@ -848,10 +852,12 @@ void Controller::help_command_(
             << "\tfilters remove                            : Remove all the filter lists.\n"
             << "\tfilter clear <category>                   : Clear <category> filter list.\n"
             << "\tfilter remove <category>                  : Remove <category> filter list.\n"
-            << "\tfilter set <category> <filter_str>        : Set <category> filter list with <filter_str> as first value.\n"
+            <<
+                    "\tfilter set <category> <filter_str>        : Set <category> filter list with <filter_str> as first value.\n"
             << "\tfilter add <category> <filter_str>        : Add <filter_str> in <category> filter list.\n"
             << "\tfilter remove <category> <filter_str>     : Remove <filter_str> in <category> filter list.\n"
-            << "\techo <name>                               : data of a specific Topic (Data Type must be discovered).\n"
+            <<
+                    "\techo <name>                               : data of a specific Topic (Data Type must be discovered).\n"
             <<
             "\techo <wildcard_name>                      : data of Topics matching the wildcard name (and whose Data Type is discovered).\n"
             << "\techo <name> verbose                       : data with additional source info of a specific Topic.\n"
@@ -1186,7 +1192,7 @@ bool Controller::check_filter_partitions(
     std::string curr_partition;
     bool endpoint_active;
 
-    if(partitions_exists)
+    if (partitions_exists)
     {
         // get the partition set of the current endpoint
         for (const auto& guid_partition_pair: endpoint.second.info.specific_partitions)
@@ -1247,43 +1253,43 @@ bool Controller::check_filter_keys(
 {
 
     const auto& split_once = [&](const std::string& s, char delim = ':')
-        -> std::pair<std::string, std::string>
-    {
-        // Splits "name:value" → {"name","value"}
+            -> std::pair<std::string, std::string>
+            {
+                // Splits "name:value" → {"name","value"}
 
-        const std::size_t pos = s.find(delim);
-        if (pos == std::string::npos)
-        {
-            return std::make_pair(s, std::string());
-        }
+                const std::size_t pos = s.find(delim);
+                if (pos == std::string::npos)
+                {
+                    return std::make_pair(s, std::string());
+                }
 
-        return std::make_pair(s.substr(0, pos), s.substr(pos + 1));
-    };
+                return std::make_pair(s.substr(0, pos), s.substr(pos + 1));
+            };
 
     const auto& extract_instance_value = [&](const std::string& instance)
-        -> std::string
-    {
-        // Extracts value from: {\"flight_number\":111} → "111"
+            -> std::string
+            {
+                // Extracts value from: {\"flight_number\":111} → "111"
 
-        const std::size_t colon = instance.find(':');
-        if (colon == std::string::npos)
-        {
-            return std::string();
-        }
+                const std::size_t colon = instance.find(':');
+                if (colon == std::string::npos)
+                {
+                    return std::string();
+                }
 
-        std::size_t start = colon + 1;
-        std::size_t end = instance.find('}', start);
+                std::size_t start = colon + 1;
+                std::size_t end = instance.find('}', start);
 
-        if (end == std::string::npos)
-        {
-            end = instance.size();
-        }
+                if (end == std::string::npos)
+                {
+                    end = instance.size();
+                }
 
-        return instance.substr(start, end - start);
-    };
+                return instance.substr(start, end - start);
+            };
 
 
-    if(keys_exists)
+    if (keys_exists)
     {
         // Get the topic keys data from the current endpoint
         auto topic_keys = participants::ModelParser::topics_keys_by_ddstopic(*model_, {endpoint.second.info.topic});
