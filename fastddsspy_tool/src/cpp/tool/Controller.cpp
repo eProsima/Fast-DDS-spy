@@ -680,6 +680,12 @@ void Controller::topics_command_(
             {
                 ddspipe::yaml::set(yml, data, false);
             }
+            else
+            {
+                view_.show_error(STR_ENTRY
+                        << "Last argument <" << arg_3 << "> is not valid. "
+                        << "Only \"v\" (verbosity mdode) is allowed after \"keys\".");
+            }
         }
     }
 
