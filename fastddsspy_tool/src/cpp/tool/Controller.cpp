@@ -27,6 +27,7 @@
 #include <fastddsspy_participants/library/config.h>
 #include <fastddsspy_participants/model/SpyModel.hpp>
 #include <fastddsspy_participants/visualization/ModelParser.hpp>
+#include <fastddsspy_participants/types/EndpointInfo.hpp>
 
 #include <fastddsspy_yaml/YamlReaderConfiguration.hpp>
 #include "yaml-cpp/yaml.h"
@@ -1103,43 +1104,10 @@ void Controller::filter_command_(
     }
 }
 
-static inline std::pair<std::string, std::string> split_once(const std::string& s, char delim = ':')
-{
-    // Splits "name:value" → {"name","value"}
-
-    const std::size_t pos = s.find(delim);
-    if (pos == std::string::npos)
-    {
-        return std::make_pair(s, std::string());
-    }
-    return std::make_pair(s.substr(0, pos), s.substr(pos + 1));
-}
-
-static inline std::string extract_instance_value(const std::string& instance)
-{
-    // Extracts value from: {\"flight_number\":111} → "111"
-
-    const std::size_t colon = instance.find(':');
-    if (colon == std::string::npos)
-    {
-        return std::string();
-    }
-
-    std::size_t start = colon + 1;
-    std::size_t end = instance.find('}', start);
-
-    if (end == std::string::npos)
-    {
-        end = instance.size();
-    }
-
-    return instance.substr(start, end - start);
-}
-
 void Controller::update_filter_partitions()
 {
-    // new filter partition list
-    // update the endpoints active variable
+    // New filter partition list
+    //  update the endpoints active variable
 
     std::string topic_name;
     std::set<std::string> topic_set;
@@ -1152,123 +1120,17 @@ void Controller::update_filter_partitions()
     bool partitions_exists = filter_dict.find("partitions") != filter_dict.end();
     bool keys_exists = filter_dict.find("keys") != filter_dict.end();
 
-    for (const auto& endpoint: model_->endpoint_database_)
+    for (endpoint_pair endpoint: model_->endpoint_database_)
     {
         topic_name = endpoint.second.info.topic.m_topic_name;
 
+        // Check the filters
         endpoint_active = true;
+        endpoint_active &= check_filter_partitions(endpoint, partitions_exists);
+        endpoint_active &= check_filter_keys(endpoint, keys_exists);
 
-        if(partitions_exists)
-        {
-            // get the partition set of the current endpoint
-            for (const auto& guid_partition_pair: endpoint.second.info.specific_partitions)
-            {
-                i = 0;
-                n = guid_partition_pair.second.size();
-                curr_partition = "";
-                endpoint_active = filter_dict["partitions"].empty();
-                // iterate in the partition set
-                while (i < n)
-                {
-                    if (guid_partition_pair.second[i] == '|')
-                    {
-                        for (std::string filter_p: filter_dict["partitions"])
-                        {
-                            if (utils::match_pattern(filter_p, curr_partition) ||
-                                    utils::match_pattern(curr_partition, filter_p))
-                            {
-                                // the current partition matches with a partition
-                                // from the filter, the endpoint is active
-                                endpoint_active = true;
-                                break;
-                            }
-                        }
-
-                        curr_partition = "";
-                    }
-                    else
-                    {
-                        curr_partition += guid_partition_pair.second[i];
-                    }
-
-                    i++;
-                }
-
-                // empty or last partition
-                for (std::string filter_p: filter_dict["partitions"])
-                {
-                    if (utils::match_pattern(filter_p, curr_partition) ||
-                            utils::match_pattern(curr_partition, filter_p))
-                    {
-                        // the current partition matches with a partition
-                        // from the filter, the endpoint is active
-                        endpoint_active = true;
-                        break;
-                    }
-                }
-            }
-
-        }
-
-        if(keys_exists)
-        {
-            std::set<ddspipe::core::types::DdsTopic> topic_set = {endpoint.second.info.topic};
-            auto topic_keys = participants::ModelParser::topics_keys_by_ddstopic(*model_, topic_set);
-            bool topic_pass_filter = false;
-            std::string key_name, key_val;
-
-
-            for (const auto& topic_key_data : topic_keys)
-            {
-                topic_pass_filter = false;
-
-                for (const auto& key_filter_str : filter_dict["keys"])
-                {
-                    const auto key_pair = split_once(key_filter_str, ':');
-                    const std::string& key_name = key_pair.first;
-                    const std::string& key_val  = key_pair.second;
-
-                    bool has_key = false;
-                    for (const auto& topic_key : topic_key_data.key_fields)
-                    {
-                        if (topic_key == key_name)
-                        {
-                            has_key = true;
-                            break;
-                        }
-                    }
-
-                    if (!has_key)
-                    {
-                        continue;
-                    }
-
-                    for (const auto& inst : topic_key_data.instances)
-                    {
-                        if (extract_instance_value(inst) == key_val)
-                        {
-                            topic_pass_filter = true;
-                            break;
-                        }
-                    }
-
-                    if (topic_pass_filter)
-                    {
-                        break;
-                    }
-                }
-
-                if (topic_pass_filter)
-                {
-                    break;
-                }
-            }
-
-            endpoint_active &= topic_pass_filter;
-        }
-
-        // store the information of the active/disable endpoins,
-        // later used for changing the active variable of all endpoints.
+        // Store the information of the active/disable endpoins,
+        //  later used for changing the active variable of all endpoints.
         if (!endpoint_active)
         {
             v_guid_disable.push_back(endpoint.first);
@@ -1278,7 +1140,7 @@ void Controller::update_filter_partitions()
             v_guid_active.push_back(endpoint.first);
         }
 
-        // update tracker if it has not being updated before
+        // Update tracker if it has not being updated before
         if (topic_set.find(topic_name) == topic_set.end())
         {
             backend_.update_readers_track(topic_name, filter_dict["partitions"]);
@@ -1286,16 +1148,22 @@ void Controller::update_filter_partitions()
         }
     }
 
-    // update the filter of partitions in the pipeline
+    // TODO. danip
+    // Update the filter of partitions in the pipeline
     backend_.update_pipeline_filter(filter_dict["partitions"]);
 
     if (!partitions_exists)
     {
-        // remove the partition list if it was not created before.
+        // Remove the partition list if it was not created before.
         filter_dict.erase("partitions");
     }
+    if (!keys_exists)
+    {
+        // Remove the keys list if it was not created before.
+        filter_dict.erase("keys");
+    }
 
-    // change the active variable of the dabase
+    // Change the active variable of the dabase
     for (const auto& curr_guid: v_guid_disable)
     {
         auto endpoint_tmp = model_->endpoint_database_.find(curr_guid)->second;
@@ -1308,6 +1176,163 @@ void Controller::update_filter_partitions()
         endpoint_tmp.info.active = true;
         model_->endpoint_database_.add_or_modify(curr_guid, endpoint_tmp);
     }
+}
+
+bool Controller::check_filter_partitions(
+        const endpoint_pair endpoint,
+        bool partitions_exists)
+{
+    int i, n;
+    std::string curr_partition;
+    bool endpoint_active;
+
+    if(partitions_exists)
+    {
+        // get the partition set of the current endpoint
+        for (const auto& guid_partition_pair: endpoint.second.info.specific_partitions)
+        {
+            i = 0;
+            n = guid_partition_pair.second.size();
+            curr_partition = "";
+            endpoint_active = filter_dict["partitions"].empty();
+            // iterate in the partition set
+            while (i < n)
+            {
+                if (guid_partition_pair.second[i] == '|')
+                {
+                    for (std::string filter_p: filter_dict["partitions"])
+                    {
+                        if (utils::match_pattern(filter_p, curr_partition) ||
+                                utils::match_pattern(curr_partition, filter_p))
+                        {
+                            // The current partition matches with a partition
+                            //  from the filter, the endpoint is active
+                            return true;
+                        }
+                    }
+
+                    curr_partition = "";
+                }
+                else
+                {
+                    curr_partition += guid_partition_pair.second[i];
+                }
+
+                i++;
+            }
+
+            // Empty or last partition
+            for (std::string filter_p: filter_dict["partitions"])
+            {
+                if (utils::match_pattern(filter_p, curr_partition) ||
+                        utils::match_pattern(curr_partition, filter_p))
+                {
+                    // The current partition matches with a partition
+                    //  from the filter, the endpoint is active
+                    return true;
+                }
+            }
+        }
+
+    }
+
+    // Return true if no partition filter exists
+    //        false if exists but no match found
+    return !partitions_exists;
+}
+
+bool Controller::check_filter_keys(
+        const endpoint_pair endpoint,
+        bool keys_exists)
+{
+
+    const auto& split_once = [&](const std::string& s, char delim = ':')
+        -> std::pair<std::string, std::string>
+    {
+        // Splits "name:value" → {"name","value"}
+
+        const std::size_t pos = s.find(delim);
+        if (pos == std::string::npos)
+        {
+            return std::make_pair(s, std::string());
+        }
+
+        return std::make_pair(s.substr(0, pos), s.substr(pos + 1));
+    };
+
+    const auto& extract_instance_value = [&](const std::string& instance)
+        -> std::string
+    {
+        // Extracts value from: {\"flight_number\":111} → "111"
+
+        const std::size_t colon = instance.find(':');
+        if (colon == std::string::npos)
+        {
+            return std::string();
+        }
+
+        std::size_t start = colon + 1;
+        std::size_t end = instance.find('}', start);
+
+        if (end == std::string::npos)
+        {
+            end = instance.size();
+        }
+
+        return instance.substr(start, end - start);
+    };
+
+
+    if(keys_exists)
+    {
+        // Get the topic keys data from the current endpoint
+        auto topic_keys = participants::ModelParser::topics_keys_by_ddstopic(*model_, {endpoint.second.info.topic});
+        std::string key_name, key_val;
+
+        // Iterate through the list of topic key data
+        for (const auto& topic_key_data : topic_keys)
+        {
+            // Iterate through the key filters
+            for (const auto& key_filter_str : filter_dict["keys"])
+            {
+                // Split the key filter string into "name" and "value"
+                const auto key_pair = split_once(key_filter_str, ':');
+                const std::string& key_name = key_pair.first;
+                const std::string& key_val  = key_pair.second;
+
+                // Check if the current topic key data name matches the key filter
+                bool has_key = false;
+                for (const auto& topic_key : topic_key_data.key_fields)
+                {
+                    if (topic_key == key_name)
+                    {
+                        has_key = true;
+                        break;
+                    }
+                }
+
+                if (!has_key)
+                {
+                    // Do not match, continue with the next key filter
+                    continue;
+                }
+
+                // Iterate through the instances to find a matching key value
+                for (const auto& inst : topic_key_data.instances)
+                {
+                    if (extract_instance_value(inst) == key_val)
+                    {
+                        // Match found, the current endpoint passes the key filter
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+
+    // Return true if no partition filter exists
+    //        false if exists but no match found
+    return !keys_exists;
 }
 
 } /* namespace spy */
