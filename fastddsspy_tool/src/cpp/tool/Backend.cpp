@@ -150,6 +150,19 @@ std::shared_ptr<eprosima::spy::participants::SpyModel> Backend::model() const no
     return model_;
 }
 
+void Backend::update_readers_track_partitions(
+        std::set<std::string> partitions_set)
+{
+    pipe_->update_partitions(partitions_set);
+}
+
+void Backend::update_readers_track_content_filter(
+        const std::string& topic_name,
+        const std::string& expression)
+{
+    pipe_->update_content_filter(topic_name, expression);
+}
+
 void Backend::update_readers_track(
         const std::string topic_name,
         const std::set<std::string> filter_partition_set)

@@ -40,6 +40,7 @@ SpyDdsXmlParticipant::SpyDdsXmlParticipant(
     // Do nothing
 }
 
+// TODO. danip. JUANs suggestion
 std::shared_ptr<ddspipe::core::IReader> SpyDdsXmlParticipant::create_reader(
         const ddspipe::core::ITopic& topic)
 {
@@ -55,8 +56,13 @@ std::shared_ptr<ddspipe::core::IReader> SpyDdsXmlParticipant::create_reader(
         return this->endpoints_reader_;
     }
 
+    std::shared_ptr<ddspipe::core::IReader> ret =
+        ddspipe::participants::XmlDynTypesParticipant::create_reader(topic);
+
+    //ret->update_content_topic_filter("");
+
     // If not type object, use the parent method
-    return ddspipe::participants::XmlDynTypesParticipant::create_reader(topic);
+    return ret;
 }
 
 SpyDdsXmlParticipant::SpyDdsXmlParticipantListener::SpyDdsXmlParticipantListener(
