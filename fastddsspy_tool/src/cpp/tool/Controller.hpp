@@ -31,6 +31,8 @@
 namespace eprosima {
 namespace spy {
 
+using endpoint_pair = std::pair<ddspipe::core::types::Guid, eprosima::spy::participants::EndpointInfoData>;
+
 class Controller
 {
 public:
@@ -117,8 +119,6 @@ protected:
     void error_command_(
             const std::vector<std::string>& arguments) noexcept;
 
-    void update_filter_partitions();
-
     /////////////////////
     // VARIABLES
     Backend backend_;
@@ -143,9 +143,28 @@ private:
 
     void refresh_database();
 
+    /*void global_filter(
+            const std::string& topic_name,
+            const std::string& expression);*/
+
+    void update_partitions();
+    void update_topics();
+    void update_content_topicfilter(const std::string& topic_name);
+
+
+    bool check_filter_partitions(
+            const endpoint_pair endpoint);
+
+    /*bool check_filter_keys(
+            const endpoint_pair endpoint,
+            bool keys_exists);*/
+
     std::mutex view_mutex_;
 
-    std::map<std::string, std::set<std::string>> filter_dict;
+    //std::map<std::string, std::pair<std::string, std::set<std::string>>> filter_dict;
+
+    std::set<std::string> partition_filter_set_;
+    std::map<std::string, std::string> topic_filter_dict_;
 
     std::set<std::string> allowed_filters_categories_;
 

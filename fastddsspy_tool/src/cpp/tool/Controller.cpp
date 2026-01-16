@@ -27,6 +27,7 @@
 #include <fastddsspy_participants/library/config.h>
 #include <fastddsspy_participants/model/SpyModel.hpp>
 #include <fastddsspy_participants/visualization/ModelParser.hpp>
+#include <fastddsspy_participants/types/EndpointInfo.hpp>
 
 #include <fastddsspy_yaml/YamlReaderConfiguration.hpp>
 #include "yaml-cpp/yaml.h"
@@ -147,7 +148,8 @@ void Controller::run()
         // refresh the database if a filter partition is active.
         // this checks if there is a new endpoint that does not
         // pass the filter and disable it
-        refresh_database();
+        // TODO
+        //refresh_database();
         run_command_(command);
     }
 }
@@ -166,7 +168,7 @@ void Controller::refresh_database()
     std::vector<ddspipe::core::types::Guid> v_guid_disable;
 
     // check if there is a filter partition
-    if (filter_dict.find("partitions") != filter_dict.end())
+    if (partition_filter_set_.size() > 0)
     {
         for (const auto& endpoint: model_->endpoint_database_)
         {
@@ -195,7 +197,7 @@ void Controller::refresh_database()
                 if (endpoint_partitions[i] == '|')
                 {
                     // check if the current partition is in the filter
-                    for (std::string filter_p: filter_dict["partitions"])
+                    for (std::string filter_p: partition_filter_set_)
                     {
                         if (utils::match_pattern(filter_p, curr_partition) ||
                                 utils::match_pattern(curr_partition, filter_p))
@@ -226,7 +228,7 @@ void Controller::refresh_database()
             }
 
             // empty or last partition of the set
-            for (std::string filter_p: filter_dict["partitions"])
+            for (std::string filter_p: partition_filter_set_)
             {
                 if (utils::match_pattern(filter_p, curr_partition) ||
                         utils::match_pattern(curr_partition, filter_p))
@@ -824,16 +826,20 @@ void Controller::help_command_(
             << "\tparticipants                              : DomainParticipants discovered in the network.\n"
             <<
             "\tparticipants verbose                      : verbose information about DomainParticipants discovered in the network.\n"
-            << "\tparticipants <Guid>                       : verbose information related with a specific DomainParticipant.\n"
+            <<
+                    "\tparticipants <Guid>                       : verbose information related with a specific DomainParticipant.\n"
             << "\twriters                                   : DataWriters discovered in the network.\n"
-            << "\twriters verbose                           : verbose information about DataWriters discovered in the network.\n"
+            <<
+                    "\twriters verbose                           : verbose information about DataWriters discovered in the network.\n"
             << "\twriters <Guid>                            : verbose information related with a specific DataWriter.\n"
             << "\treader                                    : DataReaders discovered in the network.\n"
-            << "\treader verbose                            : verbose information about DataReaders discovered in the network.\n"
+            <<
+                    "\treader verbose                            : verbose information about DataReaders discovered in the network.\n"
             << "\treader <Guid>                             : verbose information related with a specific DataReader.\n"
             << "\ttopics                                    : Topics discovered in the network in compact format.\n"
             << "\ttopics v                                  : Topics discovered in the network.\n"
-            << "\ttopics vv                                 : verbose information about Topics discovered in the network.\n"
+            <<
+                    "\ttopics vv                                 : verbose information about Topics discovered in the network.\n"
             <<
             "\ttopics <name>                             : Topics discovered in the network filtered by name (wildcard allowed (*)).\n"
             <<
@@ -847,10 +853,12 @@ void Controller::help_command_(
             << "\tfilters remove                            : Remove all the filter lists.\n"
             << "\tfilter clear <category>                   : Clear <category> filter list.\n"
             << "\tfilter remove <category>                  : Remove <category> filter list.\n"
-            << "\tfilter set <category> <filter_str>        : Set <category> filter list with <filter_str> as first value.\n"
+            <<
+                    "\tfilter set <category> <filter_str>        : Set <category> filter list with <filter_str> as first value.\n"
             << "\tfilter add <category> <filter_str>        : Add <filter_str> in <category> filter list.\n"
             << "\tfilter remove <category> <filter_str>     : Remove <filter_str> in <category> filter list.\n"
-            << "\techo <name>                               : data of a specific Topic (Data Type must be discovered).\n"
+            <<
+                    "\techo <name>                               : data of a specific Topic (Data Type must be discovered).\n"
             <<
             "\techo <wildcard_name>                      : data of Topics matching the wildcard name (and whose Data Type is discovered).\n"
             << "\techo <name> verbose                       : data with additional source info of a specific Topic.\n"
@@ -879,19 +887,21 @@ void Controller::error_command_(
 void Controller::filter_command_(
         const std::vector<std::string>& arguments) noexcept
 {
-    const auto& check_filter_dict_contains_category = [&](std::string category, bool& ret)
+    const auto& check_filter_contains_value = [&](std::string category, std::string value, bool& ret)
             {
-                if (filter_dict.find(category) == filter_dict.end())
+                if(category == "partitions" &&
+                    partition_filter_set_.find(value) != partition_filter_set_.end())
                 {
-                    view_.show_error(STR_ENTRY
-                            << "Filter list do not contains category: "
-                            << category
-                            << ".");
-                    ret = false;
+                    ret = true;
+                }
+                else if(category == "topic" &&
+                    topic_filter_dict_.find(value) != topic_filter_dict_.end())
+                {
+                    ret = true;
                 }
                 else
                 {
-                    ret = true;
+                    ret = false;
                 }
             };
 
@@ -899,6 +909,9 @@ void Controller::filter_command_(
     std::string operation;
     std::string category;
     std::string filter_str;
+    std::string topic_str;
+
+    std::set<std::string> supported_filters = { "partitions", /*"keys",*/ "topic"};
 
     if (arguments.size() == 1) // print filters
     {
@@ -912,14 +925,21 @@ void Controller::filter_command_(
         }
 
         // print the filters list
-        std::cout << "Filter lists (" << filter_dict.size() << ")\n";
-        for (const auto& category: filter_dict)
+        //std::cout << "Filter lists (" << filter_dict.size() << ")\n";
+        std::cout << "--------\n";
+        std::cout << "Filters:\n";
+        std::cout << "--------\n\n";
+        std::cout << "  Topic:\n";
+        for (const auto& topic_pair: topic_filter_dict_)
         {
-            std::cout << "\n  " << category.first << " (" << category.second.size() << "):\n";
-            for (std::string filter: category.second)
-            {
-                std::cout << "    - " << (filter == "" ? "\"\"" : filter) << "\n";
-            }
+            std::cout << "    " << topic_pair.first << ": \"" << topic_pair.second << "\"\n";
+        }
+
+        std::cout << "\n  Partitions:\n";
+
+        for (const auto& partition: partition_filter_set_)
+        {
+            std::cout << "    - " << (partition == "" ? "\"\"" : partition) << "\n";
         }
     }
     else if (arguments.size() == 2) // clear filters
@@ -942,11 +962,13 @@ void Controller::filter_command_(
         }
 
         // clear ther filters list
-        filter_dict.clear();
+        partition_filter_set_.clear();
+        topic_filter_dict_.clear();
 
-        update_filter_partitions();
+        update_partitions();
+        update_topics();
     }
-    else if (arguments.size() == 3) // filter <clear/removes> <category>
+    else if (arguments.size() == 3) // filter clear <category>
     {
         if (arguments[0] == "filters")
         {
@@ -959,35 +981,29 @@ void Controller::filter_command_(
 
         operation = arguments[1];
         category = arguments[2];
-
-        bool pass;
-        check_filter_dict_contains_category(category, pass);
-        if (!pass)
+        // std::set<std::string> allowed_args = {"clear"};//, "remove"};
+        // if (allowed_args.find(operation) == allowed_args.end())
+        if (operation != "clear" || supported_filters.count(category) == 0)
         {
-            // filter_dict do not contains the category
-            return;
-        }
-        std::set<std::string> allowed_args = {"clear", "remove"};
-        if (allowed_args.find(arguments[1]) == allowed_args.end())
-        {
+            // incorrect operation ("clear")
+            // or incorrect category ("partitions", "topic")
             view_.show_error(STR_ENTRY
-                    << "To clear or remove a filter category do: \"filters <clear/remove> <category>\".");
+                    << "To clear a filter category do: \"filters clear <category>\".");
             return;
         }
 
-        if (operation == "clear")
+        if(category == "partitions")
         {
-            filter_dict[category].clear();
+            partition_filter_set_.clear();
+            update_partitions();
         }
-        else if (operation == "remove")
+        else
         {
-            filter_dict.erase(category);
+            topic_filter_dict_.clear();
+            update_topics();
         }
 
-        if (category == "partitions")
-        {
-            update_filter_partitions();
-        }
+        
     }
     else if (arguments.size() == 4)
     {
@@ -1000,98 +1016,111 @@ void Controller::filter_command_(
             return;
         }
 
-        operation = arguments[1];
-        category = arguments[2];
-        filter_str = arguments[3];
+        operation = arguments[1]; // <add/remove>
+        category = arguments[2]; // partitions
+        filter_str = arguments[3]; // filter string
 
-        std::set<std::string> allowed_args = {"set", "add", "remove"};
-        if (allowed_args.find(arguments[1]) == allowed_args.end())
+
+        std::set<std::string> allowed_args = {"add", "remove"};
+        if (allowed_args.find(operation) == allowed_args.end() ||
+            category != "partitions")
         {
+            // Operation not allowed
+            // or category not supported
             view_.show_error(STR_ENTRY
                     << "Command <"
                     << arguments[0]
                     << "> with 4 arguments have the following format: "
-                    << arguments[0] << "<set/add/remove> <category> <filter_str>.");
+                    << arguments[0] << "<add/remove> partitions <filter_str>.");
+            return;
+        }
+
+        if (operation == "add")
+        {
+            // Add "filter_str" for partitions filter
+
+            bool contains;
+            check_filter_contains_value(category, filter_str, contains);
+            if (contains)
+            {
+                view_.show_error(STR_ENTRY
+                        << "Partitions filter already contains filter_str: " << filter_str
+                        << ".");
+                return;
+            }
+
+            partition_filter_set_.insert(filter_str);
+        }
+        else
+        {
+            bool contains;
+            check_filter_contains_value(category, filter_str, contains);
+            if (!contains)
+            {
+                view_.show_error(STR_ENTRY
+                        << "Partitions filter do not contains filter_str: " << filter_str
+                        << ".");
+                return;
+            }
+
+            partition_filter_set_.erase(filter_str);
+        }
+
+        update_partitions();
+    }
+    else if (arguments.size() == 5)
+    {
+        if (arguments[0] == "filters")
+        {
+            view_.show_error(STR_ENTRY
+                    << "Command <"
+                    << arguments[0]
+                    << "> requires 1 or 2 arguments.");
+            return;
+        }
+
+        operation = arguments[1];  // <set/remove>
+        category = arguments[2];   // topic
+        topic_str = arguments[3];  // topic name
+        filter_str = arguments[4]; // filter string
+
+
+        std::set<std::string> allowed_args = {"set", "remove"};
+        if (allowed_args.find(operation) == allowed_args.end() ||
+            category != "topic")
+        {
+            // Operation not allowed
+            // or category not supported
+            view_.show_error(STR_ENTRY
+                    << "Command <"
+                    << arguments[0]
+                    << "> with 5 arguments have the following format: "
+                    << arguments[0] << "<add/remove> topic <topic_name> <filter_str>.");
             return;
         }
 
         if (operation == "set")
         {
-            // set filter category
-            if (filter_dict.find(category) != filter_dict.end())
-            {
-                view_.show_error(STR_ENTRY
-                        << "Filter list already contains category: "
-                        << category
-                        << ".");
-                return;
-            }
+            // Set "filter_str" for topic filter
 
-            filter_dict[category] = std::set<std::string>{filter_str};
-
-            if (category == "partitions")
-            {
-                update_filter_partitions();
-            }
+            topic_filter_dict_[topic_str] = filter_str;
         }
-        else if (operation == "add")
+        else
         {
-            // add filter category
-
-            bool pass;
-            check_filter_dict_contains_category(category, pass);
-            if (!pass)
-            {
-                // filter_dict do not contains the category
-                return;
-            }
-
-            // check if filter_str is not in the filter list of the category
-            if (filter_dict[category].find(category) != filter_dict[category].end())
+            bool contains;
+            check_filter_contains_value(category, filter_str, contains);
+            if (!contains)
             {
                 view_.show_error(STR_ENTRY
-                        << "Filter list already contains filter_str: " << filter_str
-                        << " in category: " << category
+                        << "Topic filter do not contains filter_str: " << filter_str
                         << ".");
                 return;
             }
 
-            filter_dict[category].insert(filter_str);
-
-            if (category == "partitions")
-            {
-                update_filter_partitions();
-            }
+            topic_filter_dict_.erase(topic_str);
         }
-        else if (operation == "remove")
-        {
-            // remove filter category
 
-            bool pass;
-            check_filter_dict_contains_category(category, pass);
-            if (!pass)
-            {
-                // filter_dict do not contains the category
-                return;
-            }
-
-            // check if filter_str is in the filter list of the category
-            if (filter_dict[category].find(filter_str) == filter_dict[category].end())
-            {
-                view_.show_error(STR_ENTRY
-                        << "Filter list do not contains filter_str: " << filter_str
-                        << " in category: " << category
-                        << ".");
-                return;
-            }
-
-            filter_dict[category].erase(filter_str);
-
-            if (category == "partitions")
-            {
-                update_filter_partitions();
-            }
-        }
+        update_content_topicfilter(topic_str);
     }
     else
     {
@@ -1103,10 +1132,47 @@ void Controller::filter_command_(
     }
 }
 
-void Controller::update_filter_partitions()
+// TODO. danip remove
+/*void Controller::global_filter(
+        const std::string& topic_name,
+        const std::string& expression)
 {
-    // new filter partition list
-    // update the endpoints active variable
+    //backend_.update_readers_track_content_filter("message like 'A*'");
+    backend_.update_readers_track_content_filter(topic_name, expression);
+}*/
+
+void Controller::update_content_topicfilter(const std::string& topic_name)
+{
+    auto topic_it = topic_filter_dict_.find(topic_name);
+
+    // Get the filter from the dictionary
+    // if is not in the data structure
+    // apply an empty expression in the content_topicfilter
+    std::string filter_str = "";
+    if (topic_it != topic_filter_dict_.end())
+    {
+        filter_str = topic_it->second;
+    }
+
+    backend_.update_readers_track_content_filter(topic_name, filter_str);
+}
+
+void Controller::update_topics()
+{
+    for (endpoint_pair endpoint: model_->endpoint_database_)
+    {
+        update_content_topicfilter(endpoint.second.info.topic.topic_name());
+    }
+}
+
+void Controller::update_partitions()
+{
+    backend_.update_readers_track_partitions(partition_filter_set_);
+
+    return;
+
+    // New filter partition list
+    //  update the endpoints active variable
 
     std::string topic_name;
     std::set<std::string> topic_set;
@@ -1116,62 +1182,19 @@ void Controller::update_filter_partitions()
     std::string curr_partition;
     bool endpoint_active;
 
-    bool partitions_exists = filter_dict.find("partitions") != filter_dict.end();
+    //bool keys_exists = filter_dict.find("keys") != filter_dict.end();
 
-    for (const auto& endpoint: model_->endpoint_database_)
+    for (endpoint_pair endpoint: model_->endpoint_database_)
     {
         topic_name = endpoint.second.info.topic.m_topic_name;
 
-        // get the partition set of the current endpoint
-        for (const auto& guid_partition_pair: endpoint.second.info.specific_partitions)
-        {
-            i = 0;
-            n = guid_partition_pair.second.size();
-            curr_partition = "";
-            endpoint_active = filter_dict["partitions"].empty();
-            // iterate in the partition set
-            while (i < n)
-            {
-                if (guid_partition_pair.second[i] == '|')
-                {
-                    for (std::string filter_p: filter_dict["partitions"])
-                    {
-                        if (utils::match_pattern(filter_p, curr_partition) ||
-                                utils::match_pattern(curr_partition, filter_p))
-                        {
-                            // the current partition matches with a partition
-                            // from the filter, the endpoint is active
-                            endpoint_active = true;
-                            break;
-                        }
-                    }
+        // Check the filters
+        endpoint_active = true;
+        endpoint_active &= check_filter_partitions(endpoint);
+        //endpoint_active &= check_filter_keys(endpoint, keys_exists);
 
-                    curr_partition = "";
-                }
-                else
-                {
-                    curr_partition += guid_partition_pair.second[i];
-                }
-
-                i++;
-            }
-
-            // empty or last partition
-            for (std::string filter_p: filter_dict["partitions"])
-            {
-                if (utils::match_pattern(filter_p, curr_partition) ||
-                        utils::match_pattern(curr_partition, filter_p))
-                {
-                    // the current partition matches with a partition
-                    // from the filter, the endpoint is active
-                    endpoint_active = true;
-                    break;
-                }
-            }
-        }
-
-        // store the information of the active/disable endpoins,
-        // later used for changing the active variable of all endpoints.
+        // Store the information of the active/disable endpoins,
+        //  later used for changing the active variable of all endpoints.
         if (!endpoint_active)
         {
             v_guid_disable.push_back(endpoint.first);
@@ -1181,24 +1204,18 @@ void Controller::update_filter_partitions()
             v_guid_active.push_back(endpoint.first);
         }
 
-        // update tracker if it has not being updated before
+        // Update tracker if it has not being updated before
         if (topic_set.find(topic_name) == topic_set.end())
         {
-            backend_.update_readers_track(topic_name, filter_dict["partitions"]);
+            backend_.update_readers_track(topic_name, partition_filter_set_);
             topic_set.insert(topic_name);
         }
     }
 
-    // update the filter of partitions in the pipeline
-    backend_.update_pipeline_filter(filter_dict["partitions"]);
+    // Update the filter of partitions in the pipeline
+    backend_.update_pipeline_filter(partition_filter_set_);
 
-    if (!partitions_exists)
-    {
-        // remove the partition list if it was not created before.
-        filter_dict.erase("partitions");
-    }
-
-    // change the active variable of the dabase
+    // Change the active variable of the dabase
     for (const auto& curr_guid: v_guid_disable)
     {
         auto endpoint_tmp = model_->endpoint_database_.find(curr_guid)->second;
@@ -1212,6 +1229,161 @@ void Controller::update_filter_partitions()
         model_->endpoint_database_.add_or_modify(curr_guid, endpoint_tmp);
     }
 }
+
+
+bool Controller::check_filter_partitions(
+        const endpoint_pair endpoint)
+{
+    if (partition_filter_set_.empty())
+    {
+        return true;
+    }
+
+    int i, n;
+    std::string curr_partition;
+
+    // get the partition set of the current endpoint
+    for (const auto& guid_partition_pair: endpoint.second.info.specific_partitions)
+    {
+        i = 0;
+        n = guid_partition_pair.second.size();
+        curr_partition = "";
+
+        // iterate in the partition set
+        while (i < n)
+        {
+            if (guid_partition_pair.second[i] == '|')
+            {
+                for (std::string filter_p: partition_filter_set_)
+                {
+                    if (utils::match_pattern(filter_p, curr_partition) ||
+                            utils::match_pattern(curr_partition, filter_p))
+                    {
+                        // The current partition matches with a partition
+                        //  from the filter, the endpoint is active
+                        return true;
+                    }
+                }
+
+                curr_partition = "";
+            }
+            else
+            {
+                curr_partition += guid_partition_pair.second[i];
+            }
+
+            i++;
+        }
+
+        // Empty or last partition
+        for (std::string filter_p: partition_filter_set_)
+        {
+            if (utils::match_pattern(filter_p, curr_partition) ||
+                    utils::match_pattern(curr_partition, filter_p))
+            {
+                // The current partition matches with a partition
+                //  from the filter, the endpoint is active
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+/*bool Controller::check_filter_keys(
+        const endpoint_pair endpoint,
+        bool keys_exists)
+{
+
+    const auto& split_once = [&](const std::string& s, char delim = ':')
+            -> std::pair<std::string, std::string>
+            {
+                // Splits "name:value" → {"name","value"}
+
+                const std::size_t pos = s.find(delim);
+                if (pos == std::string::npos)
+                {
+                    return std::make_pair(s, std::string());
+                }
+
+                return std::make_pair(s.substr(0, pos), s.substr(pos + 1));
+            };
+
+    const auto& extract_instance_value = [&](const std::string& instance)
+            -> std::string
+            {
+                // Extracts value from: {\"flight_number\":111} → "111"
+
+                const std::size_t colon = instance.find(':');
+                if (colon == std::string::npos)
+                {
+                    return std::string();
+                }
+
+                std::size_t start = colon + 1;
+                std::size_t end = instance.find('}', start);
+
+                if (end == std::string::npos)
+                {
+                    end = instance.size();
+                }
+
+                return instance.substr(start, end - start);
+            };
+
+
+    if (keys_exists)
+    {
+        // Get the topic keys data from the current endpoint
+        auto topic_keys = participants::ModelParser::topics_keys_by_ddstopic(*model_, {endpoint.second.info.topic});
+        std::string key_name, key_val;
+
+        // Iterate through the list of topic key data
+        for (const auto& topic_key_data : topic_keys)
+        {
+            // Iterate through the key filters
+            for (const auto& key_filter_str : filter_dict["keys"].second)
+            {
+                // Split the key filter string into "name" and "value"
+                const auto key_pair = split_once(key_filter_str, ':');
+                const std::string& key_name = key_pair.first;
+                const std::string& key_val  = key_pair.second;
+
+                // Check if the current topic key data name matches the key filter
+                bool has_key = false;
+                for (const auto& topic_key : topic_key_data.key_fields)
+                {
+                    if (topic_key == key_name)
+                    {
+                        has_key = true;
+                        break;
+                    }
+                }
+
+                if (!has_key)
+                {
+                    // Do not match, continue with the next key filter
+                    continue;
+                }
+
+                // Iterate through the instances to find a matching key value
+                for (const auto& inst : topic_key_data.instances)
+                {
+                    if (extract_instance_value(inst) == key_val)
+                    {
+                        // Match found, the current endpoint passes the key filter
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+
+    // Return true if no partition filter exists
+    //        false if exists but no match found
+    return !keys_exists;
+}*/
 
 } /* namespace spy */
 } /* namespace eprosima */
