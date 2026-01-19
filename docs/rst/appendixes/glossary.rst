@@ -91,9 +91,16 @@ DDS nomenclature
         See `Fast DDS documentation <https://fast-dds.docs.eprosima.com/en/v2.4.1/fastdds/dds_layer/topic/topic.html>`__
         for further information.
 
-    Partition
+    Partition (TODO. danip update urls?)
         Logical domain that helps organize communication between publishers and subscribers.
         Each Partition is uniquely identified by a name.
 
         See `Fast DDS documentation <https://fast-dds.docs.eprosima.com/en/v2.10.1/fastdds/dds_layer/domain/domainParticipant/partition.html>`__
+        for further information.
+
+    ContentFilteredTopic
+        Filter that enables subscribers to receive only the data samples that match a defined filter expression,
+        reducing network traffic and processing overhead by delivering only relevant data.
+
+        See `Fast DDS documentation <https://fast-dds.docs.eprosima.com/en/latest/fastdds/dds_layer/topic/contentFilteredTopic/contentFilteredTopic.html>`__
         for further information.

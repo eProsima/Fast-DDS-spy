@@ -123,6 +123,7 @@ Summary
           ``clear`` |br|
           ``<category>`` |br|
           ``<filter_str>`` |br|
+          ``<category_name>`` |br|
         - ``filter`` ``filters`` |br|
           ``f`` ``F``
 

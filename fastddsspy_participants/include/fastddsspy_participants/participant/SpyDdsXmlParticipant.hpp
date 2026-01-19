@@ -187,6 +187,14 @@ public:
 
     };
 
+
+    // TODO. danip
+    void update_filters(
+        const int flag,
+        std::set<std::string> partitions = std::set<std::string>(),
+        const std::string& topic_name = "",
+        const std::string& expression = "");
+
 protected:
 
     /**
@@ -204,6 +212,11 @@ protected:
 
     /// Endpoint Internal Reader
     std::shared_ptr<ddspipe::participants::InternalReader> endpoints_reader_;
+
+    // Filter partitions set
+    std::set<std::string> partition_filter_set_;
+    // Filter content_topicfilter dict
+    std::map<std::string, std::string> topic_filter_dict_;
 };
 
 } /* namespace participants */

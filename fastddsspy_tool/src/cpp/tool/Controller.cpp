@@ -148,7 +148,7 @@ void Controller::run()
         // refresh the database if a filter partition is active.
         // this checks if there is a new endpoint that does not
         // pass the filter and disable it
-        // TODO
+        // TODO. danip remove
         //refresh_database();
         run_command_(command);
     }
@@ -1002,8 +1002,6 @@ void Controller::filter_command_(
             topic_filter_dict_.clear();
             update_topics();
         }
-
-        
     }
     else if (arguments.size() == 4)
     {
@@ -1132,15 +1130,6 @@ void Controller::filter_command_(
     }
 }
 
-// TODO. danip remove
-/*void Controller::global_filter(
-        const std::string& topic_name,
-        const std::string& expression)
-{
-    //backend_.update_readers_track_content_filter("message like 'A*'");
-    backend_.update_readers_track_content_filter(topic_name, expression);
-}*/
-
 void Controller::update_content_topicfilter(const std::string& topic_name)
 {
     auto topic_it = topic_filter_dict_.find(topic_name);
@@ -1168,69 +1157,10 @@ void Controller::update_topics()
 void Controller::update_partitions()
 {
     backend_.update_readers_track_partitions(partition_filter_set_);
-
-    return;
-
-    // New filter partition list
-    //  update the endpoints active variable
-
-    std::string topic_name;
-    std::set<std::string> topic_set;
-    std::vector<ddspipe::core::types::Guid> v_guid_active, v_guid_disable;
-
-    int i, n;
-    std::string curr_partition;
-    bool endpoint_active;
-
-    //bool keys_exists = filter_dict.find("keys") != filter_dict.end();
-
-    for (endpoint_pair endpoint: model_->endpoint_database_)
-    {
-        topic_name = endpoint.second.info.topic.m_topic_name;
-
-        // Check the filters
-        endpoint_active = true;
-        endpoint_active &= check_filter_partitions(endpoint);
-        //endpoint_active &= check_filter_keys(endpoint, keys_exists);
-
-        // Store the information of the active/disable endpoins,
-        //  later used for changing the active variable of all endpoints.
-        if (!endpoint_active)
-        {
-            v_guid_disable.push_back(endpoint.first);
-        }
-        else
-        {
-            v_guid_active.push_back(endpoint.first);
-        }
-
-        // Update tracker if it has not being updated before
-        if (topic_set.find(topic_name) == topic_set.end())
-        {
-            backend_.update_readers_track(topic_name, partition_filter_set_);
-            topic_set.insert(topic_name);
-        }
-    }
-
-    // Update the filter of partitions in the pipeline
-    backend_.update_pipeline_filter(partition_filter_set_);
-
-    // Change the active variable of the dabase
-    for (const auto& curr_guid: v_guid_disable)
-    {
-        auto endpoint_tmp = model_->endpoint_database_.find(curr_guid)->second;
-        endpoint_tmp.info.active = false;
-        model_->endpoint_database_.add_or_modify(curr_guid, endpoint_tmp);
-    }
-    for (const auto& curr_guid: v_guid_active)
-    {
-        auto endpoint_tmp = model_->endpoint_database_.find(curr_guid)->second;
-        endpoint_tmp.info.active = true;
-        model_->endpoint_database_.add_or_modify(curr_guid, endpoint_tmp);
-    }
 }
 
 
+// TODO. danip
 bool Controller::check_filter_partitions(
         const endpoint_pair endpoint)
 {

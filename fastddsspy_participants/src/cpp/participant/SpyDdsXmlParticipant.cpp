@@ -31,7 +31,7 @@ SpyDdsXmlParticipant::SpyDdsXmlParticipant(
         const std::shared_ptr<ddspipe::participants::XmlParticipantConfiguration>& participant_configuration,
         const std::shared_ptr<ddspipe::core::PayloadPool>& payload_pool,
         const std::shared_ptr<ddspipe::core::DiscoveryDatabase>& discovery_database)
-    : ddspipe::participants::XmlDynTypesParticipant(participant_configuration, payload_pool, discovery_database)
+    : ddspipe::participants::XmlDynTypesParticipant(participant_configuration, payload_pool, discovery_database, true) // TODO. danip. is_fastddsspy
     , participants_reader_(std::make_shared<ddspipe::participants::InternalReader>(
                 this->id()))
     , endpoints_reader_(std::make_shared<ddspipe::participants::InternalReader>(
@@ -59,7 +59,20 @@ std::shared_ptr<ddspipe::core::IReader> SpyDdsXmlParticipant::create_reader(
     std::shared_ptr<ddspipe::core::IReader> ret =
         ddspipe::participants::XmlDynTypesParticipant::create_reader(topic);
 
-    //ret->update_content_topic_filter("");
+    // Check if the topic has a 'content_topicfilter' filter active
+    auto content_topicfilter_it = topic_filter_dict_.find(topic.topic_name());
+    std::string expression = "";
+    if(content_topicfilter_it != topic_filter_dict_.end())
+    {
+        expression = content_topicfilter_it->second;
+    }
+
+    // Update the partitions
+    ret->update_partitions(partition_filter_set_);
+    // Update content_topicfilter expression
+    //  in this function, the reader is enabled
+    //  (to ensure safety updates of filters)
+    ret->update_content_topic_filter(expression);
 
     // If not type object, use the parent method
     return ret;
@@ -172,6 +185,26 @@ std::unique_ptr<fastdds::dds::DomainParticipantListener> SpyDdsXmlParticipant::c
 {
     return std::make_unique<SpyDdsXmlParticipantListener>(configuration_, discovery_database_, type_object_reader_,
                    participants_reader_, endpoints_reader_);
+}
+
+// TODO. danip
+void SpyDdsXmlParticipant::update_filters(
+        const int flag,
+        std::set<std::string> partitions,
+        const std::string& topic_name,
+        const std::string& expression)
+{
+
+    if (flag == 0)
+    {
+        // partitions
+        partition_filter_set_ = partitions;
+    }
+    else
+    {
+        // content_topicfilter
+        topic_filter_dict_[topic_name] = expression;
+    }
 }
 
 } /* namespace participants */

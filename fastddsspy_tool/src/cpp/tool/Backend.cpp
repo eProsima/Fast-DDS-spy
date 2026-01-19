@@ -153,6 +153,10 @@ std::shared_ptr<eprosima::spy::participants::SpyModel> Backend::model() const no
 void Backend::update_readers_track_partitions(
         std::set<std::string> partitions_set)
 {
+    // Function used to update the SpyDdsXmlParticipant filter data structures
+    // This structures are used when creating a Spy Reader.
+    std::dynamic_pointer_cast<participants::SpyDdsXmlParticipant>(dds_participant_)->update_filters(0, partitions_set);
+    // Function used to update 'content_topicfilter' in the active topics
     pipe_->update_partitions(partitions_set);
 }
 
@@ -160,20 +164,11 @@ void Backend::update_readers_track_content_filter(
         const std::string& topic_name,
         const std::string& expression)
 {
+    // Function used to update the SpyDdsXmlParticipant filter data structures
+    // This structures are used when creating a Spy Reader.
+    std::dynamic_pointer_cast<participants::SpyDdsXmlParticipant>(dds_participant_)->update_filters(1, std::set<std::string>(), topic_name, expression);
+    // Function used to update 'content_topicfilter' in the active topics
     pipe_->update_content_filter(topic_name, expression);
-}
-
-void Backend::update_readers_track(
-        const std::string topic_name,
-        const std::set<std::string> filter_partition_set)
-{
-    pipe_->update_readers_track(topic_name, filter_partition_set);
-}
-
-void Backend::update_pipeline_filter(
-        const std::set<std::string> filter_partition_set)
-{
-    pipe_->update_filter(filter_partition_set);
 }
 
 } /* namespace spy */
