@@ -158,7 +158,7 @@ void Configuration::load_dds_configuration_(
     if (YamlReader::is_tag_present(yml, FASTDDSSPY_PROFILE_TAG))
     {
         dds_configuration->participant_profile = YamlReader::get<std::string>(yml, FASTDDSSPY_PROFILE_TAG, version);
-        xml_enabled = true;
+        //xml_enabled = true;
     }
 
     /////
@@ -259,6 +259,12 @@ void Configuration::load_specs_configuration_(
     if (YamlReader::is_tag_present(yml, GATHERING_TIME_TAG))
     {
         one_shot_wait_time_ms = YamlReader::get<utils::Duration_ms>(yml, GATHERING_TIME_TAG, version);
+    }
+
+    // Get optional rtps enabled
+    if (YamlReader::is_tag_present(yml, RTPS_ENABLED_TAG))
+    {
+        xml_enabled = !YamlReader::get<bool>(yml, RTPS_ENABLED_TAG, version);
     }
 
     /////

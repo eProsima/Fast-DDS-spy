@@ -37,6 +37,7 @@ constexpr const char* FASTDDSSPY_PROFILE_TAG("dds-profile");
 ////////////////////////
 constexpr const char* SPECS_TAG("specs");
 constexpr const char* GATHERING_TIME_TAG("discovery-time");
+constexpr const char* RTPS_ENABLED_TAG("rtps");
 
 } /* namespace yaml */
 } /* namespace spy */
