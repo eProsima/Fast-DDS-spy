@@ -147,9 +147,10 @@ private:
             const std::string& topic_name,
             const std::string& expression);*/
 
-    void update_partitions();
     void update_topics();
     void update_content_topicfilter(const std::string& topic_name);
+    void update_partitions();
+    void update_endpoints();
 
 
     bool check_filter_partitions(

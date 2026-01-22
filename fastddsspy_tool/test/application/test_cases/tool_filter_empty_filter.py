@@ -39,5 +39,11 @@ class TestCase_instance (test_class.TestCase):
             arguments_dds=[],
             arguments_spy=[],
             commands_spy=['filters'],
-            output="""Filter lists (0)\n"""
+            output=(
+                '--------\n\n'
+                'Filters:\n\n'
+                '--------\n\n\n\n'
+                '  Topic:\n\n\n\n'
+                '  Partitions:\n'
+            )
         )

@@ -31,7 +31,7 @@ SpyDdsXmlParticipant::SpyDdsXmlParticipant(
         const std::shared_ptr<ddspipe::participants::XmlParticipantConfiguration>& participant_configuration,
         const std::shared_ptr<ddspipe::core::PayloadPool>& payload_pool,
         const std::shared_ptr<ddspipe::core::DiscoveryDatabase>& discovery_database)
-    : ddspipe::participants::XmlDynTypesParticipant(participant_configuration, payload_pool, discovery_database, true) // TODO. danip. is_fastddsspy
+    : ddspipe::participants::XmlDynTypesParticipant(participant_configuration, payload_pool, discovery_database)
     , participants_reader_(std::make_shared<ddspipe::participants::InternalReader>(
                 this->id()))
     , endpoints_reader_(std::make_shared<ddspipe::participants::InternalReader>(

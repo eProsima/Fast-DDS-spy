@@ -30,7 +30,7 @@ class TestCase_instance (test_class.TestCase):
         This test launch:
             fastddsspy --config-path fastddsspy_tool/test/application/configuration/\
                 configuration_discovery_time.yaml
-            >> filter set partitions A
+            >> filter add partitions A
             >> topics
             AdvancedConfigurationExample publisher
         """
@@ -43,6 +43,6 @@ class TestCase_instance (test_class.TestCase):
 configuration_discovery_time.yaml',
             arguments_dds=[],
             arguments_spy=['--config-path', 'configuration'],
-            commands_spy=['filter set partitions A', 'topics'],
+            commands_spy=['filter add partitions A', 'topics'],
             output=''
         )

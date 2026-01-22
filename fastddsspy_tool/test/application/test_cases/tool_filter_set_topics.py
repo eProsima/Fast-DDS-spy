@@ -1,4 +1,4 @@
-# Copyright 2025 Proyectos y Sistemas de Mantenimiento SL (eProsima).
+# Copyright 2026 Proyectos y Sistemas de Mantenimiento SL (eProsima).
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,14 +31,12 @@ class TestCase_instance (test_class.TestCase):
 
         This test launch:
             fastddsspy
-            >> filter set partitions A
-            >> filter set partition A
-            >> filter set topic Square
-            >> filter remove partition
+            >> filter set topic Square "color = \'RED\'"
+            >> filter set topic Triangle "x > 50"
             >> filters
         """
         super().__init__(
-            name='ToolFilterSetLists',
+            name='ToolFilterSetTopics',
             one_shot=False,
             command=[],
             dds=False,
@@ -46,20 +44,17 @@ class TestCase_instance (test_class.TestCase):
             arguments_dds=[],
             arguments_spy=[],
             commands_spy=[
-                'filter set partitions A',
-                'filter set topics Square',
-                'filter clear',
+                'filter set topic Square "color = \'RED\'"',
+                'filter set topic Triangle "x > 50"',
                 'filters',
             ],
             output=(
-                'Filter lists (2)\n'
-                '\n\n\n'
-                '  partitions (1):\n'
-                '\n'
-                '    - A\n'
-                '\n\n\n'
-                '  topics (1):\n'
-                '\n'
-                '    - Square\n'
+                '--------\n\n'
+                'Filters:\n\n'
+                '--------\n\n\n\n'
+                '  Topic:\n\n'
+                '    Square: "color = \'RED\'"\n\n'
+                '    Triangle: "x > 50"\n\n\n\n'
+                '  Partitions:\n'
             )
         )
