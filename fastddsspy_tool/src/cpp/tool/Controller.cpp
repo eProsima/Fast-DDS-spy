@@ -820,52 +820,51 @@ void Controller::help_command_(
             << "Fast DDS Spy is an interactive CLI that allow to instrospect DDS networks.\n"
             << "Each command shows data related with the network in Yaml format.\n"
             << "Commands available and the information they show:\n"
-            << "\thelp                                      : this help.\n"
-            << "\tversion                                   : tool version.\n"
-            << "\tquit                                      : exit interactive CLI and close program.\n"
-            << "\tparticipants                              : DomainParticipants discovered in the network.\n"
+            << "\thelp                                        : this help.\n"
+            << "\tversion                                     : tool version.\n"
+            << "\tquit                                        : exit interactive CLI and close program.\n"
+            << "\tparticipants                                : DomainParticipants discovered in the network.\n"
             <<
-            "\tparticipants verbose                      : verbose information about DomainParticipants discovered in the network.\n"
+            "\tparticipants verbose                        : verbose information about DomainParticipants discovered in the network.\n"
             <<
-                    "\tparticipants <Guid>                       : verbose information related with a specific DomainParticipant.\n"
-            << "\twriters                                   : DataWriters discovered in the network.\n"
+                    "\tparticipants <Guid>                         : verbose information related with a specific DomainParticipant.\n"
+            << "\twriters                                     : DataWriters discovered in the network.\n"
             <<
-                    "\twriters verbose                           : verbose information about DataWriters discovered in the network.\n"
-            << "\twriters <Guid>                            : verbose information related with a specific DataWriter.\n"
-            << "\treader                                    : DataReaders discovered in the network.\n"
+                    "\twriters verbose                             : verbose information about DataWriters discovered in the network.\n"
+            << "\twriters <Guid>                              : verbose information related with a specific DataWriter.\n"
+            << "\treader                                      : DataReaders discovered in the network.\n"
             <<
-                    "\treader verbose                            : verbose information about DataReaders discovered in the network.\n"
-            << "\treader <Guid>                             : verbose information related with a specific DataReader.\n"
-            << "\ttopics                                    : Topics discovered in the network in compact format.\n"
-            << "\ttopics v                                  : Topics discovered in the network.\n"
+                    "\treader verbose                              : verbose information about DataReaders discovered in the network.\n"
+            << "\treader <Guid>                               : verbose information related with a specific DataReader.\n"
+            << "\ttopics                                      : Topics discovered in the network in compact format.\n"
+            << "\ttopics v                                    : Topics discovered in the network.\n"
             <<
-                    "\ttopics vv                                 : verbose information about Topics discovered in the network.\n"
+                    "\ttopics vv                                   : verbose information about Topics discovered in the network.\n"
             <<
-            "\ttopics <name>                             : Topics discovered in the network filtered by name (wildcard allowed (*)).\n"
+            "\ttopics <name>                               : Topics discovered in the network filtered by name (wildcard allowed (*)).\n"
             <<
-            "\ttopics <name> idl                         : Display the IDL type definition for topics matching <name> (wildcards allowed).\n"
+            "\ttopics <name> idl                           : Display the IDL type definition for topics matching <name> (wildcards allowed).\n"
             <<
-            "\ttopics <name> keys                        : Display the keys for topics matching <name> (wildcards allowed).\n"
+            "\ttopics <name> keys                          : Display the keys for topics matching <name> (wildcards allowed).\n"
             <<
-            "\ttopics <name> keys v                      : verbose information about keys discovered in the network.\n"
-            << "\tfilters                                   : Display the active filters.\n"
-            << "\tfilters clear                             : Clear all the filter lists.\n"
-            << "\tfilters remove                            : Remove all the filter lists.\n"
-            << "\tfilter clear <category>                   : Clear <category> filter list.\n"
-            << "\tfilter remove <category>                  : Remove <category> filter list.\n"
+            "\ttopics <name> keys v                        : verbose information about keys discovered in the network.\n"
+            << "\tfilters                                     : Display the active filters.\n"
+            << "\tfilters clear                               : Clear all the filter lists.\n"
+            << "\tfilters remove                              : Remove all the filter lists.\n"
+            << "\tfilter clear <category>                     : Clear <category> filter list.\n"
+            << "\tfilter add partitions <filter_str>          : Add <filter_str> in partitions filter list.\n"
+            << "\tfilter remove partitions <filter_str>       : Remove <filter_str> in partitions filter list.\n"
             <<
-                    "\tfilter set <category> <filter_str>        : Set <category> filter list with <filter_str> as first value.\n"
-            << "\tfilter add <category> <filter_str>        : Add <filter_str> in <category> filter list.\n"
-            << "\tfilter remove <category> <filter_str>     : Remove <filter_str> in <category> filter list.\n"
+                    "\tfilter set topic <topic_name> <filter_str>  : Set topic filter list with <filter_str> as first value.\n"
             <<
-                    "\techo <name>                               : data of a specific Topic (Data Type must be discovered).\n"
+                    "\techo <name>                                 : data of a specific Topic (Data Type must be discovered).\n"
             <<
-            "\techo <wildcard_name>                      : data of Topics matching the wildcard name (and whose Data Type is discovered).\n"
-            << "\techo <name> verbose                       : data with additional source info of a specific Topic.\n"
+            "\techo <wildcard_name>                        : data of Topics matching the wildcard name (and whose Data Type is discovered).\n"
+            << "\techo <name> verbose                         : data with additional source info of a specific Topic.\n"
             <<
-            "\techo <wildcard_name> verbose              : data with additional source info of Topics matching the topic name (wildcard allowed (*)).\n"
+            "\techo <wildcard_name> verbose                : data with additional source info of Topics matching the topic name (wildcard allowed (*)).\n"
             <<
-            "\techo all                                  : verbose data of all topics (only those whose Data Type is discovered).\n"
+            "\techo all                                    : verbose data of all topics (only those whose Data Type is discovered).\n"
             << "\n"
             << "Notes and comments:\n"
             << "\tTo exit from data printing, press enter.\n"
@@ -1156,7 +1155,98 @@ void Controller::update_topics()
 
 void Controller::update_partitions()
 {
+    // -- Update readers in the tracks ----------------------------------------
     backend_.update_readers_track_partitions(partition_filter_set_);
+
+
+    // -- Update endpoints in the database ------------------------------------
+    // (to enable/disable the information in the commands)
+    update_endpoints();
+}
+
+void Controller::update_endpoints()
+{
+    std::string topic_name;
+    std::vector<std::pair<ddspipe::core::types::Guid, bool>> v_guid_active;//, v_guid_disable;
+
+    int i, n;
+    std::string curr_partition;
+    bool endpoint_active;
+
+    bool partitions_exists = partition_filter_set_.size() > 0;
+
+    for (const auto& endpoint: model_->endpoint_database_)
+    {
+        topic_name = endpoint.second.info.topic.m_topic_name;
+        endpoint_active = !partitions_exists;
+
+        if(endpoint_active)
+        {
+            // No partition filter
+            v_guid_active.push_back({endpoint.first, true});
+            continue;
+        }
+
+        // Get the partition set of the current endpoint
+        for (const auto& guid_partition_pair: endpoint.second.info.specific_partitions)
+        {
+            i = 0;
+            n = guid_partition_pair.second.size();
+            curr_partition = "";
+
+            // Iterate in the partition set
+            while (i < n)
+            {
+                if (guid_partition_pair.second[i] == '|')
+                {
+                    for (std::string filter_p: partition_filter_set_)
+                    {
+                        if (utils::match_pattern(filter_p, curr_partition) ||
+                                utils::match_pattern(curr_partition, filter_p))
+                        {
+                            // The current partition matches with a partition
+                            // from the filter, the endpoint is active
+                            endpoint_active = true;
+                            break;
+                        }
+                    }
+
+                    curr_partition = "";
+                }
+                else
+                {
+                    curr_partition += guid_partition_pair.second[i];
+                }
+
+                i++;
+            }
+
+            // Empty or last partition
+            for (std::string filter_p: partition_filter_set_)
+            {
+                if (utils::match_pattern(filter_p, curr_partition) ||
+                        utils::match_pattern(curr_partition, filter_p))
+                {
+                    // The current partition matches with a partition
+                    // from the filter, the endpoint is active
+                    endpoint_active = true;
+                    break;
+                }
+            }
+        }
+
+        // Store the information of the active/disable endpoins,
+        // later used for changing the active variable of all endpoints.
+        v_guid_active.push_back({endpoint.first, endpoint_active});
+    }
+
+    // Change the active variable of the dabase
+    for (const auto& curr_guid: v_guid_active)
+    {
+        auto endpoint_tmp = model_->endpoint_database_.find(curr_guid.first)->second;
+        endpoint_tmp.info.active = curr_guid.second;
+        model_->endpoint_database_.add_or_modify(curr_guid.first, endpoint_tmp);
+    }
 }
 
 

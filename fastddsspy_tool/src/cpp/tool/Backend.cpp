@@ -47,7 +47,7 @@ Backend::Backend(
 
     load_internal_topics_(configuration_);
 
-    if (configuration.xml_enabled)
+    if (configuration.dds_enabled)
     {
         dds_participant_ = std::make_shared<participants::SpyDdsXmlParticipant>(
             configuration.dds_configuration,

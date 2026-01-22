@@ -24,15 +24,14 @@ class TestCase_instance (test_class.TestCase):
         """
         @brief Initialize the TestCase_instance object.
 
-        This TestCase creates two filter lists "partitions" and "topics" and clear all the filters.
+        This TestCase creates two filter lists "partitions" and "topic" and clear all the filters.
 
         And prints the list of filters (empty)
 
         This test launch:
             fastddsspy
-            >> filter set partitions A
-            >> filter set partitions A
-            >> filter set topics Square
+            >> filter add partitions A
+            >> filter set topic Square "x > 10"
             >> filter clear
             >> filters
         """
@@ -45,10 +44,16 @@ class TestCase_instance (test_class.TestCase):
             arguments_dds=[],
             arguments_spy=[],
             commands_spy=[
-                'filter set partitions A',
-                'filter set topics Square',
-                'filter clear',
+                'filter add partitions A',
+                'filter set topic Square "x > 10"',
+                'filters clear',
                 'filters',
             ],
-            output=''
+            output=(
+                '--------\n\n'
+                'Filters:\n\n'
+                '--------\n\n\n\n'
+                '  Topic:\n\n\n\n'
+                '  Partitions:\n'
+            )
         )

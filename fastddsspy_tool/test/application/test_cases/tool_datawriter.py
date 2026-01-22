@@ -37,5 +37,5 @@ class TestCase_instance (test_class.TestCase):
             arguments_dds=[],
             arguments_spy=[],
             commands_spy=['datawriter'],
-            output="""\n"""
+            output="""1\n"""
         )
