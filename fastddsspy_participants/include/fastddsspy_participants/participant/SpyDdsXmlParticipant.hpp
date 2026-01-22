@@ -188,12 +188,12 @@ public:
     };
 
 
-    // TODO. danip
-    void update_filters(
-        const int flag,
-        std::set<std::string> partitions = std::set<std::string>(),
-        const std::string& topic_name = "",
-        const std::string& expression = "");
+//     // TODO. danip
+//     void update_filters(
+//         const int flag,
+//         std::set<std::string> partitions = std::set<std::string>(),
+//         const std::string& topic_name = "",
+//         const std::string& expression = "");
 
 protected:
 

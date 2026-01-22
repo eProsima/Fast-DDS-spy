@@ -60,19 +60,19 @@ std::shared_ptr<ddspipe::core::IReader> SpyDdsXmlParticipant::create_reader(
         ddspipe::participants::XmlDynTypesParticipant::create_reader(topic);
 
     // Check if the topic has a 'content_topicfilter' filter active
-    auto content_topicfilter_it = topic_filter_dict_.find(topic.topic_name());
-    std::string expression = "";
-    if(content_topicfilter_it != topic_filter_dict_.end())
-    {
-        expression = content_topicfilter_it->second;
-    }
+    // auto content_topicfilter_it = topic_filter_dict_.find(topic.topic_name());
+    // std::string expression = "";
+    // if(content_topicfilter_it != topic_filter_dict_.end())
+    // {
+    //     expression = content_topicfilter_it->second;
+    // }
 
-    // Update the partitions
-    ret->update_partitions(partition_filter_set_);
-    // Update content_topicfilter expression
-    //  in this function, the reader is enabled
-    //  (to ensure safety updates of filters)
-    ret->update_content_topic_filter(expression);
+    // // Update the partitions
+    // ret->update_partitions(partition_filter_set_);
+    // // Update content_topicfilter expression
+    // //  in this function, the reader is enabled
+    // //  (to ensure safety updates of filters)
+    // ret->update_content_topic_filter(expression);
 
     // If not type object, use the parent method
     return ret;
@@ -188,24 +188,24 @@ std::unique_ptr<fastdds::dds::DomainParticipantListener> SpyDdsXmlParticipant::c
 }
 
 // TODO. danip
-void SpyDdsXmlParticipant::update_filters(
-        const int flag,
-        std::set<std::string> partitions,
-        const std::string& topic_name,
-        const std::string& expression)
-{
+// void SpyDdsXmlParticipant::update_filters(
+//         const int flag,
+//         std::set<std::string> partitions,
+//         const std::string& topic_name,
+//         const std::string& expression)
+// {
 
-    if (flag == 0)
-    {
-        // partitions
-        partition_filter_set_ = partitions;
-    }
-    else
-    {
-        // content_topicfilter
-        topic_filter_dict_[topic_name] = expression;
-    }
-}
+//     if (flag == 0)
+//     {
+//         // partitions
+//         partition_filter_set_ = partitions;
+//     }
+//     else
+//     {
+//         // content_topicfilter
+//         topic_filter_dict_[topic_name] = expression;
+//     }
+// }
 
 } /* namespace participants */
 } /* namespace spy */
