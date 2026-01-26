@@ -40,7 +40,6 @@ SpyDdsXmlParticipant::SpyDdsXmlParticipant(
     // Do nothing
 }
 
-// TODO. danip. JUANs suggestion
 std::shared_ptr<ddspipe::core::IReader> SpyDdsXmlParticipant::create_reader(
         const ddspipe::core::ITopic& topic)
 {
@@ -168,26 +167,6 @@ std::unique_ptr<fastdds::dds::DomainParticipantListener> SpyDdsXmlParticipant::c
     return std::make_unique<SpyDdsXmlParticipantListener>(configuration_, discovery_database_, type_object_reader_,
                    participants_reader_, endpoints_reader_);
 }
-
-// TODO. danip
-// void SpyDdsXmlParticipant::update_filters(
-//         const int flag,
-//         std::set<std::string> partitions,
-//         const std::string& topic_name,
-//         const std::string& expression)
-// {
-
-//     if (flag == 0)
-//     {
-//         // partitions
-//         partition_filter_set_ = partitions;
-//     }
-//     else
-//     {
-//         // content_topicfilter
-//         topic_filter_dict_[topic_name] = expression;
-//     }
-// }
 
 } /* namespace participants */
 } /* namespace spy */
