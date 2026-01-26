@@ -67,6 +67,9 @@ Backend::Backend(
         std::dynamic_pointer_cast<participants::SpyDdsParticipant>(dds_participant_)->init();
     }
 
+    // TODO. danip
+    dds_participant_->update_filters(0, configuration.dds_configuration->allowed_partition_list, "", "");
+
     // Populate Participant Database
     participant_database_->add_participant(
         dds_participant_->id(),

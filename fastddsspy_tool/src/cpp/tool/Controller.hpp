@@ -48,6 +48,12 @@ public:
     utils::ReturnCode reload_configuration(
             yaml::Configuration& new_configuration);
 
+    void set_partition_filter(
+            const std::set<std::string> partition_filter_set);
+
+    void set_content_topic_filter(
+            const std::map<std::string, std::string> topic_filter_dict);
+
 protected:
 
     void run_command_(
@@ -141,24 +147,16 @@ private:
             specificF specific_function,
             const char* entity_name) noexcept;
 
-    void refresh_database();
-
-    /*void global_filter(
-            const std::string& topic_name,
-            const std::string& expression);*/
+    
 
     void update_topics();
-    void update_content_topicfilter(const std::string& topic_name);
+
+    void update_content_topicfilter(
+            const std::string& topic_name);
+
     void update_partitions();
+
     void update_endpoints();
-
-
-    bool check_filter_partitions(
-            const endpoint_pair endpoint);
-
-    /*bool check_filter_keys(
-            const endpoint_pair endpoint,
-            bool keys_exists);*/
 
     std::mutex view_mutex_;
 
