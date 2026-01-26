@@ -56,26 +56,8 @@ std::shared_ptr<ddspipe::core::IReader> SpyDdsXmlParticipant::create_reader(
         return this->endpoints_reader_;
     }
 
-    std::shared_ptr<ddspipe::core::IReader> ret =
-        ddspipe::participants::XmlDynTypesParticipant::create_reader(topic);
-
-    // Check if the topic has a 'content_topicfilter' filter active
-    // auto content_topicfilter_it = topic_filter_dict_.find(topic.topic_name());
-    // std::string expression = "";
-    // if(content_topicfilter_it != topic_filter_dict_.end())
-    // {
-    //     expression = content_topicfilter_it->second;
-    // }
-
-    // // Update the partitions
-    // ret->update_partitions(partition_filter_set_);
-    // // Update content_topicfilter expression
-    // //  in this function, the reader is enabled
-    // //  (to ensure safety updates of filters)
-    // ret->update_content_topic_filter(expression);
-
     // If not type object, use the parent method
-    return ret;
+    return ddspipe::participants::XmlDynTypesParticipant::create_reader(topic);
 }
 
 SpyDdsXmlParticipant::SpyDdsXmlParticipantListener::SpyDdsXmlParticipantListener(

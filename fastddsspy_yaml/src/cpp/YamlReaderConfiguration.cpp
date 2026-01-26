@@ -183,6 +183,12 @@ void Configuration::load_dds_configuration_(
         const auto& manual_topics = YamlReader::get_list<ManualTopic>(yml, TOPICS_TAG, version);
         ddspipe_configuration.manual_topics =
                 std::vector<ManualTopic>(manual_topics.begin(), manual_topics.end());
+
+        for(const auto topic: manual_topics)
+        {
+            dds_configuration->content_topic_filter_dict[topic.first->topic_name] =
+                topic.first->content_topic_filter;
+        }
     }
 
     // Set the domain in Simple Participant Configuration
@@ -196,6 +202,14 @@ void Configuration::load_dds_configuration_(
     if (YamlReader::is_tag_present(yml, WHITELIST_INTERFACES_TAG))
     {
         dds_configuration->whitelist = YamlReader::get_set<WhitelistType>(yml, WHITELIST_INTERFACES_TAG,
+                        version);
+    }
+
+    /////
+    // Get optional partitions
+    if (YamlReader::is_tag_present(yml, PARTITIONLIST_TAG))
+    {
+        dds_configuration->allowed_partition_list = YamlReader::get_set<std::string>(yml, PARTITIONLIST_TAG,
                         version);
     }
 

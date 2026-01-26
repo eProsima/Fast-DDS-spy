@@ -150,6 +150,11 @@ int main(
         // Create the Spy
         eprosima::spy::Controller spy(configuration);
 
+        // Update partitions filter from yaml
+        spy.set_partition_filter(configuration.dds_configuration->allowed_partition_list);
+        // Update topic filter from yaml
+        spy.set_content_topic_filter(configuration.dds_configuration->content_topic_filter_dict);
+
         /////
         // File Watcher Handler
 
