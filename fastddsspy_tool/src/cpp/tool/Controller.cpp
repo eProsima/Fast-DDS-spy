@@ -829,6 +829,12 @@ void Controller::filter_command_(
         std::cout << "  Topic:\n";
         for (const auto& topic_pair: topic_filter_dict_)
         {
+            // If there is no content topic filter, do not print ""
+            if(topic_pair.second == "")
+            {
+                continue;
+            }
+
             std::cout << "    " << topic_pair.first << ": \"" << topic_pair.second << "\"\n";
         }
 
@@ -860,7 +866,10 @@ void Controller::filter_command_(
 
         // clear ther filters list
         partition_filter_set_.clear();
-        topic_filter_dict_.clear();
+        for (auto& pair_topic : topic_filter_dict_)
+        {
+            pair_topic.second = "";
+        }
 
         update_partitions();
         update_topics();
@@ -1012,7 +1021,7 @@ void Controller::filter_command_(
                 return;
             }
 
-            topic_filter_dict_.erase(topic_str);
+            topic_filter_dict_[topic_str] = "";
         }
 
         update_content_topicfilter(topic_str);

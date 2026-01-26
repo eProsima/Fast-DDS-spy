@@ -67,8 +67,14 @@ Backend::Backend(
         std::dynamic_pointer_cast<participants::SpyDdsParticipant>(dds_participant_)->init();
     }
 
-    // TODO. danip
+    // Update filters from yaml into Spy participant
+    // Partitions
     dds_participant_->update_filters(0, configuration.dds_configuration->allowed_partition_list, "", "");
+    // Content Filtered Topic
+    for(const auto topic_pair: configuration.dds_configuration->content_topic_filter_dict)
+    {
+        dds_participant_->update_filters(1, std::set<std::string>(), topic_pair.first, topic_pair.second);
+    }
 
     // Populate Participant Database
     participant_database_->add_participant(
