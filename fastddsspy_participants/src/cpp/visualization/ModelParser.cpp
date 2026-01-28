@@ -454,17 +454,11 @@ std::string ModelParser::topics_type_idl(
 
 }
 
-std::vector<TopicKeysData> ModelParser::topics_keys(
+std::vector<TopicKeysData> ModelParser::topics_keys_by_ddstopic(
         SpyModel& model,
-        const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic) noexcept
+        const std::set<eprosima::ddspipe::core::types::DdsTopic>& topics) noexcept
 {
     std::vector<TopicKeysData> result;
-    std::set<eprosima::ddspipe::core::types::DdsTopic> topics = get_topics(model, filter_topic);
-
-    if (topics.empty())
-    {
-        return result;
-    }
 
     for (const auto& topic : topics)
     {
@@ -490,6 +484,21 @@ std::vector<TopicKeysData> ModelParser::topics_keys(
     }
 
     return result;
+}
+
+std::vector<TopicKeysData> ModelParser::topics_keys(
+        SpyModel& model,
+        const ddspipe::core::types::WildcardDdsFilterTopic& filter_topic) noexcept
+{
+    std::vector<TopicKeysData> result;
+    std::set<eprosima::ddspipe::core::types::DdsTopic> topics = get_topics(model, filter_topic);
+
+    if (topics.empty())
+    {
+        return result;
+    }
+
+    return topics_keys_by_ddstopic(model, topics);
 }
 
 } /* namespace participants */
