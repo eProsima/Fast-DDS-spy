@@ -188,7 +188,7 @@ Nothing, the filter "color = 'BLUE'" is added to the category "topic" in the cat
 Prints only the information of the topic Square,
 (the topic Circle is filtered because the key value "color" is "RED")
 
-.. code_block::
+.. code-block::
 
     ---
 
