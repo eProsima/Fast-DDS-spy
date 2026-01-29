@@ -32,10 +32,12 @@ class TestCase_instance (test_class.TestCase):
             name='ToolDatawriterCommand',
             one_shot=False,
             command=[],
-            dds=False,
+            dds=True,
             config='',
             arguments_dds=[],
             arguments_spy=[],
             commands_spy=['datawriter'],
-            output="""1\n"""
+            output="""- guid: %%guid%%\n\n\
+  participant: Participant_pub\n\n\
+  topic: HelloWorldTopic [HelloWorld]"""
         )

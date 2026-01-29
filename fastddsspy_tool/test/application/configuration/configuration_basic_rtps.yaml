@@ -1,0 +1,14 @@
+dds:
+
+  allowlist:
+    - name: "*"
+
+  blocklist:
+    - name: "topic_name"
+      type: "topic_type"
+
+  ros2-types: false
+
+specs:
+
+  rtps: true

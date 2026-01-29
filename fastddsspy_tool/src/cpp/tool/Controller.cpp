@@ -528,7 +528,7 @@ void Controller::topics_command_(
         else if (keys_argument_(arg_2))
         {
             // Handle 'topics <name> keys'
-            auto data = participants:: ModelParser::topics_keys(*model_, filter_topic);
+            auto data = participants::ModelParser::topics_keys(*model_, filter_topic);
 
             if (data.empty())
             {
@@ -564,7 +564,7 @@ void Controller::topics_command_(
         if (keys_argument_(arg_2))
         {
             // Handle 'topics <name> keys v'
-            auto data = participants:: ModelParser::topics_keys(*model_, filter_topic);
+            auto data = participants::ModelParser::topics_keys(*model_, filter_topic);
 
             if (data.empty())
             {
@@ -725,19 +725,21 @@ void Controller::help_command_(
             <<
             "\tparticipants verbose                        : verbose information about DomainParticipants discovered in the network.\n"
             <<
-                    "\tparticipants <Guid>                         : verbose information related with a specific DomainParticipant.\n"
+            "\tparticipants <Guid>                         : verbose information related with a specific DomainParticipant.\n"
             << "\twriters                                     : DataWriters discovered in the network.\n"
             <<
-                    "\twriters verbose                             : verbose information about DataWriters discovered in the network.\n"
-            << "\twriters <Guid>                              : verbose information related with a specific DataWriter.\n"
+            "\twriters verbose                             : verbose information about DataWriters discovered in the network.\n"
+            <<
+                    "\twriters <Guid>                              : verbose information related with a specific DataWriter.\n"
             << "\treader                                      : DataReaders discovered in the network.\n"
             <<
-                    "\treader verbose                              : verbose information about DataReaders discovered in the network.\n"
-            << "\treader <Guid>                               : verbose information related with a specific DataReader.\n"
+            "\treader verbose                              : verbose information about DataReaders discovered in the network.\n"
+            <<
+                    "\treader <Guid>                               : verbose information related with a specific DataReader.\n"
             << "\ttopics                                      : Topics discovered in the network in compact format.\n"
             << "\ttopics v                                    : Topics discovered in the network.\n"
             <<
-                    "\ttopics vv                                   : verbose information about Topics discovered in the network.\n"
+            "\ttopics vv                                   : verbose information about Topics discovered in the network.\n"
             <<
             "\ttopics <name>                               : Topics discovered in the network filtered by name (wildcard allowed (*)).\n"
             <<
@@ -753,9 +755,9 @@ void Controller::help_command_(
             << "\tfilter add partitions <filter_str>          : Add <filter_str> in partitions filter list.\n"
             << "\tfilter remove partitions <filter_str>       : Remove <filter_str> in partitions filter list.\n"
             <<
-                    "\tfilter set topic <topic_name> <filter_str>  : Set topic filter list with <filter_str> as first value.\n"
+            "\tfilter set topic <topic_name> <filter_str>  : Set topic filter list with <filter_str> as first value.\n"
             <<
-                    "\techo <name>                                 : data of a specific Topic (Data Type must be discovered).\n"
+            "\techo <name>                                 : data of a specific Topic (Data Type must be discovered).\n"
             <<
             "\techo <wildcard_name>                        : data of Topics matching the wildcard name (and whose Data Type is discovered).\n"
             << "\techo <name> verbose                         : data with additional source info of a specific Topic.\n"
@@ -786,13 +788,13 @@ void Controller::filter_command_(
 {
     const auto& check_filter_contains_value = [&](std::string category, std::string value, bool& ret)
             {
-                if(category == "partitions" &&
-                    partition_filter_set_.find(value) != partition_filter_set_.end())
+                if (category == "partitions" &&
+                        partition_filter_set_.find(value) != partition_filter_set_.end())
                 {
                     ret = true;
                 }
-                else if(category == "topic" &&
-                    topic_filter_dict_.find(value) != topic_filter_dict_.end())
+                else if (category == "topic" &&
+                        topic_filter_dict_.find(value) != topic_filter_dict_.end())
                 {
                     ret = true;
                 }
@@ -830,7 +832,7 @@ void Controller::filter_command_(
         for (const auto& topic_pair: topic_filter_dict_)
         {
             // If there is no content topic filter, do not print ""
-            if(topic_pair.second == "")
+            if (topic_pair.second == "")
             {
                 continue;
             }
@@ -898,7 +900,7 @@ void Controller::filter_command_(
             return;
         }
 
-        if(category == "partitions")
+        if (category == "partitions")
         {
             partition_filter_set_.clear();
             update_partitions();
@@ -927,7 +929,7 @@ void Controller::filter_command_(
 
         std::set<std::string> allowed_args = {"add", "remove"};
         if (allowed_args.find(operation) == allowed_args.end() ||
-            category != "partitions")
+                category != "partitions")
         {
             // Operation not allowed
             // or category not supported
@@ -991,7 +993,7 @@ void Controller::filter_command_(
 
         std::set<std::string> allowed_args = {"set", "remove"};
         if (allowed_args.find(operation) == allowed_args.end() ||
-            category != "topic")
+                category != "topic")
         {
             // Operation not allowed
             // or category not supported
@@ -1036,7 +1038,8 @@ void Controller::filter_command_(
     }
 }
 
-void Controller::update_content_topicfilter(const std::string& topic_name)
+void Controller::update_content_topicfilter(
+        const std::string& topic_name)
 {
     auto topic_it = topic_filter_dict_.find(topic_name);
 
@@ -1087,7 +1090,7 @@ void Controller::update_endpoints()
         topic_name = endpoint.second.info.topic.m_topic_name;
         endpoint_active = !partitions_exists;
 
-        if(endpoint_active)
+        if (endpoint_active)
         {
             // No partition filter
             v_guid_active.push_back({endpoint.first, true});
@@ -1157,7 +1160,7 @@ void Controller::update_endpoints()
 }
 
 void Controller::set_partition_filter(
-            const std::set<std::string> partition_filter_set)
+        const std::set<std::string> partition_filter_set)
 {
     partition_filter_set_ = partition_filter_set;
 }

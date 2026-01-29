@@ -88,7 +88,6 @@ public:
             const std::string& topic_name,
             const std::string& expression);
 
-
 protected:
 
     /**

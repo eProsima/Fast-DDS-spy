@@ -71,7 +71,7 @@ Backend::Backend(
     // Partitions
     dds_participant_->update_filters(0, configuration.dds_configuration->allowed_partition_list, "", "");
     // Content Filtered Topic
-    for(const auto topic_pair: configuration.dds_configuration->content_topic_filter_dict)
+    for (const auto topic_pair: configuration.dds_configuration->content_topic_filter_dict)
     {
         dds_participant_->update_filters(1, std::set<std::string>(), topic_pair.first, topic_pair.second);
     }

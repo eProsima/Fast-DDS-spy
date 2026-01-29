@@ -139,7 +139,7 @@ protected:
 
 private:
 
-    template <typename SimpleF, typename VerboseF, typename specificF>
+    template<typename SimpleF, typename VerboseF, typename specificF>
     void dds_entity_command__(
             const std::vector<std::string>& arguments,
             SimpleF simple_function,
@@ -147,7 +147,7 @@ private:
             specificF specific_function,
             const char* entity_name) noexcept;
 
-    
+
 
     void update_topics();
 

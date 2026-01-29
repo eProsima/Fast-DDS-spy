@@ -73,12 +73,12 @@ void add_endpoint_to_vector(
         // If first for this topic, add new topic
         already_endpoints_index[endpoint.second.info.topic.m_topic_name] = endpoints.size();
         endpoints.push_back({
-                        ros2_types ? utils::demangle_if_ros_topic(
-                            endpoint.second.info.topic.m_topic_name) : endpoint.second.info.topic.m_topic_name,
-                        ros2_types ? utils::demangle_if_ros_type(
-                            endpoint.second.info.topic.type_name) : endpoint.second.info.topic.type_name,
-                        1
-                    });
+                    ros2_types ? utils::demangle_if_ros_topic(
+                        endpoint.second.info.topic.m_topic_name) : endpoint.second.info.topic.m_topic_name,
+                    ros2_types ? utils::demangle_if_ros_type(
+                        endpoint.second.info.topic.type_name) : endpoint.second.info.topic.type_name,
+                    1
+                });
     }
     else
     {
