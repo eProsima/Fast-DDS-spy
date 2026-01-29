@@ -213,7 +213,7 @@ int main(
                         {
                             EPROSIMA_LOG_WARNING(FASTDDSSPY_TOOL,
                                     "Error reloading configuration file " << commandline_args.file_path <<
-                            " with error: " <<
+                                    " with error: " <<
                                     e.what());
                         }
                     };

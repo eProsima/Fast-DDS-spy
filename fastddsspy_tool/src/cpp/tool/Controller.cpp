@@ -730,12 +730,12 @@ void Controller::help_command_(
             <<
             "\twriters verbose                             : verbose information about DataWriters discovered in the network.\n"
             <<
-                    "\twriters <Guid>                              : verbose information related with a specific DataWriter.\n"
+            "\twriters <Guid>                              : verbose information related with a specific DataWriter.\n"
             << "\treader                                      : DataReaders discovered in the network.\n"
             <<
             "\treader verbose                              : verbose information about DataReaders discovered in the network.\n"
             <<
-                    "\treader <Guid>                               : verbose information related with a specific DataReader.\n"
+            "\treader <Guid>                               : verbose information related with a specific DataReader.\n"
             << "\ttopics                                      : Topics discovered in the network in compact format.\n"
             << "\ttopics v                                    : Topics discovered in the network.\n"
             <<
