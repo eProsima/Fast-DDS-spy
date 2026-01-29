@@ -1,0 +1,22 @@
+dds:
+
+  allowlist:
+    - name: "*"
+
+  topics:
+    - name: "HelloWorldTopic"
+      type: "HelloWorld"
+      filter: "index > 10"
+
+  partitions:
+    - "Partition_Name"
+
+  blocklist:
+    - name: "topic_name"
+      type: "topic_type"
+
+  ros2-types: false
+
+specs:
+
+  rtps: true

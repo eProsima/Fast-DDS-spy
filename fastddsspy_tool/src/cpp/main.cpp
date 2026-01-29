@@ -162,7 +162,7 @@ int main(
         // WARNING: it is needed to pass file_path, as FileWatcher only retrieves file_name
         std::function<void(std::string)> filewatcher_callback =
                 [&spy, commandline_args]
-                    (std::string file_name)
+                (std::string file_name)
                 {
                     EPROSIMA_LOG_INFO(
                         FASTDDSSPY_TOOL,
@@ -197,7 +197,7 @@ int main(
             // Callback will reload configuration and pass it to ddspipe
             std::function<void()> periodic_callback =
                     [&spy, commandline_args]
-                        ()
+                    ()
                     {
                         EPROSIMA_LOG_INFO(
                             FASTDDSSPY_TOOL,
@@ -212,7 +212,8 @@ int main(
                         catch (const std::exception& e)
                         {
                             EPROSIMA_LOG_WARNING(FASTDDSSPY_TOOL,
-                                    "Error reloading configuration file " << commandline_args.file_path << " with error: " <<
+                                    "Error reloading configuration file " << commandline_args.file_path <<
+                            " with error: " <<
                                     e.what());
                         }
                     };

@@ -24,18 +24,32 @@ class TestCase_instance (test_class.TestCase):
         """
         @brief Initialize the TestCase_instance object.
 
-        Launch this test with:
-            fastddsspy topics HelloWorldTopic idl
-            AdvancedConfigurationExample publisher
+        This TestCase execute Spy with a filter configured with the yml.
+        The filter has a partition and a content topic filter for all topics.
+
+        And prints the list of filters
+
+        This test launch:
+            fastddsspy
+            >> filters
         """
         super().__init__(
-            name='TopicsNameIDLDDSCommand',
-            one_shot=True,
+            name='ToolFilterSetWithYml',
+            one_shot=False,
             command=[],
-            dds=True,
-            config='',
+            dds=False,
+            config='fastddsspy_tool/test/application/configuration/\
+configuration_with_filter_rtps.yaml',
             arguments_dds=[],
-            arguments_spy=['topics', 'HelloWorldTopic', 'idl'],
-            commands_spy=[],
-            output="""\nNo type information available and thus cannot print data.\n"""
+            arguments_spy=['--config-path', 'configuration'],
+            commands_spy=['filters'],
+            output=(
+                '--------\n\n'
+                'Filters:\n\n'
+                '--------\n\n\n\n'
+                '  Topic:\n\n'
+                '    HelloWorldTopic: "index > 10"\n\n\n\n'
+                '  Partitions:\n\n'
+                '    - Partition_Name\n'
+            )
         )

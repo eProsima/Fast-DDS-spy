@@ -24,18 +24,20 @@ class TestCase_instance (test_class.TestCase):
         """
         @brief Initialize the TestCase_instance object.
 
-        Launch this test with:
+        Launch this test with (RTPS):
             fastddsspy topics HelloWorldTopic idl
             AdvancedConfigurationExample publisher
         """
         super().__init__(
-            name='TopicsNameIDLDDSCommand',
+            name='TopicsNameIDLDDSCommandRTPS',
             one_shot=True,
             command=[],
             dds=True,
-            config='',
+            config='fastddsspy_tool/test/application/configuration/\
+configuration_basic_rtps.yaml',
             arguments_dds=[],
-            arguments_spy=['topics', 'HelloWorldTopic', 'idl'],
+            arguments_spy=['--config-path', 'configuration', 'topic', 'HelloWorldTopic', 'idl'],
             commands_spy=[],
-            output="""\nNo type information available and thus cannot print data.\n"""
+            output="""\n@extensibility(APPENDABLE)\nstruct \
+HelloWorld\n{\n    unsigned long index;\n    char message[20];\n};\n"""
         )
