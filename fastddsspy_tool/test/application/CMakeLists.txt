@@ -111,9 +111,11 @@ add_subdirectory(dds/AdvancedConfigurationExample)
 
 set(TEST_NEEDED_SOURCES
         configuration/configuration_basic.yaml
+        configuration/configuration_basic_rtps.yaml
         configuration/configuration_wrong_empty_arg.yaml
         configuration/configuration_wrong_type.yaml
         configuration/configuration_discovery_time.yaml
+        configuration/configuration_with_filter_rtps.yaml
     )
 
 foreach(NEEDED_SOURCE ${TEST_NEEDED_SOURCES})
