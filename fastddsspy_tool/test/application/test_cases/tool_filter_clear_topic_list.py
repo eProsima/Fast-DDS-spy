@@ -1,4 +1,4 @@
-# Copyright 2025 Proyectos y Sistemas de Mantenimiento SL (eProsima).
+# Copyright 2026 Proyectos y Sistemas de Mantenimiento SL (eProsima).
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,20 +24,20 @@ class TestCase_instance (test_class.TestCase):
         """
         @brief Initialize the TestCase_instance object.
 
-        This TestCase creates two filter lists "partitions"
-        and "topics" and remove "partitions" list.
+        This TestCase creates two filter lists "partitions" and "topic",
+        and clear "partitions" filter.
 
         And prints the list of filters
 
         This test launch:
             fastddsspy
-            >> filter set partitions A
-            >> filter set topics Square
-            >> filter remove partitions
+            >> filter add partitions A
+            >> filter set topic Square "x > 10"
+            >> filter clear partitions
             >> filters
         """
         super().__init__(
-            name='ToolFilterRemovePartitionList',
+            name='ToolFilterClearTopicList',
             one_shot=False,
             command=[],
             dds=False,
@@ -45,16 +45,17 @@ class TestCase_instance (test_class.TestCase):
             arguments_dds=[],
             arguments_spy=[],
             commands_spy=[
-                'filter set partitions A',
-                'filter set topics Square',
-                'filter remove partitions',
+                'filter add partitions A',
+                'filter set topic Square "x > 10"',
+                'filter clear topic',
                 'filters',
             ],
             output=(
-                'Filter lists (1)\n'
-                '\n\n\n'
-                '  topics (1):\n'
-                '\n'
-                '    - Square\n'
+                '--------\n\n'
+                'Filters:\n\n'
+                '--------\n\n\n\n'
+                '  Topic:\n\n\n\n'
+                '  Partitions:\n\n'
+                '    - A\n'
             )
         )

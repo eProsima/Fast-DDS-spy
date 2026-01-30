@@ -31,6 +31,8 @@
 namespace eprosima {
 namespace spy {
 
+using endpoint_pair = std::pair<ddspipe::core::types::Guid, eprosima::spy::participants::EndpointInfoData>;
+
 class Controller
 {
 public:
@@ -45,6 +47,12 @@ public:
 
     utils::ReturnCode reload_configuration(
             yaml::Configuration& new_configuration);
+
+    void set_partition_filter(
+            const std::set<std::string> partition_filter_set);
+
+    void set_content_topic_filter(
+            const std::map<std::string, std::string> topic_filter_dict);
 
 protected:
 
@@ -117,8 +125,6 @@ protected:
     void error_command_(
             const std::vector<std::string>& arguments) noexcept;
 
-    void update_filter_partitions();
-
     /////////////////////
     // VARIABLES
     Backend backend_;
@@ -133,7 +139,7 @@ protected:
 
 private:
 
-    template <typename SimpleF, typename VerboseF, typename specificF>
+    template<typename SimpleF, typename VerboseF, typename specificF>
     void dds_entity_command__(
             const std::vector<std::string>& arguments,
             SimpleF simple_function,
@@ -141,11 +147,23 @@ private:
             specificF specific_function,
             const char* entity_name) noexcept;
 
-    void refresh_database();
+
+
+    void update_topics();
+
+    void update_content_topicfilter(
+            const std::string& topic_name);
+
+    void update_partitions();
+
+    void update_endpoints();
 
     std::mutex view_mutex_;
 
-    std::map<std::string, std::set<std::string>> filter_dict;
+    //std::map<std::string, std::pair<std::string, std::set<std::string>>> filter_dict;
+
+    std::set<std::string> partition_filter_set_;
+    std::map<std::string, std::string> topic_filter_dict_;
 
     std::set<std::string> allowed_filters_categories_;
 

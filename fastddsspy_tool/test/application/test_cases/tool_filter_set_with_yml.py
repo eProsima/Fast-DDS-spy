@@ -1,4 +1,4 @@
-# Copyright 2025 Proyectos y Sistemas de Mantenimiento SL (eProsima).
+# Copyright 2026 Proyectos y Sistemas de Mantenimiento SL (eProsima).
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,41 +24,32 @@ class TestCase_instance (test_class.TestCase):
         """
         @brief Initialize the TestCase_instance object.
 
-        This TestCase creates the filter list "partitions" with "B|C" as filters
-        (removes the first element "A").
+        This TestCase execute Spy with a filter configured with the yml.
+        The filter has a partition and a content topic filter for all topics.
 
         And prints the list of filters
 
         This test launch:
             fastddsspy
-            >> filter set partitions A
-            >> filter add partitions B
-            >> filter add partitions C
-            >> filter remove partitions A
             >> filters
         """
         super().__init__(
-            name='ToolFilterSetPartitionsComplex',
+            name='ToolFilterSetWithYml',
             one_shot=False,
             command=[],
             dds=False,
-            config='',
+            config='fastddsspy_tool/test/application/configuration/\
+configuration_with_filter_rtps.yaml',
             arguments_dds=[],
-            arguments_spy=[],
-            commands_spy=[
-                'filter set partitions A',
-                'filter add partitions B',
-                'filter add partitions C',
-                'filter remove partitions A',
-                'filters',
-            ],
+            arguments_spy=['--config-path', 'configuration'],
+            commands_spy=['filters'],
             output=(
-                'Filter lists (1)\n'
-                '\n\n\n'
-                '  partitions (2):\n'
-                '\n'
-                '    - B\n'
-                '\n'
-                '    - C\n'
+                '--------\n\n'
+                'Filters:\n\n'
+                '--------\n\n\n\n'
+                '  Topic:\n\n'
+                '    HelloWorldTopic: "index > 10"\n\n\n\n'
+                '  Partitions:\n\n'
+                '    - Partition_Name\n'
             )
         )

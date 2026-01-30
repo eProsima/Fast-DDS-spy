@@ -54,12 +54,17 @@ The output format is as follows: :ref:`user_manual_command_filter_output`.
 - ``clear``: This argument **clear** the list ``category`` added to the filters.
 - ``remove``: This argument **delete** the list ``category`` from the filters.
 
-*3 argument:* `<set/add/remove> <category> <filter_str>`
---------------------------------------------------------
+*3 argument:* `<add/remove> partitions <filter_str>`
+----------------------------------------------------
 
-- ``set``: This argument **create** the ``category`` filter list with ``filter_str`` as first element.
-- ``add``: This argument **add** ``filter_str`` to ``category`` filter list.
-- ``remove``: This argument **delete** ``filter_str`` from ``category`` filter list.
+- ``add``: This argument **add** ``filter_str`` to **partitions** filter list.
+- ``remove``: This argument **delete** ``filter_str`` from **partitions** filter list.
+
+*4 argument:* `<set/remove> <category> <category_name> <filter_str>`
+--------------------------------------------------------------------
+
+- ``set``: This argument **set** ``filter_str`` to ``category`` ``category_name`` filter list.
+- ``remove``: This argument **delete** ``filter_str`` from ``category`` ``category_name`` filter list.
 
 .. _user_manual_command_filter_output:
 
@@ -85,23 +90,27 @@ Example
 Let's assume we have a DDS network where a ShapesDemo applications is running with
 the following two DataWriters:
 
-- Circle (partition A)
-- Square (partitions B and C).
+- Circle (partition A) [key_topic_value: color = RED]
+- Square (partitions B and C) [key_topic_value: color = BLUE]
 
 This would be the expected output for the following commands:
 
-- ``filter set partitions A``:
+- ``filter add partitions A``:
 
-Nothing, the category "partitions" is created with filter "A" as first element.
+Nothing, the filter "A" is added to the category "partitions".
 
 - ``filters``:
 
 .. code-block::
 
-    Filter lists (1)
+    --------
+    Filters:
+    --------
 
-    partitions (1):
-      - A
+      Topic:
+
+      Partitions:
+        - A
 
 - ``topics vv``:
 
@@ -115,7 +124,7 @@ Nothing, the category "partitions" is created with filter "A" as first element.
     dynamic_type_discovered: true
 
 
-- ``filters add partitions B``:
+- ``filter add partitions B``:
 
 Nothing, the filter "B" is added to the category "partitions".
 
@@ -123,11 +132,15 @@ Nothing, the filter "B" is added to the category "partitions".
 
 .. code-block::
 
-    Filter lists (1)
+    --------
+    Filters:
+    --------
 
-    partitions (2):
-      - A
-      - B
+      Topic:
+
+      Partitions:
+        - A
+        - B
 
 - ``topics vv``:
 
@@ -146,7 +159,68 @@ Nothing, the filter "B" is added to the category "partitions".
       rate: 12.5391 Hz
       dynamic_type_discovered: true
 
-- ``filters remove partitions B``:
+- ``f set topic Circle "color = 'BLUE'"``
+
+Nothing, the filter "color = 'BLUE'" is added to the category "topic" in the category_name "Circle".
+
+- ``f set topic Square "color = 'BLUE'"``
+
+Nothing, the filter "color = 'BLUE'" is added to the category "topic" in the category_name "Square".
+
+- ``filters``
+
+.. code-block::
+
+    --------
+    Filters:
+    --------
+
+      Topic:
+        Circle: "color = 'BLUE'"
+        Square: "color = 'BLUE'"
+
+      Partitions:
+        - A
+        - B
+
+- ``echo all``
+
+Prints only the information of the topic Square,
+(the topic Circle is filtered because the key value "color" is "RED")
+
+.. code-block::
+
+    ---
+
+    topic: Square [ShapeType]
+    writer: 01.0f.9f.6d.b8.ca.6e.52.00.00.00.00|0.0.3.2
+    partitions: ""
+    timestamp: 2026/01/16 12:03:14
+    data:
+    ---
+    {
+        "color": "BLUE",
+        "shapesize": 30,
+        "x": 81,
+        "y": 35
+    }
+    ---
+
+    topic: Square [ShapeType]
+    writer: 01.0f.9f.6d.b8.ca.6e.52.00.00.00.00|0.0.3.2
+    partitions: ""
+    timestamp: 2026/01/16 12:03:14
+    data:
+    ---
+    {
+        "color": "BLUE",
+        "shapesize": 30,
+        "x": 87,
+        "y": 37
+    }
+    ---
+
+- ``filter remove partitions B``:
 
 Nothing, the filter "B" is removed from the category "partitions".
 
@@ -176,4 +250,10 @@ Nothing, the filter "B" is removed from the category "partitions".
 
 .. code-block::
 
-    Filter lists (0)
+    --------
+    Filters:
+    --------
+
+      Topic:
+
+      Partitions:
