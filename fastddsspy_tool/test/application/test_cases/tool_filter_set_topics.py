@@ -44,9 +44,8 @@ class TestCase_instance (test_class.TestCase):
             arguments_dds=[],
             arguments_spy=[],
             commands_spy=[
-                'filter set topic Square "color = \'RED\'"',
-                'filter set topic Triangle "x > 50"',
-                'filters',
+                'filter set topic Square \"color = \'RED\'\"',
+                'filter set topic Triangle \"x > 50\"',
             ],
             output=(
                 '--------\n\n'

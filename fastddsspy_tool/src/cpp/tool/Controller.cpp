@@ -824,7 +824,6 @@ void Controller::filter_command_(
         }
 
         // print the filters list
-        //std::cout << "Filter lists (" << filter_dict.size() << ")\n";
         std::cout << "--------\n";
         std::cout << "Filters:\n";
         std::cout << "--------\n\n";
@@ -889,8 +888,7 @@ void Controller::filter_command_(
 
         operation = arguments[1];
         category = arguments[2];
-        // std::set<std::string> allowed_args = {"clear"};//, "remove"};
-        // if (allowed_args.find(operation) == allowed_args.end())
+
         if (operation != "clear" || supported_filters.count(category) == 0)
         {
             // incorrect operation ("clear")
