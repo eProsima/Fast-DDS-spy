@@ -810,7 +810,7 @@ void Controller::filter_command_(
     std::string filter_str;
     std::string topic_str;
 
-    std::set<std::string> supported_filters = { "partitions", /*"keys",*/ "topic"};
+    std::set<std::string> supported_filters = { "partitions", "topic"};
 
     if (arguments.size() == 1) // print filters
     {

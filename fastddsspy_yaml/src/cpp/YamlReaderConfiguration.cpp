@@ -306,8 +306,8 @@ void Configuration::load_configuration_from_file_(
     catch (const std::exception& e)
     {
         throw eprosima::utils::ConfigurationException(
-                  utils::Formatter() << "Error loading Fast-DDS Spy configuration from file: <" << file_path <<
-                      "> :\n " << e.what());
+                  utils::Formatter() << "Error loading Fast-DDS Spy configuration from file: <" << file_path
+                                     << "> :\n " << e.what());
     }
 
     load_configuration_(yml, args);
