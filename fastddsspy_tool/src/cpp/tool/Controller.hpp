@@ -160,8 +160,6 @@ private:
 
     std::mutex view_mutex_;
 
-    //std::map<std::string, std::pair<std::string, std::set<std::string>>> filter_dict;
-
     std::set<std::string> partition_filter_set_;
     std::map<std::string, std::string> topic_filter_dict_;
 
