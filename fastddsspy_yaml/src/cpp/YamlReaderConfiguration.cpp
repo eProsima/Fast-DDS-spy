@@ -186,7 +186,8 @@ void Configuration::load_dds_configuration_(
 
         for (const auto topic: manual_topics)
         {
-            dds_configuration->content_topic_filter_dict[topic.first->topic_name] =
+            const std::string key = std::string(topic.first->topic_name);
+            dds_configuration->content_topic_filter_dict[key] =
                     topic.first->content_topic_filter;
         }
     }

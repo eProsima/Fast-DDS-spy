@@ -69,11 +69,11 @@ Backend::Backend(
 
     // Update filters from yaml into Spy participant
     // Partitions
-    dds_participant_->update_filters(0, configuration.dds_configuration->allowed_partition_list, "", "");
+    dds_participant_->update_partitions(configuration.dds_configuration->allowed_partition_list);
     // Content Filtered Topic
     for (const auto topic_pair: configuration.dds_configuration->content_topic_filter_dict)
     {
-        dds_participant_->update_filters(1, std::set<std::string>(), topic_pair.first, topic_pair.second);
+        dds_participant_->update_content_topicfilter(topic_pair.first, topic_pair.second);
     }
 
     // Populate Participant Database
@@ -164,10 +164,8 @@ void Backend::update_readers_track_partitions(
 {
     // Function used to update the SpyDdsXmlParticipant filter data structures
     // This structures are used when creating a Spy Reader.
-    // ONLY DDS
-    //std::dynamic_pointer_cast<participants::SpyDdsXmlParticipant>(dds_participant_)->update_filters(0, partitions_set);
-    // BOTH, DDS and RTPS
-    dds_participant_->update_filters(0, partitions_set, "", "");
+
+    dds_participant_->update_partitions(partitions_set);
 
     // Function used to update 'content_topicfilter' in the active topics
     pipe_->update_partitions(partitions_set);
@@ -180,10 +178,7 @@ void Backend::update_readers_track_content_filter(
     // Function used to update the SpyDdsXmlParticipant filter data structures
     // This structures are used when creating a Spy Reader.
 
-    // ONLY DDS
-    //std::dynamic_pointer_cast<participants::SpyDdsXmlParticipant>(dds_participant_)->update_filters(1, std::set<std::string>(), topic_name, expression);
-    // BOTH, DDS and RTPS
-    dds_participant_->update_filters(1, std::set<std::string>(), topic_name, expression);
+    dds_participant_->update_content_topicfilter(topic_name, expression);
     // Function used to update 'content_topicfilter' in the active topics
     pipe_->update_content_filter(topic_name, expression);
 }
