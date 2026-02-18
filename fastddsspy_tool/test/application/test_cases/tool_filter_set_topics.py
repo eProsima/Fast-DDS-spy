@@ -47,7 +47,7 @@ class TestCase_instance (test_class.TestCase):
                 'filter set topic Square \"color = \'RED\'\"',
                 'filter set topic Triangle \"x > 50\"',
             ],
-            output="" # TODO. danip
+            output=''  # TODO. danip
             # output=(
             #     '--------\n\n'
             #     'Filters:\n\n'

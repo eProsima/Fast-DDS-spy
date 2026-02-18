@@ -36,7 +36,7 @@ class TestCase_instance (test_class.TestCase):
             arguments_dds=[],
             arguments_spy=['help'],
             commands_spy=[],
-                        output=(
+            output=(
                 'Fast DDS Spy is an interactive CLI that allow '
                 'to instrospect DDS networks.\n'
                 'Each command shows data related with the network '
