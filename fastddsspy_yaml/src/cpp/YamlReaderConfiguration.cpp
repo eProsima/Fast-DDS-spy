@@ -184,7 +184,7 @@ void Configuration::load_dds_configuration_(
         ddspipe_configuration.manual_topics =
                 std::vector<ManualTopic>(manual_topics.begin(), manual_topics.end());
 
-        for (const auto topic: manual_topics)
+        for (const auto& topic: manual_topics)
         {
             const std::string key(topic.first->topic_name);
 

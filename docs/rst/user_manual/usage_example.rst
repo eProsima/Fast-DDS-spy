@@ -169,7 +169,6 @@ Try out all the commands DDS Spy has to offer:
         topics <name> keys v                      : verbose information about keys discovered in the network.
         filters                                   : Display the active filters.
         filters clear                             : Clear all the filter lists.
-        filters remove                            : Remove all the filter lists.
         filter clear <category>                   : Clear <category> filter list.
         filter remove <category>                  : Remove <category> filter list.
         filter set <category> <filter_str>        : Set <category> filter list with <filter_str> as first value.

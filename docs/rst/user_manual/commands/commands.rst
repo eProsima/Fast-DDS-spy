@@ -121,9 +121,10 @@ Summary
           ``add`` |br|
           ``remove`` |br|
           ``clear`` |br|
-          ``<category>`` |br|
+          ``<partitions>`` |br|
+          ``<topic>`` |br|
           ``<filter_str>`` |br|
-          ``<category_name>`` |br|
+          ``<topic_name>`` |br|
         - ``filter`` ``filters`` |br|
           ``f`` ``F``
 

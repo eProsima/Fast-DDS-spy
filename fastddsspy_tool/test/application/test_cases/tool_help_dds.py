@@ -101,8 +101,6 @@ configuration_discovery_time.yaml',
                 'Display the active filters.\n\n'
                 '\tfilters clear                               : '
                 'Clear all the filter lists.\n\n'
-                '\tfilters remove                              : '
-                'Remove all the filter lists.\n\n'
                 '\tfilter clear <category>                     : '
                 'Clear <category> filter list.\n\n'
                 '\tfilter add partitions <filter_str>          : '

@@ -29,7 +29,7 @@ The current categories supported by the **filter** command are:
 Arguments
 =========
 
-**Filter** command supports from 0 to 3 arguments:
+**Filter** command supports from 0 to 4 arguments:
 
 *No argument*
 -------------
@@ -48,23 +48,23 @@ The output format is as follows: :ref:`user_manual_command_filter_output`.
 - ``clear``: This argument **clear** all the list of categories added to the filters.
 - ``remove``: This argument **delete** all the list of categories added to the filters.
 
-*2 argument:* `<clear/remove> <category>`
------------------------------------------
+*2 argument:* `<clear/remove> <partitions/topic>`
+-------------------------------------------------
 
-- ``clear``: This argument **clear** the list ``category`` added to the filters.
-- ``remove``: This argument **delete** the list ``category`` from the filters.
+- ``clear``: This argument **clear** the list ``partitions/topic`` added to the filters.
+- ``remove``: This argument **delete** the list ``partitions/topic`` from the filters.
 
-*3 argument:* `<add/remove> partitions <filter_str>`
-----------------------------------------------------
+*3 argument:* `<add/remove> <partitions/topic> <filter_str/topic_name>`
+-----------------------------------------------------------------------
 
-- ``add``: This argument **add** ``filter_str`` to **partitions** filter list.
-- ``remove``: This argument **delete** ``filter_str`` from **partitions** filter list.
+- ``add partitions/topic``: This argument **add** ``filter_str`` to **partitions** filter list.
+- ``remove partitions``: This argument **delete** ``filter_str`` from **partitions** filter list.
+- ``remove topic``: This argument **delete** the filter of the topic ``topic_name``.
 
-*4 argument:* `<set/remove> <category> <category_name> <filter_str>`
---------------------------------------------------------------------
+*4 argument:* `<set/remove> topic <topic_name> <filter_str>`
+------------------------------------------------------------
 
-- ``set``: This argument **set** ``filter_str`` to ``category`` ``category_name`` filter list.
-- ``remove``: This argument **delete** ``filter_str`` from ``category`` ``category_name`` filter list.
+- ``set``: This argument **set** ``filter_str`` to topic ``topic_name`` filter list.
 
 .. _user_manual_command_filter_output:
 
@@ -161,11 +161,11 @@ Nothing, the filter "B" is added to the category "partitions".
 
 - ``f set topic Circle "color = 'BLUE'"``
 
-Nothing, the filter "color = 'BLUE'" is added to the category "topic" in the category_name "Circle".
+Nothing, the filter "color = 'BLUE'" is added to the topic filter in the topic_name "Circle".
 
 - ``f set topic Square "color = 'BLUE'"``
 
-Nothing, the filter "color = 'BLUE'" is added to the category "topic" in the category_name "Square".
+Nothing, the filter "color = 'BLUE'" is added to the topic filter in the topic_name "Square".
 
 - ``filters``
 

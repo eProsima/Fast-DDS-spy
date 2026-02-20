@@ -750,7 +750,6 @@ void Controller::help_command_(
             "\ttopics <name> keys v                        : verbose information about keys discovered in the network.\n"
             << "\tfilters                                     : Display the active filters.\n"
             << "\tfilters clear                               : Clear all the filter lists.\n"
-            << "\tfilters remove                              : Remove all the filter lists.\n"
             << "\tfilter clear <category>                     : Clear <category> filter list.\n"
             << "\tfilter add partitions <filter_str>          : Add <filter_str> in partitions filter list.\n"
             << "\tfilter remove partitions <filter_str>       : Remove <filter_str> in partitions filter list.\n"
@@ -935,7 +934,7 @@ void Controller::filter_command_(
                     << "Command <"
                     << arguments[0]
                     << "> with 4 arguments have the following format: "
-                    << arguments[0] << "<add/remove> partitions <filter_str>.");
+                    << arguments[0] << " <add/remove> partitions <filter_str>.");
             return;
         }
 
@@ -961,13 +960,21 @@ void Controller::filter_command_(
             check_filter_contains_value(category, filter_str, contains);
             if (!contains)
             {
+                std::string category_msg = category == "partitions" ? "Partitions": "Topic";
                 view_.show_error(STR_ENTRY
-                        << "Partitions filter do not contains filter_str: " << filter_str
+                        << category_msg << " filter do not contains filter_str: " << filter_str
                         << ".");
                 return;
             }
 
-            partition_filter_set_.erase(filter_str);
+            if (category == "partitions")
+            {
+                partition_filter_set_.erase(filter_str);
+            }
+            else
+            {
+                topic_filter_dict_[topic_str] = "";
+            }
         }
 
         update_partitions();
@@ -989,7 +996,7 @@ void Controller::filter_command_(
         filter_str = arguments[4]; // filter string
 
 
-        std::set<std::string> allowed_args = {"set", "remove"};
+        std::set<std::string> allowed_args = {"set"};
         if (allowed_args.find(operation) == allowed_args.end() ||
                 category != "topic")
         {
@@ -999,30 +1006,12 @@ void Controller::filter_command_(
                     << "Command <"
                     << arguments[0]
                     << "> with 5 arguments have the following format: "
-                    << arguments[0] << "<add/remove> topic <topic_name> <filter_str>.");
+                    << arguments[0] << " set topic <topic_name> <filter_str>.");
             return;
         }
 
-        if (operation == "set")
-        {
-            // Set "filter_str" for topic filter
-
-            topic_filter_dict_[topic_str] = filter_str;
-        }
-        else
-        {
-            bool contains;
-            check_filter_contains_value(category, filter_str, contains);
-            if (!contains)
-            {
-                view_.show_error(STR_ENTRY
-                        << "Topic filter do not contains filter_str: " << filter_str
-                        << ".");
-                return;
-            }
-
-            topic_filter_dict_[topic_str] = "";
-        }
+        // Set "filter_str" for topic filter
+        topic_filter_dict_[topic_str] = filter_str;
 
         update_content_topicfilter(topic_str);
     }
@@ -1055,7 +1044,7 @@ void Controller::update_content_topicfilter(
 
 void Controller::update_topics()
 {
-    for (endpoint_pair endpoint: model_->endpoint_database_)
+    for (const endpoint_pair& endpoint: model_->endpoint_database_)
     {
         update_content_topicfilter(endpoint.second.info.topic.topic_name());
     }
@@ -1107,7 +1096,7 @@ void Controller::update_endpoints()
             {
                 if (guid_partition_pair.second[i] == '|')
                 {
-                    for (std::string filter_p: partition_filter_set_)
+                    for (const std::string& filter_p: partition_filter_set_)
                     {
                         if (utils::match_pattern(filter_p, curr_partition) ||
                                 utils::match_pattern(curr_partition, filter_p))
@@ -1130,7 +1119,7 @@ void Controller::update_endpoints()
             }
 
             // Empty or last partition
-            for (std::string filter_p: partition_filter_set_)
+            for (const std::string& filter_p: partition_filter_set_)
             {
                 if (utils::match_pattern(filter_p, curr_partition) ||
                         utils::match_pattern(curr_partition, filter_p))
@@ -1158,13 +1147,13 @@ void Controller::update_endpoints()
 }
 
 void Controller::set_partition_filter(
-        const std::set<std::string> partition_filter_set)
+        const std::set<std::string>& partition_filter_set)
 {
     partition_filter_set_ = partition_filter_set;
 }
 
 void Controller::set_content_topic_filter(
-        const std::map<std::string, std::string> topic_filter_dict)
+        const std::map<std::string, std::string>& topic_filter_dict)
 {
     topic_filter_dict_ = topic_filter_dict;
 }

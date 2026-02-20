@@ -97,8 +97,6 @@ class TestCase_instance (test_class.TestCase):
                 'Display the active filters.\n'
                 '\tfilters clear                               : '
                 'Clear all the filter lists.\n'
-                '\tfilters remove                              : '
-                'Remove all the filter lists.\n'
                 '\tfilter clear <category>                     : '
                 'Clear <category> filter list.\n'
                 '\tfilter add partitions <filter_str>          : '

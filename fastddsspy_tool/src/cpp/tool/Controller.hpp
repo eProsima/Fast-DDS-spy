@@ -49,10 +49,10 @@ public:
             yaml::Configuration& new_configuration);
 
     void set_partition_filter(
-            const std::set<std::string> partition_filter_set);
+            const std::set<std::string>& partition_filter_set);
 
     void set_content_topic_filter(
-            const std::map<std::string, std::string> topic_filter_dict);
+            const std::map<std::string, std::string>& topic_filter_dict);
 
 protected:
 
