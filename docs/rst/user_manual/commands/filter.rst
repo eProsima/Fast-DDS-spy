@@ -25,6 +25,7 @@ and information is printed if it matches any of the strings within the category.
 The current categories supported by the **filter** command are:
 
 - ``partitions``
+- ``topic``
 
 Arguments
 =========

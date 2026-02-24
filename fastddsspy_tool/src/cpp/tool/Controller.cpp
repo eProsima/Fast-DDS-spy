@@ -990,6 +990,12 @@ void Controller::filter_command_(
             return;
         }
 
+        if (!configuration_.dds_enabled)
+        {
+            view_.show_error(STR_ENTRY << "RTPS does not support ContentFilteredTopic.");
+            return;
+        }
+
         operation = arguments[1];  // <set/remove>
         category = arguments[2];   // topic
         topic_str = arguments[3];  // topic name

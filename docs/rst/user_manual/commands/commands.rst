@@ -121,8 +121,8 @@ Summary
           ``add`` |br|
           ``remove`` |br|
           ``clear`` |br|
-          ``<partitions>`` |br|
-          ``<topic>`` |br|
+          ``partitions`` |br|
+          ``topic`` |br|
           ``<filter_str>`` |br|
           ``<topic_name>`` |br|
         - ``filter`` ``filters`` |br|
