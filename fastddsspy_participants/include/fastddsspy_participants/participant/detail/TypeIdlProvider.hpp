@@ -31,7 +31,7 @@ namespace spy {
 namespace participants {
 namespace detail {
 
-template <typename EndpointDiscoveryInfo>
+template<typename EndpointDiscoveryInfo>
 static std::string get_type_idl(
         const EndpointDiscoveryInfo& info)
 {
