@@ -175,9 +175,11 @@ public:
          * Creates data containing the discovered endpoint and inserts it into the internal reader queue.
          *
          * @param endpoint_discovered The discovered endpoint information.
+         * @param type_idl The discovered endpoint type in IDL format.
          */
         void internal_notify_endpoint_discovered_(
-                const EndpointInfo& endpoint_discovered);
+                const EndpointInfo& endpoint_discovered,
+                const std::string& type_idl);
 
         /// Participants Internal Reader
         std::shared_ptr<ddspipe::participants::InternalReader> participants_reader_;
