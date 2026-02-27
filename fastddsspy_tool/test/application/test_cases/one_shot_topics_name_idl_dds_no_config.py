@@ -37,6 +37,5 @@ class TestCase_instance (test_class.TestCase):
             arguments_dds=[],
             arguments_spy=['topics', 'HelloWorldTopic', 'idl'],
             commands_spy=[],
-            output="""\n@extensibility(APPENDABLE)\nstruct \
-HelloWorld\n{\n    unsigned long index;\n    char message[20];\n};\n"""
+            output="""\nNo type information available and thus cannot print data.\n"""
         )

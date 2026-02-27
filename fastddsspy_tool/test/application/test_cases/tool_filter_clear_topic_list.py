@@ -1,4 +1,4 @@
-# Copyright 2025 Proyectos y Sistemas de Mantenimiento SL (eProsima).
+# Copyright 2026 Proyectos y Sistemas de Mantenimiento SL (eProsima).
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,21 +24,20 @@ class TestCase_instance (test_class.TestCase):
         """
         @brief Initialize the TestCase_instance object.
 
-        This TestCase creates three filter list
-        "partitions", "partition", "topics" and remove "partition" list.
+        This TestCase creates two filter lists "partitions" and "topic",
+        and clear "partitions" filter.
 
         And prints the list of filters
 
         This test launch:
             fastddsspy
-            >> filter set partitions A
-            >> filter set partition A
-            >> filter set topic Square
-            >> filter remove partition
+            >> filter add partitions A
+            >> filter set topic Square "x > 10"
+            >> filter clear partitions
             >> filters
         """
         super().__init__(
-            name='ToolFilterSetLists',
+            name='ToolFilterClearTopicList',
             one_shot=False,
             command=[],
             dds=False,
@@ -46,20 +45,17 @@ class TestCase_instance (test_class.TestCase):
             arguments_dds=[],
             arguments_spy=[],
             commands_spy=[
-                'filter set partitions A',
-                'filter set topics Square',
-                'filter clear',
+                'filter add partitions A',
+                'filter set topic Square "x > 10"',
+                'filter clear topic',
                 'filters',
             ],
             output=(
-                'Filter lists (2)\n'
-                '\n\n\n'
-                '  partitions (1):\n'
-                '\n'
+                '--------\n\n'
+                'Filters:\n\n'
+                '--------\n\n\n\n'
+                '  Topic:\n\n\n\n'
+                '  Partitions:\n\n'
                 '    - A\n'
-                '\n\n\n'
-                '  topics (1):\n'
-                '\n'
-                '    - Square\n'
             )
         )

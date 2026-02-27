@@ -35,7 +35,6 @@ constexpr const char* FASTDDSSPY_PROFILE_TAG("dds-profile");
 ////////////////////////
 // Specs related tags
 ////////////////////////
-constexpr const char* SPECS_TAG("specs");
 constexpr const char* GATHERING_TIME_TAG("discovery-time");
 
 } /* namespace yaml */

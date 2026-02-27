@@ -1,4 +1,4 @@
-# Copyright 2025 Proyectos y Sistemas de Mantenimiento SL (eProsima).
+# Copyright 2026 Proyectos y Sistemas de Mantenimiento SL (eProsima).
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,28 +24,20 @@ class TestCase_instance (test_class.TestCase):
         """
         @brief Initialize the TestCase_instance object.
 
-        This TestCase creates the filter list "partitions" with "A" as unique filter string.
-        And prints the list of filters
-
-        This test launch:
-            fastddsspy
-            >> filter set partitions A
-            >> filters
+        Launch this test with (RTPS):
+            fastddsspy topics HelloWorldTopic idl
+            AdvancedConfigurationExample publisher
         """
         super().__init__(
-            name='ToolFilterSetPartitionsSimple',
-            one_shot=False,
+            name='TopicsNameIDLDDSCommandRTPS',
+            one_shot=True,
             command=[],
-            dds=False,
-            config='',
+            dds=True,
+            config='fastddsspy_tool/test/application/configuration/\
+configuration_basic_rtps.yaml',
             arguments_dds=[],
-            arguments_spy=[],
-            commands_spy=['filter set partitions A', 'filters'],
-            output=(
-                'Filter lists (1)\n'
-                '\n\n\n'
-                '  partitions (1):\n'
-                '\n'
-                '    - A\n'
-            )
+            arguments_spy=['--config-path', 'configuration', 'topic', 'HelloWorldTopic', 'idl'],
+            commands_spy=[],
+            output="""\n@extensibility(APPENDABLE)\nstruct \
+HelloWorld\n{\n    unsigned long index;\n    char message[20];\n};\n"""
         )

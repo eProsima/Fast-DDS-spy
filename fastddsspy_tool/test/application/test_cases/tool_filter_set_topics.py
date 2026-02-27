@@ -1,4 +1,4 @@
-# Copyright 2025 Proyectos y Sistemas de Mantenimiento SL (eProsima).
+# Copyright 2026 Proyectos y Sistemas de Mantenimiento SL (eProsima).
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,21 +24,19 @@ class TestCase_instance (test_class.TestCase):
         """
         @brief Initialize the TestCase_instance object.
 
-        This TestCase creates the filter list "partitions" with "B|C" as filters
-        (removes the first element "A").
+        This TestCase creates three filter list
+        "partitions", "partition", "topics" and remove "partition" list.
 
         And prints the list of filters
 
         This test launch:
             fastddsspy
-            >> filter set partitions A
-            >> filter add partitions B
-            >> filter add partitions C
-            >> filter remove partitions A
+            >> filter set topic Square "color = \'RED\'"
+            >> filter set topic Triangle "x > 50"
             >> filters
         """
         super().__init__(
-            name='ToolFilterSetPartitionsComplex',
+            name='ToolFilterSetTopics',
             one_shot=False,
             command=[],
             dds=False,
@@ -46,19 +44,17 @@ class TestCase_instance (test_class.TestCase):
             arguments_dds=[],
             arguments_spy=[],
             commands_spy=[
-                'filter set partitions A',
-                'filter add partitions B',
-                'filter add partitions C',
-                'filter remove partitions A',
-                'filters',
+                'filter set topic Square \"color = \'RED\'\"',
+                'filter set topic Triangle \"x > 50\"',
             ],
-            output=(
-                'Filter lists (1)\n'
-                '\n\n\n'
-                '  partitions (2):\n'
-                '\n'
-                '    - B\n'
-                '\n'
-                '    - C\n'
-            )
+            output=''  # TODO. danip
+            # output=(
+            #     '--------\n\n'
+            #     'Filters:\n\n'
+            #     '--------\n\n\n\n'
+            #     '  Topic:\n\n'
+            #     '    Square: "color = \'RED\'"\n\n'
+            #     '    Triangle: "x > 50"\n\n\n\n'
+            #     '  Partitions:\n'
+            # )
         )

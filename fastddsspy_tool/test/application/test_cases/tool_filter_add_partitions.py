@@ -1,4 +1,4 @@
-# Copyright 2025 Proyectos y Sistemas de Mantenimiento SL (eProsima).
+# Copyright 2026 Proyectos y Sistemas de Mantenimiento SL (eProsima).
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,19 +24,20 @@ class TestCase_instance (test_class.TestCase):
         """
         @brief Initialize the TestCase_instance object.
 
-        This TestCase creates two filter lists "partitions" and "topic" and clear all the filters.
+        This TestCase creates three filter list
+        "partitions", "partition", "topics" and remove "partition" list.
 
-        And prints the list of filters (empty)
+        And prints the list of filters
 
         This test launch:
             fastddsspy
             >> filter add partitions A
-            >> filter set topic Square "x > 10"
-            >> filter clear
+            >> filter add partitions B
+            >> filter add partitions C
             >> filters
         """
         super().__init__(
-            name='ToolFilterClearLists',
+            name='ToolFilterAddPartitions',
             one_shot=False,
             command=[],
             dds=False,
@@ -45,8 +46,8 @@ class TestCase_instance (test_class.TestCase):
             arguments_spy=[],
             commands_spy=[
                 'filter add partitions A',
-                'filter set topic Square "x > 10"',
-                'filters clear',
+                'filter add partitions B',
+                'filter add partitions C',
                 'filters',
             ],
             output=(
@@ -54,6 +55,9 @@ class TestCase_instance (test_class.TestCase):
                 'Filters:\n\n'
                 '--------\n\n\n\n'
                 '  Topic:\n\n\n\n'
-                '  Partitions:\n'
+                '  Partitions:\n\n'
+                '    - A\n\n'
+                '    - B\n\n'
+                '    - C\n'
             )
         )

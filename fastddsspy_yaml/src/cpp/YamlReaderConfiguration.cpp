@@ -158,7 +158,6 @@ void Configuration::load_dds_configuration_(
     if (YamlReader::is_tag_present(yml, FASTDDSSPY_PROFILE_TAG))
     {
         dds_configuration->participant_profile = YamlReader::get<std::string>(yml, FASTDDSSPY_PROFILE_TAG, version);
-        xml_enabled = true;
     }
 
     /////
@@ -184,6 +183,24 @@ void Configuration::load_dds_configuration_(
         const auto& manual_topics = YamlReader::get_list<ManualTopic>(yml, TOPICS_TAG, version);
         ddspipe_configuration.manual_topics =
                 std::vector<ManualTopic>(manual_topics.begin(), manual_topics.end());
+
+        for (const auto& topic: manual_topics)
+        {
+            const std::string key(topic.first->topic_name);
+
+            // force an unambiguous std::string
+            const std::string filter =
+                    static_cast<std::string>(topic.first->content_topic_filter);
+
+            auto ret = dds_configuration->content_topic_filter_dict.insert(
+                std::make_pair(key, filter)
+                );
+
+            if (!ret.second)
+            {
+                ret.first->second = filter;
+            }
+        }
     }
 
     // Set the domain in Simple Participant Configuration
@@ -197,6 +214,14 @@ void Configuration::load_dds_configuration_(
     if (YamlReader::is_tag_present(yml, WHITELIST_INTERFACES_TAG))
     {
         dds_configuration->whitelist = YamlReader::get_set<WhitelistType>(yml, WHITELIST_INTERFACES_TAG,
+                        version);
+    }
+
+    /////
+    // Get optional partitions
+    if (YamlReader::is_tag_present(yml, PARTITIONLIST_TAG))
+    {
+        dds_configuration->allowed_partition_list = YamlReader::get_set<std::string>(yml, PARTITIONLIST_TAG,
                         version);
     }
 
@@ -261,6 +286,12 @@ void Configuration::load_specs_configuration_(
         one_shot_wait_time_ms = YamlReader::get<utils::Duration_ms>(yml, GATHERING_TIME_TAG, version);
     }
 
+    // Get optional rtps enabled
+    if (YamlReader::is_tag_present(yml, RTPS_ENABLED_TAG))
+    {
+        dds_enabled = !YamlReader::get<bool>(yml, RTPS_ENABLED_TAG, version);
+    }
+
     /////
     // Get optional Log Configuration
     if (YamlReader::is_tag_present(yml, LOG_CONFIGURATION_TAG))
@@ -287,8 +318,8 @@ void Configuration::load_configuration_from_file_(
     catch (const std::exception& e)
     {
         throw eprosima::utils::ConfigurationException(
-                  utils::Formatter() << "Error loading Fast-DDS Spy configuration from file: <" << file_path <<
-                      "> :\n " << e.what());
+                  utils::Formatter() << "Error loading Fast-DDS Spy configuration from file: <" << file_path
+                                     << "> :\n " << e.what());
     }
 
     load_configuration_(yml, args);
