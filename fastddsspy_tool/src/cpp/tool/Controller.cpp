@@ -920,21 +920,47 @@ void Controller::filter_command_(
         }
 
         operation = arguments[1]; // <add/remove>
-        category = arguments[2]; // partitions
-        filter_str = arguments[3]; // filter string
+        category = arguments[2]; // <partitions/topic>
+
+        // With 4 arguments it could be a command to add/remove partitions or remove topic
+        filter_str = arguments[3]; // filter_string
+        topic_str = arguments[3]; // topic_name
 
 
-        std::set<std::string> allowed_args = {"add", "remove"};
-        if (allowed_args.find(operation) == allowed_args.end() ||
-                category != "partitions")
+        std::set<std::string> allowed_operations = {"add", "remove"};
+        std::set<std::string> allowed_categories = {"partitions", "topic"};
+        if (allowed_categories.find(category) == allowed_categories.end())
         {
-            // Operation not allowed
-            // or category not supported
+            // Category not supported
             view_.show_error(STR_ENTRY
                     << "Command <"
                     << arguments[0]
                     << "> with 4 arguments have the following format: "
-                    << arguments[0] << " <add/remove> partitions <filter_str>.");
+                    << arguments[0] << " <add/remove> partitions <filter_str>. OR. "
+                    << arguments[0] << " remove topic <topic_name>.");
+            return;
+        }
+
+        if (allowed_operations.find(operation) == allowed_operations.end() ||
+                (category == "topic" && operation == "add"))
+        {
+            // Operation not allowed
+            if (category == "partitions")
+            {
+                view_.show_error(STR_ENTRY
+                        << "Command <"
+                        << arguments[0]
+                        << "> with 4 arguments have the following format: "
+                        << arguments[0] << " <add/remove> partitions <filter_str>.");
+            }
+            else
+            {
+                view_.show_error(STR_ENTRY
+                        << "Command <"
+                        << arguments[0]
+                        << "> with 4 arguments have the following format: "
+                        << arguments[0] << " remove topic <topic_name>.");
+            }
             return;
         }
 
@@ -996,7 +1022,7 @@ void Controller::filter_command_(
             return;
         }
 
-        operation = arguments[1];  // <set/remove>
+        operation = arguments[1];  // <set>
         category = arguments[2];   // topic
         topic_str = arguments[3];  // topic name
         filter_str = arguments[4]; // filter string

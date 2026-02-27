@@ -62,8 +62,8 @@ The output format is as follows: :ref:`user_manual_command_filter_output`.
 - ``remove partitions``: This argument **delete** ``filter_str`` from **partitions** filter list.
 - ``remove topic``: This argument **delete** the filter of the topic ``topic_name``.
 
-*4 argument:* `<set/remove> topic <topic_name> <filter_str>`
-------------------------------------------------------------
+*4 argument:* `<set> topic <topic_name> <filter_str>`
+-----------------------------------------------------
 
 - ``set``: This argument **set** ``filter_str`` to topic ``topic_name`` filter list.
 
