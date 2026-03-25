@@ -115,7 +115,7 @@ It shows the usage information of the application.
     Application parameters
     -c --config-path    Path to the Configuration File (yaml format) [Default: ./FASTDDSSPY_CONFIGURATION.yaml].
     -r --reload-time    Time period in seconds to reload configuration file. This is needed when FileWatcher functionality is not available (e.g. config file is a symbolic link). Value 0 does not reload file. [Default: 0].
-       --domain         Set the domain (0-255) to spy on. [Default = 0].
+       --domain         Set the domain (0-232) to spy on. [Default = 0].
 
     Debug parameters
     -d --debug          Set log verbosity to Info (Using this option with --log-filter and/or --log-verbosity will head to undefined behaviour).

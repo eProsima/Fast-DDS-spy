@@ -328,6 +328,18 @@ void Configuration::load_configuration_from_file_(
 bool Configuration::is_valid(
         utils::Formatter& error_msg) const noexcept
 {
+    if (!dds_configuration)
+    {
+        error_msg << "DDS participant configuration is not initialized. ";
+        return false;
+    }
+
+    if (dds_configuration->domain.domain_id > DomainId::MAX_DOMAIN_ID)
+    {
+        error_msg << "Domain ID must be between 0 and " << DomainId::MAX_DOMAIN_ID << ".";
+        return false;
+    }
+
     if (n_threads < 1)
     {
         error_msg << "Must be at least 1 thread. ";
