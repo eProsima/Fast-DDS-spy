@@ -20,6 +20,7 @@
 #include <ddspipe_participants/utils/utils.hpp>
 
 #include <fastddsspy_participants/participant/SpyDdsXmlParticipant.hpp>
+#include <fastddsspy_participants/participant/detail/TypeIdlProvider.hpp>
 #include <fastddsspy_participants/types/ParticipantInfo.hpp>
 #include <fastddsspy_participants/types/EndpointInfo.hpp>
 
@@ -115,7 +116,8 @@ void SpyDdsXmlParticipant::SpyDdsXmlParticipantListener::on_data_reader_discover
     ddspipe::participants::XmlDynTypesParticipant::XmlDynTypesDdsListener::on_data_reader_discovery(
         participant, reason, info, should_be_ignored);
 
-    internal_notify_endpoint_discovered_(endpoint_info);
+    const std::string type_idl = detail::get_type_idl(info);
+    internal_notify_endpoint_discovered_(endpoint_info, type_idl);
 }
 
 void SpyDdsXmlParticipant::SpyDdsXmlParticipantListener::on_data_writer_discovery(
@@ -137,7 +139,8 @@ void SpyDdsXmlParticipant::SpyDdsXmlParticipantListener::on_data_writer_discover
     ddspipe::participants::XmlDynTypesParticipant::XmlDynTypesDdsListener::on_data_writer_discovery(
         participant, reason, info, should_be_ignored);
 
-    internal_notify_endpoint_discovered_(endpoint_info);
+    const std::string type_idl = detail::get_type_idl(info);
+    internal_notify_endpoint_discovered_(endpoint_info, type_idl);
 }
 
 void SpyDdsXmlParticipant::SpyDdsXmlParticipantListener::internal_notify_participant_discovered_(
@@ -152,11 +155,13 @@ void SpyDdsXmlParticipant::SpyDdsXmlParticipantListener::internal_notify_partici
 }
 
 void SpyDdsXmlParticipant::SpyDdsXmlParticipantListener::internal_notify_endpoint_discovered_(
-        const EndpointInfo& endpoint_discovered)
+        const EndpointInfo& endpoint_discovered,
+        const std::string& type_idl)
 {
     // Create data containing Dynamic Type
     auto data = std::make_unique<EndpointInfoData>();
     data->info = endpoint_discovered;
+    data->type_idl = type_idl;
 
     // Insert new data in internal reader queue
     endpoints_reader_->simulate_data_reception(std::move(data));

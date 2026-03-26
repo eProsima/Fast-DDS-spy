@@ -15,15 +15,10 @@
 #include <ddspipe_participants/utils/utils.hpp>
 
 #include <fastddsspy_participants/participant/SpyDdsParticipant.hpp>
+#include <fastddsspy_participants/participant/detail/TypeIdlProvider.hpp>
 #include <fastddsspy_participants/types/ParticipantInfo.hpp>
 #include <fastddsspy_participants/types/EndpointInfo.hpp>
 
-#include <fastdds/dds/domain/DomainParticipantFactory.hpp>
-#include <fastdds/dds/xtypes/dynamic_types/DynamicTypeBuilderFactory.hpp>
-#include <fastdds/dds/xtypes/dynamic_types/DynamicTypeBuilder.hpp>
-
-#include <ddspipe_core/types/dynamic_types/types.hpp>
-#include <fastdds/dds/xtypes/utils.hpp>
 namespace eprosima {
 namespace spy {
 namespace participants {
@@ -116,34 +111,7 @@ void SpyDdsParticipant::SpyDdsParticipantListener::on_reader_discovery(
     ddspipe::participants::DynTypesParticipant::DynTypesRtpsListener::on_reader_discovery(participant, reason, info,
             should_be_ignored);
 
-    std::string type_idl {};
-
-    if (info.type_information.assigned())
-    {
-        fastdds::dds::xtypes::TypeObject remote_type_object;
-        if (eprosima::fastdds::dds::RETCODE_OK !=
-                eprosima::fastdds::dds::DomainParticipantFactory::get_instance()->type_object_registry().get_type_object
-                (
-                    info.type_information.type_information.complete().typeid_with_size().type_id(),
-                    remote_type_object))
-        {
-            EPROSIMA_LOG_WARNING(FASTDDSSPY_DDS_PARTICIPANT,
-                    "Error getting type object for type " << info.type_name);
-        }
-        else
-        {
-            // Build remotely discovered type
-            fastdds::dds::DynamicType::_ref_type remote_type =
-                    eprosima::fastdds::dds::DynamicTypeBuilderFactory::get_instance()->create_type_w_type_object(
-                remote_type_object)->build();
-
-            // Serialize DynamicType into its IDL representation
-            std::stringstream idl;
-            idl_serialize(remote_type, idl);
-            type_idl = idl.str();
-        }
-    }
-
+    const std::string type_idl = detail::get_type_idl(info);
     internal_notify_endpoint_discovered_(endpoint_info, type_idl);
 }
 
@@ -166,31 +134,7 @@ void SpyDdsParticipant::SpyDdsParticipantListener::on_writer_discovery(
     ddspipe::participants::DynTypesParticipant::DynTypesRtpsListener::on_writer_discovery(participant, reason, info,
             should_be_ignored);
 
-    std::string type_idl {};
-
-    if (info.type_information.assigned())
-    {
-        fastdds::dds::xtypes::TypeObject remote_type_object;
-        if (eprosima::fastdds::dds::RETCODE_OK !=
-                eprosima::fastdds::dds::DomainParticipantFactory::get_instance()->type_object_registry().get_type_object
-                (
-                    info.type_information.type_information.complete().typeid_with_size().type_id(),
-                    remote_type_object))
-        {
-            EPROSIMA_LOG_WARNING(FASTDDSSPY_DDS_PARTICIPANT,
-                    "Error getting type object for type " << info.type_name);
-        }
-
-        // Build remotely discovered type
-        fastdds::dds::DynamicType::_ref_type remote_type =
-                eprosima::fastdds::dds::DynamicTypeBuilderFactory::get_instance()->create_type_w_type_object(
-            remote_type_object)->build();
-
-        // Serialize DynamicType into its IDL representation
-        std::stringstream idl;
-        idl_serialize(remote_type, idl);
-        type_idl = idl.str();
-    }
+    const std::string type_idl = detail::get_type_idl(info);
     internal_notify_endpoint_discovered_(endpoint_info, type_idl);
 }
 
