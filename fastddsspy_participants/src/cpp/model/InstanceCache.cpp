@@ -47,6 +47,18 @@ bool InstanceCache::add_or_update_instance(
 
         extract_key_field_names_(topic.m_topic_name, dyn_type);
 
+        auto key_fields_it = key_fields_cache_.find(topic.m_topic_name);
+        if (key_fields_it == key_fields_cache_.end() || key_fields_it->second.empty())
+        {
+            if (no_key_metadata_warned_topics_.insert(topic.m_topic_name).second)
+            {
+                EPROSIMA_LOG_WARNING(FASTDDSSPY_INSTANCECACHE,
+                        "No key metadata discovered for topic: " << topic.m_topic_name
+                                                                 << ". Skipping key instance caching.");
+            }
+            return false;
+        }
+
         auto& topic_instances = instances_by_topic_[topic.m_topic_name];
 
         auto instance_it = topic_instances.find(instance_handle);
@@ -184,6 +196,7 @@ void InstanceCache::clear() noexcept
     std::unique_lock<std::shared_timed_mutex> lock(mutex_);
     instances_by_topic_.clear();
     key_fields_cache_.clear();
+    no_key_metadata_warned_topics_.clear();
 }
 
 // Private methods
@@ -192,8 +205,9 @@ void InstanceCache::extract_key_field_names_(
         const std::string& topic_name,
         const fastdds::dds::DynamicType::_ref_type& dyn_type) noexcept
 {
-    // Already cached?
-    if (key_fields_cache_.find(topic_name) != key_fields_cache_.end())
+    // Recompute only if key metadata has not been discovered yet
+    auto cached_keys_it = key_fields_cache_.find(topic_name);
+    if (cached_keys_it != key_fields_cache_.end() && !cached_keys_it->second.empty())
     {
         return;
     }
