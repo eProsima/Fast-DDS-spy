@@ -147,6 +147,9 @@ private:
 
     // topic_name -> [key_field_names]
     std::map<std::string, std::vector<std::string>> key_fields_cache_;
+
+    // Topics already warned because key metadata could not be discovered
+    std::set<std::string> no_key_metadata_warned_topics_;
 };
 
 } /* namespace participants */
