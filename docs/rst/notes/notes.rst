@@ -8,20 +8,26 @@ Version v1.5.0
 
 This release includes the following **features**:
 
-* New command: `topics <name> key`
+* Display the list of keys in a topic with new command `topics <name> key`
 * Change default participant **RTPS** to **DDS**
-* Add new filter in topics, `ContentFiltered Topics`
+* Add `ContentFilteredTopic` filter
 
 This release includes the following **documentation updates**:
 
-* Update filters documentation
+* Improved filter command documentation
 * Update Windows documentation (new **Asio** version + `vcs` command)
 
-This release includes the following **CI improvements & bugfixes**:
+This release includes the following **bugfixes**:
 
-* Update `uncrustify`` to `0.78.1` (**ubuntu24** version)
 * Add `topics <name> idl` command in **DDS**
-* Fix invalid `domain-id`` core-dump
+* Replace invalid `domain-id` core-dump with clean validation errors
+* Reduce InstanceCache key warning spam
+
+This release includes the following **CI improvements**:
+
+* Upgrade Linters CI runner image to `ubuntu-24.04`
+* Update foonathan version to 1.4.1
+
 
 This release includes the following **Dependencies Update**:
 
@@ -35,15 +41,15 @@ This release includes the following **Dependencies Update**:
     *   - Foonathan Memory Vendor
         - `eProsima/foonathan_memory_vendor <https://github.com/eProsima/foonathan_memory_vendor>`_
         - `v1.3.1 <https://github.com/eProsima/foonathan_memory_vendor/releases/tag/v1.3.1>`_
-        - `v1.3.1 <https://github.com/eProsima/foonathan_memory_vendor/releases/tag/v1.3.1>`_
+        - `v1.4.1 <https://github.com/eProsima/foonathan_memory_vendor/releases/tag/v1.4.1>`_
     *   - Fast CDR
         - `eProsima/Fast-CDR <https://github.com/eProsima/Fast-CDR>`_
         - `v2.3.4 <https://github.com/eProsima/Fast-CDR/releases/tag/v2.3.4>`_
-        - `v2.3.5 <https://github.com/eProsima/Fast-CDR/releases/tag/v2.5.0>`_
+        - `v2.3.5 <https://github.com/eProsima/Fast-CDR/releases/tag/v2.3.5>`_
     *   - Fast DDS
         - `eProsima/Fast-DDS <https://github.com/eProsima/Fast-DDS>`_
-        - `v3.4.1 <https://github.com/eProsima/Fast-DDS/releases/tag/v3.4.1>`_
-        - `v3.5.0 <https://github.com/eProsima/Fast-DDS/releases/tag/v3.3.0>`_
+        - `v3.5.0 <https://github.com/eProsima/Fast-DDS/releases/tag/v3.5.0>`_
+        - `v3.6.0 <https://github.com/eProsima/Fast-DDS/releases/tag/v3.6.0>`_
     *   - Dev Utils
         - `eProsima/dev-utils <https://github.com/eProsima/dev-utils>`_
         - `v1.4.0 <https://github.com/eProsima/dev-utils/releases/tag/v1.4.0>`__
