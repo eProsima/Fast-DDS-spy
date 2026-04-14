@@ -21,12 +21,12 @@ This release includes the following **bugfixes**:
 
 * Add `topics <name> idl` command in **DDS**
 * Replace invalid `domain-id` core-dump with clean validation errors
-* Reduce InstanceCache key warning spam
+* Reduce `InstanceCache` key warning spam
 
 This release includes the following **CI improvements**:
 
-* Upgrade Linters CI runner image to `ubuntu-24.04`
-* Update foonathan version to 1.4.1
+* Upgrade `Linters CI` runner image to `ubuntu-24.04`
+* Update `foonathan` version to 1.4.1
 
 
 This release includes the following **Dependencies Update**:
