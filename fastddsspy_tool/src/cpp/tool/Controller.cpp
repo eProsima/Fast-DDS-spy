@@ -12,6 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <algorithm>
+#include <cctype>
+#include <sstream>
+
 #include <fastdds/dds/xtypes/dynamic_types/DynamicType.hpp>
 #include <fastdds/dds/xtypes/dynamic_types/DynamicPubSubType.hpp>
 #include <fastdds/dds/xtypes/dynamic_types/DynamicData.hpp>
@@ -134,7 +138,77 @@ Controller::Controller(
     , model_(backend_.model())
     , configuration_(configuration)
 {
-    // Do nothing
+    // Tab completion: suggest topic names when completing arguments of an echo command.
+    input_.stdin_handler().set_tab_completion_callback(
+        [this](const std::string& line) -> std::vector<std::string>
+        {
+            // ----------------------------------------------------------------
+            // -- Tokenize the current line on whitespace ---------------------
+            std::vector<std::string> tokens;
+            {
+                std::istringstream iss(line);
+                std::string tok;
+                while (iss >> tok)
+                {
+                    tokens.push_back(tok);
+                }
+            }
+            if (tokens.empty())
+            {
+                return {};
+            }
+
+            // ----------------------------------------------------------------
+            // Only suggest topics for the echo command
+            static const std::set<std::string> echo_aliases =
+                    {"echo", "print", "show", "s", "S"};
+            if (echo_aliases.find(tokens[0]) == echo_aliases.end())
+            {
+                return {};
+            }
+
+            // ----------------------------------------------------------------
+            // Determine the topic-name prefix being completed:
+            //  1. "echo "    -> suggest all topics (empty prefix)
+            //  2. "echo foo" -> suggest topics starting with "foo"
+            //  3. Anything past the topic argument is not completed
+
+            const bool trailing_space = !line.empty() && 
+                line[line.size() - 1] == ' ';
+
+            std::string prefix;
+            if (tokens.size() == 1 && trailing_space) // 1.
+            {
+                prefix = "";
+            }
+            else if (tokens.size() == 2 && !trailing_space) // 2.
+            {
+                prefix = tokens[1];
+            }
+            else // 3.
+            {
+                return {};
+            }
+
+            // ----------------------------------------------------------------
+            // Reuse the same topic-listing logic as the "topics" command
+            ddspipe::core::types::WildcardDdsFilterTopic filter_topic;
+            filter_topic.topic_name = prefix + "*";
+            std::set<eprosima::ddspipe::core::types::DdsTopic> topics =
+                    participants::ModelParser::get_topics(*model_, filter_topic);
+
+            std::vector<std::string> ret;
+            ret.reserve(topics.size());
+            for (const auto& topic : topics)
+            {
+                ret.push_back(topic.m_topic_name);
+            }
+            // sort alphabetical
+            std::sort(ret.begin(), ret.end());
+            // remove duplicates
+            ret.erase(std::unique(ret.begin(), ret.end()), ret.end());
+            return ret;
+        });
 }
 
 void Controller::run()
