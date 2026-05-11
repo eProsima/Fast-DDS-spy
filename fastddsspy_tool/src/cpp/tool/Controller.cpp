@@ -160,9 +160,36 @@ Controller::Controller(
 
             // ----------------------------------------------------------------
             // Only suggest topics for the echo command
+
+            int cmd_flag = 0;
             static const std::set<std::string> echo_aliases =
-                    {"echo", "print", "show", "s", "S"};
-            if (echo_aliases.find(tokens[0]) == echo_aliases.end())
+                    {"echo", "print", "show", "s", "S"}; // 1
+            static const std::set<std::string> topic_aliases =
+                    {"topic", "topics", "t", "T", "filter set topic"}; // 2
+            static const std::set<std::string> writer_aliases = 
+                    {"datawriter", "datawriters", "w", "W", 
+                        "writer", "writers", "publication", "publications"}; // 3.
+            static const std::set<std::string> reader_aliases = 
+                    {"datareader", "datareaders", "r", "R", 
+                        "reader", "readers", "subscription", "subscriptions"}; // 4.
+                
+            if (echo_aliases.find(tokens[0]) != echo_aliases.end())
+            {
+                cmd_flag = 1;
+            }
+            else if (topic_aliases.find(tokens[0]) != topic_aliases.end())
+            {
+                cmd_flag = 2;
+            }
+            /*else if (writer_aliases.find(tokens[0]) != writer_aliases.end())
+            {
+                cmd_flag = 3;
+            }
+            else if (reader_aliases.find(tokens[0]) != reader_aliases.end())
+            {
+                cmd_flag = 4;
+            }*/
+            else 
             {
                 return {};
             }
@@ -196,6 +223,14 @@ Controller::Controller(
             filter_topic.topic_name = prefix + "*";
             std::set<eprosima::ddspipe::core::types::DdsTopic> topics =
                     participants::ModelParser::get_topics(*model_, filter_topic);
+            
+            std::set<std::string> readers_set;
+            const auto readers_v = participants::ModelParser::readers(*model_);
+            /*for (const auto& r: readers_v)
+            {
+                readers_set.
+                readers_set.insert(r.guid);
+            }*/
 
             std::vector<std::string> ret;
             ret.reserve(topics.size());
