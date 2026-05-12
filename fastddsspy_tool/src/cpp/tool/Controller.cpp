@@ -138,7 +138,7 @@ Controller::Controller(
     , model_(backend_.model())
     , configuration_(configuration)
 {
-    // Tab completion: suggest topic names when completing arguments of an echo command.
+    // Tab completion: suggest topics or GUIDs for supported command arguments
     input_.stdin_handler().set_tab_completion_callback(
         [this](const std::string& line) -> std::vector<std::string>
         {
@@ -159,51 +159,121 @@ Controller::Controller(
             }
 
             // ----------------------------------------------------------------
-            // Only suggest topics for the echo command
+            // Suggest command arguments for supported commands
+            static const std::set<std::string> participant_aliases = {
+                "participant", "participants", "p", "P"
+            };
+            static const std::set<std::string> echo_aliases = {
+                "echo", "print", "show", "s", "S"
+            };
+            static const std::set<std::string> topic_aliases = {
+                "topic", "topics", "t", "T"
+            };
+            static const std::set<std::string> filter_set_topic_aliases = {
+                "filter", "f", "F"
+            };
+            static const std::set<std::string> writer_aliases = {
+                "datawriter", "datawriters", "w", "W", "writer", "writers",
+                "publication", "publications"
+            };
+            static const std::set<std::string> reader_aliases = {
+                "datareader", "datareaders", "r", "R",
+                "reader", "readers", "subscription", "subscriptions"
+            };
 
-            int cmd_flag = 0;
-            static const std::set<std::string> echo_aliases =
-                    {"echo", "print", "show", "s", "S"}; // 1
-            static const std::set<std::string> topic_aliases =
-                    {"topic", "topics", "t", "T", "filter set topic"}; // 2
-            static const std::set<std::string> writer_aliases = 
-                    {"datawriter", "datawriters", "w", "W", 
-                        "writer", "writers", "publication", "publications"}; // 3.
-            static const std::set<std::string> reader_aliases = 
-                    {"datareader", "datareaders", "r", "R", 
-                        "reader", "readers", "subscription", "subscriptions"}; // 4.
-                
-            if (echo_aliases.find(tokens[0]) != echo_aliases.end())
-            {
-                cmd_flag = 1;
-            }
-            else if (topic_aliases.find(tokens[0]) != topic_aliases.end())
-            {
-                cmd_flag = 2;
-            }
-            /*else if (writer_aliases.find(tokens[0]) != writer_aliases.end())
-            {
-                cmd_flag = 3;
-            }
-            else if (reader_aliases.find(tokens[0]) != reader_aliases.end())
-            {
-                cmd_flag = 4;
-            }*/
-            else 
+            std::string prefix;
+
+            const bool is_participant_cmd = participant_aliases.find(tokens[0]) != participant_aliases.end();
+            const bool is_topic_cmd = echo_aliases.find(tokens[0]) != echo_aliases.end() ||
+            topic_aliases.find(tokens[0]) != topic_aliases.end();
+            const bool is_filter_set_topic_command =
+            filter_set_topic_aliases.find(tokens[0]) != filter_set_topic_aliases.end() &&
+            tokens.size() >= 3 && tokens[1] == "set" && tokens[2] == "topic";
+            const bool is_writer_cmd = writer_aliases.find(tokens[0]) != writer_aliases.end();
+            const bool is_reader_cmd = reader_aliases.find(tokens[0]) != reader_aliases.end();
+
+            if (!is_participant_cmd && !is_topic_cmd
+            && !is_filter_set_topic_command && !is_writer_cmd && !is_reader_cmd)
             {
                 return {};
             }
 
+            // Check if the last char is an empty space
+            const bool trailing_space = !line.empty() && line[line.size() - 1] == ' ';
+
             // ----------------------------------------------------------------
-            // Determine the topic-name prefix being completed:
-            //  1. "echo "    -> suggest all topics (empty prefix)
-            //  2. "echo foo" -> suggest topics starting with "foo"
-            //  3. Anything past the topic argument is not completed
+            // -- Helpers -----------------------------------------------------
+            auto get_topic_suggestions =
+            [this](const std::string& prefix) -> std::vector<std::string>
+            {
+                // Reuse the same topic-listing logic as the "topics" command
+                ddspipe::core::types::WildcardDdsFilterTopic filter_topic;
+                filter_topic.topic_name = prefix + "*";
+                std::set<eprosima::ddspipe::core::types::DdsTopic> topics =
+                participants::ModelParser::get_topics(*model_, filter_topic);
 
-            const bool trailing_space = !line.empty() && 
-                line[line.size() - 1] == ' ';
+                std::vector<std::string> ret;
+                ret.reserve(topics.size());
+                for (const auto& topic : topics)
+                {
+                    ret.push_back(topic.m_topic_name);
+                }
 
-            std::string prefix;
+                std::sort(ret.begin(), ret.end());
+                ret.erase(std::unique(ret.begin(), ret.end()), ret.end());
+                return ret;
+            };
+
+            auto append_matching_guid_suggestions =
+            [this](const auto& entities, const std::string& prefix) -> std::vector<std::string>
+            {
+                std::vector<std::string> ret;
+
+                ret.reserve(ret.size() + entities.size());
+                for (const auto& entity : entities)
+                {
+                    std::ostringstream guid_ss;
+                    guid_ss << entity.guid;
+                    const std::string guid = guid_ss.str();
+                    if (guid.rfind(prefix, 0) == 0)
+                    {
+                        ret.push_back(guid);
+                    }
+                }
+
+                std::sort(ret.begin(), ret.end());
+                ret.erase(std::unique(ret.begin(), ret.end()), ret.end());
+                return ret;
+            };
+
+            // ----------------------------------------------------------------
+            // -- Start arguments suggestions ---------------------------------
+
+            // Complete the topic-name argument in the command:
+            //   filter/f set topic <topic_name> <filter_str>
+            if (is_filter_set_topic_command)
+            {
+                // No chars in the argument, suggest all topics
+                if (tokens.size() == 3 && trailing_space)
+                {
+                    return get_topic_suggestions("");
+                }
+                // The topic argument has atleast one char,
+                // suggest the topics with those chars
+                else if (tokens.size() == 4 && !trailing_space)
+                {
+                    return get_topic_suggestions(tokens[3]);
+                }
+                else
+                {
+                    return {};
+                }
+            }
+
+            // Determine the first-argument prefix being completed:
+            //  1. "<command> "     -> suggest all matches (empty prefix)
+            //  2. "<command> foo"  -> suggest matches starting with "foo"
+            //  3. Anything past the first argument is not completed
             if (tokens.size() == 1 && trailing_space) // 1.
             {
                 prefix = "";
@@ -217,31 +287,25 @@ Controller::Controller(
                 return {};
             }
 
-            // ----------------------------------------------------------------
-            // Reuse the same topic-listing logic as the "topics" command
-            ddspipe::core::types::WildcardDdsFilterTopic filter_topic;
-            filter_topic.topic_name = prefix + "*";
-            std::set<eprosima::ddspipe::core::types::DdsTopic> topics =
-                    participants::ModelParser::get_topics(*model_, filter_topic);
-            
-            std::set<std::string> readers_set;
-            const auto readers_v = participants::ModelParser::readers(*model_);
-            /*for (const auto& r: readers_v)
-            {
-                readers_set.
-                readers_set.insert(r.guid);
-            }*/
-
             std::vector<std::string> ret;
-            ret.reserve(topics.size());
-            for (const auto& topic : topics)
+
+            if (is_participant_cmd)
             {
-                ret.push_back(topic.m_topic_name);
+                ret = append_matching_guid_suggestions(participants::ModelParser::participants(*model_), prefix);
             }
-            // sort alphabetical
-            std::sort(ret.begin(), ret.end());
-            // remove duplicates
-            ret.erase(std::unique(ret.begin(), ret.end()), ret.end());
+            else if (is_topic_cmd)
+            {
+                ret = get_topic_suggestions(prefix);
+            }
+            else if (is_writer_cmd)
+            {
+                ret = append_matching_guid_suggestions(participants::ModelParser::writers(*model_), prefix);
+            }
+            else if (is_reader_cmd)
+            {
+                ret = append_matching_guid_suggestions(participants::ModelParser::readers(*model_), prefix);
+            }
+
             return ret;
         });
 }
