@@ -99,7 +99,7 @@ enum optionIndex
     VERSION,
     LOG_FILTER,
     LOG_VERBOSITY,
-    DOMAIN,
+    DOMAIN_ID,
 };
 
 /**
