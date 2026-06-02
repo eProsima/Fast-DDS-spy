@@ -186,11 +186,9 @@ void Configuration::load_dds_configuration_(
 
         for (const auto& topic: manual_topics)
         {
-            const std::string key(topic.first->topic_name);
+            const std::string key(topic.first->topic_name.get_reference());
 
-            // force an unambiguous std::string
-            const std::string filter =
-                    static_cast<std::string>(topic.first->content_topic_filter);
+            const std::string filter = topic.first->content_topic_filter.get_reference();
 
             auto ret = dds_configuration->content_topic_filter_dict.insert(
                 std::make_pair(key, filter)
