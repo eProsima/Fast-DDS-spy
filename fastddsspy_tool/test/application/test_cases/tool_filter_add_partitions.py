@@ -31,8 +31,8 @@ class TestCase_instance (test_class.TestCase):
 
         This test launch:
             fastddsspy
-            >> filter add partitions A
-            >> filter add partitions B
+            >> f add partitions A
+            >> filters add partitions B
             >> filter add partitions C
             >> filters
         """
@@ -45,8 +45,8 @@ class TestCase_instance (test_class.TestCase):
             arguments_dds=[],
             arguments_spy=[],
             commands_spy=[
-                'filter add partitions A',
-                'filter add partitions B',
+                'f add partitions A',
+                'filters add partitions B',
                 'filter add partitions C',
                 'filters',
             ],

@@ -33,7 +33,7 @@ class TestCase_instance (test_class.TestCase):
             fastddsspy
             >> filter add partitions A
             >> filter set topic Square "x > 10"
-            >> filter clear partitions
+            >> filters clear partitions
             >> filters
         """
         super().__init__(
@@ -47,7 +47,7 @@ class TestCase_instance (test_class.TestCase):
             commands_spy=[
                 'filter add partitions A',
                 'filter set topic Square \"x > 10\"',
-                'filter clear partitions',
+                'filters clear partitions',
                 'filters',
             ],
             output=(

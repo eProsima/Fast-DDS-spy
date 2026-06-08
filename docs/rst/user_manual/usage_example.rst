@@ -169,10 +169,10 @@ Try out all the commands DDS Spy has to offer:
         topics <name> keys v                        : verbose information about keys discovered in the network.
         filters                                     : Display the active filters.
         filters clear                               : Clear all the filter lists.
-        filter clear <category>                     : Clear <category> filter list.
-        filter add partitions <filter_str>          : Add <filter_str> in partitions filter list.
-        filter remove partitions <filter_str>       : Remove <filter_str> in partitions filter list.
-        filter set topic <topic_name> <filter_str>  : Set topic filter list with <filter_str> as first value.
+        filters clear <category>                    : Clear <category> filter list.
+        filters add partitions <filter_str>         : Add <filter_str> in partitions filter list.
+        filters remove partitions <filter_str>      : Remove <filter_str> in partitions filter list.
+        filters set topic <topic_name> <filter_str> : Set topic filter list with <filter_str> as first value.
         echo <name>                                 : data of a specific Topic (Data Type must be discovered).
         echo <wildcard_name>                        : data of Topics matching the wildcard name (and whose Data Type is discovered).
         echo <name> verbose                         : data with additional source info of a specific Topic.
