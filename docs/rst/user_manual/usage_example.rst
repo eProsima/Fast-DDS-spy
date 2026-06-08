@@ -157,9 +157,9 @@ Try out all the commands DDS Spy has to offer:
         writers                                     : DataWriters discovered in the network.
         writers verbose                             : verbose information about DataWriters discovered in the network.
         writers <Guid>                              : verbose information related with a specific DataWriter.
-        reader                                      : DataReaders discovered in the network.
-        reader verbose                              : verbose information about DataReaders discovered in the network.
-        reader <Guid>                               : verbose information related with a specific DataReader.
+        readers                                     : DataReaders discovered in the network.
+        readers verbose                             : verbose information about DataReaders discovered in the network.
+        readers <Guid>                              : verbose information related with a specific DataReader.
         topics                                      : Topics discovered in the network in compact format.
         topics v                                    : Topics discovered in the network.
         topics vv                                   : verbose information about Topics discovered in the network.
