@@ -25,7 +25,7 @@ class TestCase_instance (test_class.TestCase):
         @brief Initialize the TestCase_instance object.
 
         This TestCase creates two filter lists "partitions" and "topic",
-        and clear "partitions" filter.
+        and clear "topic" filter.
 
         And prints the list of filters
 
@@ -33,7 +33,7 @@ class TestCase_instance (test_class.TestCase):
             fastddsspy
             >> filter add partitions A
             >> filter set topic Square "x > 10"
-            >> filter clear partitions
+            >> f clear topic
             >> filters
         """
         super().__init__(
@@ -47,7 +47,7 @@ class TestCase_instance (test_class.TestCase):
             commands_spy=[
                 'filter add partitions A',
                 'filter set topic Square "x > 10"',
-                'filter clear topic',
+                'f clear topic',
                 'filters',
             ],
             output=(

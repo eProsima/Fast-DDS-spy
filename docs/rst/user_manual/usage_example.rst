@@ -157,9 +157,9 @@ Try out all the commands DDS Spy has to offer:
         writers                                     : DataWriters discovered in the network.
         writers verbose                             : verbose information about DataWriters discovered in the network.
         writers <Guid>                              : verbose information related with a specific DataWriter.
-        reader                                      : DataReaders discovered in the network.
-        reader verbose                              : verbose information about DataReaders discovered in the network.
-        reader <Guid>                               : verbose information related with a specific DataReader.
+        readers                                     : DataReaders discovered in the network.
+        readers verbose                             : verbose information about DataReaders discovered in the network.
+        readers <Guid>                              : verbose information related with a specific DataReader.
         topics                                      : Topics discovered in the network in compact format.
         topics v                                    : Topics discovered in the network.
         topics vv                                   : verbose information about Topics discovered in the network.
@@ -169,10 +169,10 @@ Try out all the commands DDS Spy has to offer:
         topics <name> keys v                        : verbose information about keys discovered in the network.
         filters                                     : Display the active filters.
         filters clear                               : Clear all the filter lists.
-        filter clear <category>                     : Clear <category> filter list.
-        filter add partitions <filter_str>          : Add <filter_str> in partitions filter list.
-        filter remove partitions <filter_str>       : Remove <filter_str> in partitions filter list.
-        filter set topic <topic_name> <filter_str>  : Set topic filter list with <filter_str> as first value.
+        filters clear <category>                    : Clear <category> filter list.
+        filters add partitions <filter_str>         : Add <filter_str> in partitions filter list.
+        filters remove partitions <filter_str>      : Remove <filter_str> in partitions filter list.
+        filters set topic <topic_name> <filter_str> : Set topic filter list with <filter_str> as first value.
         echo <name>                                 : data of a specific Topic (Data Type must be discovered).
         echo <wildcard_name>                        : data of Topics matching the wildcard name (and whose Data Type is discovered).
         echo <name> verbose                         : data with additional source info of a specific Topic.

@@ -731,11 +731,11 @@ void Controller::help_command_(
             "\twriters verbose                             : verbose information about DataWriters discovered in the network.\n"
             <<
             "\twriters <Guid>                              : verbose information related with a specific DataWriter.\n"
-            << "\treader                                      : DataReaders discovered in the network.\n"
+            << "\treaders                                     : DataReaders discovered in the network.\n"
             <<
-            "\treader verbose                              : verbose information about DataReaders discovered in the network.\n"
+            "\treaders verbose                             : verbose information about DataReaders discovered in the network.\n"
             <<
-            "\treader <Guid>                               : verbose information related with a specific DataReader.\n"
+            "\treaders <Guid>                              : verbose information related with a specific DataReader.\n"
             << "\ttopics                                      : Topics discovered in the network in compact format.\n"
             << "\ttopics v                                    : Topics discovered in the network.\n"
             <<
@@ -750,11 +750,11 @@ void Controller::help_command_(
             "\ttopics <name> keys v                        : verbose information about keys discovered in the network.\n"
             << "\tfilters                                     : Display the active filters.\n"
             << "\tfilters clear                               : Clear all the filter lists.\n"
-            << "\tfilter clear <category>                     : Clear <category> filter list.\n"
-            << "\tfilter add partitions <filter_str>          : Add <filter_str> in partitions filter list.\n"
-            << "\tfilter remove partitions <filter_str>       : Remove <filter_str> in partitions filter list.\n"
+            << "\tfilters clear <category>                    : Clear <category> filter list.\n"
+            << "\tfilters add partitions <filter_str>         : Add <filter_str> in partitions filter list.\n"
+            << "\tfilters remove partitions <filter_str>      : Remove <filter_str> in partitions filter list.\n"
             <<
-            "\tfilter set topic <topic_name> <filter_str>  : Set topic filter list with <filter_str> as first value.\n"
+            "\tfilters set topic <topic_name> <filter_str> : Set topic filter list with <filter_str> as first value.\n"
             <<
             "\techo <name>                                 : data of a specific Topic (Data Type must be discovered).\n"
             <<
@@ -803,7 +803,6 @@ void Controller::filter_command_(
                 }
             };
 
-    bool pass;
     std::string operation;
     std::string category;
     std::string filter_str;
@@ -813,15 +812,6 @@ void Controller::filter_command_(
 
     if (arguments.size() == 1) // print filters
     {
-        if (arguments[0] == "filter")
-        {
-            view_.show_error(STR_ENTRY
-                    << "Command <"
-                    << arguments[0]
-                    << "> requires 3 or 4 arguments.");
-            return;
-        }
-
         // print the filters list
         std::cout << "--------\n";
         std::cout << "Filters:\n";
@@ -847,15 +837,6 @@ void Controller::filter_command_(
     }
     else if (arguments.size() == 2) // clear filters
     {
-        if (arguments[0] == "filter")
-        {
-            view_.show_error(STR_ENTRY
-                    << "Command <"
-                    << arguments[0]
-                    << "> requires 3 or 4 arguments.");
-            return;
-        }
-
         std::set<std::string> allowed_args = {"clear"};
         if (allowed_args.find(arguments[1]) == allowed_args.end())
         {
@@ -864,7 +845,7 @@ void Controller::filter_command_(
             return;
         }
 
-        // clear ther filters list
+        // clear the filters list
         partition_filter_set_.clear();
         for (auto& pair_topic : topic_filter_dict_)
         {
@@ -876,15 +857,6 @@ void Controller::filter_command_(
     }
     else if (arguments.size() == 3) // filter clear <category>
     {
-        if (arguments[0] == "filters")
-        {
-            view_.show_error(STR_ENTRY
-                    << "Command <"
-                    << arguments[0]
-                    << "> requires 1 or 2 arguments.");
-            return;
-        }
-
         operation = arguments[1];
         category = arguments[2];
 
@@ -910,15 +882,6 @@ void Controller::filter_command_(
     }
     else if (arguments.size() == 4)
     {
-        if (arguments[0] == "filters")
-        {
-            view_.show_error(STR_ENTRY
-                    << "Command <"
-                    << arguments[0]
-                    << "> requires 1 or 2 arguments.");
-            return;
-        }
-
         operation = arguments[1]; // <add/remove>
         category = arguments[2]; // <partitions/topic>
 
@@ -1000,22 +963,17 @@ void Controller::filter_command_(
             else
             {
                 topic_filter_dict_[topic_str] = "";
+                update_content_topicfilter(topic_str);
             }
         }
 
-        update_partitions();
+        if (category == "partitions")
+        {
+            update_partitions();
+        }
     }
     else if (arguments.size() == 5)
     {
-        if (arguments[0] == "filters")
-        {
-            view_.show_error(STR_ENTRY
-                    << "Command <"
-                    << arguments[0]
-                    << "> requires 1 or 2 arguments.");
-            return;
-        }
-
         if (!configuration_.dds_enabled)
         {
             view_.show_error(STR_ENTRY << "RTPS does not support ContentFilteredTopic.");
