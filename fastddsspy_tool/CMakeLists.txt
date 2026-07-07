@@ -65,6 +65,13 @@ compile_tool(
     "${PROJECT_SOURCE_DIR}/src/cpp" # Source directory
 )
 
+install(
+    PROGRAMS
+        "${PROJECT_SOURCE_DIR}/scripts/fastddsspy-tui"
+    DESTINATION
+        ${BIN_INSTALL_DIR}
+)
+
 ###############################################################################
 # Test
 ###############################################################################

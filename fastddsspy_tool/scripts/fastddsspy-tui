@@ -1,0 +1,624 @@
+"""Textual frontend for Fast DDS Spy."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import shlex
+import shutil
+import subprocess
+import sys
+import threading
+from dataclasses import dataclass
+from datetime import datetime
+from pathlib import Path
+from typing import Any
+
+SCRIPT_PATH = Path(__file__).resolve()
+
+
+def discover_workspace_venv_python() -> Path | None:
+    python_relative = Path("Scripts/python.exe") if os.name == "nt" else Path("bin/python")
+    candidates: list[Path] = []
+    search_roots = [Path.cwd().resolve(), SCRIPT_PATH.parent, *SCRIPT_PATH.parents]
+
+    for root in search_roots:
+        candidates.append(root / "textual_venv" / python_relative)
+
+    seen: set[Path] = set()
+    for candidate in candidates:
+        if candidate in seen:
+            continue
+        seen.add(candidate)
+        if candidate.is_file() and os.access(candidate, os.X_OK):
+            return candidate
+
+    return None
+
+
+def maybe_reexec_into_workspace_venv() -> None:
+    if os.environ.get("FASTDDSSPY_TUI_REEXEC") == "1":
+        return
+
+    venv_python = discover_workspace_venv_python()
+    if venv_python is None:
+        return
+
+    try:
+        current_python = Path(sys.executable).resolve()
+        resolved_venv_python = venv_python.resolve()
+    except OSError:
+        return
+
+    if current_python == resolved_venv_python:
+        return
+
+    env = os.environ.copy()
+    env["FASTDDSSPY_TUI_REEXEC"] = "1"
+    os.execve(
+        str(resolved_venv_python),
+        [str(resolved_venv_python), str(SCRIPT_PATH), *sys.argv[1:]],
+        env,
+    )
+
+
+maybe_reexec_into_workspace_venv()
+
+TUI_UNAVAILABLE_EXIT_CODE = 126
+
+try:
+    from rich.text import Text
+    from textual import constants as textual_constants
+    from textual.app import App, ComposeResult
+    from textual.binding import Binding
+    from textual.widgets import Input, RichLog
+except ModuleNotFoundError as exc:
+    print(
+        "Textual frontend dependencies are not available. Activate textual_venv or install requirements.txt.",
+        file=sys.stderr,
+    )
+    raise SystemExit(TUI_UNAVAILABLE_EXIT_CODE) from exc
+
+
+def write_terminal_sequence(sequence: str) -> None:
+    """Write a raw escape sequence to the active terminal."""
+
+    if not sys.stdout.isatty():
+        return
+
+    try:
+        sys.stdout.write(sequence)
+        sys.stdout.flush()
+    except Exception:
+        pass
+
+
+@dataclass
+class TerminalSessionConfig:
+    """Runtime options controlling terminal initialization."""
+
+    bg_color: str = "#1e1e1e"
+    force_bg: bool = True
+
+
+class TerminalSession:
+    """Session helper that applies terminal tweaks and restores them on exit."""
+
+    def __init__(self, config: TerminalSessionConfig | None = None) -> None:
+        self.config = config if config is not None else TerminalSessionConfig()
+
+    def start(self) -> None:
+        if self.config.force_bg:
+            write_terminal_sequence(f"\x1b]11;{self.config.bg_color}\x07")
+
+    def end(self) -> None:
+        if self.config.force_bg:
+            write_terminal_sequence("\x1b]111\x07")
+
+    def __enter__(self) -> "TerminalSession":
+        self.start()
+        return self
+
+    def __exit__(self, exc_type, exc, tb) -> None:
+        self.end()
+
+
+def parse_args(argv: list[str]) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        prog="fastddsspy-tui",
+        description="Launch the Textual frontend for Fast DDS Spy.",
+    )
+    parser.add_argument(
+        "--backend",
+        help="Explicit path to the fastddsspy backend executable.",
+    )
+    parser.add_argument("-c", "--config-path")
+    parser.add_argument("-r", "--reload-time", type=int)
+    parser.add_argument("-d", "--debug", action="store_true")
+    parser.add_argument("--log-filter")
+    parser.add_argument("--log-verbosity", choices=("info", "warning", "error"))
+    parser.add_argument("--domain", type=int)
+
+    args, extras = parser.parse_known_args(argv)
+    if extras:
+        parser.error(
+            "Unknown arguments or positional commands are not supported here. "
+            "Enter interactive commands in the TUI, or run one-shot commands with fastddsspy directly."
+        )
+
+    return args
+
+
+def discover_setup_script() -> Path | None:
+    candidates: list[Path] = []
+    search_roots = [Path.cwd().resolve(), SCRIPT_PATH.parent, *SCRIPT_PATH.parents]
+
+    for root in search_roots:
+        candidates.append(root / "install" / "setup.bash")
+        candidates.append(root / "setup.bash")
+
+    seen: set[Path] = set()
+    for candidate in candidates:
+        if candidate in seen:
+            continue
+        seen.add(candidate)
+        if candidate.is_file():
+            return candidate
+
+    return None
+
+
+def _resolve_executable(candidate: str | Path | None) -> str | None:
+    if not candidate:
+        return None
+
+    candidate_path = Path(candidate).expanduser()
+    if candidate_path.is_file() and os.access(candidate_path, os.X_OK):
+        return str(candidate_path)
+
+    resolved = shutil.which(str(candidate_path))
+    if resolved:
+        return resolved
+
+    return None
+
+
+def resolve_backend(explicit_backend: str | None, setup_script: Path | None) -> str:
+    candidates = [
+        explicit_backend,
+        os.environ.get("FASTDDSSPY_BACKEND"),
+        SCRIPT_PATH.with_name("fastddsspy"),
+        Path.cwd() / "install" / "fastddsspy_tool" / "bin" / "fastddsspy",
+        Path.cwd() / "build" / "fastddsspy_tool" / "fastddsspy",
+        shutil.which("fastddsspy"),
+    ]
+
+    if setup_script is not None:
+        candidates.extend(
+            [
+                setup_script.parent / "fastddsspy_tool" / "bin" / "fastddsspy",
+                setup_script.parent.parent / "build" / "fastddsspy_tool" / "fastddsspy",
+            ]
+        )
+
+    for candidate in candidates:
+        resolved = _resolve_executable(candidate)
+        if resolved:
+            return resolved
+
+    raise FileNotFoundError(
+        "Unable to locate the fastddsspy backend. Use --backend, set FASTDDSSPY_BACKEND, or add fastddsspy to PATH."
+    )
+
+
+def build_backend_environment(setup_script: Path | None) -> dict[str, str]:
+    environment = os.environ.copy()
+
+    if setup_script is None or os.name == "nt":
+        return environment
+
+    command = f"source {shlex.quote(str(setup_script))} >/dev/null 2>&1 && env -0"
+    try:
+        completed = subprocess.run(
+            ["bash", "-lc", command],
+            check=True,
+            capture_output=True,
+        )
+    except (OSError, subprocess.CalledProcessError):
+        return environment
+
+    for entry in completed.stdout.split(b"\0"):
+        if not entry:
+            continue
+        key, _, value = entry.partition(b"=")
+        environment[key.decode("utf-8", errors="ignore")] = value.decode("utf-8", errors="ignore")
+
+    return environment
+
+
+def build_backend_command(args: argparse.Namespace, backend: str) -> list[str]:
+    command = [backend, "--ui-bridge", "jsonl"]
+
+    if args.config_path:
+        command.extend(["--config-path", args.config_path])
+    if args.reload_time is not None:
+        command.extend(["--reload-time", str(args.reload_time)])
+    if args.debug:
+        command.append("--debug")
+    if args.log_filter:
+        command.extend(["--log-filter", args.log_filter])
+    if args.log_verbosity:
+        command.extend(["--log-verbosity", args.log_verbosity])
+    if args.domain is not None:
+        command.extend(["--domain", str(args.domain)])
+
+    return command
+
+
+def format_timestamp(value: Any) -> str:
+    if value is None:
+        return datetime.now().strftime("%H:%M:%S")
+
+    try:
+        milliseconds = int(value)
+    except (TypeError, ValueError):
+        return str(value)
+
+    return datetime.fromtimestamp(milliseconds / 1000).strftime("%H:%M:%S")
+
+
+@dataclass
+class BridgeEvent:
+    type: str
+    message: str
+    timestamp: str
+
+    @classmethod
+    def from_json(cls, payload: dict[str, Any]) -> "BridgeEvent":
+        return cls(
+            type=str(payload.get("type", "output")),
+            message=str(payload.get("message", "")),
+            timestamp=format_timestamp(payload.get("timestamp")),
+        )
+
+
+class FastDDSSpyTui(App):
+    """Textual UI that renders Fast DDS Spy bridge events."""
+
+    TITLE = "Fast DDS Spy"
+    SUB_TITLE = "Textual Frontend"
+
+    CSS = """
+    Screen {
+        background: #1e1e1e;
+        color: #e5e7eb;
+        layout: vertical;
+    }
+
+    #log_panel {
+        height: 1fr;
+        background: #1e1e1e;
+        color: #e5e7eb;
+        padding: 1 3 0 1;
+        border: solid #333333;
+    }
+
+    #command_input {
+        background: #1e1e1e;
+        height: 3;
+        border: none;
+        color: #f8fafc;
+        margin: 0 1 1 1;
+        padding: 1 1;
+    }
+
+    #command_input:focus {
+        background: #1e1e1e;
+        border: none;
+    }
+    """
+
+    BINDINGS = [
+        Binding("ctrl+l", "clear_log", "Clear Log"),
+        Binding("ctrl+c", "quit_app", "Quit"),
+        Binding("up", "history_prev", show=False),
+        Binding("down", "history_next", show=False),
+    ]
+
+    def __init__(
+        self,
+        backend_command: list[str],
+        backend_env: dict[str, str],
+        setup_script: Path | None,
+    ) -> None:
+        os.environ.setdefault("COLORTERM", "truecolor")
+        textual_constants.COLOR_SYSTEM = "truecolor"
+        super().__init__()
+        self.backend_command = backend_command
+        self.backend_env = backend_env
+        self.setup_script = setup_script
+        self.backend_process: subprocess.Popen[str] | None = None
+        self.log_panel: RichLog
+        self.command_input: Input
+        self.stream_active = False
+        self.pending_command: str | None = None
+        self.backend_alive = False
+        self.history: list[str] = []
+        self.history_index: int | None = None
+        self.history_draft = ""
+        self._shutdown_started = False
+
+    def compose(self) -> ComposeResult:
+        yield RichLog(id="log_panel", wrap=True, auto_scroll=True, markup=False, max_lines=500)
+        yield Input(
+            placeholder="Enter Fast DDS Spy commands here. Press Enter on an empty line to stop streaming.",
+            id="command_input",
+        )
+
+    def on_mount(self) -> None:
+        self.log_panel = self.query_one("#log_panel", RichLog)
+        self.command_input = self.query_one("#command_input", Input)
+        self.command_input.focus()
+        self._start_backend()
+
+    def on_unmount(self) -> None:
+        self._shutdown_backend()
+
+    def action_clear_log(self) -> None:
+        self.log_panel.clear()
+        self._write_local("Log", "Activity cleared.", "bold #93c5fd")
+
+    def action_quit_app(self) -> None:
+        self._shutdown_backend()
+        self.exit()
+
+    def action_history_prev(self) -> None:
+        if not self.history:
+            return
+
+        if self.history_index is None or self.history_index >= len(self.history):
+            self.history_draft = self.command_input.value
+            self.history_index = len(self.history) - 1
+        else:
+            self.history_index = max(0, self.history_index - 1)
+
+        self._apply_history_to_input()
+
+    def action_history_next(self) -> None:
+        if not self.history:
+            return
+
+        if self.history_index is None:
+            return
+
+        if self.history_index >= len(self.history) - 1:
+            self.history_index = len(self.history)
+        else:
+            self.history_index += 1
+
+        self._apply_history_to_input()
+
+    def on_input_submitted(self, event: Input.Submitted) -> None:
+        raw_value = event.value
+        message = raw_value.strip()
+        event.input.value = ""
+        event.input.focus()
+
+        if message:
+            self.history.append(message)
+            self.history_index = len(self.history)
+            self.history_draft = ""
+
+        if not self.backend_alive or not self.backend_process or self.backend_process.poll() is not None:
+            self._write_local("Error", "Backend is not running.", "bold red")
+            return
+
+        if not message:
+            if self.stream_active:
+                self._write_local("Status", "Stopping active stream...", "bold #f59e0b")
+                self._send_line("")
+            return
+
+        if self.stream_active:
+            if self.pending_command is not None:
+                self._write_local("Status", "A command is already queued while the current stream stops.", "bold #f59e0b")
+                return
+
+            self.pending_command = message
+            self._write_local("[USER] >>", f"{message} (queued)", "bold #34d399")
+            self._write_local("Status", "Stopping active stream before running the queued command...", "bold #f59e0b")
+            self._send_line("")
+            return
+
+        self._write_local("[USER] >>", message, "bold #34d399")
+        self._send_line(message)
+
+    def _start_backend(self) -> None:
+        try:
+            self.backend_process = subprocess.Popen(
+                self.backend_command,
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                env=self.backend_env,
+                text=True,
+                encoding="utf-8",
+                bufsize=1,
+            )
+        except OSError as exc:
+            self._write_local("Error", str(exc), "bold red")
+            return
+
+        self.backend_alive = True
+        backend_label = " ".join(self.backend_command)
+        self._write_local("Status", f"Started backend: {backend_label}", "bold #f59e0b")
+        if self.setup_script is not None:
+            self._write_local("Status", f"Loaded workspace environment from {self.setup_script}", "bold #f59e0b")
+
+        threading.Thread(target=self._stdout_reader, daemon=True).start()
+        threading.Thread(target=self._stderr_reader, daemon=True).start()
+        #threading.Thread(target=self._wait_for_exit, daemon=True).start()
+
+    def _stdout_reader(self) -> None:
+        assert self.backend_process is not None
+        assert self.backend_process.stdout is not None
+
+        for line in self.backend_process.stdout:
+            payload = line.strip()
+            if not payload:
+                continue
+
+            try:
+                event = BridgeEvent.from_json(json.loads(payload))
+            except json.JSONDecodeError:
+                self.call_from_thread(
+                    self._write_local,
+                    "Bridge",
+                    f"Malformed bridge output: {payload}",
+                    "bold red",
+                )
+                continue
+
+            self.call_from_thread(self._handle_bridge_event, event)
+
+    def _stderr_reader(self) -> None:
+        assert self.backend_process is not None
+        assert self.backend_process.stderr is not None
+
+        for line in self.backend_process.stderr:
+            message = line.rstrip("\n")
+            if not message:
+                continue
+
+            self.call_from_thread(self._write_local, "Log", message, "bold #f97316")
+
+    def _wait_for_exit(self) -> None:
+        assert self.backend_process is not None
+        return_code = self.backend_process.wait()
+        self.call_from_thread(self._handle_backend_exit, return_code)
+
+    def _handle_bridge_event(self, event: BridgeEvent) -> None:
+        label_styles = {
+            "banner": "bold #22c55e",
+            "output": "#e5e7eb",
+            "error": "bold #f87171",
+            "status": "bold #f59e0b",
+            "stream_started": "bold #2dd4bf",
+            "stream_stopped": "bold #fb7185",
+        }
+        labels = {
+            "banner": "Banner",
+            "output": "Output",
+            "error": "Error",
+            "status": "Status",
+            "stream_started": "Stream",
+            "stream_stopped": "Stream",
+        }
+
+        if event.type == "stream_started":
+            self.stream_active = True
+        elif event.type == "stream_stopped":
+            self.stream_active = False
+
+        self._write_entry(event.timestamp, labels.get(event.type, "Output"), event.message, label_styles.get(event.type, "#203133"))
+
+        if event.type == "stream_stopped" and self.pending_command:
+            queued_command = self.pending_command
+            self.pending_command = None
+            self._write_local("Status", f"Dispatching queued command: {queued_command}", "bold #f59e0b")
+            self._send_line(queued_command)
+
+    def _handle_backend_exit(self, return_code: int) -> None:
+        self.backend_alive = False
+        self.stream_active = False
+        self._write_local("Status", f"Backend exited with code {return_code}.", "bold #fb7185")
+
+    def _shutdown_backend(self) -> None:
+        if self._shutdown_started:
+            return
+
+        self._shutdown_started = True
+
+        if not self.backend_process:
+            return
+
+        if self.backend_process.poll() is None:
+            try:
+                if self.backend_process.stdin:
+                    self.backend_process.stdin.write("exit\n")
+                    self.backend_process.stdin.flush()
+                self.backend_process.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                self.backend_process.terminate()
+                try:
+                    self.backend_process.wait(timeout=5)
+                except subprocess.TimeoutExpired:
+                    self.backend_process.kill()
+
+    def _send_line(self, message: str) -> None:
+        if not self.backend_process or not self.backend_process.stdin:
+            self._write_local("Error", "Backend stdin is not available.", "bold red")
+            return
+
+        try:
+            self.backend_process.stdin.write(message + "\n")
+            self.backend_process.stdin.flush()
+        except OSError as exc:
+            self._write_local("Error", f"Failed to send command: {exc}", "bold red")
+
+    def _apply_history_to_input(self) -> None:
+        if self.history_index is None or self.history_index >= len(self.history):
+            self.command_input.value = self.history_draft
+        else:
+            self.command_input.value = self.history[self.history_index]
+
+        self.command_input.cursor_position = len(self.command_input.value)
+        self.command_input.focus()
+
+    def _write_local(self, label: str, message: str, style: str) -> None:
+        self._write_entry(datetime.now().strftime("%H:%M:%S"), label, message, style)
+
+    def _write_entry(self, timestamp: str, label: str, message: str, style: str) -> None:
+        del timestamp
+
+        if label == "[USER] >>":
+            self.log_panel.write(
+                Text.assemble(
+                    (f"{label} ", style),
+                    message,
+                )
+            )
+            return
+
+        if label in {"Output", "Status", "Banner"}:
+            self.log_panel.write(Text(message, style=style))
+            return
+
+        self.log_panel.write(
+            Text.assemble(
+                (f"{label}: ", style),
+                message,
+            )
+        )
+
+
+def main(argv: list[str] | None = None) -> int:
+    parsed_args = parse_args(sys.argv[1:] if argv is None else argv)
+    setup_script = discover_setup_script()
+
+    try:
+        backend = resolve_backend(parsed_args.backend, setup_script)
+    except FileNotFoundError as exc:
+        print(exc, file=sys.stderr)
+        return 2
+
+    backend_command = build_backend_command(parsed_args, backend)
+    backend_env = build_backend_environment(setup_script)
+    with TerminalSession():
+        FastDDSSpyTui(backend_command, backend_env, setup_script).run()
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
