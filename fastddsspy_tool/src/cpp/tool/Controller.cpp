@@ -18,7 +18,6 @@
 #include <fastdds/dds/xtypes/dynamic_types/DynamicDataFactory.hpp>
 #include <fastdds/dds/xtypes/utils.hpp>
 
-#include <cpp_utils/user_interface/CommandReader.hpp>
 #include <cpp_utils/macros/custom_enumeration.hpp>
 
 #include <ddspipe_core/types/topic/filter/WildcardDdsFilterTopic.hpp>
@@ -128,9 +127,28 @@ static std::string format_json_arrays_inline(
     return out.str();
 }
 
+static std::string join_command_arguments(
+        const std::vector<std::string>& arguments)
+{
+    std::ostringstream output;
+    for (size_t i = 0; i < arguments.size(); ++i)
+    {
+        if (i != 0)
+        {
+            output << ' ';
+        }
+        output << arguments[i];
+    }
+
+    return output.str();
+}
+
 Controller::Controller(
-        const yaml::Configuration& configuration)
+        const yaml::Configuration& configuration,
+        View::Mode view_mode)
     : backend_(configuration)
+    , input_(view_mode == View::Mode::plain)
+    , view_(view_mode)
     , model_(backend_.model())
     , configuration_(configuration)
 {
@@ -140,6 +158,7 @@ Controller::Controller(
 void Controller::run()
 {
     view_.print_initial();
+    view_.show_status("Fast DDS Spy ready.");
     utils::Command<CommandValue> command;
     command.command = CommandValue::participant;
     while (command.command != CommandValue::exit)
@@ -253,7 +272,7 @@ void Controller::data_stream_callback_(
 
     // Reformat: arrays single-line
     const std::string pretty = format_json_arrays_inline(ss.str(), /*indent_step*/ 4);
-    std::cout << pretty << std::endl;
+    view_.show(pretty);
     view_.show("---\n");
 }
 
@@ -305,7 +324,7 @@ void Controller::data_stream_callback_verbose_(
 
     // Reformat: arrays single-line
     const std::string pretty = format_json_arrays_inline(ss.str(), /*indent_step*/ 4);
-    std::cout << pretty << std::endl;
+    view_.show(pretty);
     view_.show("---\n");
 }
 
@@ -523,7 +542,13 @@ void Controller::topics_command_(
                 return;
             }
 
-            std::cout << '\n' << data << std::endl;
+            std::string idl_output = "\n";
+            idl_output += data;
+            if (idl_output.back() != '\n')
+            {
+                idl_output += '\n';
+            }
+            view_.show_block(idl_output);
         }
         else if (keys_argument_(arg_2))
         {
@@ -689,13 +714,23 @@ void Controller::print_command_(
         bool activated = model_->activate(
             filter_topic,
             callback);
+
+        if (!activated)
+        {
+            view_.show_error(STR_ENTRY
+                    << "Error printing topic <"
+                    << filter_topic.topic_name.get_value()
+                    << ">.");
+            return;
+        }
     }
 
+    view_.show_stream_started("Streaming data for command: " + join_command_arguments(arguments));
+
     // Wait for other command to stop printing topics
-    input_.stdin_handler().set_ignore_input(true);
     input_.wait_something();
-    input_.stdin_handler().set_ignore_input(false);
     model_->deactivate();
+    view_.show_stream_stopped("Streaming stopped.");
 
     // Small delay to allow stdout to flush and avoid prompt overlap
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -823,10 +858,11 @@ void Controller::filter_command_(
         }
 
         // print the filters list
-        std::cout << "--------\n";
-        std::cout << "Filters:\n";
-        std::cout << "--------\n\n";
-        std::cout << "  Topic:\n";
+        std::ostringstream filters_output;
+        filters_output << "--------\n";
+        filters_output << "Filters:\n";
+        filters_output << "--------\n\n";
+        filters_output << "  Topic:\n";
         for (const auto& topic_pair: topic_filter_dict_)
         {
             // If there is no content topic filter, do not print ""
@@ -835,15 +871,17 @@ void Controller::filter_command_(
                 continue;
             }
 
-            std::cout << "    " << topic_pair.first << ": \"" << topic_pair.second << "\"\n";
+            filters_output << "    " << topic_pair.first << ": \"" << topic_pair.second << "\"\n";
         }
 
-        std::cout << "\n  Partitions:\n";
+        filters_output << "\n  Partitions:\n";
 
         for (const auto& partition: partition_filter_set_)
         {
-            std::cout << "    - " << (partition == "" ? "\"\"" : partition) << "\n";
+            filters_output << "    - " << (partition == "" ? "\"\"" : partition) << "\n";
         }
+
+        view_.show_block(filters_output.str());
     }
     else if (arguments.size() == 2) // clear filters
     {

@@ -21,7 +21,6 @@
 
 #include <memory>
 
-#include <cpp_utils/user_interface/CommandReader.hpp>
 #include <cpp_utils/ReturnCode.hpp>
 #include <cpp_utils/time/time_utils.hpp>
 #include <cpp_utils/utils.hpp>

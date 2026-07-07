@@ -54,6 +54,9 @@ struct FASTDDSSPY_YAML_DllAPI CommandlineArgsSpy : public ddspipe::core::Command
     // One shot command
     std::vector<std::string> one_shot_command;
 
+    // Structured UI bridge mode
+    bool ui_bridge_jsonl{false};
+
     // Domain
     utils::Fuzzy<ddspipe::core::types::DomainId> domain{0, utils::FuzzyLevelValues::fuzzy_level_default};
 };

@@ -15,8 +15,12 @@
 #pragma once
 
 #include <ostream>
+#include <string>
+
+#include <cpp_utils/Formatter.hpp>
 
 #include <fastddsspy_participants/model/DataStreamer.hpp>
+#include <ddspipe_yaml/Yaml.hpp>
 
 namespace eprosima {
 namespace spy {
@@ -24,6 +28,15 @@ namespace spy {
 class View
 {
 public:
+
+    enum class Mode
+    {
+        plain,
+        ui_bridge_jsonl
+    };
+
+    explicit View(
+            Mode mode = Mode::plain);
 
     void print_initial();
 
@@ -33,13 +46,41 @@ public:
     void show(
             const char* value);
 
-    template <typename T>
     void show(
-            const T& value);
+            const Yaml& value);
 
-    template <typename T>
+    void show(
+            const utils::Formatter& value);
+
+    void show_block(
+            const std::string& value);
+
     void show_error(
-            const T& value);
+            const std::string& value);
+
+    void show_error(
+            const utils::Formatter& value);
+
+    void show_status(
+            const std::string& value);
+
+    void show_stream_started(
+            const std::string& value);
+
+    void show_stream_stopped(
+            const std::string& value);
+
+    bool bridge_mode() const noexcept;
+
+private:
+
+    void emit_json_event_(
+            const char* type,
+            const std::string& value);
+
+    static std::string timestamp_();
+
+    Mode mode_;
 };
 
 } /* namespace spy */

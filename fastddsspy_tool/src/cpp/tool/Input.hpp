@@ -14,6 +14,10 @@
 
 #pragma once
 
+#include <iostream>
+#include <istream>
+#include <ostream>
+
 #include <cpp_utils/user_interface/CommandReader.hpp>
 
 #include "Command.hpp"
@@ -25,29 +29,29 @@ class Input
 {
 public:
 
-    Input();
+    explicit Input(
+            bool prompt_enabled = true,
+            std::istream& source = std::cin,
+            std::ostream& output = std::cout);
 
     utils::Command<CommandValue> wait_next_command();
 
     void wait_something();
 
     utils::Command<CommandValue> parse_as_command(
-            const std::vector<std::string>& args);
+            const std::vector<std::string>& args) const;
 
-protected:
+private:
 
-    utils::CommandReader<CommandValue> reader_;
+    utils::Command<CommandValue> parse_line_(
+            const std::string& line) const;
 
-public:
+    std::vector<std::string> join_quoted_strings_(
+            const std::vector<std::string>& input) const;
 
-    /**
-     * @brief Access the underlying stdin event handler to control input behavior.
-     * Used for temporarily disabling history input (e.g., during interactive commands).
-     */
-    eprosima::utils::event::StdinEventHandler& stdin_handler() noexcept
-    {
-        return reader_.stdin_handler();
-    }
+    bool prompt_enabled_;
+    std::istream& source_;
+    std::ostream& output_;
 
 };
 

@@ -112,6 +112,16 @@ const option::Descriptor usage[] = {
         "[Default = 0]."
     },
 
+    {
+        optionIndex::UI_BRIDGE,
+        0,
+        "",
+        "ui-bridge",
+        Arg::String,
+        "  \t--ui-bridge\t  \t" \
+        "Enable the UI bridge mode. Supported value: \"jsonl\"."
+    },
+
     ////////////////////
     // Debug options
     {
@@ -289,6 +299,17 @@ ProcessReturnCode parse_arguments(
                     static_cast<ddspipe::core::types::DomainIdType>(domain_value));
             }
             break;
+
+            case optionIndex::UI_BRIDGE:
+                if (std::string(opt.arg) != "jsonl")
+                {
+                    EPROSIMA_LOG_ERROR(
+                        FASTDDSSPY_ARGS,
+                        "Option '--ui-bridge' only accepts the value 'jsonl'.");
+                    return ProcessReturnCode::incorrect_argument;
+                }
+                commandline_args.ui_bridge_jsonl = true;
+                break;
 
             case optionIndex::UNKNOWN_OPT:
                 EPROSIMA_LOG_ERROR(FASTDDSSPY_ARGS, opt << " is not a valid argument.");

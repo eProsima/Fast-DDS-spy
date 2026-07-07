@@ -38,7 +38,8 @@ class Controller
 public:
 
     Controller(
-            const yaml::Configuration& configuration);
+            const yaml::Configuration& configuration,
+            View::Mode view_mode = View::Mode::plain);
 
     void run();
 

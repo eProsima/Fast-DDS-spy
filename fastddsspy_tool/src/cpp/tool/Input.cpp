@@ -14,53 +14,101 @@
 
 #include <iostream>
 
-#include <cpp_utils/user_interface/CommandReader.hpp>
+#include <cpp_utils/utils.hpp>
 
 #include "Input.hpp"
 
 namespace eprosima {
 namespace spy {
 
-Input::Input()
-    : reader_(*CommandBuilder::get_instance())
+Input::Input(
+        bool prompt_enabled,
+        std::istream& source,
+        std::ostream& output)
+    : prompt_enabled_(prompt_enabled)
+    , source_(source)
+    , output_(output)
 {
     // Do nothing
 }
 
 utils::Command<CommandValue> Input::wait_next_command()
 {
-    utils::Command<CommandValue> command;
-    std::cout << std::endl << "\033[1;36m" << "Insert a command for Fast DDS Spy:\n>> " << "\033[0m" << std::flush;
-
-    auto res = reader_.read_next_command(command);
-
-    if (!res)
+    if (prompt_enabled_)
     {
-        command.command = CommandValue::error_input;
+        output_ << std::endl << "\033[1;36m" << "Insert a command for Fast DDS Spy:\n>> " << "\033[0m" << std::flush;
     }
-    return command;
+
+    std::string line;
+    if (!std::getline(source_, line))
+    {
+        utils::Command<CommandValue> command;
+        command.arguments = {"exit"};
+        command.command = CommandValue::exit;
+        return command;
+    }
+
+    return parse_line_(line);
 }
 
 void Input::wait_something()
 {
-    utils::Command<CommandValue> _;
-    reader_.read_next_command(_);
+    std::string _;
+    std::getline(source_, _);
 }
 
 utils::Command<CommandValue> Input::parse_as_command(
-        const std::vector<std::string>& args)
+        const std::vector<std::string>& args) const
 {
-    // TODO use the cpp_utils method once it is merged
     utils::Command<CommandValue> command;
-    // Set args in command, and the enum value will be set string_to_enumeration
     command.arguments = args;
-    // Check if command exists
+    if (command.arguments.empty())
+    {
+        command.arguments = {""};
+    }
+
     auto res = CommandBuilder::get_instance()->string_to_enumeration(command.arguments[0], command.command);
     if (!res)
     {
         command.command = CommandValue::error_input;
     }
+
     return command;
+}
+
+utils::Command<CommandValue> Input::parse_line_(
+        const std::string& line) const
+{
+    return parse_as_command(join_quoted_strings_(utils::split_string(line, " ")));
+}
+
+std::vector<std::string> Input::join_quoted_strings_(
+        const std::vector<std::string>& input) const
+{
+    std::vector<std::string> result;
+
+    for (size_t i = 0; i < input.size(); ++i)
+    {
+        if (!input[i].empty() && input[i].front() == '"')
+        {
+            std::string joined = input[i];
+
+            while (i + 1 < input.size() &&
+                    (joined.empty() || joined.back() != '"'))
+            {
+                joined += " " + input[++i];
+            }
+
+            const int trailing_quote_chars = joined.back() == '"' ? 2 : 1;
+            result.push_back(joined.substr(1, joined.size() - trailing_quote_chars));
+        }
+        else
+        {
+            result.push_back(input[i]);
+        }
+    }
+
+    return result;
 }
 
 } /* namespace spy */

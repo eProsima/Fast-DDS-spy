@@ -100,6 +100,7 @@ enum optionIndex
     LOG_FILTER,
     LOG_VERBOSITY,
     DOMAIN,
+    UI_BRIDGE,
 };
 
 /**

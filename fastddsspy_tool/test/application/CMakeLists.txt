@@ -165,4 +165,40 @@ foreach(TEST IN LISTS TEST_FILENAMES)
 
 endforeach()
 
+set(BRIDGE_TEST_SCRIPT
+    ${CMAKE_CURRENT_SOURCE_DIR}/test_ui_bridge.py
+)
+
+if(NOT WIN32)
+    add_test(
+        NAME tool.application.fastddsspy.test.ui_bridge.basic
+        COMMAND ${PYTHON_EXECUTABLE}
+                ${BRIDGE_TEST_SCRIPT}
+                "--exe" $<TARGET_FILE:fastddsspy_tool>
+                "--case" "basic"
+    )
+
+    add_test(
+        NAME tool.application.fastddsspy.test.ui_bridge.stream
+        COMMAND ${PYTHON_EXECUTABLE}
+                ${BRIDGE_TEST_SCRIPT}
+                "--exe" $<TARGET_FILE:fastddsspy_tool>
+                "--case" "stream"
+    )
+
+    set_test_labels(tool.application.fastddsspy.test.ui_bridge.basic)
+    set_tests_properties(
+        tool.application.fastddsspy.test.ui_bridge.basic
+        PROPERTIES
+            ENVIRONMENT "${TEST_ENVIRONMENT}"
+    )
+
+    set_test_labels(tool.application.fastddsspy.test.ui_bridge.stream)
+    set_tests_properties(
+        tool.application.fastddsspy.test.ui_bridge.stream
+        PROPERTIES
+            ENVIRONMENT "${TEST_ENVIRONMENT}"
+    )
+endif()
+
 unset(TEST_ENVIRONMENT)
