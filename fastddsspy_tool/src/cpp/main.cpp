@@ -17,6 +17,16 @@
  *
  */
 
+#include <iostream>
+#include <algorithm>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <string>
+#include <vector>
+#include <sys/wait.h>
+#include <unistd.h>
+
 #include <cpp_utils/event/FileWatcherHandler.hpp>
 #include <cpp_utils/event/MultipleEventHandler.hpp>
 #include <cpp_utils/event/PeriodicEventHandler.hpp>
@@ -48,6 +58,182 @@
 #include "user_interface/ProcessReturnCode.hpp"
 #include "tool/Controller.hpp"
 
+namespace {
+
+constexpr int TUI_UNAVAILABLE_EXIT_CODE = 126;
+constexpr int TUI_EXEC_FAILURE_EXIT_CODE = 127;
+
+class StderrOnlyLogConsumer : public eprosima::utils::StdLogConsumer
+{
+public:
+
+    explicit StderrOnlyLogConsumer(
+            const eprosima::utils::BaseLogConfiguration* log_configuration)
+        : eprosima::utils::StdLogConsumer(log_configuration)
+    {
+        // Do nothing
+    }
+
+protected:
+
+    std::ostream& get_stream_(
+            const eprosima::utils::Log::Entry& /*entry*/) override
+    {
+        return std::cerr;
+    }
+};
+
+std::string normalize_env_flag(
+        std::string value)
+{
+    std::transform(
+        value.begin(),
+        value.end(),
+        value.begin(),
+        [](const unsigned char character)
+        {
+            return static_cast<char>(std::tolower(character));
+        });
+    return value;
+}
+
+bool env_flag_enabled(
+        const char* variable_name)
+{
+    const char* value = std::getenv(variable_name);
+    if (value == nullptr)
+    {
+        return false;
+    }
+
+    const std::string normalized = normalize_env_flag(value);
+    return normalized == "1"
+           || normalized == "true"
+           || normalized == "yes"
+           || normalized == "on";
+}
+
+bool interactive_terminal_session()
+{
+    return isatty(STDIN_FILENO) && isatty(STDOUT_FILENO);
+}
+
+std::string resolve_textual_frontend_command(
+        const char* executable_path)
+{
+    static constexpr const char* frontend_name = "fastddsspy-tui";
+
+    if (executable_path != nullptr)
+    {
+        const std::string backend_path(executable_path);
+        const auto separator_position = backend_path.find_last_of("/\\");
+
+        if (separator_position != std::string::npos)
+        {
+            const std::string sibling_frontend =
+                    backend_path.substr(0, separator_position + 1) + frontend_name;
+
+            if (is_file_accessible(
+                        sibling_frontend.c_str(),
+                        eprosima::utils::FileAccessMode::exec))
+            {
+                return sibling_frontend;
+            }
+        }
+    }
+
+    return frontend_name;
+}
+
+int launch_textual_frontend(
+        int argc,
+        char** argv)
+{
+    std::vector<std::string> frontend_arguments;
+    frontend_arguments.reserve(static_cast<std::size_t>(argc) + 1);
+    frontend_arguments.push_back(resolve_textual_frontend_command(argc > 0 ? argv[0] : nullptr));
+
+    for (int i = 1; i < argc; ++i)
+    {
+        frontend_arguments.emplace_back(argv[i]);
+    }
+
+    std::vector<char*> exec_arguments;
+    exec_arguments.reserve(frontend_arguments.size() + 1);
+
+    for (auto& argument : frontend_arguments)
+    {
+        exec_arguments.push_back(const_cast<char*>(argument.c_str()));
+    }
+
+    exec_arguments.push_back(nullptr);
+
+#if defined(_WIN32)
+    const int result = _spawnvp(_P_WAIT, exec_arguments.front(), exec_arguments.data());
+    return result == -1 ? TUI_EXEC_FAILURE_EXIT_CODE : result;
+#else
+    const pid_t child_pid = fork();
+
+    if (child_pid == -1)
+    {
+        return TUI_EXEC_FAILURE_EXIT_CODE;
+    }
+
+    if (child_pid == 0)
+    {
+        execvp(exec_arguments.front(), exec_arguments.data());
+        _exit(TUI_EXEC_FAILURE_EXIT_CODE);
+    }
+
+    int child_status = 0;
+    if (waitpid(child_pid, &child_status, 0) == -1)
+    {
+        return TUI_EXEC_FAILURE_EXIT_CODE;
+    }
+
+    if (WIFEXITED(child_status))
+    {
+        return WEXITSTATUS(child_status);
+    }
+
+    if (WIFSIGNALED(child_status))
+    {
+        return 128 + WTERMSIG(child_status);
+    }
+
+    return TUI_EXEC_FAILURE_EXIT_CODE;
+#endif // if defined(_WIN32)
+}
+
+bool should_launch_textual_frontend(
+        const eprosima::spy::yaml::CommandlineArgsSpy& commandline_args)
+{
+    return commandline_args.one_shot_command.empty()
+           && !commandline_args.ui_bridge_jsonl
+           && interactive_terminal_session()
+           && !env_flag_enabled("FASTDDSSPY_PLAIN_CLI");
+}
+
+void warn_textual_frontend_fallback(
+        const int exit_code)
+{
+    std::cerr << "Unable to launch the Textual frontend";
+
+    if (exit_code == TUI_UNAVAILABLE_EXIT_CODE)
+    {
+        std::cerr << " because its Python dependencies are unavailable";
+    }
+    else
+    {
+        std::cerr << " because the launcher is unavailable";
+    }
+
+    std::cerr << ". Falling back to the plain CLI. Set FASTDDSSPY_PLAIN_CLI=1 to skip the TUI launcher."
+              << std::endl;
+}
+
+} // namespace
+
 int main(
         int argc,
         char** argv)
@@ -72,6 +258,17 @@ int main(
     else if (arg_parse_result != eprosima::spy::ProcessReturnCode::success)
     {
         return static_cast<int>(arg_parse_result);
+    }
+
+    if (should_launch_textual_frontend(commandline_args))
+    {
+        const int tui_exit_code = launch_textual_frontend(argc, argv);
+        if (tui_exit_code != TUI_UNAVAILABLE_EXIT_CODE && tui_exit_code != TUI_EXEC_FAILURE_EXIT_CODE)
+        {
+            return tui_exit_code;
+        }
+
+        warn_textual_frontend_fallback(tui_exit_code);
     }
 
     // Check file is in args, else get the default file
@@ -125,8 +322,16 @@ int main(
             // Stdout Log Consumer
             if (log_configuration.stdout_enable)
             {
-                eprosima::utils::Log::RegisterConsumer(
-                    std::make_unique<eprosima::utils::StdLogConsumer>(&log_configuration));
+                if (commandline_args.ui_bridge_jsonl)
+                {
+                    eprosima::utils::Log::RegisterConsumer(
+                        std::make_unique<StderrOnlyLogConsumer>(&log_configuration));
+                }
+                else
+                {
+                    eprosima::utils::Log::RegisterConsumer(
+                        std::make_unique<eprosima::utils::StdLogConsumer>(&log_configuration));
+                }
             }
 
             // DDS Log Consumer
@@ -148,7 +353,12 @@ int main(
         eprosima::ddspipe::participants::XmlHandler::load_xml(configuration.xml_configuration);
 
         // Create the Spy
-        eprosima::spy::Controller spy(configuration);
+        eprosima::spy::Controller spy(
+            configuration,
+            commandline_args.ui_bridge_jsonl
+                ? eprosima::spy::View::Mode::ui_bridge_jsonl
+                : eprosima::spy::View::Mode::plain
+        );
 
         // Update partitions filter from yaml
         spy.set_partition_filter(configuration.dds_configuration->allowed_partition_list);

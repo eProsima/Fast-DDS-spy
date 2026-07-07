@@ -112,6 +112,22 @@ installed in `<install-path>/fastddsspy_tool/bin/fastddsspy`:
 source <install-path>/setup.bash
 
 # Execute Fast DDS Spy
-fastddsspy_tool
-# Use <fastddsspy_tool --help> to see the tool manual
+fastddsspy
+# Use <fastddsspy --help> to see the tool manual
 ```
+
+### Textual frontend
+
+When `fastddsspy` runs in an interactive terminal, it now launches the Textual frontend by default.
+One-shot commands, `--help`, `--version`, bridge mode, and piped/non-interactive runs still use the backend CLI directly.
+
+The workspace also installs a Textual frontend named `fastddsspy-tui`. It launches
+`fastddsspy` in JSONL bridge mode and renders backend output and logs in a split TUI:
+
+```bash
+source <install-path>/setup.bash
+fastddsspy --config-path <path/to/config.yaml>
+```
+
+Use `fastddsspy` directly for one-shot commands such as `fastddsspy topics` or `fastddsspy --help`.
+Set `FASTDDSSPY_PLAIN_CLI=1` if you need the line-based fallback CLI instead of the Textual UI.
