@@ -234,6 +234,12 @@ class TestCase():
         ansi_escape = re.compile(r'\x1B\[[0-?]*[ -/]*[@-~]')
         no_ansi = ansi_escape.sub('', output)
 
+        # Fast DDS Pro prints a license banner on first participant creation.
+        # It is environment-dependent (only present in licensed builds, e.g. Windows CI),
+        # so strip it to keep the expected output platform independent.
+        no_ansi = re.sub(
+            r'^License valid for holder:.*\n?', '', no_ansi, flags=re.MULTILINE)
+
         # Find the last occurrence of '>>'
         last_prompt = no_ansi.rfind('>>')
         if last_prompt == -1:
