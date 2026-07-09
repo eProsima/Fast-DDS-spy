@@ -22,6 +22,7 @@ import os
 
 
 SLEEP_TIME = 0.2
+DDS_STARTUP_TIME = 1.0
 
 
 def safe_interrupt(p):
@@ -80,6 +81,11 @@ class TestCase():
                                     stdout=subprocess.PIPE,
                                     stderr=subprocess.PIPE)
 
+            # Give the publisher time to initialize its participant and writer
+            # before the spy starts discovery. Windows CI is noticeably slower
+            # than local runs, which makes the one-shot discovery tests flaky.
+            time.sleep(DDS_STARTUP_TIME)
+
             return proc
 
     def run_tool(self):
@@ -108,10 +114,18 @@ class TestCase():
             if self.arguments_spy[:2] == ['show', 'all']:
                 safe_interrupt(proc)
             try:
-                output = proc.communicate(timeout=10)[0]
+                output, error = proc.communicate(timeout=10)
             except subprocess.TimeoutExpired:
                 proc.kill()
-                output = ''
+                output, error = proc.communicate()
+                print('ERROR: Spy process timed out')
+                if error:
+                    print(error)
+                return None
+
+            if error:
+                print(error)
+
             if not self.valid_output(output):
                 return None
 
@@ -281,6 +295,12 @@ class TestCase():
         """
         clean_output = self.extract_cli_output(output)
         expected_output = self.output_command()
+
+        # Empty outputs can be represented as '' or '\n' depending on the
+        # platform/runtime. Treat both as equivalent to avoid CI-only flakes.
+        if not clean_output.strip() and not expected_output.strip():
+            return True
+
         if expected_output == clean_output:
             return True
 
@@ -289,6 +309,13 @@ class TestCase():
 
         # TODO (Raul): If guid and rate are on the same line this will not work.
         for i in range(len(lines_expected_output)):
+            if i >= len(lines_output):
+                print('Output: ')
+                print(clean_output)
+                print('Expected output: ')
+                print(expected_output)
+                return False
+
             if '%%guid%%' in lines_expected_output[i]:
                 start_guid_position = lines_expected_output[i].find('%%guid%%')
 
@@ -307,6 +334,13 @@ class TestCase():
                 print('Expected output: ')
                 print(expected_output)
                 return False
+
+        if len(lines_output) != len(lines_expected_output):
+            print('Output: ')
+            print(clean_output)
+            print('Expected output: ')
+            print(expected_output)
+            return False
 
         return True
 
