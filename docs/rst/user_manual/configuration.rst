@@ -110,7 +110,7 @@ Overriding profile QoS from the YAML configuration
 
 When a matching XML profile is applied, the QoS fields explicitly set by the user in the YAML
 configuration take precedence over the values in the XML profile.
-This behaviour is controlled by the ``endpoint-qos-mode`` participant tag, which accepts two values:
+This behavior is controlled by the ``endpoint-qos-mode`` participant tag, which accepts two values:
 
 * ``xml-overridable`` *(default)*: the XML profile is applied first, and any QoS field explicitly set in
   the YAML configuration overrides the corresponding value from the profile.
