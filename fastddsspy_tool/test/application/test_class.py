@@ -22,7 +22,7 @@ import os
 
 
 SLEEP_TIME = 0.2
-DDS_STARTUP_TIME = 1.0 if os.name == 'nt' else 0.2
+DDS_STARTUP_TIME = 2.0 if os.name == 'nt' else 0.2
 
 
 def safe_interrupt(p):
