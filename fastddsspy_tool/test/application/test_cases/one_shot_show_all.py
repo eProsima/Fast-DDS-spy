@@ -34,7 +34,7 @@ class TestCase_instance (test_class.TestCase):
             dds=False,
             config='',
             arguments_dds=[],
-            arguments_spy=['show', 'all', '\n'],
+            arguments_spy=['show', 'all'],
             commands_spy=[],
             output=''
         )

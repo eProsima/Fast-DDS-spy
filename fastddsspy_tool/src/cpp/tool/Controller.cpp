@@ -178,8 +178,10 @@ void Controller::run()
 void Controller::one_shot_run(
         const std::vector<std::string>& args)
 {
+    one_shot_mode_ = true;
     utils::sleep_for(configuration_.one_shot_wait_time_ms);
     run_command_(input_.parse_as_command(args));
+    one_shot_mode_ = false;
 }
 
 utils::ReturnCode Controller::reload_configuration(
@@ -714,9 +716,17 @@ void Controller::print_command_(
             callback);
     }
 
-    // Wait for other command to stop printing topics
+    // In interactive mode this stream stops on user input. In one-shot mode,
+    // keep it bounded so tests fail cleanly instead of hanging the runner.
     input_.stdin_handler().set_ignore_input(true);
-    input_.wait_something();
+    if (one_shot_mode_)
+    {
+        utils::sleep_for(configuration_.one_shot_wait_time_ms);
+    }
+    else
+    {
+        input_.wait_something();
+    }
     input_.stdin_handler().set_ignore_input(false);
     model_->deactivate();
 
@@ -1107,15 +1117,15 @@ void Controller::update_endpoints()
             // Iterate in the partition set
             while (i < n)
             {
-                    if (guid_partition_pair.second[i] == '|')
+                if (guid_partition_pair.second[i] == '|')
+                {
+                    for (const std::string& filter_p: partition_filter_set_)
                     {
-                        for (const std::string& filter_p: partition_filter_set_)
+                        if (partitions_match(filter_p, curr_partition))
                         {
-                            if (partitions_match(filter_p, curr_partition))
-                            {
-                                // The current partition matches with a partition
-                                // from the filter, the endpoint is active
-                                endpoint_active = true;
+                            // The current partition matches with a partition
+                            // from the filter, the endpoint is active
+                            endpoint_active = true;
                             break;
                         }
                     }
