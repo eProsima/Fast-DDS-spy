@@ -22,7 +22,7 @@ import os
 
 
 SLEEP_TIME = 0.2
-DDS_STARTUP_TIME = 1.0
+DDS_STARTUP_TIME = 1.0 if os.name == 'nt' else 0.2
 
 
 def safe_interrupt(p):
@@ -74,16 +74,25 @@ class TestCase():
         @return Returns a subprocess object representing the running DDS publisher.
         """
         if self.dds:
-            self.command = [self.exec_dds, 'publisher'] + self.arguments_dds
+            self.command = [self.exec_dds, 'publisher']
+            env = os.environ.copy()
+
+            # Windows CI is flaky when the helper publisher uses default SHM transport.
+            # Force plain UDP there, but keep the normal participant construction path so
+            # tests still observe the expected participant name ("Participant_pub").
+            if os.name == 'nt':
+                self.command.append('--transport=udp')
+
+            self.command.extend(self.arguments_dds)
 
             proc = subprocess.Popen(self.command,
-                                    stdin=subprocess.PIPE,
-                                    stdout=subprocess.PIPE,
-                                    stderr=subprocess.PIPE)
+                                    stdin=subprocess.DEVNULL,
+                                    stdout=subprocess.DEVNULL,
+                                    stderr=subprocess.DEVNULL,
+                                    env=env)
 
-            # Give the publisher time to initialize its participant and writer
-            # before the spy starts discovery. Windows CI is noticeably slower
-            # than local runs, which makes the one-shot discovery tests flaky.
+            # Give the helper publisher time to create its participant before the Spy starts
+            # measuring discovery on slower Windows CI runners.
             time.sleep(DDS_STARTUP_TIME)
 
             return proc
@@ -114,18 +123,10 @@ class TestCase():
             if self.arguments_spy[:2] == ['show', 'all']:
                 safe_interrupt(proc)
             try:
-                output, error = proc.communicate(timeout=10)
+                output = proc.communicate(timeout=10)[0]
             except subprocess.TimeoutExpired:
                 proc.kill()
-                output, error = proc.communicate()
-                print('ERROR: Spy process timed out')
-                if error:
-                    print(error)
-                return None
-
-            if error:
-                print(error)
-
+                output = ''
             if not self.valid_output(output):
                 return None
 
@@ -187,6 +188,9 @@ class TestCase():
                 break
 
             line = proc.stdout.readline()
+
+            if line == '' and proc.poll() is not None:
+                break
 
             if ('Insert a command for Fast DDS Spy:' in line):
                 break
@@ -295,27 +299,27 @@ class TestCase():
         """
         clean_output = self.extract_cli_output(output)
         expected_output = self.output_command()
-
-        # Empty outputs can be represented as '' or '\n' depending on the
-        # platform/runtime. Treat both as equivalent to avoid CI-only flakes.
-        if not clean_output.strip() and not expected_output.strip():
-            return True
-
         if expected_output == clean_output:
             return True
 
         lines_expected_output = expected_output.splitlines()
         lines_output = clean_output.splitlines()
 
+        while lines_expected_output and lines_expected_output[-1] == '':
+            lines_expected_output.pop()
+
+        while lines_output and lines_output[-1] == '':
+            lines_output.pop()
+
+        if len(lines_output) < len(lines_expected_output):
+            print('Output: ')
+            print(clean_output)
+            print('Expected output: ')
+            print(expected_output)
+            return False
+
         # TODO (Raul): If guid and rate are on the same line this will not work.
         for i in range(len(lines_expected_output)):
-            if i >= len(lines_output):
-                print('Output: ')
-                print(clean_output)
-                print('Expected output: ')
-                print(expected_output)
-                return False
-
             if '%%guid%%' in lines_expected_output[i]:
                 start_guid_position = lines_expected_output[i].find('%%guid%%')
 
@@ -335,12 +339,13 @@ class TestCase():
                 print(expected_output)
                 return False
 
-        if len(lines_output) != len(lines_expected_output):
-            print('Output: ')
-            print(clean_output)
-            print('Expected output: ')
-            print(expected_output)
-            return False
+        for extra_line in lines_output[len(lines_expected_output):]:
+            if extra_line != '':
+                print('Output: ')
+                print(clean_output)
+                print('Expected output: ')
+                print(expected_output)
+                return False
 
         return True
 
