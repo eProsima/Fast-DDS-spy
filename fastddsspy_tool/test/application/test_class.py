@@ -17,23 +17,11 @@
 import re
 import subprocess
 import time
-import signal
 import os
 
 
 SLEEP_TIME = 0.2
 DDS_STARTUP_TIME = 2.0 if os.name == 'nt' else 0.2
-
-
-def safe_interrupt(p):
-    if os.name == 'nt':
-        try:
-            # On Windows, use CTRL_C_EVENT to interrupt the process
-            os.kill(p.pid, signal.CTRL_C_EVENT)
-        except Exception:
-            p.terminate()
-    else:
-        p.send_signal(signal.SIGINT)
 
 
 class TestCase():
@@ -114,19 +102,23 @@ class TestCase():
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE,
                                 encoding='utf8',
+                                errors='replace',
                                 creationflags=creationflags)
 
         if self.one_shot:
-            sleep_time = 3 if self.arguments_spy[:2] == ['show', 'all'] else 1
+            is_show_all = self.arguments_spy[:2] == ['show', 'all']
+            sleep_time = 3 if is_show_all else 1
             time.sleep(sleep_time)
-            output = ''
-            if self.arguments_spy[:2] == ['show', 'all']:
-                safe_interrupt(proc)
+
             try:
                 output = proc.communicate(timeout=10)[0]
             except subprocess.TimeoutExpired:
                 proc.kill()
-                output = ''
+                proc.communicate()
+                print(f'ERROR: DDS Spy timed out running one-shot command: \
+                      {" ".join(self.arguments_spy)}')
+                return None
+
             if not self.valid_output(output):
                 return None
 
@@ -274,34 +266,15 @@ class TestCase():
 
         return result + '\n'
 
-    def valid_output(self, output) -> bool:
-        """
-        @brief Check the validity of the output against the expected output.
+    def print_output_mismatch(self, clean_output, expected_output):
+        """Print the actual and expected output for debugging."""
+        print('Output: ')
+        print(clean_output)
+        print('Expected output: ')
+        print(expected_output)
 
-        @param output: The actual output obtained from executing a command.
-        @return Returns True if the output matches the expected output or \
-        satisfies specific conditions for lines containing '%%guid%%' or '%%rate%%', \
-        False otherwise.
-
-        The function compares the provided 'output' with the expected output.
-        It checks each line of the 'output' and 'expected_output' to determine their validity.
-
-        If the entire 'output' matches the 'expected_output', the function returns True.
-        Otherwise, it iterates over each line and performs the following checks:
-        - If a line in 'expected_output' contains '%%guid%%', it calls the 'valid_guid()'.
-        - If a line in 'expected_output' contains '%%rate%%', it calls the 'valid_rate()'.
-        - If a line does not contain '%%guid%%' or '%%rate%%', it compares the corresponding \
-            lines in 'output' and 'expected_output' for equality.
-
-        If any line does not meet the expected conditions, the function returns False and prints \
-        the 'output' and 'expected_output' for debugging purposes.
-
-        """
-        clean_output = self.extract_cli_output(output)
-        expected_output = self.output_command()
-        if expected_output == clean_output:
-            return True
-
+    def normalized_output_lines(self, clean_output, expected_output):
+        """Return output lines without trailing empty entries."""
         lines_expected_output = expected_output.splitlines()
         lines_output = clean_output.splitlines()
 
@@ -311,43 +284,75 @@ class TestCase():
         while lines_output and lines_output[-1] == '':
             lines_output.pop()
 
-        if len(lines_output) < len(lines_expected_output):
-            print('Output: ')
-            print(clean_output)
-            print('Expected output: ')
-            print(expected_output)
+        return lines_expected_output, lines_output
+
+    def valid_placeholder_line(self, expected_line, output_line) -> bool:
+        """Validate lines containing dynamic placeholders."""
+        # TODO (Raul): If guid and rate are on the same line this will not work.
+        if '%%guid%%' in expected_line:
+            start_guid_position = expected_line.find('%%guid%%')
+            return self.valid_guid(output_line[start_guid_position:])
+
+        if '%%rate%%' in expected_line:
+            start_rate_position = expected_line.find('%%rate%%')
+            return self.valid_rate(output_line[start_rate_position:])
+
+        return expected_line == output_line
+
+    def valid_expected_lines(self, lines_expected_output, lines_output,
+                             clean_output, expected_output) -> bool:
+        """Validate all expected lines against the actual output."""
+        for expected_line, output_line in zip(lines_expected_output, lines_output):
+            if self.valid_placeholder_line(expected_line, output_line):
+                continue
+
+            self.print_output_mismatch(clean_output, expected_output)
             return False
 
-        # TODO (Raul): If guid and rate are on the same line this will not work.
-        for i in range(len(lines_expected_output)):
-            if '%%guid%%' in lines_expected_output[i]:
-                start_guid_position = lines_expected_output[i].find('%%guid%%')
+        return True
 
-                if not self.valid_guid(lines_output[i][start_guid_position:]):
-                    return False
+    def valid_extra_output_lines(self, lines_output, expected_lines_count,
+                                 clean_output, expected_output) -> bool:
+        """Check that any extra output only contains empty lines."""
+        for extra_line in lines_output[expected_lines_count:]:
+            if extra_line == '':
+                continue
 
-            elif '%%rate%%' in lines_expected_output[i]:
-                start_rate_position = lines_expected_output[i].find('%%rate%%')
-
-                if not self.valid_rate(lines_output[i][start_rate_position:]):
-                    return False
-
-            elif lines_expected_output[i] != lines_output[i]:
-                print('Output: ')
-                print(clean_output)
-                print('Expected output: ')
-                print(expected_output)
-                return False
-
-        for extra_line in lines_output[len(lines_expected_output):]:
-            if extra_line != '':
-                print('Output: ')
-                print(clean_output)
-                print('Expected output: ')
-                print(expected_output)
-                return False
+            self.print_output_mismatch(clean_output, expected_output)
+            return False
 
         return True
+
+    def valid_output(self, output) -> bool:
+        """
+        @brief Check the validity of the output against the expected output.
+
+        @param output: The actual output obtained from executing a command.
+        @return Returns True if the output matches the expected output or \
+        satisfies specific conditions for lines containing '%%guid%%' or '%%rate%%', \
+        False otherwise.
+        """
+        clean_output = self.extract_cli_output(output)
+        expected_output = self.output_command()
+        if expected_output == clean_output:
+            return True
+
+        lines_expected_output, lines_output = self.normalized_output_lines(
+            clean_output, expected_output)
+
+        if len(lines_output) < len(lines_expected_output):
+            self.print_output_mismatch(clean_output, expected_output)
+            return False
+
+        if not self.valid_expected_lines(lines_expected_output, lines_output,
+                                         clean_output, expected_output):
+            return False
+
+        return self.valid_extra_output_lines(
+            lines_output,
+            len(lines_expected_output),
+            clean_output,
+            expected_output)
 
     def stop_tool(self, proc) -> bool:
         """

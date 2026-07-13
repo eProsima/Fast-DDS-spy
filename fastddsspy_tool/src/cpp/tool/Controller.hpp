@@ -164,6 +164,7 @@ private:
     std::map<std::string, std::string> topic_filter_dict_;
 
     std::set<std::string> allowed_filters_categories_;
+    bool one_shot_mode_ = false;
 
 };
 
