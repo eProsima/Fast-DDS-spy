@@ -1,3 +1,4 @@
 specs:
 
   rtps: true
+  discovery-time: 2000

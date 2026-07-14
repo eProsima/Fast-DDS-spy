@@ -81,7 +81,7 @@ public:
 
     // Specs
     unsigned int n_threads = 12;
-    utils::Duration_ms one_shot_wait_time_ms = 1000;
+    utils::Duration_ms one_shot_wait_time_ms = 2000;
     ddspipe::core::types::TopicQoS topic_qos{};
 
 protected:

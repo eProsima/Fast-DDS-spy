@@ -22,6 +22,7 @@ import os
 
 SLEEP_TIME = 0.2
 DDS_STARTUP_TIME = 2.0 if os.name == 'nt' else 0.2
+INTERACTIVE_SETTLE_TIME = 3.0 if os.name == 'nt' else 1.0
 
 
 class TestCase():
@@ -123,7 +124,7 @@ class TestCase():
                 return None
 
         else:
-            time.sleep(1)
+            time.sleep(INTERACTIVE_SETTLE_TIME)
             self.read_command_output(proc)
         return proc
 
