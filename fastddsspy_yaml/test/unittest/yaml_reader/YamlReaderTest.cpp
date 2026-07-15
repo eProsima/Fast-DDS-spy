@@ -28,7 +28,6 @@ TEST(YamlReaderTest, get_spy_configuration_trivial)
 {
     const char* yml_str =
             R"(
-            version: v4.0
             dds:
                 ros2-types: true
                 ros2-easy-mode: '127.0.0.1'

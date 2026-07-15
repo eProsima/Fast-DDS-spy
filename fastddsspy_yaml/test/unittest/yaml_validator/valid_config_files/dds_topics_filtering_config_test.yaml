@@ -1,0 +1,33 @@
+dds:
+  domain: 3
+
+  transport: udp
+
+  ignore-participant-flags: filter_different_host
+
+  whitelist-interfaces:
+    - "192.168.1.1"
+    - "127.0.0.1"
+
+  allowlist:
+    - name: "*"
+
+  blocklist:
+    - name: "topic_to_block"
+      type: "type_to_block"
+
+  topics:
+    - name: "temperature/*"
+      type: "temperature/types/*"
+      qos:
+        max-rx-rate: 15
+        downsampling: 2
+    - name: "image_topic"
+      type: "sensor_msgs::msg::dds_::Image_"
+      filter: "1"
+
+specs:
+  threads: 6
+
+  qos:
+    history-depth: 100

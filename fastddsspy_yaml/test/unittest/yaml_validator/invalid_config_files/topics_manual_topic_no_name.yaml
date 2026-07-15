@@ -1,0 +1,8 @@
+dds:
+  domain: 0
+
+  topics:
+    - type: "HelloWorld"
+
+specs:
+  threads: 4

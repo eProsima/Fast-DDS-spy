@@ -1,0 +1,6 @@
+dds:
+  domain: 0
+  transport: "tcp"
+
+specs:
+  threads: 4

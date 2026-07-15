@@ -1,0 +1,7 @@
+dds:
+  domain: 0
+
+  xml: {}
+
+specs:
+  threads: 4
