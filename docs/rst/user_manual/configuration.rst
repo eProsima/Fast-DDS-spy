@@ -214,7 +214,7 @@ If a ``qos`` is not manually configured, it will get its value by discovery.
       - name: "temperature/*"
         type: "temperature/types/*"
         qos:
-          max-tx-rate: 15
+          max-rx-rate: 15
           downsampling: 2
 
 .. note::

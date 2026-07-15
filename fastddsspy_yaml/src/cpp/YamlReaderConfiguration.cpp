@@ -26,10 +26,11 @@
 #include <ddspipe_yaml/Yaml.hpp>
 #include <ddspipe_yaml/YamlManager.hpp>
 #include <ddspipe_yaml/YamlReader.hpp>
+#include <ddspipe_yaml/YamlValidator.hpp>
 
 #include <fastddsspy_yaml/yaml_configuration_tags.hpp>
-
 #include <fastddsspy_yaml/YamlReaderConfiguration.hpp>
+#include <fastddsspy_yaml/DdsSpyConfigSchema.hpp>
 
 namespace eprosima {
 namespace spy {
@@ -75,6 +76,16 @@ void Configuration::load_configuration_(
         const Yaml& yml,
         const CommandlineArgsSpy* args)
 {
+    // Ensure the Yaml is valid
+    YamlValidator validator = YamlValidator(
+        YamlValidator::InputType::FROM_STRING,
+        FASTDDSSPY_CONFIG_SCHEMA);
+    if (!validator.validate_YAML(yml))
+    {
+        throw eprosima::utils::ConfigurationException(
+                  utils::Formatter() << "Error, the provided yaml file is not a valid dds-spy configuration.\n");
+    }
+
     try
     {
         YamlReaderVersion version = LATEST;
