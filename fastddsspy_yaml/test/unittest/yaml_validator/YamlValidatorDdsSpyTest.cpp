@@ -65,7 +65,7 @@ std::vector<std::string> invalid_files = []()
 /**
  * Test directly that a set of valid YAML configurations pass the validation
  */
-TEST(YamlValidatorDdsSpyTest, direct_validation_passed)
+TEST(YamlValidatorDdsSpyTest, spy_direct_validation_passed)
 {
     YamlValidator validator = YamlValidator(YamlValidator::InputType::FROM_FILE, test::schema_path);
 
@@ -74,7 +74,7 @@ TEST(YamlValidatorDdsSpyTest, direct_validation_passed)
         for (std::string st : test::valid_files)
         {
             Yaml yml = YamlManager::load_file(st);
-            ASSERT_TRUE(validator.validate_YAML(yml)) << "Failed for file: " << st;
+            EXPECT_TRUE(validator.validate_YAML(yml)) << "Failed for file: " << st;
         }
     }
 }
@@ -82,7 +82,7 @@ TEST(YamlValidatorDdsSpyTest, direct_validation_passed)
 /**
  * Test directly that a set of invalid YAML configurations don't pass the validation
  */
-TEST(YamlValidatorDdsSpyTest, direct_validation_failed)
+TEST(YamlValidatorDdsSpyTest, spy_direct_validation_failed)
 {
     YamlValidator validator = YamlValidator(YamlValidator::InputType::FROM_FILE, test::schema_path);
 
@@ -92,7 +92,7 @@ TEST(YamlValidatorDdsSpyTest, direct_validation_failed)
         {
             Yaml yml = YamlManager::load_file(st);
             // Validate is called with false to prevent filling the output with the specific errors
-            ASSERT_FALSE(validator.validate_YAML(yml, false)) << "Failed for file: " << st;
+            EXPECT_FALSE(validator.validate_YAML(yml, false)) << "Failed for file: " << st;
         }
     }
 }
@@ -100,13 +100,13 @@ TEST(YamlValidatorDdsSpyTest, direct_validation_failed)
 /**
  * Test using the YamlReader that a set of valid YAML configurations pass the validation
  */
-TEST(YamlValidatorDdsSpyTest, reader_validation_passed)
+TEST(YamlValidatorDdsSpyTest, spy_reader_validation_passed)
 {
     // valid files
     {
         for (std::string st : test::valid_files)
         {
-            ASSERT_NO_THROW(Configuration config = Configuration(st); )
+            EXPECT_NO_THROW(Configuration config = Configuration(st); )
                 << "Failed for file: " << st;
         }
     }
@@ -115,7 +115,7 @@ TEST(YamlValidatorDdsSpyTest, reader_validation_passed)
 /**
  * Test using the YamlReader that a set of invalid YAML configurations don't pass the validation
  */
-TEST(YamlValidatorDdsSpyTest, reader_validation_failed)
+TEST(YamlValidatorDdsSpyTest, spy_reader_validation_failed)
 {
     // invalid files
     {
@@ -128,7 +128,7 @@ TEST(YamlValidatorDdsSpyTest, reader_validation_failed)
             }
             catch (const eprosima::utils::ConfigurationException& e)
             {
-                EXPECT_NE(std::string(e.what()).find("is not a valid ddsrecorder configuration"), std::string::npos)
+                EXPECT_NE(std::string(e.what()).find("is not a valid dds-spy configuration"), std::string::npos)
                     << "Failed for file\n'" << st << "'\nActual message: " << e.what();
             }
             catch (const std::exception& e)
