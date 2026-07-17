@@ -116,7 +116,7 @@
             "properties":{
                 "threads":{
                     "type":"integer",
-                    "minimum":0
+                    "minimum":1
                 },
                 "qos":{
                     "$ref":"#/definitions/QOSSpy"

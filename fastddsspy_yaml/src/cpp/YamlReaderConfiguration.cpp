@@ -349,11 +349,6 @@ bool Configuration::is_valid(
         return false;
     }
 
-    if (n_threads < 1)
-    {
-        error_msg << "Must be at least 1 thread. ";
-        return false;
-    }
     return true;
 }
 

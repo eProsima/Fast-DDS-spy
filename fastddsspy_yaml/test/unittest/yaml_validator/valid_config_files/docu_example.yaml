@@ -1,0 +1,62 @@
+dds:
+
+  xml:
+    files:
+        - "./xml_configuration.xml"
+
+    raw: |
+        <?xml version="1.0" encoding="UTF-8" ?>
+        <profiles xmlns="http://www.eprosima.com">
+            <participant profile_name="participant_profile">
+                <domainId>1</domainId>
+                <rtps></rtps>
+            </participant>
+        </profiles>
+
+  dds-profile: "participant_profile"
+
+  domain: 0
+
+  allowlist:
+    - name: "topic_name"
+      type: "topic_type"
+
+  blocklist:
+    - name: "topic_name"
+      type: "topic_type"
+
+  topics:
+    - name: "temperature/*"
+      type: "temperature/types/*"
+      qos:
+        max-rx-rate: 5
+        downsampling: 1
+
+  ignore-participant-flags: no_filter
+  transport: builtin
+  ros2-easy-mode: "2.2.2.2"
+  whitelist-interfaces:
+    - "127.0.0.1"
+
+  ros2-types: false
+
+specs:
+  threads: 12
+  discovery-time: 1000
+
+  qos:
+    history-depth: 5000
+    max-rx-rate: 10
+    downsampling: 2
+
+  logging:
+    verbosity: warning
+    filter:
+      error: ""
+      warning: "FASTDDSSPY"
+      info: "FASTDDSSPY"
+    publish:
+      enable: true
+      domain: 0
+      topic-name: "FastDdsSpyLogs"
+    stdout: true
