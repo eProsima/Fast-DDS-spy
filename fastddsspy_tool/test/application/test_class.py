@@ -29,7 +29,8 @@ class TestCase():
     """Test class."""
 
     def __init__(self, name, one_shot, command, dds, config,
-                 arguments_dds, arguments_spy, commands_spy, output):
+                 arguments_dds, arguments_spy, commands_spy, output,
+                 required_substrings=None):
         """
         @brief Initialize the object.
 
@@ -52,6 +53,7 @@ class TestCase():
         self.arguments_spy = arguments_spy
         self.commands_spy = commands_spy
         self.output = output
+        self.required_substrings = required_substrings or []
         self.exec_spy = ''
         self.exec_dds = ''
 
@@ -274,6 +276,18 @@ class TestCase():
         print('Expected output: ')
         print(expected_output)
 
+    def valid_required_substrings(self, clean_output) -> bool:
+        """Validate that the output contains all required substrings."""
+        for substring in self.required_substrings:
+            if substring not in clean_output:
+                print('Output: ')
+                print(clean_output)
+                print('Missing substring: ')
+                print(substring)
+                return False
+
+        return True
+
     def normalized_output_lines(self, clean_output, expected_output):
         """Return output lines without trailing empty entries."""
         lines_expected_output = expected_output.splitlines()
@@ -337,6 +351,9 @@ class TestCase():
         expected_output = self.output_command()
         if expected_output == clean_output:
             return True
+
+        if self.required_substrings:
+            return self.valid_required_substrings(clean_output)
 
         lines_expected_output, lines_output = self.normalized_output_lines(
             clean_output, expected_output)
