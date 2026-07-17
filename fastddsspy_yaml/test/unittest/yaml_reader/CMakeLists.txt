@@ -57,6 +57,8 @@ set(TEST_SOURCES
 
 set(TEST_LIST
         get_ddsspy_configuration_yaml_vs_commandline
+        get_ddsspy_configuration_domain_override_from_commandline
+        get_ddsspy_configuration_dds_only_no_specs
     )
 
 set(TEST_EXTRA_LIBRARIES

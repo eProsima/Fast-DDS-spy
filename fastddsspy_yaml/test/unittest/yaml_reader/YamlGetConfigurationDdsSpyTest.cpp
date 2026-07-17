@@ -67,6 +67,49 @@ TEST(YamlGetConfigurationDdsSpyTest, get_ddsspy_configuration_yaml_vs_commandlin
         "FASTDDSSPY");
 }
 
+/**
+ * Check that a domain ID set through the Command-Line overrides the one set through the YAML.
+ */
+TEST(YamlGetConfigurationDdsSpyTest, get_ddsspy_configuration_domain_override_from_commandline)
+{
+    spy::yaml::CommandlineArgsSpy commandline_args;
+    commandline_args.domain.set_value(12);
+
+    const char* yml_str =
+            R"(
+            dds:
+              domain: 5
+        )";
+
+    Yaml yml = YAML::Load(yml_str);
+
+    // Load configuration from YAML
+    spy::yaml::Configuration configuration(yml, &commandline_args);
+
+    // Command-line domain must win over the yaml-specified one
+    ASSERT_EQ(configuration.dds_configuration->domain.domain_id, 12);
+}
+
+/**
+ * Check that a Configuration can be built from a "dds:" section alone,
+ * with no "specs:" section at all.
+ */
+TEST(YamlGetConfigurationDdsSpyTest, get_ddsspy_configuration_dds_only_no_specs)
+{
+    const char* yml_str =
+            R"(
+            dds:
+                domain: 3
+        )";
+
+    Yaml yml = YAML::Load(yml_str);
+
+    spy::yaml::Configuration configuration(yml);
+
+    ASSERT_EQ(configuration.dds_configuration->domain.domain_id, 3);
+    ASSERT_EQ(configuration.n_threads, 12u); // untouched default, since specs was never read
+}
+
 int main(
         int argc,
         char** argv)
