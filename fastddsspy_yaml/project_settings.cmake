@@ -41,4 +41,4 @@ set(MODULE_THIRDPARTY_HEADERONLY
     nlohmann-json)
 
 set(MODULE_CPP_VERSION
-    C++17)
+    C++14)

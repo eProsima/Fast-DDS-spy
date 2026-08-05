@@ -77,9 +77,8 @@ void Configuration::load_configuration_(
         const CommandlineArgsSpy* args)
 {
     // Ensure the Yaml is valid
-    YamlValidator validator = YamlValidator(
-        YamlValidator::InputType::FROM_STRING,
-        FASTDDSSPY_CONFIG_SCHEMA);
+    YamlValidator validator;
+    validator.set_schema(YamlValidator::InputType::FROM_STRING, FASTDDSSPY_CONFIG_SCHEMA);
     if (!validator.validate_YAML(yml))
     {
         throw eprosima::utils::ConfigurationException(

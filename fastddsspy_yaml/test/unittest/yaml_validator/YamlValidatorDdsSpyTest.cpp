@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <filesystem>
 #include <fstream>
 #include <iostream>
 
@@ -35,30 +34,29 @@ namespace test {
 std::string schema_path = "./fastddsspy_config_schema.json";
 
 // Vectors with the valid and invalid YAML files for the recorder
-std::vector<std::string> valid_files = []()
-        {
-            std::vector<std::string> files;
-            for (const auto& entry : std::filesystem::directory_iterator("./valid_config_files/"))
-            {
-                if (entry.path().extension() == ".yaml")
-                {
-                    files.push_back(entry.path().generic_string());
-                }
-            }
-            return files;
-        }();
-std::vector<std::string> invalid_files = []()
-        {
-            std::vector<std::string> files;
-            for (const auto& entry : std::filesystem::directory_iterator("./invalid_config_files/"))
-            {
-                if (entry.path().extension() == ".yaml")
-                {
-                    files.push_back(entry.path().generic_string());
-                }
-            }
-            return files;
-        }();
+std::vector<std::string> valid_files = {
+    "./valid_config_files/complete_config_test.yaml",
+    "./valid_config_files/dds_topics_filtering_config_test.yaml",
+    "./valid_config_files/docu_example.yaml",
+    "./valid_config_files/logging_config_test.yaml",
+    "./valid_config_files/manual_topic_config_test.yaml",
+    "./valid_config_files/minimal_config_test.yaml",
+    // Config files under Fast-DDS-spy/resources
+    "./valid_config_files/fastddsspy_configuration.yaml",
+};
+std::vector<std::string> invalid_files = {
+    "./invalid_config_files/allowlist_topic_no_name.yaml",
+    "./invalid_config_files/invalid_domain.yaml",
+    "./invalid_config_files/invalid_ignore_participant_flags.yaml",
+    "./invalid_config_files/invalid_qos_downsampling.yaml",
+    "./invalid_config_files/invalid_threads.yaml",
+    "./invalid_config_files/invalid_transport.yaml",
+    "./invalid_config_files/invalid_verbosity.yaml",
+    "./invalid_config_files/log_publish_no_enable.yaml",
+    "./invalid_config_files/topics_manual_topic_no_name.yaml",
+    "./invalid_config_files/unknown_property.yaml",
+    "./invalid_config_files/xml_no_raw_nor_files.yaml",
+};
 
 } // namespace test
 
@@ -67,7 +65,8 @@ std::vector<std::string> invalid_files = []()
  */
 TEST(YamlValidatorDdsSpyTest, spy_direct_validation_passed)
 {
-    YamlValidator validator = YamlValidator(YamlValidator::InputType::FROM_FILE, test::schema_path);
+    YamlValidator validator;
+    validator.set_schema(YamlValidator::InputType::FROM_FILE, test::schema_path);
 
     // valid files
     {
@@ -84,7 +83,8 @@ TEST(YamlValidatorDdsSpyTest, spy_direct_validation_passed)
  */
 TEST(YamlValidatorDdsSpyTest, spy_direct_validation_failed)
 {
-    YamlValidator validator = YamlValidator(YamlValidator::InputType::FROM_FILE, test::schema_path);
+    YamlValidator validator;
+    validator.set_schema(YamlValidator::InputType::FROM_FILE, test::schema_path);
 
     // invalid files
     {
