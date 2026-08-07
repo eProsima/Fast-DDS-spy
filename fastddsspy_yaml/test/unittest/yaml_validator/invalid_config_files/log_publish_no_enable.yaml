@@ -1,0 +1,9 @@
+dds:
+  domain: 0
+
+specs:
+  threads: 4
+
+  logging:
+    publish:
+      domain: 0

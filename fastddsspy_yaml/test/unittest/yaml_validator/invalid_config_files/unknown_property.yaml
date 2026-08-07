@@ -1,0 +1,7 @@
+dds:
+  domain: 0
+
+specs:
+  threads: 4
+
+unknown-top-level-field: "not_allowed"

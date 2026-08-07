@@ -1,0 +1,6 @@
+dds:
+  domain: 0
+  ignore-participant-flags: "unknown_flag"
+
+specs:
+  threads: 4

@@ -1,0 +1,69 @@
+dds:
+  domain: 7
+
+  xml:
+    files:
+      - "my_xml_profile.xml"
+
+  dds-profile: "spy_profile_name"
+
+  whitelist-interfaces:
+    - "127.0.0.1"
+
+  partitions:
+    - "partition_1"
+
+  transport: shm
+
+  ros2-easy-mode: "127.0.0.1"
+
+  ignore-participant-flags: filter_same_process
+
+  allowlist:
+    - name: "*"
+
+  blocklist:
+    - name: "topic_to_block"
+      type: "type_to_block"
+
+  topics:
+    - name: "temperature/*"
+      type: "temperature/types/*"
+      filter: "value > 10"
+      participants:
+        - "participant_1"
+        - "participant_2"
+      qos:
+        durability: true
+        reliability: true
+        ownership: false
+        partitions: true
+        history-depth: 10
+        keyed: false
+        max-rx-rate: 20
+        downsampling: 2
+        endpoint-profile-name: "custom_endpoint_profile"
+
+  ros2-types: false
+
+specs:
+  threads: 8
+
+  discovery-time: 2000
+
+  rtps: true
+
+  qos:
+    history-depth: 5000
+
+  logging:
+    publish:
+      enable: true
+      domain: 5
+      topic-name: "/fastddsspy/log"
+    stdout: true
+    verbosity: info
+    filter:
+      info: "FASTDDSSPY"
+      warning: "FASTDDSSPY"
+      error: "FASTDDSSPY"

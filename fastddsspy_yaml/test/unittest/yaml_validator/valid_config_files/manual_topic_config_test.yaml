@@ -1,0 +1,17 @@
+dds:
+  domain: 5
+
+  topics:
+    - name: "sensor_data"
+      type: "sensor_data::types::Temperature"
+      filter: "1"
+      participants:
+        - "participant_1"
+        - "participant_2"
+      qos:
+        durability: true
+        reliability: true
+        history-depth: 10
+
+specs:
+  threads: 4

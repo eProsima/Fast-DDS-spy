@@ -24,7 +24,12 @@ set(TEST_SOURCES
     )
 
 set(TEST_LIST
+        raise_exception_reading_non_existing_configuration
+        parse_parameter_overflow_triggers_exception
         get_spy_configuration_trivial
+        duplicate_manual_topic_name_overwrites_filter
+        is_valid_fails_when_dds_configuration_null
+        is_valid_fails_when_domain_out_of_range
     )
 
 set(TEST_EXTRA_LIBRARIES
@@ -52,6 +57,8 @@ set(TEST_SOURCES
 
 set(TEST_LIST
         get_ddsspy_configuration_yaml_vs_commandline
+        get_ddsspy_configuration_domain_override_from_commandline
+        get_ddsspy_configuration_dds_only_no_specs
     )
 
 set(TEST_EXTRA_LIBRARIES

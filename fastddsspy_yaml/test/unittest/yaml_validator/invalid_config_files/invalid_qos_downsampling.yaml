@@ -1,0 +1,10 @@
+dds:
+  domain: 0
+
+  topics:
+    - name: "topic_a"
+      qos:
+        downsampling: 0
+
+specs:
+  threads: 4
