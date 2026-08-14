@@ -12,7 +12,7 @@ This release includes the following **features**:
 
 This release includes the following **bugfixes**:
 
-* Fix macOS build issues in YAML parsing and CLI arguments
+* Fix ``macOS`` build issues in YAML parsing and CLI arguments
 * Unify filter command aliases and fix ``reader`` typo in help command output
 
 This release includes the following **Dependencies Update**:
