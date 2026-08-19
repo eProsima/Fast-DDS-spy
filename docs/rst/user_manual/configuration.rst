@@ -61,6 +61,68 @@ The XML content must follow the same format as an XML file and will be loaded as
     dds-profile: "participant_profile"
 
 
+.. _user_manual_configuration_xml_endpoint_profiles:
+
+Endpoint profiles
+^^^^^^^^^^^^^^^^^
+
+When the |spy| creates a :term:`DataReader` for a topic, it looks for a loaded XML ``data_reader``
+profile to configure that endpoint.
+By default, the |spy| looks for a profile **whose name matches the topic name**.
+If a matching profile is found, the endpoint is configured using that profile's QoS, giving the user
+control over fields such as history, memory policy, transport, etc.
+If no matching profile exists, the endpoint falls back to default QoS with values derived from the YAML configuration.
+
+.. note::
+
+    Certain QoS are always enforced by the *Fast DDS Spy* regardless of the XML profile:
+    ``expects_inline_qos`` on DataReaders for keyed topics.
+
+The following example loads a profile named ``my_topic`` that will be automatically applied when creating
+endpoints for a topic of that name:
+
+.. code-block:: xml
+
+    <dds>
+        <profiles>
+            <data_reader profile_name="my_topic">
+                <historyMemoryPolicy>DYNAMIC</historyMemoryPolicy>
+            </data_reader>
+        </profiles>
+    </dds>
+
+Selecting a profile explicitly
+""""""""""""""""""""""""""""""
+
+Instead of relying on the topic name, a specific profile can be selected for a topic with the
+``endpoint-profile-name`` tag under that topic's QoS configuration.
+When set, the |spy| looks up the XML profile with that name instead of the topic name:
+
+.. code-block:: yaml
+
+    topics:
+      - name: "rt/chatter"
+        qos:
+          endpoint-profile-name: "my_reader_profile"
+
+Overriding profile QoS from the YAML configuration
+"""""""""""""""""""""""""""""""""""""""""""""""""""
+
+When a matching XML profile is applied, the QoS fields explicitly set by the user in the YAML
+configuration take precedence over the values in the XML profile.
+This behavior is controlled by the ``endpoint-qos-mode`` participant tag, which accepts two values:
+
+* ``xml-overridable`` *(default)*: the XML profile is applied first, and any QoS field explicitly set in
+  the YAML configuration overrides the corresponding value from the profile.
+* ``xml-standalone``: the XML profile is applied verbatim; YAML QoS does not override it.
+
+.. warning::
+
+    The ``endpoint-qos-mode`` tag is **not yet parsed by the** *Fast DDS Spy*: it currently behaves as if
+    always set to the default ``xml-overridable``. Setting ``xml-standalone`` in a |spy| configuration has
+    no effect.
+
+
 .. _user_manual_configuration_dds__topic_filtering:
 
 Topic Filtering
