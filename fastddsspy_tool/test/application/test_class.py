@@ -67,9 +67,12 @@ class TestCase():
             env = os.environ.copy()
 
             # Windows CI is flaky when the helper publisher uses default SHM transport.
-            # Force plain UDP there, but keep the normal participant construction path so
-            # tests still observe the expected participant name ("Participant_pub").
-            if os.name == 'nt':
+            # Force plain UDP there, but preserve an explicitly requested transport so
+            # transport-specific tests can exercise SHM on Windows.
+            has_explicit_transport = any(
+                argument == '--transport' or argument.startswith('--transport=')
+                for argument in self.arguments_dds)
+            if os.name == 'nt' and not has_explicit_transport:
                 self.command.append('--transport=udp')
 
             self.command.extend(self.arguments_dds)
@@ -245,12 +248,6 @@ class TestCase():
         ansi_escape = re.compile(r'\x1B\[[0-?]*[ -/]*[@-~]')
         no_ansi = ansi_escape.sub('', output)
 
-        # Fast DDS Pro prints a license banner on first participant creation.
-        # It is environment-dependent (only present in licensed builds, e.g. Windows CI),
-        # so strip it to keep the expected output platform independent.
-        no_ansi = re.sub(
-            r'^License valid for holder:.*\n?', '', no_ansi, flags=re.MULTILINE)
-
         # Find the last occurrence of '>>'
         last_prompt = no_ansi.rfind('>>')
         if last_prompt == -1:
@@ -289,7 +286,6 @@ class TestCase():
 
     def valid_placeholder_line(self, expected_line, output_line) -> bool:
         """Validate lines containing dynamic placeholders."""
-        # TODO (Raul): If guid and rate are on the same line this will not work.
         if '%%guid%%' in expected_line:
             start_guid_position = expected_line.find('%%guid%%')
             return self.valid_guid(output_line[start_guid_position:])

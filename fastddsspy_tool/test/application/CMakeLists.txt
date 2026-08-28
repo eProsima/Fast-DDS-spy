@@ -115,6 +115,7 @@ set(TEST_NEEDED_SOURCES
         configuration/configuration_wrong_empty_arg.yaml
         configuration/configuration_wrong_type.yaml
         configuration/configuration_discovery_time.yaml
+        configuration/configuration_discovery_time_shm.yaml
         configuration/configuration_with_filter_rtps.yaml
     )
 
@@ -126,6 +127,10 @@ endforeach()
 
 # populate the tests
 foreach(TEST IN LISTS TEST_FILENAMES)
+    if(NOT WIN32 AND "${TEST}" STREQUAL "one_shot_participants_dds_shm")
+        continue()
+    endif()
+
     set(TEST_NAME "tool.application.fastddsspy.test.test_cases.${TEST}")
 
     if(WIN32)

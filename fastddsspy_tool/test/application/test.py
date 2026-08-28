@@ -164,7 +164,7 @@ def isolated_test_domain() -> str:
     Pick a non-default domain for this test process to avoid cross-test discovery
     residue and ambient DDS traffic on shared runners.
     """
-    return str(30 + ((os.getpid() ^ time.time_ns()) % 170))
+    return str(30 + ((os.getpid() ^ time.time_ns()) % 200))
 
 
 def build_test_case(args):
