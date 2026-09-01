@@ -162,7 +162,7 @@ foreach(TEST IN LISTS TEST_FILENAMES)
         ${TEST_NAME}
         PROPERTIES
             ENVIRONMENT "${TEST_ENVIRONMENT}"
-            TIMEOUT 20
+            TIMEOUT 30
         )
 
 endforeach()

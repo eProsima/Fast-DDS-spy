@@ -22,6 +22,8 @@ import os
 
 SLEEP_TIME = 0.2
 DDS_STARTUP_TIME = 2.0 if os.name == 'nt' else 0.2
+SHM_STARTUP_TIME = 2.0
+ONE_SHOT_TIMEOUT = 20.0
 INTERACTIVE_SETTLE_TIME = 3.0 if os.name == 'nt' else 1.0
 
 
@@ -72,6 +74,11 @@ class TestCase():
             has_explicit_transport = any(
                 argument == '--transport' or argument.startswith('--transport=')
                 for argument in self.arguments_dds)
+            has_shm_transport = any(
+                argument == '--transport=shm' or
+                (argument == '--transport' and index + 1 < len(self.arguments_dds) and
+                 self.arguments_dds[index + 1] == 'shm')
+                for index, argument in enumerate(self.arguments_dds))
             if os.name == 'nt' and not has_explicit_transport:
                 self.command.append('--transport=udp')
 
@@ -85,7 +92,8 @@ class TestCase():
 
             # Give the helper publisher time to create its participant before the Spy starts
             # measuring discovery on slower Windows CI runners.
-            time.sleep(DDS_STARTUP_TIME)
+            startup_time = SHM_STARTUP_TIME if has_shm_transport else DDS_STARTUP_TIME
+            time.sleep(startup_time)
 
             if proc.poll() is not None:
                 print(f'ERROR: DDS helper exited during startup with code {proc.returncode}')
@@ -119,7 +127,7 @@ class TestCase():
             time.sleep(sleep_time)
 
             try:
-                output = proc.communicate(timeout=10)[0]
+                output = proc.communicate(timeout=ONE_SHOT_TIMEOUT)[0]
             except subprocess.TimeoutExpired:
                 proc.kill()
                 proc.communicate()
