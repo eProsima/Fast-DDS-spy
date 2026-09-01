@@ -87,6 +87,10 @@ class TestCase():
             # measuring discovery on slower Windows CI runners.
             time.sleep(DDS_STARTUP_TIME)
 
+            if proc.poll() is not None:
+                print(f'ERROR: DDS helper exited during startup with code {proc.returncode}')
+                return None
+
             return proc
 
     def run_tool(self):

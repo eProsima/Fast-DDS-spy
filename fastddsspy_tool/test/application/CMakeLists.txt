@@ -127,10 +127,6 @@ endforeach()
 
 # populate the tests
 foreach(TEST IN LISTS TEST_FILENAMES)
-    if(NOT WIN32 AND "${TEST}" STREQUAL "one_shot_participants_dds_shm")
-        continue()
-    endif()
-
     set(TEST_NAME "tool.application.fastddsspy.test.test_cases.${TEST}")
 
     if(WIN32)

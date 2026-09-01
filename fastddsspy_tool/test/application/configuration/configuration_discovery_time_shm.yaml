@@ -1,5 +1,5 @@
 specs:
-  discovery-time: 5000
+  discovery-time: 10000
 
 dds:
   transport: shm

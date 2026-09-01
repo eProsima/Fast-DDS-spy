@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Windows-only test for Fast DDS Spy over Shared Memory Transport."""
+"""Cross-platform test for Fast DDS Spy over Shared Memory Transport."""
 
 import test_class
 
