@@ -208,7 +208,7 @@ protected:
     std::shared_ptr<ddspipe::participants::InternalReader> endpoints_reader_;
 
     // Filter partitions set
-    std::set<std::string> partition_filter_set_;
+    std::set<std::string> partition_filter_;
     // Filter content_topicfilter dict
     std::map<std::string, std::string> topic_filter_dict_;
 };

@@ -69,7 +69,7 @@ Backend::Backend(
 
     // Update filters from yaml into Spy participant
     // Partitions
-    dds_participant_->update_partitions(configuration.dds_configuration->allowed_partition_list);
+    dds_participant_->set_partition_filter(configuration.dds_configuration->allowed_partition_list);
     // Content Filtered Topic
     for (const auto& topic_pair: configuration.dds_configuration->content_topic_filter_dict)
     {
@@ -159,16 +159,16 @@ std::shared_ptr<eprosima::spy::participants::SpyModel> Backend::model() const no
     return model_;
 }
 
-void Backend::update_readers_track_partitions(
+void Backend::set_partition_filter(
         const std::set<std::string>& partitions_set)
 {
     // Function used to update the SpyDdsXmlParticipant filter data structures
     // This structures are used when creating a Spy Reader.
 
-    dds_participant_->update_partitions(partitions_set);
+    dds_participant_->set_partition_filter(partitions_set);
 
     // Function used to update 'content_topicfilter' in the active topics
-    pipe_->update_partitions(partitions_set);
+    pipe_->set_partition_filter(partitions_set);
 }
 
 void Backend::update_readers_track_content_filter(

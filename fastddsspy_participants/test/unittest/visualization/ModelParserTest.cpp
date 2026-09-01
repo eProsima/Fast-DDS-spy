@@ -2212,13 +2212,14 @@ TEST(ModelParserTest, topics_verbose_dds_endpoints)
     std::vector<spy::participants::ComplexTopicData::Endpoint> datareaders;
     for (const auto& it : endpoints)
     {
-        std::ostringstream ss;
-        ss << it.info.guid;
         std::string partition = "";
-        const auto partition_it = it.info.specific_partitions.find(ss.str());
-        if (partition_it != it.info.specific_partitions.end())
+        for (const auto& name : it.info.specific_qos.partitions.names())
         {
-            partition = partition_it->second;
+            if (!partition.empty())
+            {
+                partition += "|";
+            }
+            partition += name;
         }
 
         if (it.info.is_reader())
@@ -2290,13 +2291,14 @@ TEST(ModelParserTest, topics_verbose_dds_endpoints_ros2_types)
     std::vector<spy::participants::ComplexTopicData::Endpoint> datareaders;
     for (const auto& it : endpoints)
     {
-        std::ostringstream ss;
-        ss << it.info.guid;
         std::string partition = "";
-        const auto partition_it = it.info.specific_partitions.find(ss.str());
-        if (partition_it != it.info.specific_partitions.end())
+        for (const auto& name : it.info.specific_qos.partitions.names())
         {
-            partition = partition_it->second;
+            if (!partition.empty())
+            {
+                partition += "|";
+            }
+            partition += name;
         }
 
         if (it.info.is_reader())
@@ -2371,13 +2373,14 @@ TEST(ModelParserTest, topics_verbose_ros2_endpoints)
     std::vector<spy::participants::ComplexTopicData::Endpoint> datareaders;
     for (const auto& it : endpoints)
     {
-        std::ostringstream ss;
-        ss << it.info.guid;
         std::string partition = "";
-        const auto partition_it = it.info.specific_partitions.find(ss.str());
-        if (partition_it != it.info.specific_partitions.end())
+        for (const auto& name : it.info.specific_qos.partitions.names())
         {
-            partition = partition_it->second;
+            if (!partition.empty())
+            {
+                partition += "|";
+            }
+            partition += name;
         }
 
         if (it.info.is_reader())
@@ -2452,13 +2455,14 @@ TEST(ModelParserTest, topics_verbose_ros2_endpoints_ros2_types)
     std::vector<spy::participants::ComplexTopicData::Endpoint> datareaders;
     for (const auto& it : endpoints)
     {
-        std::ostringstream ss;
-        ss << it.info.guid;
         std::string partition = "";
-        const auto partition_it = it.info.specific_partitions.find(ss.str());
-        if (partition_it != it.info.specific_partitions.end())
+        for (const auto& name : it.info.specific_qos.partitions.names())
         {
-            partition = partition_it->second;
+            if (!partition.empty())
+            {
+                partition += "|";
+            }
+            partition += name;
         }
 
         if (it.info.is_reader())
@@ -2527,13 +2531,14 @@ TEST(ModelParserTest, complex_topic_dds_endpoints)
     std::vector<spy::participants::ComplexTopicData::Endpoint> datareaders;
     for (const auto& it : endpoints)
     {
-        std::ostringstream ss;
-        ss << it.info.guid;
         std::string partition = "";
-        const auto partition_it = it.info.specific_partitions.find(ss.str());
-        if (partition_it != it.info.specific_partitions.end())
+        for (const auto& name : it.info.specific_qos.partitions.names())
         {
-            partition = partition_it->second;
+            if (!partition.empty())
+            {
+                partition += "|";
+            }
+            partition += name;
         }
 
         if (it.info.is_reader())
@@ -2596,13 +2601,14 @@ TEST(ModelParserTest, complex_topic_dds_endpoints_ros2_types)
     std::vector<spy::participants::ComplexTopicData::Endpoint> datareaders;
     for (const auto& it : endpoints)
     {
-        std::ostringstream ss;
-        ss << it.info.guid;
         std::string partition = "";
-        const auto partition_it = it.info.specific_partitions.find(ss.str());
-        if (partition_it != it.info.specific_partitions.end())
+        for (const auto& name : it.info.specific_qos.partitions.names())
         {
-            partition = partition_it->second;
+            if (!partition.empty())
+            {
+                partition += "|";
+            }
+            partition += name;
         }
 
         if (it.info.is_reader())
@@ -2668,13 +2674,14 @@ TEST(ModelParserTest, complex_topic_ros2_endpoints)
     std::vector<spy::participants::ComplexTopicData::Endpoint> datareaders;
     for (const auto& it : endpoints)
     {
-        std::ostringstream ss;
-        ss << it.info.guid;
         std::string partition = "";
-        const auto partition_it = it.info.specific_partitions.find(ss.str());
-        if (partition_it != it.info.specific_partitions.end())
+        for (const auto& name : it.info.specific_qos.partitions.names())
         {
-            partition = partition_it->second;
+            if (!partition.empty())
+            {
+                partition += "|";
+            }
+            partition += name;
         }
 
         if (it.info.is_reader())
@@ -2740,13 +2747,14 @@ TEST(ModelParserTest, complex_topic_ros2_endpoints_ros2_types)
     std::vector<spy::participants::ComplexTopicData::Endpoint> datareaders;
     for (const auto& it : endpoints)
     {
-        std::ostringstream ss;
-        ss << it.info.guid;
         std::string partition = "";
-        const auto partition_it = it.info.specific_partitions.find(ss.str());
-        if (partition_it != it.info.specific_partitions.end())
+        for (const auto& name : it.info.specific_qos.partitions.names())
         {
-            partition = partition_it->second;
+            if (!partition.empty())
+            {
+                partition += "|";
+            }
+            partition += name;
         }
 
         if (it.info.is_reader())
@@ -4581,13 +4589,14 @@ TEST(ModelParserTest, topics_verbose_dds_endpoints_filtered)
             continue;
         }
 
-        std::ostringstream ss;
-        ss << it.info.guid;
         std::string partition = "";
-        const auto partition_it = it.info.specific_partitions.find(ss.str());
-        if (partition_it != it.info.specific_partitions.end())
+        for (const auto& name : it.info.specific_qos.partitions.names())
         {
-            partition = partition_it->second;
+            if (!partition.empty())
+            {
+                partition += "|";
+            }
+            partition += name;
         }
 
         if (it.info.is_reader())
@@ -4667,13 +4676,14 @@ TEST(ModelParserTest, topics_verbose_dds_endpoints_ros2_types_filtered)
             continue;
         }
 
-        std::ostringstream ss;
-        ss << it.info.guid;
         std::string partition = "";
-        const auto partition_it = it.info.specific_partitions.find(ss.str());
-        if (partition_it != it.info.specific_partitions.end())
+        for (const auto& name : it.info.specific_qos.partitions.names())
         {
-            partition = partition_it->second;
+            if (!partition.empty())
+            {
+                partition += "|";
+            }
+            partition += name;
         }
 
         if (it.info.is_reader())
@@ -4756,13 +4766,14 @@ TEST(ModelParserTest, topics_verbose_ros2_endpoints_filtered)
             continue;
         }
 
-        std::ostringstream ss;
-        ss << it.info.guid;
         std::string partition = "";
-        const auto partition_it = it.info.specific_partitions.find(ss.str());
-        if (partition_it != it.info.specific_partitions.end())
+        for (const auto& name : it.info.specific_qos.partitions.names())
         {
-            partition = partition_it->second;
+            if (!partition.empty())
+            {
+                partition += "|";
+            }
+            partition += name;
         }
 
         if (it.info.is_reader())
@@ -4844,13 +4855,14 @@ TEST(ModelParserTest, topics_verbose_ros2_endpoints_ros2_types_filtered)
             continue;
         }
 
-        std::ostringstream ss;
-        ss << it.info.guid;
         std::string partition = "";
-        const auto partition_it = it.info.specific_partitions.find(ss.str());
-        if (partition_it != it.info.specific_partitions.end())
+        for (const auto& name : it.info.specific_qos.partitions.names())
         {
-            partition = partition_it->second;
+            if (!partition.empty())
+            {
+                partition += "|";
+            }
+            partition += name;
         }
 
         if (it.info.is_reader())
@@ -4927,13 +4939,14 @@ TEST(ModelParserTest, complex_topic_dds_endpoints_filtered)
             continue;
         }
 
-        std::ostringstream ss;
-        ss << it.info.guid;
         std::string partition = "";
-        const auto partition_it = it.info.specific_partitions.find(ss.str());
-        if (partition_it != it.info.specific_partitions.end())
+        for (const auto& name : it.info.specific_qos.partitions.names())
         {
-            partition = partition_it->second;
+            if (!partition.empty())
+            {
+                partition += "|";
+            }
+            partition += name;
         }
 
         if (it.info.is_reader())
@@ -5002,13 +5015,14 @@ TEST(ModelParserTest, complex_topic_dds_endpoints_ros2_types_filtered)
             continue;
         }
 
-        std::ostringstream ss;
-        ss << it.info.guid;
         std::string partition = "";
-        const auto partition_it = it.info.specific_partitions.find(ss.str());
-        if (partition_it != it.info.specific_partitions.end())
+        for (const auto& name : it.info.specific_qos.partitions.names())
         {
-            partition = partition_it->second;
+            if (!partition.empty())
+            {
+                partition += "|";
+            }
+            partition += name;
         }
 
         if (it.info.is_reader())
@@ -5082,13 +5096,14 @@ TEST(ModelParserTest, complex_topic_ros2_endpoints_filtered)
             continue;
         }
 
-        std::ostringstream ss;
-        ss << it.info.guid;
         std::string partition = "";
-        const auto partition_it = it.info.specific_partitions.find(ss.str());
-        if (partition_it != it.info.specific_partitions.end())
+        for (const auto& name : it.info.specific_qos.partitions.names())
         {
-            partition = partition_it->second;
+            if (!partition.empty())
+            {
+                partition += "|";
+            }
+            partition += name;
         }
 
         if (it.info.is_reader())
@@ -5162,13 +5177,14 @@ TEST(ModelParserTest, complex_topic_ros2_endpoints_ros2_types_filtered)
             continue;
         }
 
-        std::ostringstream ss;
-        ss << it.info.guid;
         std::string partition = "";
-        const auto partition_it = it.info.specific_partitions.find(ss.str());
-        if (partition_it != it.info.specific_partitions.end())
+        for (const auto& name : it.info.specific_qos.partitions.names())
         {
-            partition = partition_it->second;
+            if (!partition.empty())
+            {
+                partition += "|";
+            }
+            partition += name;
         }
 
         if (it.info.is_reader())

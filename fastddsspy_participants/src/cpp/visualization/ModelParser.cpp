@@ -19,6 +19,28 @@
 
 #include <fastddsspy_participants/visualization/ModelParser.hpp>
 
+namespace {
+
+//! Render the partitions announced by an endpoint, '|' separated, as the spy displays them.
+std::string partitions_to_string(
+        const eprosima::fastdds::dds::PartitionQosPolicy& partitions)
+{
+    std::string result;
+
+    for (const auto& partition : partitions.names())
+    {
+        if (!result.empty())
+        {
+            result += "|";
+        }
+        result += partition;
+    }
+
+    return result;
+}
+
+} // anonymous namespace
+
 namespace eprosima {
 namespace spy {
 namespace participants {
@@ -183,15 +205,8 @@ void fill_complex_endpoint(
     result.topic.topic_type =
             model.get_ros2_types() ? utils::demangle_if_ros_type(endpoint.topic.type_name) : endpoint.topic.
                     type_name;
-    // partition
-    std::ostringstream guid_ss;
-    guid_ss << endpoint.guid; // get the source guid
-    const auto partition_it = endpoint.specific_partitions.find(guid_ss.str());
-    if (partition_it != endpoint.specific_partitions.end())
-    {
-        // the endpoint has a partition set
-        result.topic.partition = partition_it->second;
-    }
+    // Partitions come straight from the endpoint's announced QoS, the only place they are stored.
+    result.topic.partition = partitions_to_string(endpoint.specific_qos.partitions);
 
     result.qos.durability = endpoint.topic.topic_qos.durability_qos;
     result.qos.reliability = endpoint.topic.topic_qos.reliability_qos;
@@ -369,16 +384,8 @@ ComplexTopicData ModelParser::complex_topic_data(
     {
         if (it.second.info.active && topic.m_topic_name == it.second.info.topic.m_topic_name)
         {
-            // add partitions
-            std::ostringstream guid_ss;
-            guid_ss << it.first; // get the source guid
-            const auto partition_it = it.second.info.specific_partitions.find(guid_ss.str());
-            std::string partition = "";
-            if (partition_it != it.second.info.specific_partitions.end())
-            {
-                // the endpoint has a partition set
-                partition = partition_it->second;
-            }
+            // add partitions, from the endpoint's announced QoS
+            const std::string partition = partitions_to_string(it.second.info.specific_qos.partitions);
 
             if (it.second.info.is_reader())
             {

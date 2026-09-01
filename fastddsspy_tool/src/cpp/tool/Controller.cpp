@@ -43,6 +43,7 @@ namespace spy {
 
 namespace {
 
+// TODO REMOVE danip
 bool partitions_match(
         const std::string& filter_partition,
         const std::string& endpoint_partition) noexcept
@@ -290,15 +291,17 @@ void Controller::data_stream_callback_verbose_(
     // Block entrance so prints does not collapse
     std::lock_guard<std::mutex> _(view_mutex_);
 
-    // get the source guid
-    std::ostringstream guid_ss;
+    // The partitions of the writer that produced this sample travel with the sample itself, stamped
+    // by the Reader from the DiscoveryDatabase. No topic-level snapshot is consulted, so this can
+    // never lag behind a writer that changed its PartitionQos or was replaced.
     std::string partitions = "";
-    guid_ss << data.source_guid;
-    const auto partition_it = topic.partition_name.find(guid_ss.str());
-    if (partition_it != topic.partition_name.end())
+    for (const auto& name : data.writer_qos.partitions.names())
     {
-        // add the partition set
-        partitions = partition_it->second;
+        if (!partitions.empty())
+        {
+            partitions += "|";
+        }
+        partitions += name;
     }
 
     // Prepare info data
@@ -821,7 +824,7 @@ void Controller::filter_command_(
     const auto& check_filter_contains_value = [&](std::string category, std::string value, bool& ret)
             {
                 if (category == "partitions" &&
-                        partition_filter_set_.find(value) != partition_filter_set_.end())
+                        partition_filter_.find(value) != partition_filter_.end())
                 {
                     ret = true;
                 }
@@ -863,7 +866,7 @@ void Controller::filter_command_(
 
         std::cout << "\n  Partitions:\n";
 
-        for (const auto& partition: partition_filter_set_)
+        for (const auto& partition: partition_filter_)
         {
             std::cout << "    - " << (partition == "" ? "\"\"" : partition) << "\n";
         }
@@ -879,13 +882,13 @@ void Controller::filter_command_(
         }
 
         // clear the filters list
-        partition_filter_set_.clear();
+        partition_filter_.clear();
         for (auto& pair_topic : topic_filter_dict_)
         {
             pair_topic.second = "";
         }
 
-        update_partitions();
+        apply_partition_filter();
         update_topics();
     }
     else if (arguments.size() == 3) // filter clear <category>
@@ -904,8 +907,8 @@ void Controller::filter_command_(
 
         if (category == "partitions")
         {
-            partition_filter_set_.clear();
-            update_partitions();
+            partition_filter_.clear();
+            apply_partition_filter();
         }
         else
         {
@@ -974,7 +977,7 @@ void Controller::filter_command_(
                 return;
             }
 
-            partition_filter_set_.insert(filter_str);
+            partition_filter_.insert(filter_str);
         }
         else
         {
@@ -991,7 +994,7 @@ void Controller::filter_command_(
 
             if (category == "partitions")
             {
-                partition_filter_set_.erase(filter_str);
+                partition_filter_.erase(filter_str);
             }
             else
             {
@@ -1002,7 +1005,7 @@ void Controller::filter_command_(
 
         if (category == "partitions")
         {
-            update_partitions();
+            apply_partition_filter();
         }
     }
     else if (arguments.size() == 5)
@@ -1073,10 +1076,10 @@ void Controller::update_topics()
     }
 }
 
-void Controller::update_partitions()
+void Controller::apply_partition_filter()
 {
     // -- Update readers in the tracks ----------------------------------------
-    backend_.update_readers_track_partitions(partition_filter_set_);
+    backend_.set_partition_filter(partition_filter_);
 
 
     // -- Update endpoints in the database ------------------------------------
@@ -1089,11 +1092,9 @@ void Controller::update_endpoints()
     std::string topic_name;
     std::vector<std::pair<ddspipe::core::types::Guid, bool>> v_guid_active;//, v_guid_disable;
 
-    int i, n;
-    std::string curr_partition;
     bool endpoint_active;
 
-    bool partitions_exists = partition_filter_set_.size() > 0;
+    bool partitions_exists = partition_filter_.size() > 0;
 
     for (const auto& endpoint: model_->endpoint_database_)
     {
@@ -1107,49 +1108,23 @@ void Controller::update_endpoints()
             continue;
         }
 
-        // Get the partition set of the current endpoint
-        for (const auto& guid_partition_pair: endpoint.second.info.specific_partitions)
+        // Match the endpoint's announced partitions against the filter. The partitions are a real
+        // PartitionQosPolicy, so there is no string to split here.
+        for (const auto& partition : endpoint.second.info.specific_qos.partitions.names())
         {
-            i = 0;
-            n = guid_partition_pair.second.size();
-            curr_partition = "";
-
-            // Iterate in the partition set
-            while (i < n)
+            for (const std::string& filter_p : partition_filter_)
             {
-                if (guid_partition_pair.second[i] == '|')
+                if (utils::match_pattern(filter_p, partition) ||
+                        utils::match_pattern(partition, filter_p))
                 {
-                    for (const std::string& filter_p: partition_filter_set_)
-                    {
-                        if (partitions_match(filter_p, curr_partition))
-                        {
-                            // The current partition matches with a partition
-                            // from the filter, the endpoint is active
-                            endpoint_active = true;
-                            break;
-                        }
-                    }
-
-                    curr_partition = "";
-                }
-                else
-                {
-                    curr_partition += guid_partition_pair.second[i];
-                }
-
-                i++;
-            }
-
-            // Empty or last partition
-            for (const std::string& filter_p: partition_filter_set_)
-            {
-                if (partitions_match(filter_p, curr_partition))
-                {
-                    // The current partition matches with a partition
-                    // from the filter, the endpoint is active
                     endpoint_active = true;
                     break;
                 }
+            }
+
+            if (endpoint_active)
+            {
+                break;
             }
         }
 
@@ -1170,7 +1145,7 @@ void Controller::update_endpoints()
 void Controller::set_partition_filter(
         const std::set<std::string>& partition_filter_set)
 {
-    partition_filter_set_ = partition_filter_set;
+    partition_filter_ = partition_filter_set;
 }
 
 void Controller::set_content_topic_filter(
