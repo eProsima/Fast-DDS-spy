@@ -167,7 +167,7 @@ void Controller::run()
         command = input_.wait_next_command();
         // Refresh endpoint activity before each command when partition filters are
         // active so late-discovered endpoints also honor the current filter set
-        if (!partition_filter_set_.empty())
+        if (!partition_filter_.empty())
         {
             update_endpoints();
         }
