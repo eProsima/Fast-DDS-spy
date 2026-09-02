@@ -1109,8 +1109,15 @@ void Controller::update_endpoints()
         }
 
         // Match the endpoint's announced partitions against the filter. The partitions are a real
-        // PartitionQosPolicy, so there is no string to split here.
-        for (const auto& partition : endpoint.second.info.specific_qos.partitions.names())
+        // PartitionQosPolicy, so there is no string to split here. An empty partition QoS means
+        // the DDS default partition (the empty string), which must also be matchable by an empty
+        // filter
+        const auto& endpoint_partitions = endpoint.second.info.specific_qos.partitions.names();
+        const auto partitions_to_match = endpoint_partitions.empty()
+                ? std::vector<std::string>{""}
+                : endpoint_partitions;
+
+        for (const auto& partition : partitions_to_match)
         {
             for (const std::string& filter_p : partition_filter_)
             {
