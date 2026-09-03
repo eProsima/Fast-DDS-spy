@@ -41,10 +41,7 @@ using nlohmann::json;
 namespace eprosima {
 namespace spy {
 
-namespace {
-
-// TODO REMOVE danip
-bool partitions_match(
+static bool partitions_match(
         const std::string& filter_partition,
         const std::string& endpoint_partition) noexcept
 {
@@ -58,8 +55,6 @@ bool partitions_match(
     return utils::match_pattern(filter_partition, endpoint_partition) ||
            utils::match_pattern(endpoint_partition, filter_partition);
 }
-
-} // namespace
 
 // Braces + indentation, arrays single-line
 static void print_json_arrays_inline(
@@ -1121,8 +1116,7 @@ void Controller::update_endpoints()
         {
             for (const std::string& filter_p : partition_filter_)
             {
-                if (utils::match_pattern(filter_p, partition) ||
-                        utils::match_pattern(partition, filter_p))
+                if (partitions_match(filter_p, partition))
                 {
                     endpoint_active = true;
                     break;

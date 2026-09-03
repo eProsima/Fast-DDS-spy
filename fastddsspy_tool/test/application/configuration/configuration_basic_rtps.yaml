@@ -1,4 +1,5 @@
 specs:
 
   rtps: true
-  discovery-time: 2000
+  # RTPS endpoint and type-object discovery can take longer on loaded Windows runners.
+  discovery-time: 5000
