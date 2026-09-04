@@ -587,6 +587,17 @@ void Controller::topics_command_(
         if (keys_argument_(arg_2))
         {
             // Handle 'topics <name> keys v'
+            // Validate the arguments before querying the model, so that the reported error
+            // does not depend on what has been discovered in the DDS network.
+            const std::string& arg_3 = arguments[3];
+            if (!verbose_argument_(arg_3))
+            {
+                view_.show_error(STR_ENTRY
+                        << "Last argument <" << arg_3 << "> is not valid. "
+                        << "Only \"v\" (verbosity mdode) is allowed after \"keys\".");
+                return;
+            }
+
             auto data = participants::ModelParser::topics_keys(*model_, filter_topic);
 
             if (data.empty())
@@ -598,18 +609,25 @@ void Controller::topics_command_(
                 return;
             }
 
-            const std::string& arg_3 = arguments[3];
-            if (verbose_argument_(arg_3))
-            {
-                ddspipe::yaml::set(yml, data, false);
-            }
-            else
-            {
-                view_.show_error(STR_ENTRY
-                        << "Last argument <" << arg_3 << "> is not valid. "
-                        << "Only \"v\" (verbosity mdode) is allowed after \"keys\".");
-            }
+            ddspipe::yaml::set(yml, data, false);
         }
+        else
+        {
+            view_.show_error(STR_ENTRY
+                    << "<"
+                    << arg_2
+                    << "> is not a valid topic option. "
+                    << "Valid options are \"v \", \"vv\" (verbosity modes), \"idl\" or \"keys\".");
+            return;
+        }
+    }
+    else
+    {
+        view_.show_error(STR_ENTRY
+                << "Command <"
+                << arguments[0]
+                << "> accepts at most 3 arguments.");
+        return;
     }
 
     view_.show(yml);
@@ -712,6 +730,15 @@ void Controller::print_command_(
         bool activated = model_->activate(
             filter_topic,
             callback);
+
+        if (!activated)
+        {
+            view_.show_error(STR_ENTRY
+                    << "Error printing topic <"
+                    << filter_topic.topic_name.get_value()
+                    << ">.");
+            return;
+        }
     }
 
     // In interactive mode this stream stops on user input. In one-shot mode,
