@@ -1,4 +1,4 @@
-# Copyright 2023 Proyectos y Sistemas de Mantenimiento SL (eProsima).
+# Copyright 2026 Proyectos y Sistemas de Mantenimiento SL (eProsima).
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,29 +12,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Tests for the fastddsspy executable."""
+"""Cross-platform test for Fast DDS Spy over Shared Memory Transport."""
 
 import test_class
 
 
-class TestCase_instance (test_class.TestCase):
-    """@brief A subclass of `test_class.TestCase` representing a specific test case."""
+class TestCase_instance(test_class.TestCase):
+    """Test participant discovery using Shared Memory Transport."""
 
     def __init__(self):
-        r"""
-        @brief Initialize the TestCase_instance object.
-
-        This test launch:
-            fastddsspy show all \n
-        """
+        """Initialize the Shared Memory Transport test case."""
         super().__init__(
-            name='ShowAllCommand',
+            name='ParticipantsDDSSharedMemoryCommand',
             one_shot=True,
             command=[],
-            dds=False,
-            config='',
-            arguments_dds=[],
-            arguments_spy=['show', 'all'],
+            dds=True,
+            config='fastddsspy_tool/test/application/configuration/\
+configuration_discovery_time_shm.yaml',
+            arguments_dds=['--transport=shm'],
+            arguments_spy=['--config-path', 'configuration', 'participants'],
             commands_spy=[],
-            output=''
+            output="""- name: Participant_pub\n\
+  guid: %%guid%%\n"""
         )

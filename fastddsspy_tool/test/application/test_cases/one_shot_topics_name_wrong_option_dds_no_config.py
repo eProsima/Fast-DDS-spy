@@ -1,4 +1,4 @@
-# Copyright 2023 Proyectos y Sistemas de Mantenimiento SL (eProsima).
+# Copyright 2026 Proyectos y Sistemas de Mantenimiento SL (eProsima).
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,24 +17,26 @@
 import test_class
 
 
-class TestCase_instance (test_class.TestCase):
+class TestCase_instance(test_class.TestCase):
     """@brief A subclass of `test_class.TestCase` representing a specific test case."""
 
     def __init__(self):
-        r"""
+        """
         @brief Initialize the TestCase_instance object.
 
-        This test launch:
-            fastddsspy show all \n
+        Launch this test with:
+            fastddsspy topics HelloWorldTopic WRONG
+            AdvancedConfigurationExample publisher
         """
         super().__init__(
-            name='ShowAllCommand',
+            name='TopicsNameWrongOptionDDSCommand',
             one_shot=True,
             command=[],
-            dds=False,
+            dds=True,
             config='',
             arguments_dds=[],
-            arguments_spy=['show', 'all'],
+            arguments_spy=['topics', 'HelloWorldTopic', 'WRONG'],
             commands_spy=[],
-            output=''
+            output='<WRONG> is not a valid topic option. '
+                   'Valid options are "v ", "vv" (verbosity modes), "idl" or "keys".'
         )

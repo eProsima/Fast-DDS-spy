@@ -41,6 +41,25 @@ using nlohmann::json;
 namespace eprosima {
 namespace spy {
 
+namespace {
+
+bool partitions_match(
+        const std::string& filter_partition,
+        const std::string& endpoint_partition) noexcept
+{
+    // Keep the empty/default DDS partition semantics consistent across
+    // platforms: it should only match another empty partition
+    if (filter_partition.empty() || endpoint_partition.empty())
+    {
+        return filter_partition == endpoint_partition;
+    }
+
+    return utils::match_pattern(filter_partition, endpoint_partition) ||
+           utils::match_pattern(endpoint_partition, filter_partition);
+}
+
+} // namespace
+
 // Braces + indentation, arrays single-line
 static void print_json_arrays_inline(
         const json& j,
@@ -145,9 +164,13 @@ void Controller::run()
     while (command.command != CommandValue::exit)
     {
         command = input_.wait_next_command();
-        // refresh the database if a filter partition is active.
-        // this checks if there is a new endpoint that does not
-        // pass the filter and disable it
+        // Refresh endpoint activity before each command when partition filters are
+        // active so late-discovered endpoints also honor the current filter set
+        if (!partition_filter_set_.empty())
+        {
+            update_endpoints();
+        }
+
         run_command_(command);
     }
 }
@@ -155,8 +178,10 @@ void Controller::run()
 void Controller::one_shot_run(
         const std::vector<std::string>& args)
 {
+    one_shot_mode_ = true;
     utils::sleep_for(configuration_.one_shot_wait_time_ms);
     run_command_(input_.parse_as_command(args));
+    one_shot_mode_ = false;
 }
 
 utils::ReturnCode Controller::reload_configuration(
@@ -691,9 +716,17 @@ void Controller::print_command_(
             callback);
     }
 
-    // Wait for other command to stop printing topics
+    // In interactive mode this stream stops on user input. In one-shot mode,
+    // keep it bounded so tests fail cleanly instead of hanging the runner.
     input_.stdin_handler().set_ignore_input(true);
-    input_.wait_something();
+    if (one_shot_mode_)
+    {
+        utils::sleep_for(configuration_.one_shot_wait_time_ms);
+    }
+    else
+    {
+        input_.wait_something();
+    }
     input_.stdin_handler().set_ignore_input(false);
     model_->deactivate();
 
@@ -1088,8 +1121,7 @@ void Controller::update_endpoints()
                 {
                     for (const std::string& filter_p: partition_filter_set_)
                     {
-                        if (utils::match_pattern(filter_p, curr_partition) ||
-                                utils::match_pattern(curr_partition, filter_p))
+                        if (partitions_match(filter_p, curr_partition))
                         {
                             // The current partition matches with a partition
                             // from the filter, the endpoint is active
@@ -1111,8 +1143,7 @@ void Controller::update_endpoints()
             // Empty or last partition
             for (const std::string& filter_p: partition_filter_set_)
             {
-                if (utils::match_pattern(filter_p, curr_partition) ||
-                        utils::match_pattern(curr_partition, filter_p))
+                if (partitions_match(filter_p, curr_partition))
                 {
                     // The current partition matches with a partition
                     // from the filter, the endpoint is active

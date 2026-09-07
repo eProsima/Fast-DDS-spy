@@ -115,6 +115,7 @@ set(TEST_NEEDED_SOURCES
         configuration/configuration_wrong_empty_arg.yaml
         configuration/configuration_wrong_type.yaml
         configuration/configuration_discovery_time.yaml
+        configuration/configuration_discovery_time_shm.yaml
         configuration/configuration_with_filter_rtps.yaml
     )
 
@@ -161,6 +162,7 @@ foreach(TEST IN LISTS TEST_FILENAMES)
         ${TEST_NAME}
         PROPERTIES
             ENVIRONMENT "${TEST_ENVIRONMENT}"
+            TIMEOUT 30
         )
 
 endforeach()

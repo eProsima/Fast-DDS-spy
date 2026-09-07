@@ -17,22 +17,14 @@
 import re
 import subprocess
 import time
-import signal
 import os
 
 
 SLEEP_TIME = 0.2
-
-
-def safe_interrupt(p):
-    if os.name == 'nt':
-        try:
-            # On Windows, use CTRL_C_EVENT to interrupt the process
-            os.kill(p.pid, signal.CTRL_C_EVENT)
-        except Exception:
-            p.terminate()
-    else:
-        p.send_signal(signal.SIGINT)
+DDS_STARTUP_TIME = 2.0 if os.name == 'nt' else 0.2
+SHM_STARTUP_TIME = 2.0
+ONE_SHOT_TIMEOUT = 20.0
+INTERACTIVE_SETTLE_TIME = 3.0 if os.name == 'nt' else 1.0
 
 
 class TestCase():
@@ -73,12 +65,39 @@ class TestCase():
         @return Returns a subprocess object representing the running DDS publisher.
         """
         if self.dds:
-            self.command = [self.exec_dds, 'publisher'] + self.arguments_dds
+            self.command = [self.exec_dds, 'publisher']
+            env = os.environ.copy()
+
+            # Windows CI is flaky when the helper publisher uses default SHM transport.
+            # Force plain UDP there, but preserve an explicitly requested transport so
+            # transport-specific tests can exercise SHM on Windows.
+            has_explicit_transport = any(
+                argument == '--transport' or argument.startswith('--transport=')
+                for argument in self.arguments_dds)
+            has_shm_transport = any(
+                argument == '--transport=shm' or
+                (argument == '--transport' and index + 1 < len(self.arguments_dds) and
+                 self.arguments_dds[index + 1] == 'shm')
+                for index, argument in enumerate(self.arguments_dds))
+            if os.name == 'nt' and not has_explicit_transport:
+                self.command.append('--transport=udp')
+
+            self.command.extend(self.arguments_dds)
 
             proc = subprocess.Popen(self.command,
-                                    stdin=subprocess.PIPE,
-                                    stdout=subprocess.PIPE,
-                                    stderr=subprocess.PIPE)
+                                    stdin=subprocess.DEVNULL,
+                                    stdout=subprocess.DEVNULL,
+                                    stderr=subprocess.DEVNULL,
+                                    env=env)
+
+            # Give the helper publisher time to create its participant before the Spy starts
+            # measuring discovery on slower Windows CI runners.
+            startup_time = SHM_STARTUP_TIME if has_shm_transport else DDS_STARTUP_TIME
+            time.sleep(startup_time)
+
+            if proc.poll() is not None:
+                print(f'ERROR: DDS helper exited during startup with code {proc.returncode}')
+                return None
 
             return proc
 
@@ -99,24 +118,28 @@ class TestCase():
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE,
                                 encoding='utf8',
+                                errors='replace',
                                 creationflags=creationflags)
 
         if self.one_shot:
-            sleep_time = 3 if self.arguments_spy[:2] == ['show', 'all'] else 1
+            is_show_all = self.arguments_spy[:2] == ['show', 'all']
+            sleep_time = 3 if is_show_all else 1
             time.sleep(sleep_time)
-            output = ''
-            if self.arguments_spy[:2] == ['show', 'all']:
-                safe_interrupt(proc)
+
             try:
-                output = proc.communicate(timeout=10)[0]
+                output = proc.communicate(timeout=ONE_SHOT_TIMEOUT)[0]
             except subprocess.TimeoutExpired:
                 proc.kill()
-                output = ''
+                proc.communicate()
+                print(f'ERROR: DDS Spy timed out running one-shot command: \
+                      {" ".join(self.arguments_spy)}')
+                return None
+
             if not self.valid_output(output):
                 return None
 
         else:
-            time.sleep(1)
+            time.sleep(INTERACTIVE_SETTLE_TIME)
             self.read_command_output(proc)
         return proc
 
@@ -173,6 +196,9 @@ class TestCase():
                 break
 
             line = proc.stdout.readline()
+
+            if line == '' and proc.poll() is not None:
+                break
 
             if ('Insert a command for Fast DDS Spy:' in line):
                 break
@@ -250,6 +276,62 @@ class TestCase():
 
         return result + '\n'
 
+    def print_output_mismatch(self, clean_output, expected_output):
+        """Print the actual and expected output for debugging."""
+        print('Output: ')
+        print(clean_output)
+        print('Expected output: ')
+        print(expected_output)
+
+    def normalized_output_lines(self, clean_output, expected_output):
+        """Return output lines without trailing empty entries."""
+        lines_expected_output = expected_output.splitlines()
+        lines_output = clean_output.splitlines()
+
+        while lines_expected_output and lines_expected_output[-1] == '':
+            lines_expected_output.pop()
+
+        while lines_output and lines_output[-1] == '':
+            lines_output.pop()
+
+        return lines_expected_output, lines_output
+
+    def valid_placeholder_line(self, expected_line, output_line) -> bool:
+        """Validate lines containing dynamic placeholders."""
+        if '%%guid%%' in expected_line:
+            start_guid_position = expected_line.find('%%guid%%')
+            return self.valid_guid(output_line[start_guid_position:])
+
+        if '%%rate%%' in expected_line:
+            start_rate_position = expected_line.find('%%rate%%')
+            return self.valid_rate(output_line[start_rate_position:])
+
+        return expected_line == output_line
+
+    def valid_expected_lines(self, lines_expected_output, lines_output,
+                             clean_output, expected_output) -> bool:
+        """Validate all expected lines against the actual output."""
+        for expected_line, output_line in zip(lines_expected_output, lines_output):
+            if self.valid_placeholder_line(expected_line, output_line):
+                continue
+
+            self.print_output_mismatch(clean_output, expected_output)
+            return False
+
+        return True
+
+    def valid_extra_output_lines(self, lines_output, expected_lines_count,
+                                 clean_output, expected_output) -> bool:
+        """Check that any extra output only contains empty lines."""
+        for extra_line in lines_output[expected_lines_count:]:
+            if extra_line == '':
+                continue
+
+            self.print_output_mismatch(clean_output, expected_output)
+            return False
+
+        return True
+
     def valid_output(self, output) -> bool:
         """
         @brief Check the validity of the output against the expected output.
@@ -258,51 +340,28 @@ class TestCase():
         @return Returns True if the output matches the expected output or \
         satisfies specific conditions for lines containing '%%guid%%' or '%%rate%%', \
         False otherwise.
-
-        The function compares the provided 'output' with the expected output.
-        It checks each line of the 'output' and 'expected_output' to determine their validity.
-
-        If the entire 'output' matches the 'expected_output', the function returns True.
-        Otherwise, it iterates over each line and performs the following checks:
-        - If a line in 'expected_output' contains '%%guid%%', it calls the 'valid_guid()'.
-        - If a line in 'expected_output' contains '%%rate%%', it calls the 'valid_rate()'.
-        - If a line does not contain '%%guid%%' or '%%rate%%', it compares the corresponding \
-            lines in 'output' and 'expected_output' for equality.
-
-        If any line does not meet the expected conditions, the function returns False and prints \
-        the 'output' and 'expected_output' for debugging purposes.
-
         """
         clean_output = self.extract_cli_output(output)
         expected_output = self.output_command()
         if expected_output == clean_output:
             return True
 
-        lines_expected_output = expected_output.splitlines()
-        lines_output = clean_output.splitlines()
+        lines_expected_output, lines_output = self.normalized_output_lines(
+            clean_output, expected_output)
 
-        # TODO (Raul): If guid and rate are on the same line this will not work.
-        for i in range(len(lines_expected_output)):
-            if '%%guid%%' in lines_expected_output[i]:
-                start_guid_position = lines_expected_output[i].find('%%guid%%')
+        if len(lines_output) < len(lines_expected_output):
+            self.print_output_mismatch(clean_output, expected_output)
+            return False
 
-                if not self.valid_guid(lines_output[i][start_guid_position:]):
-                    return False
+        if not self.valid_expected_lines(lines_expected_output, lines_output,
+                                         clean_output, expected_output):
+            return False
 
-            elif '%%rate%%' in lines_expected_output[i]:
-                start_rate_position = lines_expected_output[i].find('%%rate%%')
-
-                if not self.valid_rate(lines_output[i][start_rate_position:]):
-                    return False
-
-            elif lines_expected_output[i] != lines_output[i]:
-                print('Output: ')
-                print(clean_output)
-                print('Expected output: ')
-                print(expected_output)
-                return False
-
-        return True
+        return self.valid_extra_output_lines(
+            lines_output,
+            len(lines_expected_output),
+            clean_output,
+            expected_output)
 
     def stop_tool(self, proc) -> bool:
         """

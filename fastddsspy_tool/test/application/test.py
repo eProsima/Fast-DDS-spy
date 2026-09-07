@@ -26,7 +26,10 @@ Arguments:
 import argparse
 import importlib
 import os
+import re
 import sys
+import time
+import traceback
 
 
 DESCRIPTION = """Script to execute Fast DDS Spy executable test"""
@@ -130,10 +133,42 @@ def get_config_path_spy(arguments_spy, exec_spy, config):
     return arguments_spy
 
 
-def main():
-    """@brief The main entry point of the program."""
-    args = parse_options()
+def has_explicit_domain(arguments_spy) -> bool:
+    """Return whether the test already sets a domain from the CLI."""
+    return '--domain' in arguments_spy
 
+
+def config_path_from_arguments(arguments_spy) -> str:
+    """Return the resolved config path if the test uses --config-path."""
+    if '--config-path' not in arguments_spy:
+        return ''
+
+    config_index = arguments_spy.index('--config-path') + 1
+    if config_index >= len(arguments_spy):
+        return ''
+
+    return arguments_spy[config_index]
+
+
+def config_has_domain(config_path) -> bool:
+    """Return whether the referenced yaml config already sets a DDS domain."""
+    if not config_path or not os.path.isfile(config_path):
+        return False
+
+    with open(config_path, encoding='utf-8') as file:
+        return re.search(r'^\s*domain\s*:', file.read(), flags=re.MULTILINE) is not None
+
+
+def isolated_test_domain() -> str:
+    """
+    Pick a non-default domain for this test process to avoid cross-test discovery
+    residue and ambient DDS traffic on shared runners.
+    """
+    return str(30 + ((os.getpid() ^ time.time_ns()) % 200))
+
+
+def build_test_case(args):
+    """Create and configure the requested test case."""
     module = importlib.import_module('test_cases.'+args.test)
     test_class = module.TestCase_instance()
     test_class.exec_spy = args.exe
@@ -145,30 +180,81 @@ def main():
                                     test_class.exec_spy,
                                     test_class.config)
 
-    dds = test_class.run_dds()
-    spy = test_class.run_tool()
+    if not has_explicit_domain(test_class.arguments_spy):
+        config_path = config_path_from_arguments(test_class.arguments_spy)
+        if not config_has_domain(config_path):
+            test_domain = isolated_test_domain()
+            test_class.arguments_spy = ['--domain', test_domain] + test_class.arguments_spy
+            if test_class.dds:
+                test_class.arguments_dds = test_class.arguments_dds + ['--domain', test_domain]
 
+    return test_class
+
+
+def interactive_test_exit_code(test_class, spy) -> int:
+    """Return the exit code for an interactive test run."""
+    output = test_class.send_commands_tool(spy)
+
+    if not test_class.valid_output(output):
+        print('ERROR: Output command not valid')
+        return 1
+
+    return 0
+
+
+def test_exit_code(test_class, spy) -> int:
+    """Return the exit code for the current test result."""
     if spy is None:
         print('ERROR: Wrong output')
-        test_class.stop_dds(dds)
-        sys.exit(1)
+        return 1
 
-    if not test_class.one_shot:
-        output = test_class.send_commands_tool(spy)
+    if test_class.one_shot:
+        return 0
 
-        if not test_class.valid_output(output):
-            test_class.stop_tool(spy)
-            test_class.stop_dds(dds)
-            print('ERROR: Output command not valid')
-            sys.exit(1)
+    return interactive_test_exit_code(test_class, spy)
 
-    if not test_class.stop_dds(dds):
-        sys.exit(1)
 
-    if not test_class.one_shot:
-        test_class.stop_tool(spy)
+def run_test_case(test_class):
+    """Run the configured test case and return processes plus exit code."""
+    dds = None
+    spy = None
+    exit_code = 1
 
-    sys.exit(0)
+    try:
+        dds = test_class.run_dds()
+        spy = test_class.run_tool()
+        exit_code = test_exit_code(test_class, spy)
+    except Exception:
+        traceback.print_exc()
+
+    return dds, spy, exit_code
+
+
+def cleanup_test_case(test_class, dds, spy, exit_code) -> int:
+    """Stop helper processes and return the final exit code."""
+    if dds is not None and not test_class.stop_dds(dds):
+        exit_code = 1
+
+    if spy is not None and not test_class.one_shot and not test_class.stop_tool(spy):
+        exit_code = 1
+
+    return exit_code
+
+
+def main():
+    """@brief The main entry point of the program."""
+    args = parse_options()
+    test_class = build_test_case(args)
+    dds = None
+    spy = None
+    exit_code = 1
+
+    try:
+        dds, spy, exit_code = run_test_case(test_class)
+    finally:
+        exit_code = cleanup_test_case(test_class, dds, spy, exit_code)
+
+    sys.exit(exit_code)
 
 
 if __name__ == '__main__':
