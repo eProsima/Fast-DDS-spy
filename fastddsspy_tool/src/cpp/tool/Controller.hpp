@@ -154,13 +154,13 @@ private:
     void update_content_topicfilter(
             const std::string& topic_name);
 
-    void update_partitions();
+    void apply_partition_filter();
 
     void update_endpoints();
 
     std::mutex view_mutex_;
 
-    std::set<std::string> partition_filter_set_;
+    std::set<std::string> partition_filter_;
     std::map<std::string, std::string> topic_filter_dict_;
 
     std::set<std::string> allowed_filters_categories_;

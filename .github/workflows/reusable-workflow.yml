@@ -123,5 +123,3 @@ jobs:
           path-replace-backslashes: 'true'
           list-tests: 'failed'
           list-suites: 'failed'
-
-

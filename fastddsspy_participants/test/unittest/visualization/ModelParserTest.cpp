@@ -207,18 +207,18 @@ TEST(ModelParserTest, participants_verbose_dds_endpoints)
         if (it.info.is_writer())
         {
             writers.push_back({
-                it.info.topic.m_topic_name,
-                it.info.topic.type_name,
-                1
-            });
+                        it.info.topic.m_topic_name,
+                        it.info.topic.type_name,
+                        1
+                    });
         }
         if (it.info.is_reader())
         {
             readers.push_back({
-                it.info.topic.m_topic_name,
-                it.info.topic.type_name,
-                1
-            });
+                        it.info.topic.m_topic_name,
+                        it.info.topic.type_name,
+                        1
+                    });
         }
 
     }
@@ -297,18 +297,18 @@ TEST(ModelParserTest, participants_verbose_ros2_types_dds_endpoints)
         if (it.info.is_writer())
         {
             writers.push_back({
-                it.info.topic.m_topic_name,
-                it.info.topic.type_name,
-                1
-            });
+                        it.info.topic.m_topic_name,
+                        it.info.topic.type_name,
+                        1
+                    });
         }
         if (it.info.is_reader())
         {
             readers.push_back({
-                it.info.topic.m_topic_name,
-                it.info.topic.type_name,
-                1
-            });
+                        it.info.topic.m_topic_name,
+                        it.info.topic.type_name,
+                        1
+                    });
         }
 
     }
@@ -392,18 +392,18 @@ TEST(ModelParserTest, participants_verbose_ros2_endpoints)
         if (it.info.is_writer())
         {
             writers.push_back({
-                it.info.topic.m_topic_name,
-                it.info.topic.type_name,
-                1
-            });
+                        it.info.topic.m_topic_name,
+                        it.info.topic.type_name,
+                        1
+                    });
         }
         if (it.info.is_reader())
         {
             readers.push_back({
-                it.info.topic.m_topic_name,
-                it.info.topic.type_name,
-                1
-            });
+                        it.info.topic.m_topic_name,
+                        it.info.topic.type_name,
+                        1
+                    });
         }
 
     }
@@ -488,18 +488,18 @@ TEST(ModelParserTest, participants_verbose_ros2_types_ros2_endpoints)
         if (it.info.is_writer())
         {
             writers.push_back({
-                utils::demangle_if_ros_topic(it.info.topic.m_topic_name),
-                utils::demangle_if_ros_type(it.info.topic.type_name),
-                1
-            });
+                        utils::demangle_if_ros_topic(it.info.topic.m_topic_name),
+                        utils::demangle_if_ros_type(it.info.topic.type_name),
+                        1
+                    });
         }
         if (it.info.is_reader())
         {
             readers.push_back({
-                utils::demangle_if_ros_topic(it.info.topic.m_topic_name),
-                utils::demangle_if_ros_type(it.info.topic.type_name),
-                1
-            });
+                        utils::demangle_if_ros_topic(it.info.topic.m_topic_name),
+                        utils::demangle_if_ros_type(it.info.topic.type_name),
+                        1
+                    });
         }
 
     }
@@ -576,18 +576,18 @@ TEST(ModelParserTest, complex_participant_dds_endpoints)
         if (it.info.is_writer())
         {
             writers.push_back({
-                it.info.topic.m_topic_name,
-                it.info.topic.type_name,
-                1
-            });
+                        it.info.topic.m_topic_name,
+                        it.info.topic.type_name,
+                        1
+                    });
         }
         if (it.info.is_reader())
         {
             readers.push_back({
-                it.info.topic.m_topic_name,
-                it.info.topic.type_name,
-                1
-            });
+                        it.info.topic.m_topic_name,
+                        it.info.topic.type_name,
+                        1
+                    });
         }
 
     }
@@ -657,18 +657,18 @@ TEST(ModelParserTest, complex_participant_ros2_types_dds_endpoints)
         if (it.info.is_writer())
         {
             writers.push_back({
-                it.info.topic.m_topic_name,
-                it.info.topic.type_name,
-                1
-            });
+                        it.info.topic.m_topic_name,
+                        it.info.topic.type_name,
+                        1
+                    });
         }
         if (it.info.is_reader())
         {
             readers.push_back({
-                it.info.topic.m_topic_name,
-                it.info.topic.type_name,
-                1
-            });
+                        it.info.topic.m_topic_name,
+                        it.info.topic.type_name,
+                        1
+                    });
         }
 
     }
@@ -744,18 +744,18 @@ TEST(ModelParserTest, complex_participant_ros2_endpoints)
         if (it.info.is_writer())
         {
             writers.push_back({
-                it.info.topic.m_topic_name,
-                it.info.topic.type_name,
-                1
-            });
+                        it.info.topic.m_topic_name,
+                        it.info.topic.type_name,
+                        1
+                    });
         }
         if (it.info.is_reader())
         {
             readers.push_back({
-                it.info.topic.m_topic_name,
-                it.info.topic.type_name,
-                1
-            });
+                        it.info.topic.m_topic_name,
+                        it.info.topic.type_name,
+                        1
+                    });
         }
 
     }
@@ -830,18 +830,18 @@ TEST(ModelParserTest, complex_participant_ros2_types_ros2_endpoints)
         if (it.info.is_writer())
         {
             writers.push_back({
-                utils::demangle_if_ros_topic(it.info.topic.m_topic_name),
-                utils::demangle_if_ros_type(it.info.topic.type_name),
-                1
-            });
+                        utils::demangle_if_ros_topic(it.info.topic.m_topic_name),
+                        utils::demangle_if_ros_type(it.info.topic.type_name),
+                        1
+                    });
         }
         if (it.info.is_reader())
         {
             readers.push_back({
-                utils::demangle_if_ros_topic(it.info.topic.m_topic_name),
-                utils::demangle_if_ros_type(it.info.topic.type_name),
-                1
-            });
+                        utils::demangle_if_ros_topic(it.info.topic.m_topic_name),
+                        utils::demangle_if_ros_type(it.info.topic.type_name),
+                        1
+                    });
         }
 
     }
@@ -899,14 +899,14 @@ TEST(ModelParserTest, simple_dds_endpoint_writer)
     for (const auto& it : endpoints)
     {
         expected_result.push_back({
-            it.info.guid,
-            it.info.discoverer_participant_id,
-            {
-                it.info.topic.m_topic_name,
-                it.info.topic.type_name
-            }
+                    it.info.guid,
+                    it.info.discoverer_participant_id,
+                    {
+                        it.info.topic.m_topic_name,
+                        it.info.topic.type_name
+                    }
 
-        });
+                });
     }
 
     // Check information
@@ -937,14 +937,14 @@ TEST(ModelParserTest, simple_dds_endpoint_writer_ros2_types)
     for (const auto& it : endpoints)
     {
         expected_result.push_back({
-            it.info.guid,
-            it.info.discoverer_participant_id,
-            {
-                it.info.topic.m_topic_name,
-                it.info.topic.type_name
-            }
+                    it.info.guid,
+                    it.info.discoverer_participant_id,
+                    {
+                        it.info.topic.m_topic_name,
+                        it.info.topic.type_name
+                    }
 
-        });
+                });
     }
 
     // Check information
@@ -980,14 +980,14 @@ TEST(ModelParserTest, simple_ros2_endpoint_writer)
     for (const auto& it : endpoints)
     {
         expected_result.push_back({
-            it.info.guid,
-            it.info.discoverer_participant_id,
-            {
-                it.info.topic.m_topic_name,
-                it.info.topic.type_name
-            }
+                    it.info.guid,
+                    it.info.discoverer_participant_id,
+                    {
+                        it.info.topic.m_topic_name,
+                        it.info.topic.type_name
+                    }
 
-        });
+                });
     }
 
     // Check information
@@ -1023,14 +1023,14 @@ TEST(ModelParserTest, simple_ros2_endpoint_writer_ros2_types)
     for (const auto& it : endpoints)
     {
         expected_result.push_back({
-            it.info.guid,
-            it.info.discoverer_participant_id,
-            {
-                utils::demangle_if_ros_topic(it.info.topic.m_topic_name),
-                utils::demangle_if_ros_type(it.info.topic.type_name)
-            }
+                    it.info.guid,
+                    it.info.discoverer_participant_id,
+                    {
+                        utils::demangle_if_ros_topic(it.info.topic.m_topic_name),
+                        utils::demangle_if_ros_type(it.info.topic.type_name)
+                    }
 
-        });
+                });
     }
 
     // Check information
@@ -1061,14 +1061,14 @@ TEST(ModelParserTest, simple_dds_endpoint_reader)
     for (const auto& it : endpoints)
     {
         expected_result.push_back({
-            it.info.guid,
-            it.info.discoverer_participant_id,
-            {
-                it.info.topic.m_topic_name,
-                it.info.topic.type_name
-            }
+                    it.info.guid,
+                    it.info.discoverer_participant_id,
+                    {
+                        it.info.topic.m_topic_name,
+                        it.info.topic.type_name
+                    }
 
-        });
+                });
     }
 
     // Check information
@@ -1099,14 +1099,14 @@ TEST(ModelParserTest, simple_dds_endpoint_reader_ros2_types)
     for (const auto& it : endpoints)
     {
         expected_result.push_back({
-            it.info.guid,
-            it.info.discoverer_participant_id,
-            {
-                it.info.topic.m_topic_name,
-                it.info.topic.type_name
-            }
+                    it.info.guid,
+                    it.info.discoverer_participant_id,
+                    {
+                        it.info.topic.m_topic_name,
+                        it.info.topic.type_name
+                    }
 
-        });
+                });
     }
 
     // Check information
@@ -1142,14 +1142,14 @@ TEST(ModelParserTest, simple_ros2_endpoint_reader)
     for (const auto& it : endpoints)
     {
         expected_result.push_back({
-            it.info.guid,
-            it.info.discoverer_participant_id,
-            {
-                it.info.topic.m_topic_name,
-                it.info.topic.type_name
-            }
+                    it.info.guid,
+                    it.info.discoverer_participant_id,
+                    {
+                        it.info.topic.m_topic_name,
+                        it.info.topic.type_name
+                    }
 
-        });
+                });
     }
 
     // Check information
@@ -1185,14 +1185,14 @@ TEST(ModelParserTest, simple_ros2_endpoint_reader_ros2_types)
     for (const auto& it : endpoints)
     {
         expected_result.push_back({
-            it.info.guid,
-            it.info.discoverer_participant_id,
-            {
-                utils::demangle_if_ros_topic(it.info.topic.m_topic_name),
-                utils::demangle_if_ros_type(it.info.topic.type_name)
-            }
+                    it.info.guid,
+                    it.info.discoverer_participant_id,
+                    {
+                        utils::demangle_if_ros_topic(it.info.topic.m_topic_name),
+                        utils::demangle_if_ros_type(it.info.topic.type_name)
+                    }
 
-        });
+                });
     }
 
     // Check information
@@ -2030,15 +2030,15 @@ TEST(ModelParserTest, simple_topic_dds_endpoints)
     // Create expected return
     std::vector<spy::participants::SimpleTopicData> expected_result;
     expected_result.push_back({
-        topic.m_topic_name,
-        topic.type_name,
-        2,
-        1,
-        {
-            10,
-            "Hz"
-        }
-    });
+                topic.m_topic_name,
+                topic.type_name,
+                2,
+                1,
+                {
+                    10,
+                    "Hz"
+                }
+            });
 
     // Check information
     ASSERT_EQ(result[0].name, expected_result[0].name);
@@ -2073,15 +2073,15 @@ TEST(ModelParserTest, simple_topic_dds_endpoints_ros2_types)
     // Create expected return
     std::vector<spy::participants::SimpleTopicData> expected_result;
     expected_result.push_back({
-        topic.m_topic_name,
-        topic.type_name,
-        2,
-        1,
-        {
-            10,
-            "Hz"
-        }
-    });
+                topic.m_topic_name,
+                topic.type_name,
+                2,
+                1,
+                {
+                    10,
+                    "Hz"
+                }
+            });
 
     // Check information
     ASSERT_EQ(result[0].name, expected_result[0].name);
@@ -2119,15 +2119,15 @@ TEST(ModelParserTest, simple_topic_ros2_endpoints)
     // Create expected return
     std::vector<spy::participants::SimpleTopicData> expected_result;
     expected_result.push_back({
-        topic.m_topic_name,
-        topic.type_name,
-        2,
-        1,
-        {
-            10,
-            "Hz"
-        }
-    });
+                topic.m_topic_name,
+                topic.type_name,
+                2,
+                1,
+                {
+                    10,
+                    "Hz"
+                }
+            });
 
     // Check information
     ASSERT_EQ(result[0].name, expected_result[0].name);
@@ -2165,15 +2165,15 @@ TEST(ModelParserTest, simple_topic_ros2_endpoints_ros2_types)
     // Create expected return
     std::vector<spy::participants::SimpleTopicData> expected_result;
     expected_result.push_back({
-        utils::demangle_if_ros_topic(topic.m_topic_name),
-        utils::demangle_if_ros_type(topic.type_name),
-        2,
-        1,
-        {
-            10,
-            "Hz"
-        }
-    });
+                utils::demangle_if_ros_topic(topic.m_topic_name),
+                utils::demangle_if_ros_type(topic.type_name),
+                2,
+                1,
+                {
+                    10,
+                    "Hz"
+                }
+            });
 
     // Check information
     ASSERT_EQ(result[0].name, expected_result[0].name);
@@ -2212,13 +2212,14 @@ TEST(ModelParserTest, topics_verbose_dds_endpoints)
     std::vector<spy::participants::ComplexTopicData::Endpoint> datareaders;
     for (const auto& it : endpoints)
     {
-        std::ostringstream ss;
-        ss << it.info.guid;
         std::string partition = "";
-        const auto partition_it = it.info.specific_partitions.find(ss.str());
-        if (partition_it != it.info.specific_partitions.end())
+        for (const auto& name : it.info.specific_qos.partitions.names())
         {
-            partition = partition_it->second;
+            if (!partition.empty())
+            {
+                partition += "|";
+            }
+            partition += name;
         }
 
         if (it.info.is_reader())
@@ -2290,13 +2291,14 @@ TEST(ModelParserTest, topics_verbose_dds_endpoints_ros2_types)
     std::vector<spy::participants::ComplexTopicData::Endpoint> datareaders;
     for (const auto& it : endpoints)
     {
-        std::ostringstream ss;
-        ss << it.info.guid;
         std::string partition = "";
-        const auto partition_it = it.info.specific_partitions.find(ss.str());
-        if (partition_it != it.info.specific_partitions.end())
+        for (const auto& name : it.info.specific_qos.partitions.names())
         {
-            partition = partition_it->second;
+            if (!partition.empty())
+            {
+                partition += "|";
+            }
+            partition += name;
         }
 
         if (it.info.is_reader())
@@ -2371,13 +2373,14 @@ TEST(ModelParserTest, topics_verbose_ros2_endpoints)
     std::vector<spy::participants::ComplexTopicData::Endpoint> datareaders;
     for (const auto& it : endpoints)
     {
-        std::ostringstream ss;
-        ss << it.info.guid;
         std::string partition = "";
-        const auto partition_it = it.info.specific_partitions.find(ss.str());
-        if (partition_it != it.info.specific_partitions.end())
+        for (const auto& name : it.info.specific_qos.partitions.names())
         {
-            partition = partition_it->second;
+            if (!partition.empty())
+            {
+                partition += "|";
+            }
+            partition += name;
         }
 
         if (it.info.is_reader())
@@ -2452,13 +2455,14 @@ TEST(ModelParserTest, topics_verbose_ros2_endpoints_ros2_types)
     std::vector<spy::participants::ComplexTopicData::Endpoint> datareaders;
     for (const auto& it : endpoints)
     {
-        std::ostringstream ss;
-        ss << it.info.guid;
         std::string partition = "";
-        const auto partition_it = it.info.specific_partitions.find(ss.str());
-        if (partition_it != it.info.specific_partitions.end())
+        for (const auto& name : it.info.specific_qos.partitions.names())
         {
-            partition = partition_it->second;
+            if (!partition.empty())
+            {
+                partition += "|";
+            }
+            partition += name;
         }
 
         if (it.info.is_reader())
@@ -2527,13 +2531,14 @@ TEST(ModelParserTest, complex_topic_dds_endpoints)
     std::vector<spy::participants::ComplexTopicData::Endpoint> datareaders;
     for (const auto& it : endpoints)
     {
-        std::ostringstream ss;
-        ss << it.info.guid;
         std::string partition = "";
-        const auto partition_it = it.info.specific_partitions.find(ss.str());
-        if (partition_it != it.info.specific_partitions.end())
+        for (const auto& name : it.info.specific_qos.partitions.names())
         {
-            partition = partition_it->second;
+            if (!partition.empty())
+            {
+                partition += "|";
+            }
+            partition += name;
         }
 
         if (it.info.is_reader())
@@ -2596,13 +2601,14 @@ TEST(ModelParserTest, complex_topic_dds_endpoints_ros2_types)
     std::vector<spy::participants::ComplexTopicData::Endpoint> datareaders;
     for (const auto& it : endpoints)
     {
-        std::ostringstream ss;
-        ss << it.info.guid;
         std::string partition = "";
-        const auto partition_it = it.info.specific_partitions.find(ss.str());
-        if (partition_it != it.info.specific_partitions.end())
+        for (const auto& name : it.info.specific_qos.partitions.names())
         {
-            partition = partition_it->second;
+            if (!partition.empty())
+            {
+                partition += "|";
+            }
+            partition += name;
         }
 
         if (it.info.is_reader())
@@ -2668,13 +2674,14 @@ TEST(ModelParserTest, complex_topic_ros2_endpoints)
     std::vector<spy::participants::ComplexTopicData::Endpoint> datareaders;
     for (const auto& it : endpoints)
     {
-        std::ostringstream ss;
-        ss << it.info.guid;
         std::string partition = "";
-        const auto partition_it = it.info.specific_partitions.find(ss.str());
-        if (partition_it != it.info.specific_partitions.end())
+        for (const auto& name : it.info.specific_qos.partitions.names())
         {
-            partition = partition_it->second;
+            if (!partition.empty())
+            {
+                partition += "|";
+            }
+            partition += name;
         }
 
         if (it.info.is_reader())
@@ -2740,13 +2747,14 @@ TEST(ModelParserTest, complex_topic_ros2_endpoints_ros2_types)
     std::vector<spy::participants::ComplexTopicData::Endpoint> datareaders;
     for (const auto& it : endpoints)
     {
-        std::ostringstream ss;
-        ss << it.info.guid;
         std::string partition = "";
-        const auto partition_it = it.info.specific_partitions.find(ss.str());
-        if (partition_it != it.info.specific_partitions.end())
+        for (const auto& name : it.info.specific_qos.partitions.names())
         {
-            partition = partition_it->second;
+            if (!partition.empty())
+            {
+                partition += "|";
+            }
+            partition += name;
         }
 
         if (it.info.is_reader())
@@ -3142,14 +3150,14 @@ TEST(ModelParserTest, simple_dds_endpoint_writer_filtered)
         }
 
         expected_result.push_back({
-            it.info.guid,
-            it.info.discoverer_participant_id,
-            {
-                it.info.topic.m_topic_name,
-                it.info.topic.type_name
-            }
+                    it.info.guid,
+                    it.info.discoverer_participant_id,
+                    {
+                        it.info.topic.m_topic_name,
+                        it.info.topic.type_name
+                    }
 
-        });
+                });
     }
 
     // Check information
@@ -3188,14 +3196,14 @@ TEST(ModelParserTest, simple_dds_endpoint_writer_ros2_types_filtered)
         }
 
         expected_result.push_back({
-            it.info.guid,
-            it.info.discoverer_participant_id,
-            {
-                it.info.topic.m_topic_name,
-                it.info.topic.type_name
-            }
+                    it.info.guid,
+                    it.info.discoverer_participant_id,
+                    {
+                        it.info.topic.m_topic_name,
+                        it.info.topic.type_name
+                    }
 
-        });
+                });
     }
 
     // Check information
@@ -3239,14 +3247,14 @@ TEST(ModelParserTest, simple_ros2_endpoint_writer_filtered)
         }
 
         expected_result.push_back({
-            it.info.guid,
-            it.info.discoverer_participant_id,
-            {
-                it.info.topic.m_topic_name,
-                it.info.topic.type_name
-            }
+                    it.info.guid,
+                    it.info.discoverer_participant_id,
+                    {
+                        it.info.topic.m_topic_name,
+                        it.info.topic.type_name
+                    }
 
-        });
+                });
     }
 
     // Check information
@@ -3289,14 +3297,14 @@ TEST(ModelParserTest, simple_ros2_endpoint_writer_ros2_types_filtered)
         }
 
         expected_result.push_back({
-            it.info.guid,
-            it.info.discoverer_participant_id,
-            {
-                utils::demangle_if_ros_topic(it.info.topic.m_topic_name),
-                utils::demangle_if_ros_type(it.info.topic.type_name)
-            }
+                    it.info.guid,
+                    it.info.discoverer_participant_id,
+                    {
+                        utils::demangle_if_ros_topic(it.info.topic.m_topic_name),
+                        utils::demangle_if_ros_type(it.info.topic.type_name)
+                    }
 
-        });
+                });
     }
 
     // Check information
@@ -3335,14 +3343,14 @@ TEST(ModelParserTest, simple_dds_endpoint_reader_filtered)
         }
 
         expected_result.push_back({
-            it.info.guid,
-            it.info.discoverer_participant_id,
-            {
-                it.info.topic.m_topic_name,
-                it.info.topic.type_name
-            }
+                    it.info.guid,
+                    it.info.discoverer_participant_id,
+                    {
+                        it.info.topic.m_topic_name,
+                        it.info.topic.type_name
+                    }
 
-        });
+                });
     }
 
     // Check information
@@ -3380,14 +3388,14 @@ TEST(ModelParserTest, simple_dds_endpoint_reader_ros2_types_filtered)
         }
 
         expected_result.push_back({
-            it.info.guid,
-            it.info.discoverer_participant_id,
-            {
-                it.info.topic.m_topic_name,
-                it.info.topic.type_name
-            }
+                    it.info.guid,
+                    it.info.discoverer_participant_id,
+                    {
+                        it.info.topic.m_topic_name,
+                        it.info.topic.type_name
+                    }
 
-        });
+                });
     }
 
     // Check information
@@ -3430,14 +3438,14 @@ TEST(ModelParserTest, simple_ros2_endpoint_reader_filtered)
         }
 
         expected_result.push_back({
-            it.info.guid,
-            it.info.discoverer_participant_id,
-            {
-                it.info.topic.m_topic_name,
-                it.info.topic.type_name
-            }
+                    it.info.guid,
+                    it.info.discoverer_participant_id,
+                    {
+                        it.info.topic.m_topic_name,
+                        it.info.topic.type_name
+                    }
 
-        });
+                });
     }
 
     // Check information
@@ -3480,14 +3488,14 @@ TEST(ModelParserTest, simple_ros2_endpoint_reader_ros2_types_filtered)
         }
 
         expected_result.push_back({
-            it.info.guid,
-            it.info.discoverer_participant_id,
-            {
-                utils::demangle_if_ros_topic(it.info.topic.m_topic_name),
-                utils::demangle_if_ros_type(it.info.topic.type_name)
-            }
+                    it.info.guid,
+                    it.info.discoverer_participant_id,
+                    {
+                        utils::demangle_if_ros_topic(it.info.topic.m_topic_name),
+                        utils::demangle_if_ros_type(it.info.topic.type_name)
+                    }
 
-        });
+                });
     }
 
     // Check information
@@ -4391,15 +4399,15 @@ TEST(ModelParserTest, simple_topic_dds_endpoints_filtered)
     // Create expected return
     std::vector<spy::participants::SimpleTopicData> expected_result;
     expected_result.push_back({
-        topic.m_topic_name,
-        topic.type_name,
-        2,
-        1,
-        {
-            10,
-            "Hz"
-        }
-    });
+                topic.m_topic_name,
+                topic.type_name,
+                2,
+                1,
+                {
+                    10,
+                    "Hz"
+                }
+            });
 
     // Check information
     ASSERT_EQ(result[0].name, expected_result[0].name);
@@ -4435,15 +4443,15 @@ TEST(ModelParserTest, simple_topic_dds_endpoints_ros2_types_filtered)
     // Create expected return
     std::vector<spy::participants::SimpleTopicData> expected_result;
     expected_result.push_back({
-        topic.m_topic_name,
-        topic.type_name,
-        2,
-        1,
-        {
-            10,
-            "Hz"
-        }
-    });
+                topic.m_topic_name,
+                topic.type_name,
+                2,
+                1,
+                {
+                    10,
+                    "Hz"
+                }
+            });
 
     // Check information
     ASSERT_EQ(result[0].name, expected_result[0].name);
@@ -4482,15 +4490,15 @@ TEST(ModelParserTest, simple_topic_ros2_endpoints_filtered)
     // Create expected return
     std::vector<spy::participants::SimpleTopicData> expected_result;
     expected_result.push_back({
-        topic.m_topic_name,
-        topic.type_name,
-        2,
-        1,
-        {
-            10,
-            "Hz"
-        }
-    });
+                topic.m_topic_name,
+                topic.type_name,
+                2,
+                1,
+                {
+                    10,
+                    "Hz"
+                }
+            });
 
     // Check information
     ASSERT_EQ(result[0].name, expected_result[0].name);
@@ -4528,15 +4536,15 @@ TEST(ModelParserTest, simple_topic_ros2_endpoints_ros2_types_filtered)
     // Create expected return
     std::vector<spy::participants::SimpleTopicData> expected_result;
     expected_result.push_back({
-        utils::demangle_if_ros_topic(topic.m_topic_name),
-        utils::demangle_if_ros_type(topic.type_name),
-        2,
-        1,
-        {
-            10,
-            "Hz"
-        }
-    });
+                utils::demangle_if_ros_topic(topic.m_topic_name),
+                utils::demangle_if_ros_type(topic.type_name),
+                2,
+                1,
+                {
+                    10,
+                    "Hz"
+                }
+            });
 
     // Check information
     ASSERT_EQ(result[0].name, expected_result[0].name);
@@ -4581,13 +4589,14 @@ TEST(ModelParserTest, topics_verbose_dds_endpoints_filtered)
             continue;
         }
 
-        std::ostringstream ss;
-        ss << it.info.guid;
         std::string partition = "";
-        const auto partition_it = it.info.specific_partitions.find(ss.str());
-        if (partition_it != it.info.specific_partitions.end())
+        for (const auto& name : it.info.specific_qos.partitions.names())
         {
-            partition = partition_it->second;
+            if (!partition.empty())
+            {
+                partition += "|";
+            }
+            partition += name;
         }
 
         if (it.info.is_reader())
@@ -4667,13 +4676,14 @@ TEST(ModelParserTest, topics_verbose_dds_endpoints_ros2_types_filtered)
             continue;
         }
 
-        std::ostringstream ss;
-        ss << it.info.guid;
         std::string partition = "";
-        const auto partition_it = it.info.specific_partitions.find(ss.str());
-        if (partition_it != it.info.specific_partitions.end())
+        for (const auto& name : it.info.specific_qos.partitions.names())
         {
-            partition = partition_it->second;
+            if (!partition.empty())
+            {
+                partition += "|";
+            }
+            partition += name;
         }
 
         if (it.info.is_reader())
@@ -4756,13 +4766,14 @@ TEST(ModelParserTest, topics_verbose_ros2_endpoints_filtered)
             continue;
         }
 
-        std::ostringstream ss;
-        ss << it.info.guid;
         std::string partition = "";
-        const auto partition_it = it.info.specific_partitions.find(ss.str());
-        if (partition_it != it.info.specific_partitions.end())
+        for (const auto& name : it.info.specific_qos.partitions.names())
         {
-            partition = partition_it->second;
+            if (!partition.empty())
+            {
+                partition += "|";
+            }
+            partition += name;
         }
 
         if (it.info.is_reader())
@@ -4844,13 +4855,14 @@ TEST(ModelParserTest, topics_verbose_ros2_endpoints_ros2_types_filtered)
             continue;
         }
 
-        std::ostringstream ss;
-        ss << it.info.guid;
         std::string partition = "";
-        const auto partition_it = it.info.specific_partitions.find(ss.str());
-        if (partition_it != it.info.specific_partitions.end())
+        for (const auto& name : it.info.specific_qos.partitions.names())
         {
-            partition = partition_it->second;
+            if (!partition.empty())
+            {
+                partition += "|";
+            }
+            partition += name;
         }
 
         if (it.info.is_reader())
@@ -4927,13 +4939,14 @@ TEST(ModelParserTest, complex_topic_dds_endpoints_filtered)
             continue;
         }
 
-        std::ostringstream ss;
-        ss << it.info.guid;
         std::string partition = "";
-        const auto partition_it = it.info.specific_partitions.find(ss.str());
-        if (partition_it != it.info.specific_partitions.end())
+        for (const auto& name : it.info.specific_qos.partitions.names())
         {
-            partition = partition_it->second;
+            if (!partition.empty())
+            {
+                partition += "|";
+            }
+            partition += name;
         }
 
         if (it.info.is_reader())
@@ -5002,13 +5015,14 @@ TEST(ModelParserTest, complex_topic_dds_endpoints_ros2_types_filtered)
             continue;
         }
 
-        std::ostringstream ss;
-        ss << it.info.guid;
         std::string partition = "";
-        const auto partition_it = it.info.specific_partitions.find(ss.str());
-        if (partition_it != it.info.specific_partitions.end())
+        for (const auto& name : it.info.specific_qos.partitions.names())
         {
-            partition = partition_it->second;
+            if (!partition.empty())
+            {
+                partition += "|";
+            }
+            partition += name;
         }
 
         if (it.info.is_reader())
@@ -5082,13 +5096,14 @@ TEST(ModelParserTest, complex_topic_ros2_endpoints_filtered)
             continue;
         }
 
-        std::ostringstream ss;
-        ss << it.info.guid;
         std::string partition = "";
-        const auto partition_it = it.info.specific_partitions.find(ss.str());
-        if (partition_it != it.info.specific_partitions.end())
+        for (const auto& name : it.info.specific_qos.partitions.names())
         {
-            partition = partition_it->second;
+            if (!partition.empty())
+            {
+                partition += "|";
+            }
+            partition += name;
         }
 
         if (it.info.is_reader())
@@ -5162,13 +5177,14 @@ TEST(ModelParserTest, complex_topic_ros2_endpoints_ros2_types_filtered)
             continue;
         }
 
-        std::ostringstream ss;
-        ss << it.info.guid;
         std::string partition = "";
-        const auto partition_it = it.info.specific_partitions.find(ss.str());
-        if (partition_it != it.info.specific_partitions.end())
+        for (const auto& name : it.info.specific_qos.partitions.names())
         {
-            partition = partition_it->second;
+            if (!partition.empty())
+            {
+                partition += "|";
+            }
+            partition += name;
         }
 
         if (it.info.is_reader())

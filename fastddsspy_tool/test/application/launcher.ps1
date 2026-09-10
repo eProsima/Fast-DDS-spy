@@ -44,17 +44,12 @@ Param(
     $test_path
 )
 
-$test = Start-Process -Passthru -Wait `
-    -FilePath $python_path `
-    -ArgumentList (
-        $test_script,
-        "--exe", $tool_path,
-        "--pub", $pub_path,
-        "--test", $test_path) `
-    -WindowStyle Hidden
+# Run in-process so that the test output (including output mismatches) is captured by CTest
+& $python_path $test_script --exe $tool_path --pub $pub_path --test $test_path
+$exit_code = $LASTEXITCODE
 
-if( $test.ExitCode -ne 0 )
+if( $exit_code -ne 0 )
 {
-    $error_message = "Test: $test_path failed with exit code $($test.ExitCode)."
+    $error_message = "Test: $test_path failed with exit code $exit_code."
     throw $error_message
 }

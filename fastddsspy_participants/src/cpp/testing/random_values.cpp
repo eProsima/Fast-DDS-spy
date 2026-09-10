@@ -51,11 +51,8 @@ void random_endpoint_info(
     endpoint_data.info.topic = topic;
     endpoint_data.info.discoverer_participant_id = ddspipe::core::testing::random_participant_id(seed);
     endpoint_data.type_idl = "type_idl";
-    // add empty partition
-    endpoint_data.info.specific_partitions = std::map<std::string, std::string>();
-    std::ostringstream ss;
-    ss << endpoint_data.info.guid;
-    endpoint_data.info.specific_partitions[ss.str()] = ""; // empty partition
+    // no partitions announced
+    endpoint_data.info.specific_qos.partitions.clear();
 }
 
 } /* namespace participants */
