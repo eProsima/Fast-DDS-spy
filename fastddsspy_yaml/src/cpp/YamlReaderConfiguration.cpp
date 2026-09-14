@@ -170,6 +170,14 @@ void Configuration::load_dds_configuration_(
         dds_configuration->participant_profile = YamlReader::get<std::string>(yml, FASTDDSSPY_PROFILE_TAG, version);
     }
 
+    // TODO(topic-profile-lookup): the ddspipe 'endpoint-qos-mode' participant tag (XML_OVERRIDABLE /
+    // XML_STANDALONE) is NOT parsed here, so 'dds_configuration->endpoint_qos_mode' always keeps its
+    // default (XML_OVERRIDABLE) and users cannot select 'xml-standalone'. The ddspipe feature supports
+    // both modes and the tag is honoured by tools that build their config via ddspipe_yaml's
+    // fill<XmlParticipantConfiguration> (e.g. DDS Router); the Spy hand-builds dds_configuration and only
+    // reads 'dds-profile' above. To expose it, read ENDPOINT_QOS_MODE_TAG here and set
+    // dds_configuration->endpoint_qos_mode accordingly.
+
     /////
     // Get optional allowlist
     if (YamlReader::is_tag_present(yml, ALLOWLIST_TAG))
