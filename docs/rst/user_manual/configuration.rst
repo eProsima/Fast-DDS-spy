@@ -140,6 +140,51 @@ Consider the following example:
 In this example, the data in the topic ``AllowedTopic1`` with type ``Allowed`` and the data in the topic ``AllowedTopic2`` with any type will be processed by the |spy|.
 The data in the topic ``HelloWorldTopic`` with type ``HelloWorld`` will be blocked, since the ``blocklist`` is blocking all topics with any name and with type ``HelloWorld``.
 
+.. note::
+
+    The |spy| always blocks the ROS 2 service topics ``rq/*`` and ``rr/*``, regardless of the
+    ``allowlist`` and ``blocklist`` configured.
+    A ROS 2 service client waits to discover a server and then sends its request to that server only;
+    if these topics were not blocked, the client could take the |spy| for a service server and send it
+    a request that would never be answered.
+    As a consequence, ROS 2 service topics are never reported by the
+    :ref:`topics <user_manual_command_topic>` command nor printed by the
+    :ref:`echo <user_manual_command_echo>` command, and this cannot be overridden from the
+    ``allowlist``.
+
+.. _user_manual_configuration_dds__partitions:
+
+Partitions
+----------
+
+The optional ``partitions`` tag restricts the data processed by the |spy| to the :term:`Partitions<Partition>`
+listed under it.
+It takes a list of strings, each of which accepts wildcard characters:
+
+.. code-block:: yaml
+
+    dds:
+
+      partitions:
+        - "PartitionA"
+        - "Sensor*"
+
+Setting this tag is equivalent to running the :ref:`filter <user_manual_command_filter>` command with
+``filter add partitions <filter_str>`` once for every entry, and the filter can be inspected and
+modified at run time with that same command.
+When the tag is not set, no partition filter is applied and the data of every discovered endpoint is
+processed.
+
+An endpoint that announces no partition at all is matched only by the empty filter ``""``, and the
+empty filter matches only such endpoints.
+Note that a wildcard entry such as ``"*"`` therefore does **not** match an endpoint without partitions.
+
+.. warning::
+
+    Do not confuse this tag with the ``partitions`` :ref:`Topic QoS <user_manual_configuration_dds__topic_qos>`.
+    ``dds: partitions`` is a list of strings that filters which partitions are processed, whereas
+    ``qos: partitions`` is a *bool* that configures whether a topic uses partitions.
+
 .. _user_manual_configuration_dds__topic_qos:
 
 Topic QoS
@@ -216,6 +261,13 @@ For more information on topics, please read the `Fast DDS Topic <https://fast-dd
         - Greater than ``0``
         - :ref:`user_manual_configuration_dds__downsampling`
 
+    *   - Endpoint Profile Name
+        - ``endpoint-profile-name``
+        - *string*
+        - Not set
+        - XML profile name
+        - :ref:`user_manual_configuration_dds__endpoint_profile_name`
+
 .. warning::
 
     Manually configuring ``TRANSIENT_LOCAL`` durability may lead to incompatibility issues when the discovered reliability is ``BEST_EFFORT``.
@@ -249,6 +301,24 @@ When the ``max-rx-rate`` tag is also set, downsampling only applies to messages 
 It only accepts positive integers.
 By default it is set to ``1``; it accepts every message.
 
+.. _user_manual_configuration_dds__endpoint_profile_name:
+
+Endpoint Profile Name
+^^^^^^^^^^^^^^^^^^^^^
+
+The ``endpoint-profile-name`` tag sets the name of the Fast DDS XML profile used to create the
+:term:`DataReaders<DataReader>` that the |spy| subscribes with.
+The profile must be defined in one of the XML configurations loaded through the ``xml`` tag, as
+described in :ref:`Load XML Configuration <user_manual_configuration_dds>`.
+By default no profile name is set, and the readers are created with the QoS resulting from the rest
+of the configuration and from discovery.
+
+.. note::
+
+    This tag has no effect when ``specs: rtps`` is set to ``true``, since XML profiles are only
+    applied by the DDS participant.
+    See :ref:`RTPS Participant <user_manual_configuration_specs_rtps>`.
+
 .. _user_manual_configuration_dds__manual_topics:
 
 Manual Topics
@@ -256,7 +326,8 @@ Manual Topics
 
 A subset of :ref:`Topic QoS <user_manual_configuration_dds__topic_qos>` can be manually configured for a specific topic under the tag ``topics``.
 The tag ``topics`` has a required ``name`` tag that accepts wildcard characters.
-It also has two optional tags: a ``type`` tag that accepts wildcard characters and a ``qos`` tag with the :ref:`Topic QoS <user_manual_configuration_dds__topic_qos>` that the user wants to manually configure.
+It also has three optional tags: a ``type`` tag that accepts wildcard characters, a ``qos`` tag with the :ref:`Topic QoS <user_manual_configuration_dds__topic_qos>` that
+the user wants to manually configure, and a ``filter`` tag with a :ref:`Content Filter <user_manual_configuration_dds__content_filter>` expression.
 If a ``qos`` is not manually configured, it will get its value by discovery.
 
 .. code-block:: yaml
@@ -271,6 +342,43 @@ If a ``qos`` is not manually configured, it will get its value by discovery.
 .. note::
 
     The :ref:`Topic QoS <user_manual_configuration_dds__topic_qos>` configured in the Manual Topics take precedence over the :ref:`Specs Topic QoS <user_manual_configuration_specs_topic_qos>`.
+
+.. _user_manual_configuration_dds__content_filter:
+
+Content Filter
+^^^^^^^^^^^^^^
+
+The optional ``filter`` tag sets a :term:`ContentFilteredTopic` expression on the topic, so that the
+|spy| only receives the samples whose content satisfies it.
+The expression follows the syntax described in the
+`Fast DDS ContentFilteredTopic <https://fast-dds.docs.eprosima.com/en/latest/fastdds/dds_layer/topic/contentFilteredTopic/contentFilteredTopic.html>`_
+section, and refers to the fields of the topic data type.
+
+.. code-block:: yaml
+
+    dds:
+
+      topics:
+        - name: "HelloWorldTopic"
+          type: "HelloWorld"
+          filter: "index > 10"
+
+.. warning::
+
+    Unlike the ``qos`` tag, the ``filter`` tag is applied by matching the ``name`` against the
+    discovered topic name **exactly**.
+    An entry whose ``name`` contains wildcard characters never applies its filter to any topic.
+
+The same filter can be set, replaced and removed at run time with the
+:ref:`filter <user_manual_command_filter>` command, using ``filter set topic <topic_name> <filter_str>``.
+A filter set at run time replaces the one configured here for that topic.
+
+.. warning::
+
+    Content filters are only applied by the DDS participant.
+    When ``specs: rtps`` is set to ``true`` the expression configured here is **ignored**, even though
+    the :ref:`filter <user_manual_command_filter>` command still lists it.
+    See :ref:`RTPS Participant <user_manual_configuration_specs_rtps>`.
 
 DDS Domain Id
 -------------
@@ -406,6 +514,30 @@ Discovery Time
 This parameter is useful for very big networks, as |spy| may not discover the whole network fast enough to return a complete information.
 It only accepts non-negative integers.
 By default, this value is ``2000`` (2 seconds).
+
+.. _user_manual_configuration_specs_rtps:
+
+RTPS Participant
+----------------
+
+``specs`` supports an ``rtps`` **optional** tag that selects the kind of internal participant the |spy|
+creates to communicate with the DDS network.
+By default it is set to ``false``, and a DDS participant is created, which is the one that applies the
+Fast DDS XML profiles described in the :ref:`Load XML Configuration <user_manual_configuration_dds>`
+section.
+Setting ``rtps: true`` creates a plain RTPS participant instead, in which case XML profiles are not
+applied.
+
+.. warning::
+
+    When ``rtps`` is set to ``true``, the following configuration has no effect:
+
+    *   The ``xml`` and ``dds-profile`` tags, and the
+        :ref:`endpoint-profile-name <user_manual_configuration_dds__endpoint_profile_name>` Topic QoS,
+        since XML profiles are only applied by the DDS participant.
+    *   The :ref:`Content Filter <user_manual_configuration_dds__content_filter>` of the Manual Topics.
+        The :ref:`filter <user_manual_command_filter>` command also refuses to set one, reporting
+        ``RTPS does not support ContentFilteredTopic``.
 
 .. _user_manual_configuration_specs_topic_qos:
 

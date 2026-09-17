@@ -27,6 +27,11 @@ The current categories supported by the **filter** command are:
 - ``partitions``
 - ``topic``
 
+Both categories can also be set from the configuration file, so that the filters are already in place
+when the |spy| starts: the ``partitions`` category from the
+:ref:`partitions <user_manual_configuration_dds__partitions>` tag, and the ``topic`` category from the
+:ref:`Content Filter <user_manual_configuration_dds__content_filter>` of the Manual Topics.
+
 Arguments
 =========
 
