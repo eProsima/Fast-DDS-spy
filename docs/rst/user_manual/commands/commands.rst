@@ -111,7 +111,10 @@ Summary
         - ``_`` |br|
           ``verbose`` |br|
           ``vv`` |br|
-          ``<topic name>``
+          ``<topic name>`` |br|
+          ``<topic name> idl`` |br|
+          ``<topic name> keys`` |br|
+          ``<topic name> keys v``
         - ``topic`` ``topics`` |br|
           ``t`` ``T``
 
@@ -126,6 +129,7 @@ Summary
           ``<filter_str>`` |br|
           ``<topic_name>`` |br|
         - ``filter`` ``filters`` |br|
+          ``partitions`` |br|
           ``f`` ``F``
 
     *   - :ref:`user_manual_command_echo`
@@ -133,7 +137,7 @@ Summary
         - ``<topic name>`` |br|
           ``<topic name> verbose`` |br|
           ``all``
-        - ``show`` ``print`` |br|
+        - ``echo`` ``show`` ``print`` |br|
           ``s`` ``S``
 
     *   - :ref:`user_manual_commands_extra_help`

@@ -13,7 +13,7 @@ Key-words
 =========
 
 These are the key-words recognize as this command:
-``filter`` ``filters`` ``f`` ``F``.
+``filter`` ``filters`` ``partitions`` ``f`` ``F``.
 
 Categories
 ==========

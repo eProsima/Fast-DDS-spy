@@ -213,7 +213,24 @@ Be sure that this executable has execution permissions.
 Run tests
 =========
 
+Tests are not built by default.
+To build them, pass the :code:`BUILD_TESTS` CMake option to the :code:`colcon build` command:
 
+.. code-block:: bash
+
+    colcon build --packages-up-to-regex fastddsspy --cmake-args -DBUILD_TESTS=ON
+
+Once built, run the test suite with:
+
+.. code-block:: bash
+
+    colcon test --packages-select-regex fastddsspy --event-handlers console_direct+
+
+.. note::
+
+    Some tests carry the :code:`xfail` label and are expected to fail.
+    To exclude them, forward the label filter to :code:`ctest`:
+    :code:`colcon test --packages-select-regex fastddsspy --ctest-args --label-exclude "xfail"`.
 
 
 .. External links

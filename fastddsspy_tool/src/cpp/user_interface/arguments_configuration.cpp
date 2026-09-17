@@ -150,7 +150,7 @@ const option::Descriptor usage[] = {
         "  \t--log-verbosity\t  \t" \
         "Set a Log Verbosity Level higher or equal the one given. " \
         "(Values accepted: \"info\",\"warning\",\"error\" no Case Sensitive) " \
-        "[Default = \"warning\"]. "
+        "[Default = \"error\"]. "
     },
 
     {
