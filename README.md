@@ -112,6 +112,6 @@ installed in `<install-path>/fastddsspy_tool/bin/fastddsspy`:
 source <install-path>/setup.bash
 
 # Execute Fast DDS Spy
-fastddsspy_tool
-# Use <fastddsspy_tool --help> to see the tool manual
+fastddsspy
+# Use <fastddsspy --help> to see the tool manual
 ```

@@ -283,9 +283,9 @@ through the ``ros2-easy-mode`` tag.
     ros2-easy-mode: "2.2.2.2"       # Remote discovery server address
 
 .. warning::
-    This configuration is incompatible with the ``transports`` tag.
-    Setting ``ros2-easy-mode`` other than ``transports: builtin``
-    will prevent Easy Mode from being configured.
+    This configuration is incompatible with the ``transport`` tag.
+    Easy Mode is only configured when ``transport`` is left at its default value ``builtin``;
+    setting ``transport`` to ``udp`` or ``shm`` prevents Easy Mode from being configured.
 
     For now, only IPv4 addresses are supported.
 
@@ -337,7 +337,7 @@ Discovery Time
 
 ``specs`` supports a ``discovery-time`` **optional** value that allows the user to set the time (in milliseconds) before a :ref:`user_manual_user_interface_one_shot` retrieves the output and closes.
 This parameter is useful for very big networks, as |spy| may not discover the whole network fast enough to return a complete information.
-By default, this value is ``1000`` (1 second).
+By default, this value is ``2000`` (2 seconds).
 
 .. _user_manual_configuration_specs_topic_qos:
 
@@ -392,6 +392,15 @@ By default, the filter allows all errors to be displayed, while selectively perm
           warning : ``FASTDDSSPY`` |br|
           error : ``""``
         - Regex string
+
+    *   - Standard output
+        - ``stdout``
+        - Print the logs through |br|
+          the standard output and |br|
+          the standard error.
+        - *bool*
+        - ``true``
+        - ``true`` / ``false``
 
 .. note::
 
