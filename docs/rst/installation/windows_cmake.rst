@@ -1,5 +1,5 @@
-.. include:: ../../../exports/alias.include
-.. include:: ../../../exports/roles.include
+.. include:: ../exports/alias.include
+.. include:: ../exports/roles.include
 
 :orphan:
 

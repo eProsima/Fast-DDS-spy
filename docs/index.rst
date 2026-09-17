@@ -21,9 +21,10 @@
    :numbered: 5
    :hidden:
 
-   Windows </rst/installation/windows.rst>
-   Linux </rst/installation/linux.rst>
-   Docker Image </rst/installation/docker.rst>
+   /rst/installation/linux
+   /rst/installation/windows
+   /rst/installation/docker
+   /rst/installation/cmake_options
 
 
 .. _index_user_manual:
@@ -39,19 +40,6 @@
    /rst/user_manual/configuration.rst
    /rst/user_manual/commands/commands.rst
 ..    /rst/user_manual/project_overview.rst
-
-.. _index_developer_manual:
-
-.. toctree::
-   :caption: Developer Manual
-   :maxdepth: 2
-   :numbered: 5
-   :hidden:
-
-   /rst/developer_manual/installation/sources/linux
-   /rst/developer_manual/installation/sources/windows
-   /rst/developer_manual/installation/configuration/cmake_options
-
 
 .. _index_notes:
 
