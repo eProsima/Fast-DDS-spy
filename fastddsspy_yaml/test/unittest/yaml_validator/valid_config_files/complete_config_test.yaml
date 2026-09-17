@@ -30,9 +30,6 @@ dds:
     - name: "temperature/*"
       type: "temperature/types/*"
       filter: "value > 10"
-      participants:
-        - "participant_1"
-        - "participant_2"
       qos:
         durability: true
         reliability: true
