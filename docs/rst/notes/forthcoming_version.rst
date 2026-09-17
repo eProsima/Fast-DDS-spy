@@ -7,19 +7,13 @@
 Forthcoming Version
 ###################
 
-.. warning::
-
-    The ``qos`` and ``filter`` tags are no longer accepted within ``allowlist`` and ``blocklist`` entries,
-    and the ``participants`` tag is no longer accepted within ``topics`` entries.
-    None of them was ever documented: the *Fast DDS Spy* ignored the first two, while ``participants`` silently
-    discarded the manual Topic QoS configured alongside it.
-    Configuration files setting any of them are now reported as invalid and must be updated.
-
 Next release will include the following **bugfixes**:
 
 * Match the partition filters against the default empty partition, so that endpoints announcing no
   partition are filtered correctly
 * Report the correct default value of ``--log-verbosity`` in the application's help text
+* Solve flaky tests
+* Run the ``Uncrustify`` and ``Python Linters`` workflows only in pull requests
 
 Next release will include the following **improvements**:
 
@@ -30,8 +24,7 @@ Next release will include the following **improvements**:
 Next release will include the following **documentation updates**:
 
 * Warn that the configuration file is validated against a schema and that unknown tags are rejected
-* Add a tag tree to the *DDS* and *Specs* configuration sections, so that the documented order reflects
-  the real YAML nesting
+* Add a tag tree to the *DDS* and *Specs* configuration sections
 * Document the ``dds: partitions``, ``topics: filter``, ``qos: endpoint-profile-name`` and
   ``specs: rtps`` configuration tags
 * Document the accepted values and required tags of each configuration tag
@@ -41,8 +34,3 @@ Next release will include the following **documentation updates**:
 * Complete the command summary table with the missing key-words and arguments
 * Update the Docker image installation instructions to use eProsima's *Fast DDS Suite*
 * The Installation Manual has been merged with the Developer Manual, and the latter is removed
-
-Next release will include the following **CI improvements**:
-
-* Solve flaky tests
-* Run the ``Uncrustify`` and ``Python Linters`` workflows only in pull requests
