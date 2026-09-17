@@ -766,6 +766,9 @@ A complete example of all the configurations described on this page can be found
         - name: "topic_name"
           type: "topic_type"
 
+      partitions:
+        - "partition_name"
+
       topics:
         - name: "temperature/*"
           type: "temperature/types/*"
@@ -773,6 +776,10 @@ A complete example of all the configurations described on this page can be found
             max-rx-rate: 5
             downsampling: 1
             endpoint-profile-name: "custom_endpoint_profile"
+
+        - name: "HelloWorldTopic"
+          type: "HelloWorld"
+          filter: "index > 10"
 
       ignore-participant-flags: no_filter
       transport: builtin
@@ -784,7 +791,8 @@ A complete example of all the configurations described on this page can be found
 
     specs:
       threads: 12
-      discovery-time: 1000
+      discovery-time: 2000
+      rtps: false
 
       qos:
         history-depth: 5000
