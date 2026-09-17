@@ -1,5 +1,5 @@
-.. include:: ../../../exports/alias.include
-.. include:: ../../../exports/roles.include
+.. include:: ../exports/alias.include
+.. include:: ../exports/roles.include
 
 .. _cmake_options:
 
@@ -11,7 +11,7 @@ CMake options
 These options allow the developer to enable/disable certain |espy| settings by defining these options to ``ON``/``OFF`` at the CMake execution, or set the required path to certain dependencies.
 
 .. warning::
-    These options are only for developers who installed |espy| following the compilation steps described in :ref:`developer_manual_installation_sources_linux`.
+    These options are only for developers who installed |espy| following the compilation steps described in :ref:`installation_sources_linux`.
 
 .. list-table::
     :header-rows: 1
