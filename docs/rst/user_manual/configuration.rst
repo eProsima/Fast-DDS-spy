@@ -10,13 +10,50 @@ Configuration
 A |spy| instance can be configured by a :term:`YAML` configuration file.
 In order to retrieve a configuration file to a |spy|, use :ref:`user_manual_user_interface_configuration_file_argument`.
 
+The configuration file supports two **optional** top-level tags, ``dds`` and ``specs``, described in the
+sections below.
+A configuration file that sets neither of them, or that is empty, is valid: the |spy| then runs with
+its default values.
+
+.. warning::
+
+    The configuration file is validated against a schema before it is loaded, and only the tags documented on this page are accepted.
+    An unknown or misspelled tag is an error: the |spy| reports that the file is not a valid configuration and does not start.
+    Configuration files written for earlier versions may therefore need to be updated.
+
+
 .. _user_manual_configuration_dds:
 
 DDS Configurations
 ==================
 
 The YAML Configuration supports a ``dds`` **optional** tag that contains certain :term:`DDS` configurations.
-The values available to configure are described in the following sections.
+The tags accepted under ``dds`` are arranged as follows:
+
+.. code-block:: yaml
+
+    dds:
+
+      xml:                          # Fast DDS XML profiles
+        files: ...
+        raw: ...
+      dds-profile: ...              # XML profile applied to the internal DomainParticipant
+
+      allowlist: ...                # topics whose data is processed
+      blocklist: ...                # topics whose data is discarded
+      partitions: ...               # partitions whose data is processed
+
+      topics: ...                   # per-topic QoS and content filter
+
+      domain: ...                   # DDS Domain Id
+      ignore-participant-flags: ...
+      transport: ...
+      ros2-easy-mode: ...
+      whitelist-interfaces: ...
+
+      ros2-types: ...               # format used to display schemas
+
+The sections below follow this order.
 
 
 Load XML Configuration
@@ -31,10 +68,13 @@ XML configurations are then used to configure the internal DomainParticipant.
 
 To specify which profile to use, the ``dds-profile`` tag should be set with the name of the desired profile.
 
+When the ``xml`` tag is present it must contain at least one of ``files`` and ``raw``; it may contain both.
+
 Load XML Files
 ^^^^^^^^^^^^^^
 
 The ``files`` optional tag allows specifying a list of file paths from which XML configurations can be loaded.
+The list must contain at least one entry.
 
 Raw XML
 ^^^^^^^
@@ -115,54 +155,65 @@ For more information on topics, please read the `Fast DDS Topic <https://fast-dd
         - Yaml tag
         - Data type
         - Default value
+        - Possible values
         - QoS set
 
     *   - Reliability
         - ``reliability``
         - *bool*
         - ``false``
+        - ``true`` / ``false``
         - ``RELIABLE`` / ``BEST_EFFORT``
 
     *   - Durability
         - ``durability``
         - *bool*
         - ``false``
+        - ``true`` / ``false``
         - ``TRANSIENT_LOCAL`` / ``VOLATILE``
 
     *   - Ownership
         - ``ownership``
         - *bool*
         - ``false``
+        - ``true`` / ``false``
         - ``EXCLUSIVE_OWNERSHIP_QOS`` / ``SHARED_OWNERSHIP_QOS``
 
     *   - Partitions
         - ``partitions``
         - *bool*
         - ``false``
+        - ``true`` / ``false``
         - Topic with / without partitions
 
     *   - Key
         - ``keyed``
         - *bool*
         - ``false``
+        - ``true`` / ``false``
         - Topic with / without `key <https://fast-dds.docs.eprosima.com/en/latest/fastdds/dds_layer/topic/typeSupport/typeSupport.html#data-types-with-a-key>`_
 
     *   - History Depth
         - ``history-depth``
         - *unsigned integer*
         - ``5000``
+        - Greater than |br|
+          or equal to ``0``
         - :ref:`user_manual_configuration_dds__history_depth`
 
     *   - Max Reception Rate
         - ``max-rx-rate``
         - *float*
         - ``0`` (unlimited)
+        - Greater than |br|
+          or equal to ``0``
         - :ref:`user_manual_configuration_dds__max_rx_rate`
 
     *   - Downsampling
         - ``downsampling``
         - *unsigned integer*
         - ``1``
+        - Greater than ``0``
         - :ref:`user_manual_configuration_dds__downsampling`
 
 .. warning::
@@ -225,6 +276,7 @@ DDS Domain Id
 -------------
 
 In order to execute a |spy| instance in a :term:`Domain Id` different than the default (``0``) use tag ``domain``.
+It accepts an integer between ``0`` and ``232``.
 
 .. _user_manual_configuration_dds_ignore_participant_flags:
 
@@ -318,7 +370,21 @@ Specs Configurations
 ====================
 
 The YAML Configuration supports a ``specs`` **optional** tag that contains certain options related with the overall configuration of the application.
-The values available to configure are:
+The tags accepted under ``specs`` are arranged as follows:
+
+.. code-block:: yaml
+
+    specs:
+
+      threads: ...                  # size of the internal thread pool
+      discovery-time: ...           # gathering time of the one-shot execution
+      rtps: ...                     # use a plain RTPS participant
+
+      qos: ...                      # default Topic QoS
+
+      logging: ...                  # verbosity, filter and publication of the logs
+
+The sections below follow this order.
 
 Number of Threads
 -----------------
@@ -328,6 +394,7 @@ This ThreadPool allows to limit the number of threads spawned by the application
 This improves the performance of the data transmission between participants.
 
 This value should be set by each user depending on each system characteristics.
+It only accepts integers greater than or equal to ``1``.
 By default, this value is ``12``.
 
 .. _user_manual_configuration_discovery_time:
@@ -337,6 +404,7 @@ Discovery Time
 
 ``specs`` supports a ``discovery-time`` **optional** value that allows the user to set the time (in milliseconds) before a :ref:`user_manual_user_interface_one_shot` retrieves the output and closes.
 This parameter is useful for very big networks, as |spy| may not discover the whole network fast enough to return a complete information.
+It only accepts non-negative integers.
 By default, this value is ``2000`` (2 seconds).
 
 .. _user_manual_configuration_specs_topic_qos:
@@ -410,6 +478,8 @@ By default, the filter allows all errors to be displayed, while selectively perm
 The |spy| prints the logs by default (warnings and errors in the standard error and infos in the standard output).
 The |spy|, however, can also publish the logs in a DDS topic.
 To publish the logs, under the tag ``publish``, set ``enable: true`` and set a ``domain`` and a ``topic-name``.
+The ``enable`` tag is required whenever the ``publish`` tag is present, and ``domain`` accepts an integer
+between ``0`` and ``232``.
 The type of the logs published is defined as follows:
 
 **LogEntry.idl**
