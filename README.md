@@ -49,7 +49,6 @@ You can access the documentation online hosted on *Read the Docs*.
 * [Introduction](https://fast-dds-spy.readthedocs.io/en/latest/rst/formalia/titlepage.html)
 * [Installation Manual](https://fast-dds-spy.readthedocs.io/en/latest/rst/installation/linux.html)
 * [User Manual](https://fast-dds-spy.readthedocs.io/en/latest/rst/user_manual/usage_example.html)
-* [Developer Manual](https://fast-dds-spy.readthedocs.io/en/latest/rst/developer_manual/installation/sources/linux.html)
 * [Release Notes](https://fast-dds-spy.readthedocs.io/en/latest/rst/notes/notes.html)
 
 
@@ -57,8 +56,8 @@ You can access the documentation online hosted on *Read the Docs*.
 
 The instructions for installing the *Fast DDS Spy* application from sources and its required dependencies on a Linux
 environment are provided below. These installation instructions are a summarized version of the complete
-[installation guide](https://fast-dds-spy.readthedocs.io/en/latest/rst/developer_manual/installation/sources/linux.html) available online. Instructions for installing *Fast DDS Spy* on a **Windows** platform can be found
-[here](https://fast-dds-spy.readthedocs.io/en/latest/rst/developer_manual/installation/sources/windows.html).
+[installation guide](https://fast-dds-spy.readthedocs.io/en/latest/rst/installation/linux.html) available online. Instructions for installing *Fast DDS Spy* on a **Windows** platform can be found
+[here](https://fast-dds-spy.readthedocs.io/en/latest/rst/installation/windows.html).
 
 ### Requirements
 
@@ -112,6 +111,6 @@ installed in `<install-path>/fastddsspy_tool/bin/fastddsspy`:
 source <install-path>/setup.bash
 
 # Execute Fast DDS Spy
-fastddsspy_tool
-# Use <fastddsspy_tool --help> to see the tool manual
+fastddsspy
+# Use <fastddsspy --help> to see the tool manual
 ```

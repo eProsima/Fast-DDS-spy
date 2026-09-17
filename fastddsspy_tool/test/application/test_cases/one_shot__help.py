@@ -65,13 +65,13 @@ This is needed when FileWatcher functionality is not available \
 \n\
 Debug parameters\n\
   -d --debug          Set log verbosity to Info                                   \
-                                                                                  \n\
+                                                                                \n\
                                              (Using this option with \
 --log-filter and/or --log-verbosity will head to undefined behaviour).\n\
      --log-filter     Set a Regex Filter to filter by category the info and warning \
 log entries. [Default = "FASTDDSSPY"]. \n\
      --log-verbosity  Set a Log Verbosity Level higher or equal the one given. \
-(Values accepted: "info","warning","error" no Case Sensitive) [Default = "warning"]. \n\n
+(Values accepted: "info","warning","error" no Case Sensitive) [Default = "error"]. \n\n
 """
         )
 

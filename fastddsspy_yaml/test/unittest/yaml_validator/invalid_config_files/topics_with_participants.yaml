@@ -1,0 +1,10 @@
+dds:
+  domain: 0
+
+  topics:
+    - name: "HelloWorldTopic"
+      participants:
+        - "participant_1"
+
+specs:
+  threads: 4
