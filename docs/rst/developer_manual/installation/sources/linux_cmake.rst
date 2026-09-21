@@ -65,14 +65,14 @@ Local installation
             cd ~/fastdds-spy
             mkdir build/cmake_utils
             cd build/cmake_utils
-            cmake ~/fastdds-spy/src/dev-utils/cmake_utils -DCMAKE_INSTALL_PREFIX=~/fastdds-spy/install -DCMAKE_PREFIX_PATH=~/fastdds-spy/install
+            cmake ~/fastdds-spy/src/dev_utils/cmake_utils -DCMAKE_INSTALL_PREFIX=~/fastdds-spy/install -DCMAKE_PREFIX_PATH=~/fastdds-spy/install
             cmake --build . --target install
 
             # C++ Utils
             cd ~/fastdds-spy
             mkdir build/cpp_utils
             cd build/cpp_utils
-            cmake ~/fastdds-spy/src/dev-utils/cpp_utils -DCMAKE_INSTALL_PREFIX=~/fastdds-spy/install -DCMAKE_PREFIX_PATH=~/fastdds-spy/install
+            cmake ~/fastdds-spy/src/dev_utils/cpp_utils -DCMAKE_INSTALL_PREFIX=~/fastdds-spy/install -DCMAKE_PREFIX_PATH=~/fastdds-spy/install
             cmake --build . --target install
 
     * `DDS Pipe <https://github.com/eProsima/DDS-Pipe>`_

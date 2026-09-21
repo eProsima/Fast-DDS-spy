@@ -68,7 +68,7 @@ Local installation
             cd <path\to\user\workspace>\fastdds-spy
             mkdir build\cmake_utils
             cd build\cmake_utils
-            cmake <path\to\user\workspace>\fastdds-spy\src\dev-utils\cmake_utils -DCMAKE_INSTALL_PREFIX=<path\to\user\workspace>\fastdds-spy\install ^
+            cmake <path\to\user\workspace>\fastdds-spy\src\dev_utils\cmake_utils -DCMAKE_INSTALL_PREFIX=<path\to\user\workspace>\fastdds-spy\install ^
                 -DCMAKE_PREFIX_PATH=<path\to\user\workspace>\fastdds-spy\install
             cmake --build . --config Release --target install
 
@@ -76,7 +76,7 @@ Local installation
             cd <path\to\user\workspace>\fastdds-spy
             mkdir build\cpp_utils
             cd build\cpp_utils
-            cmake <path\to\user\workspace>\fastdds-spy\src\dev-utils\cpp_utils -DCMAKE_INSTALL_PREFIX=<path\to\user\workspace>\fastdds-spy\install ^
+            cmake <path\to\user\workspace>\fastdds-spy\src\dev_utils\cpp_utils -DCMAKE_INSTALL_PREFIX=<path\to\user\workspace>\fastdds-spy\install ^
                 -DCMAKE_PREFIX_PATH=<path\to\user\workspace>\fastdds-spy\install
             cmake --build . --config Release --target install
 
