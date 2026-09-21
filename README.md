@@ -5,13 +5,13 @@
 > This version of *eProsima Fast DDS Spy* is no longer maintained and will receive no further releases, bugfixes or security updates.
 > Please migrate to the [latest release](https://github.com/eProsima/Fast-DDS-spy/releases/latest), which is still compatible with *eProsima Fast DDS* v2.
 
-<a href="http://www.eprosima.com"><img src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSd0PDlVz1U_7MgdTe0FRIWD0Jc9_YH-gGi0ZpLkr-qgCI6ZEoJZ5GBqQ" align="left" hspace="8" vspace="2" width="100" height="100" ></a>
-
 [![License](https://img.shields.io/github/license/eProsima/Fast-DDS-spy.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Issues](https://img.shields.io/github/issues/eProsima/Fast-DDS-spy.svg)](https://github.com/eProsima/Fast-DDS-spy/issues)
 [![Forks](https://img.shields.io/github/forks/eProsima/Fast-DDS-spy.svg)](https://github.com/eProsima/Fast-DDS-spy/network/members)
 [![Stars](https://img.shields.io/github/stars/eProsima/Fast-DDS-spy.svg)](https://github.com/eProsima/Fast-DDS-spy/stargazers)
 [![test](https://github.com/eProsima/Fast-DDS-spy/actions/workflows/test.yml/badge.svg)](https://github.com/eProsima/Fast-DDS-spy/actions/workflows/test.yml)
+
+<a href="http://www.eprosima.com"><img src="resources/images/eprosima_logo.svg" alt="eProsima" width="100"></a>
 
 *eProsima Fast DDS Spy* is a CLI interactive tool that allows to introspect a DDS network in human readable format.
 It is possible to query the network about the DomainParticipants connected, their endpoints (DataWriters and DataReaders) and the topics they communicate in.
