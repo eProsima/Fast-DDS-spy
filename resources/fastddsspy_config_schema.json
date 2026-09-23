@@ -231,12 +231,6 @@
                 },
                 "type":{
                     "type":"string"
-                },
-                "qos":{
-                    "$ref":"#/definitions/QOSSpy"
-                },
-                "filter":{
-                    "type":"string"
                 }
             },
             "required":[
@@ -259,12 +253,6 @@
                 },
                 "filter":{
                     "type":"string"
-                },
-                "participants":{
-                    "type":"array",
-                    "items":{
-                        "type":"string"
-                    }
                 }
             },
             "required":[
