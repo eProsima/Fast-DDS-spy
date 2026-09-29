@@ -31,6 +31,7 @@ dds:
       qos:
         max-rx-rate: 5
         downsampling: 1
+        endpoint-profile-name: "custom_endpoint_profile"
 
   ignore-participant-flags: no_filter
   transport: builtin

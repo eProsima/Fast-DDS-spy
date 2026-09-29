@@ -7,15 +7,13 @@
 Forthcoming Version
 ###################
 
-This release includes the following **new features**:
+Next release will include the following **new features**:
 
-* *Fast DDS Spy* now supports topic-name endpoint profile lookup:
-  when creating a :term:`DataReader` for a topic, a loaded XML profile whose name
-  matches the topic name is automatically applied, giving users full control over QoS fields such as
-  history, memory policy and transport.
-  For more details, see :ref:`user_manual_configuration_xml_endpoint_profiles`.
+* Support topic-name endpoint profile lookup: when creating a :term:`DataReader` for a topic, a loaded XML
+  ``data_reader`` profile whose name matches the topic name is automatically applied, giving users control over
+  QoS fields such as history, memory policy and transport.
+  Durability, reliability, ownership and history depth explicitly set in the YAML configuration take precedence
+  over the profile.
+  Check :ref:`user_manual_configuration_xml_endpoint_profiles` section.
 
-This release includes the following **documentation updates**:
-
-* Document topic-name endpoint profile lookup for the *Fast DDS Spy*,
-  including QoS fields always enforced by the *Fast DDS Spy* regardless of the profile.
+  - New ``endpoint-profile-name`` tag added to select a specific profile for a topic.

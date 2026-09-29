@@ -71,7 +71,8 @@ profile to configure that endpoint.
 By default, the |spy| looks for a profile **whose name matches the topic name**.
 If a matching profile is found, the endpoint is configured using that profile's QoS, giving the user
 control over fields such as history, memory policy, transport, etc.
-If no matching profile exists, the endpoint falls back to default QoS with values derived from the YAML configuration.
+If no matching profile exists, the endpoint falls back to default QoS with values derived from the YAML configuration
+and from discovery.
 
 .. note::
 
@@ -105,22 +106,30 @@ When set, the |spy| looks up the XML profile with that name instead of the topic
         qos:
           endpoint-profile-name: "my_reader_profile"
 
+The ``endpoint-profile-name`` tag can also be set under the ``specs`` ``qos`` tag to use the same profile for every
+topic, and :ref:`Manual Topics <user_manual_configuration_dds__manual_topics>` take precedence over it.
+If no profile with that name is loaded, the |spy| does not look for a profile named after the topic; the endpoint
+falls back to default QoS instead.
+
 Overriding profile QoS from the YAML configuration
 """""""""""""""""""""""""""""""""""""""""""""""""""
 
-When a matching XML profile is applied, the QoS fields explicitly set by the user in the YAML
-configuration take precedence over the values in the XML profile.
-This behavior is controlled by the ``endpoint-qos-mode`` participant tag, which accepts two values:
+When a matching XML profile is applied, the following :ref:`Topic QoS <user_manual_configuration_dds__topic_qos>`
+override the corresponding values from the profile, but only if they are explicitly set in the YAML configuration,
+either under a topic in ``topics`` or under ``specs``:
+``durability``, ``reliability``, ``ownership`` and ``history-depth``.
+Every other field keeps the value from the XML profile.
 
-* ``xml-overridable`` *(default)*: the XML profile is applied first, and any QoS field explicitly set in
-  the YAML configuration overrides the corresponding value from the profile.
-* ``xml-standalone``: the XML profile is applied verbatim; YAML QoS does not override it.
+QoS values that the |spy| learns from remote endpoints during discovery never override the XML profile.
+Fields that are set neither in the XML profile nor in the YAML configuration therefore take the *Fast DDS* default
+values (e.g. ``KEEP_LAST`` history with depth ``1``), instead of being adapted to the discovered endpoints.
 
 .. warning::
 
-    The ``endpoint-qos-mode`` tag is **not yet parsed by the** *Fast DDS Spy*: it currently behaves as if
-    always set to the default ``xml-overridable``. Setting ``xml-standalone`` in a |spy| configuration has
-    no effect.
+    Setting ``history-depth`` under ``specs`` overrides the history of every matching XML profile, even when set to
+    its default value of ``5000``.
+    Likewise, if the remote DataWriters use ``EXCLUSIVE_OWNERSHIP_QOS``, set ``ownership`` either in the XML profile or
+    in the YAML configuration, otherwise the DataReader will not match them.
 
 
 .. _user_manual_configuration_dds__topic_filtering:
@@ -226,6 +235,12 @@ For more information on topics, please read the `Fast DDS Topic <https://fast-dd
         - *unsigned integer*
         - ``1``
         - :ref:`user_manual_configuration_dds__downsampling`
+
+    *   - Endpoint Profile Name
+        - ``endpoint-profile-name``
+        - *string*
+        - Topic name
+        - :ref:`user_manual_configuration_xml_endpoint_profiles`
 
 .. warning::
 
@@ -550,6 +565,7 @@ A complete example of all the configurations described on this page can be found
           qos:
             max-rx-rate: 5
             downsampling: 1
+            endpoint-profile-name: "custom_endpoint_profile"
 
       ignore-participant-flags: no_filter
       transport: builtin
