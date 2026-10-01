@@ -61,6 +61,76 @@ The XML content must follow the same format as an XML file and will be loaded as
     dds-profile: "participant_profile"
 
 
+.. _user_manual_configuration_xml_endpoint_profiles:
+
+Endpoint profiles
+^^^^^^^^^^^^^^^^^
+
+When the |spy| creates a :term:`DataReader` for a topic, it looks for a loaded XML ``data_reader``
+profile to configure that endpoint.
+By default, the |spy| looks for a profile **whose name matches the topic name**.
+If a matching profile is found, the endpoint is configured using that profile's QoS, giving the user
+control over fields such as history, memory policy, transport, etc.
+If no matching profile exists, the endpoint falls back to default QoS with values derived from the YAML configuration
+and from discovery.
+
+.. note::
+
+    Certain QoS are always enforced by the *Fast DDS Spy* regardless of the XML profile:
+    ``expects_inline_qos`` on DataReaders for keyed topics.
+
+The following example loads a profile named ``my_topic`` that will be automatically applied when creating
+endpoints for a topic of that name:
+
+.. code-block:: xml
+
+    <?xml version="1.0" encoding="UTF-8" ?>
+    <profiles xmlns="http://www.eprosima.com">
+        <data_reader profile_name="my_topic">
+            <historyMemoryPolicy>DYNAMIC</historyMemoryPolicy>
+        </data_reader>
+    </profiles>
+
+Selecting a profile explicitly
+""""""""""""""""""""""""""""""
+
+Instead of relying on the topic name, a specific profile can be selected for a topic with the
+``endpoint-profile-name`` tag under that topic's QoS configuration.
+When set, the |spy| looks up the XML profile with that name instead of the topic name:
+
+.. code-block:: yaml
+
+    topics:
+      - name: "rt/chatter"
+        qos:
+          endpoint-profile-name: "my_reader_profile"
+
+The ``endpoint-profile-name`` tag can also be set under the ``specs`` ``qos`` tag to use the same profile for every
+topic, and :ref:`Manual Topics <user_manual_configuration_dds__manual_topics>` take precedence over it.
+If no profile with that name is loaded, the |spy| does not look for a profile named after the topic; the endpoint
+falls back to default QoS instead.
+
+Overriding profile QoS from the YAML configuration
+"""""""""""""""""""""""""""""""""""""""""""""""""""
+
+When a matching XML profile is applied, the following :ref:`Topic QoS <user_manual_configuration_dds__topic_qos>`
+override the corresponding values from the profile, but only if they are explicitly set in the YAML configuration,
+either under a topic in ``topics`` or under ``specs``:
+``durability``, ``reliability``, ``ownership`` and ``history-depth``.
+Every other field keeps the value from the XML profile.
+
+QoS values that the |spy| learns from remote endpoints during discovery never override the XML profile.
+Fields that are set neither in the XML profile nor in the YAML configuration therefore take the *Fast DDS* default
+values (e.g. ``KEEP_LAST`` history with depth ``1``), instead of being adapted to the discovered endpoints.
+
+.. warning::
+
+    Setting ``history-depth`` under ``specs`` overrides the history of every matching XML profile, even when set to
+    its default value of ``5000``.
+    Likewise, if the remote DataWriters use ``EXCLUSIVE_OWNERSHIP_QOS``, set ``ownership`` either in the XML profile or
+    in the YAML configuration, otherwise the DataReader will not match them.
+
+
 .. _user_manual_configuration_dds__topic_filtering:
 
 Topic Filtering
@@ -164,6 +234,12 @@ For more information on topics, please read the `Fast DDS Topic <https://fast-dd
         - *unsigned integer*
         - ``1``
         - :ref:`user_manual_configuration_dds__downsampling`
+
+    *   - Endpoint Profile Name
+        - ``endpoint-profile-name``
+        - *string*
+        - Topic name
+        - :ref:`user_manual_configuration_xml_endpoint_profiles`
 
 .. warning::
 
@@ -468,6 +544,9 @@ A complete example of all the configurations described on this page can be found
                     <domainId>1</domainId>
                     <rtps></rtps>
                 </participant>
+                <data_reader profile_name="custom_endpoint_profile">
+                    <historyMemoryPolicy>DYNAMIC</historyMemoryPolicy>
+                </data_reader>
             </profiles>
 
       dds-profile: "participant_profile"
@@ -488,6 +567,7 @@ A complete example of all the configurations described on this page can be found
           qos:
             max-rx-rate: 5
             downsampling: 1
+            endpoint-profile-name: "custom_endpoint_profile"
 
       ignore-participant-flags: no_filter
       transport: builtin
