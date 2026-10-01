@@ -14,7 +14,7 @@ Next release will include the following **features**:
   QoS fields such as history, memory policy and transport.
   Durability, reliability, ownership and history depth explicitly set in the YAML configuration take precedence
   over the profile.
-  (see :ref:`Endpoint profiles <user_manual_configuration_xml_endpoint_profiles>`)
+  (see :ref:`Endpoint profiles <user_manual_configuration_dds__xml_endpoint_profiles>`)
 * Add the ``endpoint-profile-name`` tag to select a specific profile for a topic
 * Reject the configuration tags that the *Fast DDS Spy* does not apply: ``qos`` and ``filter`` within
   ``allowlist`` and ``blocklist``, and ``participants`` within ``topics``

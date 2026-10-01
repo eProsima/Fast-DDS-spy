@@ -101,7 +101,7 @@ The XML content must follow the same format as an XML file and will be loaded as
     dds-profile: "participant_profile"
 
 
-.. _user_manual_configuration_xml_endpoint_profiles:
+.. _user_manual_configuration_dds__xml_endpoint_profiles:
 
 Endpoint profiles
 ^^^^^^^^^^^^^^^^^
@@ -118,6 +118,12 @@ and from discovery.
 
     Certain QoS are always enforced by the *Fast DDS Spy* regardless of the XML profile:
     ``expects_inline_qos`` on DataReaders for keyed topics.
+
+.. note::
+
+    XML profiles are only applied by the DDS participant, so no profile is looked up when
+    ``specs: rtps`` is set to ``true``.
+    See :ref:`RTPS Participant <user_manual_configuration_specs_rtps>`.
 
 The following example loads a profile named ``my_topic`` that will be automatically applied when creating
 endpoints for a topic of that name:
@@ -336,7 +342,7 @@ For more information on topics, please read the `Fast DDS Topic <https://fast-dd
         - *string*
         - Not set
         - XML profile name
-        - :ref:`user_manual_configuration_dds__endpoint_profile_name`
+        - :ref:`user_manual_configuration_dds__xml_endpoint_profiles`
 
 .. warning::
 
@@ -370,24 +376,6 @@ The ``downsampling`` tag reduces the sampling rate of the received data by only 
 When the ``max-rx-rate`` tag is also set, downsampling only applies to messages that have passed the ``max-rx-rate`` filter.
 It only accepts positive integers.
 By default it is set to ``1``; it accepts every message.
-
-.. _user_manual_configuration_dds__endpoint_profile_name:
-
-Endpoint Profile Name
-^^^^^^^^^^^^^^^^^^^^^
-
-The ``endpoint-profile-name`` tag sets the name of the Fast DDS XML profile used to create the
-:term:`DataReaders<DataReader>` that the |spy| subscribes with.
-The profile must be defined in one of the XML configurations loaded through the ``xml`` tag, as
-described in :ref:`Load XML Configuration <user_manual_configuration_dds>`.
-By default no profile name is set, and the readers are created with the QoS resulting from the rest
-of the configuration and from discovery.
-
-.. note::
-
-    This tag has no effect when ``specs: rtps`` is set to ``true``, since XML profiles are only
-    applied by the DDS participant.
-    See :ref:`RTPS Participant <user_manual_configuration_specs_rtps>`.
 
 .. _user_manual_configuration_dds__manual_topics:
 
@@ -603,7 +591,7 @@ applied.
     When ``rtps`` is set to ``true``, the following configuration has no effect:
 
     *   The ``xml`` and ``dds-profile`` tags, and the
-        :ref:`endpoint-profile-name <user_manual_configuration_dds__endpoint_profile_name>` Topic QoS,
+        :ref:`endpoint-profile-name <user_manual_configuration_dds__xml_endpoint_profiles>` Topic QoS,
         since XML profiles are only applied by the DDS participant.
     *   The :ref:`Content Filter <user_manual_configuration_dds__content_filter>` of the Manual Topics.
         The :ref:`filter <user_manual_command_filter>` command also refuses to set one, reporting
