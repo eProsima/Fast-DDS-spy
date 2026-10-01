@@ -27,8 +27,8 @@ specs:
   # Number of threads to read the DDS information (Default: 12)
   threads: 12
 
-  # Time elapsed in milliseconds when using tool as one-shot to wait and gather data from the network (Default: 1000)
-  discovery-time: 1000
+  # Time elapsed in milliseconds when using tool as one-shot to wait and gather data from the network (Default: 2000)
+  discovery-time: 2000
 
   qos:
     # History depth by default for every DataReader in every topic (Default: 5000)

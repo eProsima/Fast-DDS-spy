@@ -1,9 +1,9 @@
 # eProsima Fast DDS Spy docs
 
 This package generates the Fast DDS Spy documentation.
-[Here](https://fast-dds-spy.readthedocs.io/en/latest/) it can be seen the online documentation hosted in
+The online documentation is available [here](https://fast-dds-spy.readthedocs.io/en/latest/), hosted on
 [readthedocs](https://readthedocs.org/).
-This packages is powered by [sphinx](https://www.sphinx-doc.org/en/master/).
+This package is powered by [sphinx](https://www.sphinx-doc.org/en/master/).
 
 ---
 
@@ -11,7 +11,7 @@ This packages is powered by [sphinx](https://www.sphinx-doc.org/en/master/).
 
 ### Dependencies
 
-Before being able to build the documentation, some dependencies need to be installed:
+Install the following dependencies before building the documentation:
 
 ```bash
 sudo apt update
@@ -27,13 +27,13 @@ pip3 install -U -r src/fastddsspy/docs/requirements.txt
 
 ### Build documentation
 
-In order to install this package independently, use the following command:
+To install this package independently, use the following command:
 
 ```bash
 colcon build --packages-select fastddsspy_docs
 ```
 
-In order to compile and execute the package **tests**, a specific CMake option is required: `BUILD_DOCS_TESTS`.
+To compile and run the package tests, enable the CMake option `BUILD_DOCS_TESTS`.
 
 ```bash
 colcon build --packages-select fastddsspy_docs --cmake-args -DBUILD_DOCS_TESTS=ON
@@ -44,7 +44,7 @@ colcon test --packages-select fastddsspy_docs --event-handler console_direct+
 
 ## Library documentation
 
-This documentation is focused on the user manual for installing and working with Fast DDS Spy.
-To learn about the repository structure, design decisions, development guidelines, etc.,
-each package is documented separately and the source code is commented using Doxygen format.
-In directory `.dev` (if existent) there is information focus to developers.
+This documentation is the user manual for installing and working with Fast DDS Spy.
+For the repository structure, design decisions, development guidelines, etc.,
+see each package's own documentation and the source code, which is commented in Doxygen format.
+The `.dev` directory (if it exists) contains information for developers.

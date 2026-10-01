@@ -1,5 +1,5 @@
-.. include:: ../../../exports/alias.include
-.. include:: ../../../exports/roles.include
+.. include:: ../exports/alias.include
+.. include:: ../exports/roles.include
 
 :orphan:
 
@@ -15,7 +15,7 @@ This section explains how to compile |espy| with CMake_, either :ref:`locally <w
 Local installation
 ------------------
 
-#.  Open a command prompt, and create a :code:`fastdds-spy` directory where to download and build |espy| and its dependencies:
+#.  Open a command prompt and create a :code:`fastdds-spy` directory in which to download and build |espy| and its dependencies:
 
     .. code-block:: bash
 
@@ -88,7 +88,7 @@ Local installation
             cd <path\to\user\workspace>\fastdds-spy
             mkdir build\ddspipe_core
             cd build\ddspipe_core
-            cmake cd <path\to\user\workspace>\fastdds-spy\src\ddspipe\ddspipe_core -DCMAKE_INSTALL_PREFIX=<path\to\user\workspace>\fastdds-spy\install -DCMAKE_PREFIX_PATH=<path\to\user\workspace>\fastdds-spy\install
+            cmake <path\to\user\workspace>\fastdds-spy\src\ddspipe\ddspipe_core -DCMAKE_INSTALL_PREFIX=<path\to\user\workspace>\fastdds-spy\install -DCMAKE_PREFIX_PATH=<path\to\user\workspace>\fastdds-spy\install
             cmake --build . --target install
 
             # ddspipe_yaml
@@ -138,7 +138,7 @@ Local installation
 
     By default, |espy| does not compile tests.
     However, they can be activated by downloading and installing `Gtest <https://github.com/google/googletest>`_
-    and building with CMake option ``-DBUILD_TESTS=ON``.
+    and building with the CMake option ``-DBUILD_TESTS=ON``.
 
 
 .. _windows_sources_global_installation:
@@ -146,7 +146,7 @@ Local installation
 Global installation
 -------------------
 
-To install |espy| system-wide instead of locally, remove all the flags that appear in the configuration steps of :code:`Fast-CDR`, :code:`Fast-DDS`, :code:`Dev-Utils`, :code:`DDS-Pipe`, and :code:`fastdds-spy`
+To install |espy| system-wide instead of locally, remove all the flags that appear in the configuration steps of :code:`Fast-CDR`, :code:`Fast-DDS`, :code:`Dev-Utils`, :code:`DDS-Pipe`, and :code:`fastdds-spy`.
 
 
 .. External links
