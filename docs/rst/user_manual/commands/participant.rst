@@ -12,43 +12,43 @@ Participants
 Key-words
 =========
 
-These are the key-words recognize as this command:
+These are the key-words recognized as this command:
 ``participant`` ``participants`` ``p`` ``P``.
 
 Arguments
 =========
 
-**Participants** command support 0 or 1 argument:
+The **Participants** command supports 0 or 1 argument:
 
 *No argument*
 -------------
 
-When no arguments are given to this command, the information shown is a **list** with every participant currently active in the network, giving their :term:`Guid` and names.
-The output format is as follows: :ref:`user_manual_command_participant_output_simple`.
+When no arguments are given, this command shows a list of every participant currently active in the network, with their :term:`Guid` and names.
+The output format is described in :ref:`user_manual_command_participant_output_simple`.
 
 Verbose
 -------
 
 This argument queries for more complete information about each of the DomainParticipants in the network.
-It adds the information about endpoints and the topics they communicate in of each of the participants.
-The output got is a **list** of data with :ref:`verbose information <user_manual_command_participant_output_verbose>`.
-Check the :ref:`verbose <user_manual_commands_input_verbose>` section in order to know which key-words are available for this argument.
+For each participant, it adds its endpoints and the topics they communicate on.
+The output is a list with the :ref:`verbose information <user_manual_command_participant_output_verbose>` of each participant.
+Check the :ref:`verbose <user_manual_commands_input_verbose>` section to see which key-words are available for this argument.
 
 Guid
 ----
 
 This argument requires a string with :ref:`Guid format <user_manual_commands_input_guid>`.
-This command queries the database for a **single DomainParticipant** and retrieves its :ref:`verbose information <user_manual_command_participant_output_verbose>`.
-This Guid must exist inside the DDS network.
+The command queries the database for a single DomainParticipant and retrieves its :ref:`verbose information <user_manual_command_participant_output_verbose>`.
+The Guid must exist in the DDS network.
 
 .. note::
 
-    If you are using |espy| as one-shot application, you will need to put GUID in quotes.
+    If you are using |espy| as a one-shot application, you need to put the GUID in quotes.
 
 Output Format
 =============
 
-The participant information is retrieved in 2 formats depending on the verbose option.
+The participant information is shown in 2 formats depending on the verbose option.
 
 .. _user_manual_command_participant_output_simple:
 
@@ -79,9 +79,9 @@ Verbose Participant info
 Example
 =======
 
-Let's assume we have a DDS network where 2 ShapesDemo applications are running.
+Consider a DDS network where 2 ShapesDemo applications are running.
 
-This would be the expected output for the command ``participants``:
+This is the expected output of the command ``participants``:
 
 .. code-block::
 
@@ -91,7 +91,7 @@ This would be the expected output for the command ``participants``:
       guid: 01.0f.44.59.da.57.de.ec.00.00.00.00|0.0.1.c1
     - ...
 
-This would be the expected output for the command ``participants verbose``:
+This is the expected output of the command ``participants verbose``:
 
 .. code-block::
 
@@ -108,7 +108,7 @@ This would be the expected output for the command ``participants verbose``:
         - Circle [ShapeType] (1)
     - ...
 
-This would be the expected output for the command ``participants 01.0f.44.59.da.57.de.ec.00.00.00.00|0.0.1.c1``:
+This is the expected output of the command ``participants 01.0f.44.59.da.57.de.ec.00.00.00.00|0.0.1.c1``:
 
 .. code-block::
 

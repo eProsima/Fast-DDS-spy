@@ -6,19 +6,19 @@
 Example of usage
 ################
 
-This example will serve as a hands-on tutorial, aimed at introducing some of the key concepts and features that
-|espy| has to offer.
+This example is a hands-on tutorial that introduces some of the main concepts and features of
+|espy|.
 
 Prerequisites
 =============
 
-It is required to have |espy| previously installed using one of the following installation methods:
+|espy| must be installed beforehand using one of the following installation methods:
 
 * :ref:`installation_sources_windows`
 * :ref:`installation_sources_linux`
 * :ref:`docker`
 
-Additionally, `ShapesDemo <https://www.eprosima.com/index.php/products-all/eprosima-shapes-demo>`_ is required to publish and subscribe shapes of different colors and sizes.
+`ShapesDemo <https://www.eprosima.com/index.php/products-all/eprosima-shapes-demo>`_ is also required, to publish and subscribe to shapes of different colors and sizes.
 Install it by following any of the methods described in the given links:
 
 * `Windows installation from binaries <https://eprosima-shapes-demo.readthedocs.io/en/latest/installation/windows_binaries.html>`_
@@ -28,32 +28,32 @@ Install it by following any of the methods described in the given links:
 Start ShapesDemo
 ================
 
-Let us launch a ShapesDemo instance and start publishing in topics ``Square`` with default settings.
+Launch a ShapesDemo instance and start publishing on the ``Square`` topic with default settings.
 
 .. figure:: /rst/figures/example_usage/shapesdemo_publisher.png
     :align: center
     :scale: 75 %
 
 Spy configuration
-======================
+=================
 
 |espy| runs with default configuration settings.
 
-Additionally, it is possible to change the default configuration parameters by means of a YAML configuration file.
+These default configuration parameters can be changed with a YAML configuration file.
 
 .. note::
-    Please refer to :ref:`user_manual_configuration` for more information on how to configure a |espy|.
+    Please refer to :ref:`user_manual_configuration` for more information on how to configure |espy|.
 
 Spy execution
 =============
 
-Source the following file to setup the |espy| environment:
+Source the following file to set up the |espy| environment:
 
 .. code-block:: bash
 
     source install/setup.bash
 
-Launch an |espy| instance as executing the following command:
+Launch an |espy| instance by executing the following command:
 
 .. code-block:: bash
 
@@ -75,19 +75,21 @@ Try out all the commands DDS Spy has to offer:
 
 .. code-block:: output
 
-    - name: Fast DDS ShapesDemo Participant
-      guid: 01.0f.44.59.21.58.14.d2.00.00.00.00|0.0.1.c1
-    - name: Fast DDS ShapesDemo Participant
-      guid: 01.0f.44.59.da.57.de.ec.00.00.00.00|0.0.1.c1
+    - guid: 01.0f.44.59.21.58.14.d2.00.00.00.00|0.0.1.2
+      participant: Fast DDS ShapesDemo Participant
+      topic: Triangle [ShapeType]
+    - guid: 01.0f.44.59.da.57.de.ec.00.00.00.00|0.0.6.2
+      participant: Fast DDS ShapesDemo Participant
+      topic: Circle [ShapeType]
     - ...
 
 * ``topics``
 
 .. code-block:: output
 
-    - topic: Circle (ShapeType) (1|2) [9.000000Hz]
-    - topic: Square (ShapeType) (1|0) [12.412500Hz]
-    - topic: Triangle (ShapeType) (0|1) [0.000000Hz]
+    - topic: Circle (ShapeType) (1|2) [9.000000 Hz]
+    - topic: Square (ShapeType) (1|0) [12.412500 Hz]
+    - topic: Triangle (ShapeType) (0|1) [0.000000 Hz]
     - ...
 
 * ``topics Circle vv``
@@ -186,12 +188,12 @@ Try out all the commands DDS Spy has to offer:
     For more information about these commands and formats, please refer to the documentation:
     https://fast-dds-spy.readthedocs.io/en/latest/
 
-Stop |espy| typing ``exit``.
+Stop |espy| by typing ``exit``.
 
 Next Steps
 ==========
 
-Since the main steps for running Fast DDS Spy have already been explained, you can now continue by applying a configuration file to this tool to adjust it to your monitoring and debugging needs.
-These configurations include settings to enable or disable the DDS communication transports used by Fast DDS Spy, set the DDS Domain to monitor, or define lists of allowed and blocked topics, among others.
+As a next step, you can apply a configuration file to adjust Fast DDS Spy to your monitoring and debugging needs.
+The configuration can enable or disable the DDS communication transports used by Fast DDS Spy, set the DDS Domain to monitor, or define lists of allowed and blocked topics, among other settings.
 
-Please refer to the :ref:`user_manual_configuration` section of this documentation to know more about all settings available for the Fast DDS Spy.
+Please refer to the :ref:`user_manual_configuration` section for all the settings available in Fast DDS Spy.

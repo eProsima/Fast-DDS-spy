@@ -7,18 +7,18 @@
 User Interface
 ##############
 
-|espy| is a :term:`CLI` user application executed from command line and configured through a :term:`YAML` configuration file.
+|espy| is a :term:`CLI` user application executed from the command line and configured through a :term:`YAML` configuration file.
 
 Run application
 ===============
 
-Run |espy| application by using command :code:`fastddsspy`.
+Run the |espy| application with the :code:`fastddsspy` command.
 
 Source Dependency Libraries
 ---------------------------
 
-|espy| depends on some eProsima projects as |fastdds| or |ddspipe|.
-In order to correctly execute the application, make sure that these dependencies are properly sourced.
+|espy| depends on some eProsima projects such as |fastdds| or |ddspipe|.
+To run the application correctly, make sure that these dependencies are sourced.
 
 .. code-block:: bash
 
@@ -26,7 +26,7 @@ In order to correctly execute the application, make sure that these dependencies
 
 .. note::
 
-    If Fast DDS has been installed in the system, these libraries would be sourced by default.
+    If Fast DDS has been installed in the system, these libraries are sourced by default.
 
 
 .. _user_manual_user_interface_application_arguments:
@@ -100,7 +100,7 @@ The |espy| application supports several input arguments:
 Help Argument
 -------------
 
-It shows the usage information of the application.
+This argument shows the usage information of the application.
 
 .. code-block:: console
 
@@ -127,26 +127,26 @@ It shows the usage information of the application.
 Version Argument
 ----------------
 
-It shows the current version of the |spy| and the hash of the last commit of the compiled code.
+This argument shows the current version of the |spy| and the hash of the last commit of the compiled code.
 
 .. _user_manual_user_interface_configuration_file_argument:
 
 Configuration File Argument
 ---------------------------
 
-A |spy| supports *YAML* configuration file.
+|spy| supports a *YAML* configuration file.
 Please refer to :ref:`user_manual_configuration` for more information on how to build this configuration file.
 
-This *YAML* configuration can passed as argument to |spy| when executed.
-If no configuration file is provided as argument, |spy| will attempt to load a file named
-``FASTDDSSPY_CONFIGURATION.yaml`` that must be in the same directory where the application is executed.
-If no configuration file is found, |spy| will use :ref:`default configuration <user_manual_configuration_default>`.
+This *YAML* configuration can be passed as an argument to |spy| when it is executed.
+If no configuration file is provided as argument, |spy| tries to load a file named
+``FASTDDSSPY_CONFIGURATION.yaml`` from the directory where the application is executed.
+If no configuration file is found, |spy| uses the :ref:`default configuration <user_manual_configuration_default>`.
 
 Reload Topics
 ^^^^^^^^^^^^^
 
-This configuration file allows to allow and block DDS :term:`Topics <Topic>`.
-A modification in this file will modify the running application.
+This configuration file can be used to allow and block DDS :term:`Topics <Topic>`.
+Changes made to this file are applied to the running application.
 
 .. _user_manual_user_interface_reload_time_argument:
 
@@ -164,7 +164,7 @@ This argument sets the domain id of the |spy|.
 
 .. warning::
 
-    If set, it will override the domain id set in the configuration file.
+    If set, it overrides the domain id set in the configuration file.
 
 .. _user_manual_user_interface_debug_argument:
 
@@ -191,15 +191,15 @@ Log Verbosity Argument
 ----------------------
 
 Configure the |spy| to print the logs up to a certain verbosity level.
-The verbosity levels are (from more to less restrictive): ``error``, ``warning``, and ``info``.
+The verbosity levels are (from most to least restrictive): ``error``, ``warning``, and ``info``.
 
 .. _user_manual_user_interface_interactive_app:
 
 Interactive application
 =======================
 
-The standard way to use this application is by running the *interactive CLI*.
-This is a user interface that repeatedly ask the user for a command, expecting a ``stdin`` command and arguments in order to retrieve the data querying the internal database.
+The standard way to use this application is the *interactive CLI*.
+This user interface repeatedly asks the user for a command and its arguments on ``stdin``, and retrieves the data by querying the internal database.
 
 .. code-block:: console
 
@@ -207,7 +207,7 @@ This is a user interface that repeatedly ask the user for a command, expecting a
     >>
 
 Check the :ref:`following section <user_manual_commands>` to see the available commands and their arguments,
-or use :ref:`help <user_manual_commands_extra_help>` command to get this information in ``stdout``.
+or use the :ref:`help <user_manual_commands_extra_help>` command to print this information to ``stdout``.
 
 Close Application
 -----------------
@@ -219,26 +219,26 @@ Write ``exit``, ``quit``, or ``q`` to exit the application.
 One-shot application
 ====================
 
-|espy| can be executed as a *one-shot* application.
-This is, an application that connects to a DDS network, queries a specific command to the internal database generated from such DDS network, and retrieves the information by ``stdout``.
-Thus it will not ask the user for commands, neither wait before closing.
+|espy| can also be executed as a *one-shot* application.
+In this mode it connects to a DDS network, runs a single command against the internal database built from that network, and prints the result to ``stdout``.
+It does not ask the user for commands, nor wait before closing.
 
-In order to execute |spy| in *one-shot* mode add the command and arguments right after the last :ref:`tool argument <user_manual_user_interface_application_arguments>`.
+To execute |spy| in *one-shot* mode, add the command and its arguments right after the last :ref:`tool argument <user_manual_user_interface_application_arguments>`.
 
-This kind of application depends on the network size and speed in order to discover every entity before showing the information and close.
-In order to configure the amount of time elapsed before querying for the information requested, use :ref:`user_manual_configuration_discovery_time`.
+Whether this mode discovers every entity before it shows the information and closes depends on the size and speed of the network.
+To configure how long it waits before querying the requested information, use :ref:`user_manual_configuration_discovery_time`.
 
 .. note::
 
-    Running a |spy| instance will create DDS entities that will discover and connect everything in the same network.
-    Thus, running *one-shot* |spy| applications very frequently could affect to network performance, as each instance will be created and destroyed in the process.
+    Running a |spy| instance creates DDS entities that discover and connect to everything in the same network.
+    Running *one-shot* |spy| applications very frequently could therefore affect network performance, since an instance is created and destroyed every time.
 
 Example
 -------
 
-Let's assume we want to retrieve the information of every :term:`DomainParticipant` running in a current network.
+The following example retrieves the information of every :term:`DomainParticipant` running in the network.
 
-Using the :ref:`user_manual_user_interface_interactive_app`, this will be the process and the output:
+With the :ref:`user_manual_user_interface_interactive_app`, the process and the output are:
 
 .. code-block:: console
 
@@ -260,7 +260,7 @@ Using the :ref:`user_manual_user_interface_interactive_app`, this will be the pr
     >> quit
     $
 
-However, using :ref:`user_manual_user_interface_one_shot` this will be expected result:
+However, with the :ref:`user_manual_user_interface_one_shot`, the expected result is:
 
 .. code-block:: console
 

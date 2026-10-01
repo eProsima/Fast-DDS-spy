@@ -12,61 +12,61 @@ Topic
 Key-words
 =========
 
-These are the key-words recognize as this command:
+These are the key-words recognized as this command:
 ``topic`` ``topics`` ``t`` ``T``.
 
 Arguments
 =========
 
-**Topic** command supports from 0 to 3 arguments:
+The **Topic** command supports from 0 to 3 arguments:
 
 *No argument*
 -------------
 
-When no arguments are given to this command, the information shown is a **list** with every topic with at least one endpoint currently active in the network.
-The information shown is the topic name, data type name, number of writers and readers and the subscription rate measured in samples per second.
-The output format is as follows: :ref:`user_manual_command_topic_output_simple`.
+When no arguments are given, this command shows a list of every topic with at least one endpoint currently active in the network.
+For each topic, it shows the topic name, the data type name, the number of writers and readers, and the subscription rate in samples per second.
+The output format is described in :ref:`user_manual_command_topic_output_simple`.
 
 Verbose
 -------
 
 This argument (``v`` or ``vv``) queries for more complete information about each of the topics in the network.
-The output is a **list** of data with :ref:`verbose information <user_manual_command_topic_output_verbose>`.
-Check the :ref:`verbose <user_manual_commands_input_verbose>` section in order to know which key-words are available for this argument.
+The output is a list with the :ref:`verbose information <user_manual_command_topic_output_verbose>` of each topic.
+Check the :ref:`verbose <user_manual_commands_input_verbose>` section to see which key-words are available for this argument.
 
 Topic name
 ----------
 
 This argument requires a string with the topic name.
-This command queries the database for a **single Topic** and retrieves its :ref:`verbose information <user_manual_command_topic_output_verbose>`.
-This Guid must exist inside the DDS network.
+The command queries the database for a single topic and retrieves its :ref:`verbose information <user_manual_command_topic_output_verbose>`.
+The topic must exist in the DDS network.
 
 .. note::
 
-    If there are 2 topics with the same name and different Topic Data Type, only one of them could be visible.
-    These is a circumstance that :term:`DDS` allows, but it is strongly suggested not to do.
+    If 2 topics have the same name and different Topic Data Types, only one of them may be visible.
+    :term:`DDS` allows this, but it is strongly discouraged.
 
 Topic name with wildcards
 -------------------------
 
-When a topic name contains wildcards (*), this command retrieves :ref:`verbose information <user_manual_command_topic_output_verbose>` for all topics that match the given filter.
-This allows users to query multiple topics in a single command, making it easier to gather related data quickly.
+When a topic name contains wildcards (*), this command retrieves the :ref:`verbose information <user_manual_command_topic_output_verbose>` of all topics that match the given filter,
+so several topics can be queried with a single command.
 
 Topic type IDL definition
 -------------------------
 
-When the argument ``idl`` is appended after a topic name, this command retrieves and displays the **IDL** type definition associated with that topic.
+When the argument ``idl`` is appended after a topic name, this command displays the IDL type definition of that topic.
 
 Topic keys
 ----------
 
-When the argument ``keys`` is appended after a topic name, this command retrieves and displays the **key fields** of the data type associated with that topic, along with the number of discovered instances.
-An optional ``v`` argument provides verbose output including the actual key values of each discovered instance.
+When the argument ``keys`` is appended after a topic name, this command displays the key fields of the data type of that topic, along with the number of discovered instances.
+An optional ``v`` argument gives verbose output, which also includes the key values of each discovered instance.
 
 Output Format
 =============
 
-The topic information is retrieved in multiple formats depending on the verbosity option.
+The topic information is shown in a different format depending on the verbosity option.
 
 .. _user_manual_command_topic_output_simple:
 
@@ -91,8 +91,8 @@ Topics info in verbose mode
 Topics info in high verbosity mode
 ----------------------------------
 
-This argument queries for more complete information about each of the topics in the network.
-It adds the Guid of each endpoint on the topic and the whether the type has been discovered.
+This mode shows more complete information about each of the topics in the network.
+It adds the Guid of each endpoint on the topic and whether the type has been discovered.
 
 .. code-block:: yaml
 
@@ -110,16 +110,16 @@ It adds the Guid of each endpoint on the topic and the whether the type has been
 Example
 =======
 
-Let's assume we have a DDS network where 2 ShapesDemo applications are running.
+Consider a DDS network where 2 ShapesDemo applications are running.
 
-This would be the expected output for the command ``topics``:
+This is the expected output of the command ``topics``:
 
 .. code-block::
 
-    - topic: Circle (ShapeType) (1|1) [13.0298 Hz]
-    - topic: Square (ShapeType) (2|2) [26.6975 Hz]
+    - topic: Circle (ShapeType) (1|1) [13.029800 Hz]
+    - topic: Square (ShapeType) (2|2) [26.697500 Hz]
 
-This would be the expected output for the command ``topics v``:
+This is the expected output of the command ``topics v``:
 
 .. code-block::
 
@@ -127,14 +127,14 @@ This would be the expected output for the command ``topics v``:
       type: ShapeType
       datawriters: 1
       datareaders: 1
-      rate: 13.0298 Hz
+      rate: 13.029800 Hz
     - name: Square
       type: ShapeType
       datawriters: 2
       datareaders: 2
-      rate: 26.6975 Hz
+      rate: 26.697500 Hz
 
-This would be the expected output for the command ``topics vv``:
+This is the expected output of the command ``topics vv``:
 
 .. code-block::
 
@@ -144,7 +144,7 @@ This would be the expected output for the command ``topics vv``:
         - 01.0f.44.59.da.57.de.ec.00.00.00.00|0.0.3.2 ["A"]
       datareaders:
         - 01.0f.44.59.c9.65.78.e5.00.00.00.00|0.0.2.7 ["A"]
-      rate: 13.0286 Hz
+      rate: 13.028600 Hz
       dynamic_type_discovered: true
     - name: Square
       type: ShapeType
@@ -154,24 +154,26 @@ This would be the expected output for the command ``topics vv``:
       datareaders:
         - 01.0f.44.59.21.58.14.d2.00.00.00.00|0.0.2.7 ["A"]
         - 01.0f.44.59.da.57.de.ec.00.00.00.00|0.0.4.7 ["B"]
-      rate: 26.685 Hz
+      rate: 26.685000 Hz
       dynamic_type_discovered: true
 
 
-This would be the expected output for the command ``topics Square``:
+This is the expected output of the command ``topics Square``:
 
 .. code-block::
 
-    name: Circle
+    name: Square
     type: ShapeType
     datawriters:
-      - 01.0f.44.59.da.57.de.ec.00.00.00.00|0.0.6.2
+      - 01.0f.44.59.da.57.de.ec.00.00.00.00|0.0.1.2
+      - 01.0f.44.59.da.57.de.ec.00.00.00.00|0.0.2.2
     datareaders:
-      - 01.0f.44.59.c9.65.78.e5.00.00.00.00|0.0.2.7
-    rate: 13.0418 Hz
+      - 01.0f.44.59.21.58.14.d2.00.00.00.00|0.0.2.7
+      - 01.0f.44.59.da.57.de.ec.00.00.00.00|0.0.4.7
+    rate: 26.685000 Hz
     dynamic_type_discovered: true
 
-This would be the expected output for the command ``topics Square idl``:
+This is the expected output of the command ``topics Square idl``:
 
 .. code-block::
 
@@ -184,7 +186,7 @@ This would be the expected output for the command ``topics Square idl``:
         long shapesize;
     };
 
-This would be the expected output for the command ``topics Square keys``:
+This is the expected output of the command ``topics Square keys``:
 
 .. code-block::
 
@@ -193,7 +195,7 @@ This would be the expected output for the command ``topics Square keys``:
         - color
       instance_count: 2
 
-This would be the expected output for the command ``topics Square keys v``:
+This is the expected output of the command ``topics Square keys v``:
 
 .. code-block::
 

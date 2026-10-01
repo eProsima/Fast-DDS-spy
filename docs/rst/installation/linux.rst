@@ -7,24 +7,24 @@
 Linux installation from sources
 ###############################
 
-The instructions for installing the |espy| from sources and its required dependencies are provided in this page.
+This page explains how to install |espy| and its required dependencies from sources.
 
 Dependencies installation
 =========================
 
-|spy| depends on *eProsima Fast DDS* library and certain Debian packages.
-This section describes the instructions for installing |spy| dependencies and requirements in a Linux environment from sources.
+|spy| depends on the *eProsima Fast DDS* library and some Debian packages.
+This section describes how to install the |spy| dependencies and requirements in a Linux environment from sources.
 The following packages will be installed:
 
 - ``foonathan_memory_vendor``, an STL compatible C++ memory allocation library.
 - ``fastcdr``, a C++ library that serializes according to the standard CDR serialization mechanism.
-- ``fastdds``, the core library of eProsima Fast DDS library.
+- ``fastdds``, the core library of eProsima Fast DDS.
 - ``cmake_utils``, an eProsima utils library for CMake.
 - ``cpp_utils``, an eProsima utils library for C++.
 - ``ddspipe``, an eProsima internal library that enables the communication of DDS interfaces.
 
-First of all, the :ref:`Requirements <requirements>` and :ref:`Dependencies <dependencies>` detailed below need to be met.
-Afterwards, the user can choose whether to follow either the :ref:`colcon <colcon_installation>` or the
+First, meet the :ref:`Requirements <requirements>` and :ref:`Dependencies <dependencies>` detailed below.
+Then follow either the :ref:`colcon <colcon_installation>` or the
 :ref:`CMake <linux_cmake_installation>` installation instructions.
 
 .. _requirements:
@@ -32,7 +32,7 @@ Afterwards, the user can choose whether to follow either the :ref:`colcon <colco
 Requirements
 ------------
 
-The installation of |espy| in a Linux environment from sources requires the following tools to be installed in the system:
+Installing |espy| from sources in a Linux environment requires the following tools to be installed in the system:
 
 * :ref:`cmake_gcc_pip_wget_git_sl`
 * :ref:`colcon_install` [optional]
@@ -44,7 +44,7 @@ The installation of |espy| in a Linux environment from sources requires the foll
 CMake, g++, pip, wget and git
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-These packages provide the tools required to install |espy| and its dependencies from command line.
+These packages provide the tools required to install |espy| and its dependencies from the command line.
 Install CMake_, `g++ <https://gcc.gnu.org/>`_, pip_, wget_ and git_ using the package manager of the appropriate Linux distribution.
 For example, on Ubuntu use the command:
 
@@ -77,11 +77,11 @@ Gtest
 
 Gtest_ is a unit testing library for C++.
 By default, |espy| does not compile tests.
-It is possible to activate them with the opportune `CMake options <https://colcon.readthedocs.io/en/released/reference/verb/build.html#cmake-options>`_ when calling colcon_ or CMake_.
+It is possible to activate them with the appropriate `CMake options <https://colcon.readthedocs.io/en/released/reference/verb/build.html#cmake-options>`_ when calling colcon_ or CMake_.
 For more details, please refer to the :ref:`cmake_options` section.
 For a detailed description of the Gtest_ installation process, please refer to the `Gtest Installation Guide <https://github.com/google/googletest>`_.
 
-It is also possible to clone the Gtest_ Github repository into the |espy| workspace and compile it with colcon_ as a dependency package.
+It is also possible to clone the Gtest_ GitHub repository into the |espy| workspace and compile it with colcon_ as a dependency package.
 Use the following command to download the code:
 
 .. code-block:: bash
@@ -94,7 +94,7 @@ Use the following command to download the code:
 Dependencies
 ------------
 
-|espy| has the following dependencies, when installed from sources in a Linux environment:
+When installed from sources in a Linux environment, |espy| has the following dependencies:
 
 * :ref:`asiotinyxml2_sl`
 * :ref:`openssl_sl`
@@ -120,7 +120,7 @@ For example, on Ubuntu use the command:
 OpenSSL
 ^^^^^^^
 
-OpenSSL is a robust toolkit for the TLS and SSL protocols and a general-purpose cryptography library.
+OpenSSL is a toolkit for the TLS and SSL protocols and a general-purpose cryptography library.
 Install OpenSSL_ using the package manager of the appropriate Linux distribution.
 For example, on Ubuntu use the command:
 
@@ -133,7 +133,7 @@ For example, on Ubuntu use the command:
 yaml-cpp
 ^^^^^^^^
 
-yaml-cpp is a YAML parser and emitter in C++ matching the YAML 1.2 spec, and is used by *Fast DDS Spy* application to parse the provided configuration files.
+yaml-cpp is a YAML parser and emitter in C++ matching the YAML 1.2 spec, and the *Fast DDS Spy* application uses it to parse the provided configuration files.
 Install yaml-cpp using the package manager of the appropriate Linux distribution.
 For example, on Ubuntu use the command:
 
@@ -146,8 +146,8 @@ For example, on Ubuntu use the command:
 eProsima dependencies
 ^^^^^^^^^^^^^^^^^^^^^
 
-If it already exists in the system an installation of *Fast DDS* and *DDS Pipe* libraries, just source this libraries when building |espy| by running the following commands.
-In other case, just skip this step.
+If the *Fast DDS* and *DDS Pipe* libraries are already installed in the system, source these libraries when building |espy| by running the following commands.
+Otherwise, skip this step.
 
 .. code-block:: bash
 
@@ -171,9 +171,9 @@ Colcon installation
 
     .. note::
 
-        In case there is already a *Fast DDS* installation in the system it is not required to download and build every dependency in the :code:`.repos` file.
-        It is just needed to download and build the |espy| project having sourced its dependencies.
-        Refer to section :ref:`eprosima_dependencies` in order to check how to source *Fast DDS* library.
+        If there is already a *Fast DDS* installation in the system, it is not required to download and build every dependency in the :code:`.repos` file.
+        It is enough to download and build the |espy| project after sourcing its dependencies.
+        Refer to section :ref:`eprosima_dependencies` to check how to source the *Fast DDS* library.
 
 #.  Build the packages:
 
@@ -183,15 +183,15 @@ Colcon installation
 
 .. note::
 
-    Being based on CMake_, it is possible to pass the CMake configuration options to the :code:`colcon build` command.
+    Since colcon is based on CMake_, the CMake configuration options can be passed to the :code:`colcon build` command.
     For more information on the specific syntax, please refer to the `CMake specific arguments <https://colcon.readthedocs.io/en/released/reference/verb/build.html#cmake-specific-arguments>`_ page of the colcon_ manual.
 
 
 CMake installation
 ==================
 
-There exist the possibility to install |spy| by CMake, and could be see in following :ref:`section <linux_cmake_installation>`.
-However :ref:`colcon_installation` is recommended.
+|spy| can also be installed with CMake, as described in the following :ref:`section <linux_cmake_installation>`.
+However, the :ref:`colcon_installation` is recommended.
 
 
 .. _run_app_colcon_sl:
@@ -199,7 +199,7 @@ However :ref:`colcon_installation` is recommended.
 Run an application
 ==================
 
-To run the |spy| tool, source the installation path and execute the executable file that has been installed in :code:`<install-path>/fastddsspy_tool/bin/fastddsspy`:
+To run the |spy| tool, source the installation path and run the executable installed in :code:`<install-path>/fastddsspy_tool/bin/fastddsspy`:
 
 .. code-block:: bash
 
@@ -207,7 +207,7 @@ To run the |spy| tool, source the installation path and execute the executable f
     source install/setup.bash
     fastddsspy
 
-Be sure that this executable has execution permissions.
+Make sure that this executable has execution permissions.
 
 
 Run tests

@@ -32,19 +32,19 @@
 
 <br><br>
 
-*eProsima Fast DDS Spy* is a CLI interactive tool that allows to introspect a DDS network in human readable format.
-It is possible to query the network about the DomainParticipants connected, their endpoints (DataWriters and DataReaders) and the topics they communicate in.
-It is also possible to see the user data sent through network topics in a schematic format in run time.
+*eProsima Fast DDS Spy* is an interactive CLI tool for introspecting a DDS network in a human-readable format.
+You can query the network for the connected DomainParticipants, their endpoints (DataWriters and DataReaders) and the topics they communicate in.
+You can also see the user data sent through network topics in a schematic format at run time.
 
 ## Commercial support
 
 Looking for commercial support? Write us to info@eprosima.com
 
-Find more about us at [eProsima’s webpage](https://eprosima.com/).
+Find more about us at [eProsima's webpage](https://eprosima.com/).
 
 ## Documentation
 
-You can access the documentation online hosted on *Read the Docs*.
+The documentation is hosted online on *Read the Docs*.
 
 * [Introduction](https://fast-dds-spy.readthedocs.io/en/latest/rst/formalia/titlepage.html)
 * [Installation Manual](https://fast-dds-spy.readthedocs.io/en/latest/rst/installation/linux.html)
@@ -52,11 +52,11 @@ You can access the documentation online hosted on *Read the Docs*.
 * [Release Notes](https://fast-dds-spy.readthedocs.io/en/latest/rst/notes/notes.html)
 
 
-## Installation Guide
+## Installation guide
 
-The instructions for installing the *Fast DDS Spy* application from sources and its required dependencies on a Linux
-environment are provided below. These installation instructions are a summarized version of the complete
-[installation guide](https://fast-dds-spy.readthedocs.io/en/latest/rst/installation/linux.html) available online. Instructions for installing *Fast DDS Spy* on a **Windows** platform can be found
+The steps below install the *Fast DDS Spy* application and its required dependencies from sources on a Linux
+environment. They summarize the complete
+[installation guide](https://fast-dds-spy.readthedocs.io/en/latest/rst/installation/linux.html) available online. Instructions for installing *Fast DDS Spy* on a Windows platform are available
 [here](https://fast-dds-spy.readthedocs.io/en/latest/rst/installation/windows.html).
 
 ### Requirements
@@ -103,7 +103,7 @@ pip3 install -U \
 
 ### Run an application
 
-To run the *Fast DDS Spy* application, source the installation environment and execute the executable file that has been
+To run the *Fast DDS Spy* application, source the installation environment and run the executable file that has been
 installed in `<install-path>/fastddsspy_tool/bin/fastddsspy`:
 
 ```bash

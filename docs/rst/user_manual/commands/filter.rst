@@ -12,17 +12,17 @@ Filter
 Key-words
 =========
 
-These are the key-words recognize as this command:
+These are the key-words recognized as this command:
 ``filter`` ``filters`` ``partitions`` ``f`` ``F``.
 
 Categories
 ==========
 
-Defines a category filter used to restrict the spied information.
-Each category can include one or more filter strings,
-and information is printed if it matches any of the strings within the category.
+Each category defines a filter used to restrict the spied information.
+A category can include one or more filter strings,
+and information is printed if it matches any of the strings in the category.
 
-The current categories supported by the **filter** command are:
+The **filter** command supports the following categories:
 
 - ``partitions``
 - ``topic``
@@ -35,49 +35,46 @@ when the |spy| starts: the ``partitions`` category from the
 Arguments
 =========
 
-**Filter** command supports from 0 to 4 arguments:
+The **Filter** command supports from 0 to 4 arguments:
 
 *No argument*
 -------------
 
-When no arguments are given to this command, the information shown is a **list** with all the list of filters
-added during runtime.
+When no arguments are given, this command shows all the filters added during runtime, divided into one list for
+each ``category`` added at runtime.
 
-The information shown is divided into lists, one for each ``category`` added at runtime.
-For each list, the added filters are displayed.
-
-The output format is as follows: :ref:`user_manual_command_filter_output`.
+The output format is described in :ref:`user_manual_command_filter_output`.
 
 *1 argument:* `<clear/remove>`
 ------------------------------
 
-- ``clear``: This argument **clear** all the list of categories added to the filters.
-- ``remove``: This argument **delete** all the list of categories added to the filters.
+- ``clear``: This argument **clears** all the category lists added to the filters.
+- ``remove``: This argument **deletes** all the category lists added to the filters.
 
-*2 argument:* `<clear/remove> <partitions/topic>`
--------------------------------------------------
+*2 arguments:* `<clear/remove> <partitions/topic>`
+--------------------------------------------------
 
-- ``clear``: This argument **clear** the list ``partitions/topic`` added to the filters.
-- ``remove``: This argument **delete** the list ``partitions/topic`` from the filters.
+- ``clear``: This argument **clears** the ``partitions/topic`` list added to the filters.
+- ``remove``: This argument **deletes** the ``partitions/topic`` list from the filters.
 
-*3 argument:* `<add/remove> <partitions/topic> <filter_str/topic_name>`
------------------------------------------------------------------------
+*3 arguments:* `<add/remove> <partitions/topic> <filter_str/topic_name>`
+------------------------------------------------------------------------
 
-- ``add partitions/topic``: This argument **add** ``filter_str`` to **partitions** filter list.
-- ``remove partitions``: This argument **delete** ``filter_str`` from **partitions** filter list.
-- ``remove topic``: This argument **delete** the filter of the topic ``topic_name``.
+- ``add partitions/topic``: This argument **adds** ``filter_str`` to the partitions filter list.
+- ``remove partitions``: This argument **deletes** ``filter_str`` from the partitions filter list.
+- ``remove topic``: This argument **deletes** the filter of the topic ``topic_name``.
 
-*4 argument:* `<set> topic <topic_name> <filter_str>`
------------------------------------------------------
+*4 arguments:* `<set> topic <topic_name> <filter_str>`
+------------------------------------------------------
 
-- ``set``: This argument **set** ``filter_str`` to topic ``topic_name`` filter list.
+- ``set``: This argument **sets** ``filter_str`` in the filter list of the topic ``topic_name``.
 
 .. _user_manual_command_filter_output:
 
 Output Format
 =============
 
-The filters information is retrieved with the following format:
+The filter information is retrieved with the following format:
 
 .. code-block:: yaml
 
@@ -93,17 +90,17 @@ The filters information is retrieved with the following format:
 Example
 =======
 
-Let's assume we have a DDS network where a ShapesDemo applications is running with
+Consider a DDS network where a ShapesDemo application is running with
 the following two DataWriters:
 
 - Circle (partition A) [key_topic_value: color = RED]
 - Square (partitions B and C) [key_topic_value: color = BLUE]
 
-This would be the expected output for the following commands:
+These are the expected outputs of the following commands:
 
 - ``filter add partitions A``:
 
-Nothing, the filter "A" is added to the category "partitions".
+No output. The filter "A" is added to the "partitions" category.
 
 - ``filters``:
 
@@ -132,7 +129,7 @@ Nothing, the filter "A" is added to the category "partitions".
 
 - ``filter add partitions B``:
 
-Nothing, the filter "B" is added to the category "partitions".
+No output. The filter "B" is added to the "partitions" category.
 
 - ``filters``:
 
@@ -167,11 +164,11 @@ Nothing, the filter "B" is added to the category "partitions".
 
 - ``f set topic Circle "color = 'BLUE'"``
 
-Nothing, the filter "color = 'BLUE'" is added to the topic filter in the topic_name "Circle".
+No output. The filter "color = 'BLUE'" is added to the topic filter of the topic "Circle".
 
 - ``f set topic Square "color = 'BLUE'"``
 
-Nothing, the filter "color = 'BLUE'" is added to the topic filter in the topic_name "Square".
+No output. The filter "color = 'BLUE'" is added to the topic filter of the topic "Square".
 
 - ``filters``
 
@@ -191,8 +188,8 @@ Nothing, the filter "color = 'BLUE'" is added to the topic filter in the topic_n
 
 - ``echo all``
 
-Prints only the information of the topic Square,
-(the topic Circle is filtered because the key value "color" is "RED")
+Prints only the information of the topic Square
+(the topic Circle is filtered out because its key value "color" is "RED"):
 
 .. code-block::
 
@@ -228,7 +225,7 @@ Prints only the information of the topic Square,
 
 - ``filter remove partitions B``:
 
-Nothing, the filter "B" is removed from the category "partitions".
+No output. The filter "B" is removed from the "partitions" category.
 
 - ``topics vv``:
 

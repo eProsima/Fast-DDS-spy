@@ -38,6 +38,6 @@ Next release will include the following **documentation updates**:
 * Document that the *Fast DDS Spy* always blocks the ROS 2 service topics ``rq/*`` and ``rr/*``
 * Correct the default value of ``specs: discovery-time`` and the tag named in the *ROS 2 Easy Mode*
   warning
-* Complete the command summary table with the missing key-words and arguments
+* Complete the command summary table with the missing keywords and arguments
 * Update the Docker image installation instructions to use eProsima's *Fast DDS Suite*
-* The Installation Manual has been merged with the Developer Manual, and the latter is removed
+* Merge the Developer Manual into the Installation Manual and remove the Developer Manual

@@ -7,24 +7,24 @@
 Windows installation from sources
 #################################
 
-The instructions for installing the |espy| application from sources and its required dependencies are provided in this page.
+This page explains how to install the |espy| application and its required dependencies from sources.
 
 Dependencies installation
 =========================
 
-|espy| depends on *eProsima Fast DDS* library and certain Debian packages.
-This section describes the instructions for installing |espy| dependencies and requirements in a Windows environment from sources.
+|espy| depends on the *eProsima Fast DDS* library and some third-party libraries.
+This section describes how to install the |espy| dependencies and requirements in a Windows environment from sources.
 The following packages will be installed:
 
 - ``foonathan_memory_vendor``, an STL compatible C++ memory allocation library.
 - ``fastcdr``, a C++ library that serializes according to the standard CDR serialization mechanism.
-- ``fastdds``, the core library of eProsima Fast DDS library.
+- ``fastdds``, the core library of eProsima Fast DDS.
 - ``cmake_utils``, an eProsima utils library for CMake.
 - ``cpp_utils``, an eProsima utils library for C++.
 - ``ddspipe``, an eProsima internal library that enables the communication of DDS interfaces.
 
-First of all, the :ref:`Requirements <windows_sources_requirements>` and :ref:`Dependencies <windows_sources_dependencies>` detailed below need to be met.
-Afterwards, the user can choose whether to follow either the :ref:`colcon <windows_sources_colcon_installation>` or the :ref:`CMake <windows_cmake_installation>` installation instructions.
+First, meet the :ref:`Requirements <windows_sources_requirements>` and :ref:`Dependencies <windows_sources_dependencies>` detailed below.
+Then follow either the :ref:`colcon <windows_sources_colcon_installation>` or the :ref:`CMake <windows_cmake_installation>` installation instructions.
 
 
 .. _windows_sources_requirements:
@@ -32,7 +32,7 @@ Afterwards, the user can choose whether to follow either the :ref:`colcon <windo
 Requirements
 ------------
 
-The installation of *eProsima Fast DDS* in a Windows environment from sources requires the following tools to be installed in the system:
+Installing |espy| from sources in a Windows environment requires the following tools to be installed in the system:
 
 * :ref:`windows_sources_visual_studio`
 * :ref:`windows_sources_chocolatey`
@@ -45,9 +45,10 @@ The installation of *eProsima Fast DDS* in a Windows environment from sources re
 Visual Studio
 ^^^^^^^^^^^^^
 
-`Visual Studio <https://visualstudio.microsoft.com/>`_ is required to have a C++ compiler in the system. For this purpose, make sure to check the :code:`Desktop development with C++` option during the Visual Studio installation process.
+`Visual Studio <https://visualstudio.microsoft.com/>`_ is required to have a C++ compiler in the system.
+Make sure to check the :code:`Desktop development with C++` option during the Visual Studio installation process.
 
-If Visual Studio is already installed but the Visual C++ Redistributable packages are not, open Visual Studio and go to :code:`Tools` -> :code:`Get Tools and Features` and in the :code:`Workloads` tab enable :code:`Desktop development with C++`.
+If Visual Studio is already installed but the Visual C++ Redistributable packages are not, open Visual Studio, go to :code:`Tools` -> :code:`Get Tools and Features`, and enable :code:`Desktop development with C++` in the :code:`Workloads` tab.
 Finally, click :code:`Modify` at the bottom right.
 
 .. _windows_sources_chocolatey:
@@ -55,7 +56,8 @@ Finally, click :code:`Modify` at the bottom right.
 Chocolatey
 ^^^^^^^^^^
 
-Chocolatey is a Windows package manager. It is needed to install some of *eProsima Fast DDS*'s dependencies.
+Chocolatey is a Windows package manager.
+It is needed to install some of the |espy| dependencies.
 Download and install it directly from the `website <https://chocolatey.org/>`_.
 
 .. _windows_sources_cmake_pip3_wget_git:
@@ -63,8 +65,8 @@ Download and install it directly from the `website <https://chocolatey.org/>`_.
 CMake, pip3, wget and git
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-These packages provide the tools required to install *eProsima Fast DDS* and its dependencies from command line.
-Download and install CMake_, pip3_, wget_ and git_ by following the instructions detailed in the respective websites.
+These packages provide the tools required to install |espy| and its dependencies from the command line.
+Download and install CMake_, pip3_, wget_ and git_ by following the instructions on their websites.
 Once installed, add the path to the executables to the :code:`PATH` from the *Edit the system environment variables* control panel.
 
 .. _windows_sources_colcon_install:
@@ -91,10 +93,10 @@ Gtest
 
 Gtest is a unit testing library for C++.
 By default, |espy| does not compile tests.
-It is possible to activate them with the opportune `CMake options <https://colcon.readthedocs.io/en/released/reference/verb/build.html#cmake-options>`_ when calling colcon_ or CMake_.
+It is possible to activate them with the appropriate `CMake options <https://colcon.readthedocs.io/en/released/reference/verb/build.html#cmake-options>`_ when calling colcon_ or CMake_.
 For more details, please refer to the :ref:`cmake_options` section.
 
-Run the following commands on your workspace to install Gtest.
+Run the following commands in your workspace to install Gtest:
 
 .. code-block:: bash
 
@@ -103,7 +105,7 @@ Run the following commands on your workspace to install Gtest.
         -B build\gtest -A x64 -T host=x64 googletest
     cmake --build build\gtest --config Release --target install
 
-or refer to the `Gtest Installation Guide <https://github.com/google/googletest>`_ for a detailed description of the Gtest installation process.
+Alternatively, refer to the `Gtest Installation Guide <https://github.com/google/googletest>`_ for a detailed description of the Gtest installation process.
 
 
 .. _windows_sources_dependencies:
@@ -111,7 +113,7 @@ or refer to the `Gtest Installation Guide <https://github.com/google/googletest>
 Dependencies
 ------------
 
-|espy| has the following dependencies, when installed from sources in a Windows environment:
+When installed from sources in a Windows environment, |espy| has the following dependencies:
 
 * :ref:`windows_sources_asiotinyxml2`
 * :ref:`windows_sources_openssl`
@@ -143,7 +145,7 @@ where :code:`<PATH_TO_DOWNLOADS>` is the folder into which the packages have bee
 OpenSSL
 ^^^^^^^
 
-OpenSSL is a robust toolkit for the TLS and SSL protocols and a general-purpose cryptography library.
+OpenSSL is a toolkit for the TLS and SSL protocols and a general-purpose cryptography library.
 Download and install the latest OpenSSL version for Windows at this `link <https://slproweb.com/products/Win32OpenSSL.html>`_.
 After installing, add the environment variable :code:`OPENSSL_ROOT_DIR` pointing to the installation root directory.
 
@@ -158,8 +160,8 @@ For example:
 yaml-cpp
 ^^^^^^^^
 
-``yaml-cpp`` is a YAML parser and emitter in C++ matching the YAML 1.2 spec, and is used by *Fast DDS Spy* application to parse the provided configuration files.
-From an administrative shell with *PowerShell*, execute the following commands in order to download and install ``yaml-cpp`` for Windows:
+``yaml-cpp`` is a YAML parser and emitter in C++ matching the YAML 1.2 spec, and the *Fast DDS Spy* application uses it to parse the provided configuration files.
+From an administrative shell with *PowerShell*, execute the following commands to download and install ``yaml-cpp`` for Windows:
 
 .. code-block:: bash
 
@@ -172,14 +174,14 @@ From an administrative shell with *PowerShell*, execute the following commands i
 eProsima dependencies
 ^^^^^^^^^^^^^^^^^^^^^
 
-If it already exists in the system an installation of *Fast DDS* and *DDS Pipe* libraries, just source this libraries when building the |espy| application by using the command:
+If the *Fast DDS* and *DDS Pipe* libraries are already installed in the system, source these libraries when building the |espy| application by running the following commands:
 
 .. code-block:: bash
 
     source <fastdds-installation-path>/install/setup.bash
     source <ddspipe-installation-path>/install/setup.bash
 
-In other case, just skip this step.
+Otherwise, skip this step.
 
 
 .. _windows_sources_colcon_installation:
@@ -205,10 +207,10 @@ Colcon installation (recommended)
 
     .. note::
 
-        In case there is already a *Fast DDS* installation in the system it is not required to download and build
+        If there is already a *Fast DDS* installation in the system, it is not required to download and build
         every dependency in the :code:`.repos` file.
-        It is just needed to download and build the |espy| project having sourced its dependencies.
-        Refer to section :ref:`eprosima_dependencies` in order to check how to source *Fast DDS* library.
+        It is enough to download and build the |espy| project after sourcing its dependencies.
+        Refer to section :ref:`windows_sources_eprosima_dependencies` to check how to source the *Fast DDS* library.
 
 #.  Build the packages:
 
@@ -218,22 +220,22 @@ Colcon installation (recommended)
 
 .. note::
 
-    Being based on CMake_, it is possible to pass the CMake configuration options to the :code:`colcon build` command.
+    Since colcon is based on CMake_, the CMake configuration options can be passed to the :code:`colcon build` command.
     For more information on the specific syntax, please refer to the `CMake specific arguments <https://colcon.readthedocs.io/en/released/reference/verb/build.html#cmake-specific-arguments>`_ page of the colcon_ manual.
 
 
 CMake installation
 ==================
 
-There exist the possibility to install |spy| by CMake, and could be see in following :ref:`section <windows_cmake_installation>`.
-However :ref:`windows_sources_colcon_installation` is recommended.
+|spy| can also be installed with CMake, as described in the following :ref:`section <windows_cmake_installation>`.
+However, the :ref:`windows_sources_colcon_installation` is recommended.
 
 
 Run an application
 ==================
 
-If the |espy| was compiled using colcon, when running an instance of a |spy|, the colcon overlay built in the dedicated :code:`fastdds-spy` directory must be sourced.
-There are two possibilities:
+If |espy| was compiled using colcon, the colcon overlay built in the dedicated :code:`fastdds-spy` directory must be sourced before running an instance of |spy|.
+There are two ways to do this:
 
 * Every time a new shell is opened, prepare the environment locally by typing the command:
 
@@ -243,15 +245,15 @@ There are two possibilities:
     fastddsspy
 
 
-* Add the sourcing of the colcon overlay permanently, by opening the *Edit the system environment variables* control panel, and adding the installation path to the :code:`PATH`.
+* Source the colcon overlay permanently by opening the *Edit the system environment variables* control panel and adding the installation path to the :code:`PATH`.
 
-However, when running an instance of a |spy| compiled using CMake, it must be linked with its dependencies where the packages have been installed.
-This can be done by opening the *Edit system environment variables* control panel and adding to the ``PATH`` the |espy|, *Fast DDS*, *Fast CDR*, *DDS Pipe* installation directories:
+When running an instance of |spy| compiled using CMake, it must instead be linked with its dependencies where the packages have been installed.
+To do this, open the *Edit system environment variables* control panel and add the |espy|, *Fast DDS*, *Fast CDR* and *DDS Pipe* installation directories to the ``PATH``:
 
 *   *Fast DDS*: ``C:\\Program Files\\fastdds``
 *   *Fast CDR*: ``C:\\Program Files\\fastcdr``
 *   *DDS Pipe*: ``C:\\Program Files\\ddspipe``
-*   |espy|: ``C:\\Program Files\\ddsrecord``
+*   |espy|: ``C:\\Program Files\\fastddsspy_tool``
 
 
 .. External links

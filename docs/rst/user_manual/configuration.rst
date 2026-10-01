@@ -7,8 +7,8 @@
 Configuration
 #############
 
-A |spy| instance can be configured by a :term:`YAML` configuration file.
-In order to retrieve a configuration file to a |spy|, use :ref:`user_manual_user_interface_configuration_file_argument`.
+A |spy| instance can be configured with a :term:`YAML` configuration file.
+To pass a configuration file to the |spy|, use :ref:`user_manual_user_interface_configuration_file_argument`.
 
 The configuration file supports two **optional** top-level tags, ``dds`` and ``specs``, described in the
 sections below.
@@ -27,7 +27,7 @@ its default values.
 DDS Configurations
 ==================
 
-The YAML Configuration supports a ``dds`` **optional** tag that contains certain :term:`DDS` configurations.
+The YAML configuration supports a ``dds`` **optional** tag that contains the :term:`DDS` configuration.
 The tags accepted under ``dds`` are arranged as follows:
 
 .. code-block:: yaml
@@ -53,34 +53,34 @@ The tags accepted under ``dds`` are arranged as follows:
 
       ros2-types: ...               # format used to display schemas
 
-The sections below follow this order.
 
+.. _user_manual_configuration_dds__xml:
 
 Load XML Configuration
 ----------------------
 
-Fast DDS supports configuration of its internal entities (DomainParticipant, DataWriter, etc.) via XML Profiles.
-These XML files contain different profiles that set specific QoS, and entities can be created following such profiles.
+Fast DDS can configure its internal entities (DomainParticipant, DataWriter, etc.) through XML profiles.
+These XML files contain profiles that set specific QoS, and entities can be created following those profiles.
 
-The way to load these XML configurations is using the *Fast DDS Spy* YAML configuration.
-The YAML Configuration supports an ``xml`` optional tag that contains certain options to load Fast DDS XML configurations.
-XML configurations are then used to configure the internal DomainParticipant.
+These XML configurations are loaded through the *Fast DDS Spy* YAML configuration.
+The YAML configuration supports an ``xml`` optional tag with the options to load Fast DDS XML configurations.
+The loaded XML configurations are then used to configure the internal DomainParticipant.
 
-To specify which profile to use, the ``dds-profile`` tag should be set with the name of the desired profile.
+To specify which profile to use, set the ``dds-profile`` tag to the name of the desired profile.
 
 When the ``xml`` tag is present it must contain at least one of ``files`` and ``raw``; it may contain both.
 
 Load XML Files
 ^^^^^^^^^^^^^^
 
-The ``files`` optional tag allows specifying a list of file paths from which XML configurations can be loaded.
+The ``files`` optional tag takes a list of file paths to load XML configurations from.
 The list must contain at least one entry.
 
 Raw XML
 ^^^^^^^
 
 The ``raw`` optional tag allows specifying an XML configuration directly as a string.
-The XML content must follow the same format as an XML file and will be loaded as part of the configuration.
+The XML content must follow the same format as an XML file and is loaded as part of the configuration.
 
 .. code-block:: yaml
 
@@ -109,8 +109,8 @@ Endpoint profiles
 When the |spy| creates a :term:`DataReader` for a topic, it looks for a loaded XML ``data_reader``
 profile to configure that endpoint.
 By default, the |spy| looks for a profile **whose name matches the topic name**.
-If a matching profile is found, the endpoint is configured using that profile's QoS, giving the user
-control over fields such as history, memory policy, transport, etc.
+If a matching profile is found, the endpoint is configured with that profile's QoS, so the user
+controls fields such as history, memory policy, transport, etc.
 If no matching profile exists, the endpoint falls back to default QoS with values derived from the YAML configuration
 and from discovery.
 
@@ -125,7 +125,7 @@ and from discovery.
     ``specs: rtps`` is set to ``true``.
     See :ref:`RTPS Participant <user_manual_configuration_specs_rtps>`.
 
-The following example loads a profile named ``my_topic`` that will be automatically applied when creating
+The following example loads a profile named ``my_topic`` that is applied automatically when creating
 endpoints for a topic of that name:
 
 .. code-block:: xml
@@ -182,14 +182,13 @@ values (e.g. ``KEEP_LAST`` history with depth ``1``), instead of being adapted t
 Topic Filtering
 ---------------
 
-The |spy| automatically detects the topics that are being used in a DDS Network.
-The |spy| then creates internal DDS :term:`Readers<DataReader>` for each topic to process the data published.
-The |spy| allows filtering DDS :term:`Topics<Topic>`, that is, it allows users to configure the DDS :term:`Topics<Topic>` to process.
-These data filtering rules can be configured under the ``allowlist`` and ``blocklist`` tags.
-If the ``allowlist`` and ``blocklist`` are not configured, the |spy| will process all the data published on the topics it discovers.
-If both the ``allowlist`` and ``blocklist`` are configured and a topic appears in both of them, the ``blocklist`` has priority and the topic will be blocked.
+The |spy| automatically detects the topics used in a DDS network and creates internal DDS
+:term:`Readers<DataReader>` for each topic to process the published data.
+Users can filter which DDS :term:`Topics<Topic>` the |spy| processes with the ``allowlist`` and ``blocklist`` tags.
+If neither ``allowlist`` nor ``blocklist`` is configured, the |spy| processes all the data published on the topics it discovers.
+If both are configured and a topic appears in both of them, the ``blocklist`` has priority and the topic is blocked.
 
-Topics are determined by the tags ``name`` (required) and ``type``, both of which accept wildcard characters.
+Each topic is defined by the tags ``name`` (required) and ``type``, both of which accept wildcard characters.
 
 .. note::
 
@@ -213,8 +212,8 @@ Consider the following example:
       - name: "*"
         type: HelloWorld
 
-In this example, the data in the topic ``AllowedTopic1`` with type ``Allowed`` and the data in the topic ``AllowedTopic2`` with any type will be processed by the |spy|.
-The data in the topic ``HelloWorldTopic`` with type ``HelloWorld`` will be blocked, since the ``blocklist`` is blocking all topics with any name and with type ``HelloWorld``.
+In this example, the |spy| processes the data in the topic ``AllowedTopic1`` with type ``Allowed`` and the data in the topic ``AllowedTopic2`` with any type.
+The data in the topic ``HelloWorldTopic`` with type ``HelloWorld`` is blocked, because the ``blocklist`` blocks every topic of type ``HelloWorld``, whatever its name.
 
 .. note::
 
@@ -223,10 +222,9 @@ The data in the topic ``HelloWorldTopic`` with type ``HelloWorld`` will be block
     A ROS 2 service client waits to discover a server and then sends its request to that server only;
     if these topics were not blocked, the client could take the |spy| for a service server and send it
     a request that would never be answered.
-    As a consequence, ROS 2 service topics are never reported by the
+    As a result, ROS 2 service topics are never reported by the
     :ref:`topics <user_manual_command_topic>` command nor printed by the
-    :ref:`echo <user_manual_command_echo>` command, and this cannot be overridden from the
-    ``allowlist``.
+    :ref:`echo <user_manual_command_echo>` command.
 
 .. _user_manual_configuration_dds__partitions:
 
@@ -266,7 +264,7 @@ Note that a wildcard entry such as ``"*"`` therefore does **not** match an endpo
 Topic QoS
 ---------
 
-The following is the set of QoS that are configurable for a topic.
+The following QoS can be configured for a topic.
 For more information on topics, please read the `Fast DDS Topic <https://fast-dds.docs.eprosima.com/en/latest/fastdds/dds_layer/topic/topic.html>`_ section.
 
 .. list-table::
@@ -347,7 +345,7 @@ For more information on topics, please read the `Fast DDS Topic <https://fast-dd
 .. warning::
 
     Manually configuring ``TRANSIENT_LOCAL`` durability may lead to incompatibility issues when the discovered reliability is ``BEST_EFFORT``.
-    Please ensure to always configure the ``reliability`` when configuring the ``durability`` to avoid the issue.
+    To avoid this, always configure ``reliability`` when configuring ``durability``.
 
 .. _user_manual_configuration_dds__history_depth:
 
@@ -356,37 +354,37 @@ History Depth
 
 The ``history-depth`` tag configures the history depth of the Fast DDS internal entities.
 By default, the depth of every RTPS History instance is :code:`5000`.
-Its value should be decreased when the sample size and/or number of created endpoints (increasing with the number of topics) are big enough to cause memory exhaustion issues.
+Decrease this value when the sample size and/or the number of created endpoints (which grows with the number of topics) are large enough to exhaust memory.
 
 .. _user_manual_configuration_dds__max_rx_rate:
 
 Max Reception Rate
 ^^^^^^^^^^^^^^^^^^
 
-The ``max-rx-rate`` tag limits the frequency [Hz] at which samples are processed by discarding messages received before :code:`1/max-rx-rate` seconds have passed since the last processed message.
+The ``max-rx-rate`` tag limits the frequency [Hz] at which samples are processed, by discarding messages received before :code:`1/max-rx-rate` seconds have passed since the last processed message.
 It only accepts non-negative numbers.
-By default it is set to ``0``; it processes samples at an unlimited reception rate.
+The default value is ``0``, which processes samples at an unlimited reception rate.
 
 .. _user_manual_configuration_dds__downsampling:
 
 Downsampling
 ^^^^^^^^^^^^
 
-The ``downsampling`` tag reduces the sampling rate of the received data by only keeping *1* out of every *n* samples received (per topic), where *n* is the value specified under the ``downsampling`` tag.
+The ``downsampling`` tag reduces the sampling rate of the received data by keeping only *1* out of every *n* samples received (per topic), where *n* is the value set under the ``downsampling`` tag.
 When the ``max-rx-rate`` tag is also set, downsampling only applies to messages that have passed the ``max-rx-rate`` filter.
 It only accepts positive integers.
-By default it is set to ``1``; it accepts every message.
+The default value is ``1``, which keeps every message.
 
 .. _user_manual_configuration_dds__manual_topics:
 
 Manual Topics
 -------------
 
-A subset of :ref:`Topic QoS <user_manual_configuration_dds__topic_qos>` can be manually configured for a specific topic under the tag ``topics``.
-The tag ``topics`` has a required ``name`` tag that accepts wildcard characters.
+A subset of :ref:`Topic QoS <user_manual_configuration_dds__topic_qos>` can be configured manually for a specific topic under the ``topics`` tag.
+The ``topics`` tag has a required ``name`` tag that accepts wildcard characters.
 It also has three optional tags: a ``type`` tag that accepts wildcard characters, a ``qos`` tag with the :ref:`Topic QoS <user_manual_configuration_dds__topic_qos>` that
-the user wants to manually configure, and a ``filter`` tag with a :ref:`Content Filter <user_manual_configuration_dds__content_filter>` expression.
-If a ``qos`` is not manually configured, it will get its value by discovery.
+the user wants to configure manually, and a ``filter`` tag with a :ref:`Content Filter <user_manual_configuration_dds__content_filter>` expression.
+QoS that are not configured manually take their value from discovery.
 
 .. code-block:: yaml
 
@@ -441,7 +439,7 @@ A filter set at run time replaces the one configured here for that topic.
 DDS Domain Id
 -------------
 
-In order to execute a |spy| instance in a :term:`Domain Id` different than the default (``0``) use tag ``domain``.
+To run a |spy| instance in a :term:`Domain Id` other than the default (``0``), use the ``domain`` tag.
 It accepts an integer between ``0`` and ``232``.
 
 .. _user_manual_configuration_dds_ignore_participant_flags:
@@ -449,8 +447,7 @@ It accepts an integer between ``0`` and ``232``.
 Ignore Participant Flags
 ------------------------
 
-A set of discovery traffic filters can be defined in order to add an extra level of isolation.
-This configuration option can be set through the ``ignore-participant-flags`` tag:
+The ``ignore-participant-flags`` tag defines a set of discovery traffic filters that add an extra level of isolation:
 
 .. code-block:: yaml
 
@@ -471,9 +468,9 @@ See `Ignore Participant Flags <https://fast-dds.docs.eprosima.com/en/latest/fast
 Custom Transport Descriptors
 ----------------------------
 
-By default, |spy| internal participants are created with enabled `UDP <https://fast-dds.docs.eprosima.com/en/latest/fastdds/transport/udp/udp.html>`_ and `Shared Memory <https://fast-dds.docs.eprosima.com/en/latest/fastdds/transport/shared_memory/shared_memory.html>`_ transport descriptors.
-The use of one or the other for communication will depend on the specific scenario, and whenever both are viable candidates, the most efficient one (Shared Memory Transport) is automatically selected.
-However, a user may desire to force the use of one of the two, which can be accomplished via the ``transport`` configuration tag.
+By default, |spy| internal participants are created with the `UDP <https://fast-dds.docs.eprosima.com/en/latest/fastdds/transport/udp/udp.html>`_ and `Shared Memory <https://fast-dds.docs.eprosima.com/en/latest/fastdds/transport/shared_memory/shared_memory.html>`_ transport descriptors enabled.
+Which one is used depends on the scenario, and when both are viable, the most efficient one (Shared Memory Transport) is selected automatically.
+To force the use of one of them, set the ``transport`` configuration tag.
 
 .. code-block:: yaml
 
@@ -485,7 +482,7 @@ However, a user may desire to force the use of one of the two, which can be acco
 
 .. warning::
 
-    When configured with ``transport: shm``, |spy| will only communicate with applications using Shared Memory Transport exclusively (with disabled UDP transport).
+    When configured with ``transport: shm``, |spy| only communicates with applications that use Shared Memory Transport exclusively (with UDP transport disabled).
 
 .. _user_manual_configuration_dds__ros2_easy_mode:
 
@@ -502,8 +499,8 @@ through the ``ros2-easy-mode`` tag.
 
 .. warning::
     This configuration is incompatible with the ``transport`` tag.
-    Easy Mode is only configured when ``transport`` is left at its default value ``builtin``;
-    setting ``transport`` to ``udp`` or ``shm`` prevents Easy Mode from being configured.
+    Easy Mode is only configured when ``transport`` is left at its default value ``builtin``,
+    so setting it to ``udp`` or ``shm`` disables Easy Mode.
 
     For now, only IPv4 addresses are supported.
 
@@ -512,9 +509,9 @@ through the ``ros2-easy-mode`` tag.
 Interface Whitelist
 -------------------
 
-Optional tag ``whitelist-interfaces`` allows to limit the network interfaces used by UDP and TCP transport.
-This may be useful to only allow communication within the host (note: same can be done with :ref:`user_manual_configuration_dds_ignore_participant_flags`).
-Example:
+The optional ``whitelist-interfaces`` tag limits the network interfaces used by the UDP and TCP transports.
+This can be used to allow communication only within the host, which can also be done with :ref:`user_manual_configuration_dds_ignore_participant_flags`.
+For example:
 
 .. code-block:: yaml
 
@@ -526,7 +523,7 @@ See `Interface Whitelist <https://fast-dds.docs.eprosima.com/en/latest/fastdds/t
 Topic type format
 -----------------
 
-The optional ``ros2-types`` tag enables specification of the format for displaying schemas.
+The optional ``ros2-types`` tag sets the format used to display schemas.
 When set to ``true``, schemas are displayed in ROS 2 message format (.msg).
 If set to ``false``, schemas are displayed in OMG IDL format (.idl).
 
@@ -535,7 +532,7 @@ If set to ``false``, schemas are displayed in OMG IDL format (.idl).
 Specs Configurations
 ====================
 
-The YAML Configuration supports a ``specs`` **optional** tag that contains certain options related with the overall configuration of the application.
+The YAML configuration supports a ``specs`` **optional** tag with options for the overall configuration of the application.
 The tags accepted under ``specs`` are arranged as follows:
 
 .. code-block:: yaml
@@ -550,16 +547,14 @@ The tags accepted under ``specs`` are arranged as follows:
 
       logging: ...                  # verbosity, filter and publication of the logs
 
-The sections below follow this order.
-
 Number of Threads
 -----------------
 
-``specs`` supports a ``threads`` **optional** value that allows the user to set a maximum number of threads for the internal :code:`ThreadPool`.
-This ThreadPool allows to limit the number of threads spawned by the application.
-This improves the performance of the data transmission between participants.
+``specs`` supports a ``threads`` **optional** value that sets the maximum number of threads of the internal :code:`ThreadPool`.
+The ThreadPool limits the number of threads spawned by the application, which improves the performance of the data
+transmission between participants.
 
-This value should be set by each user depending on each system characteristics.
+Set this value according to the characteristics of each system.
 It only accepts integers greater than or equal to ``1``.
 By default, this value is ``12``.
 
@@ -568,8 +563,8 @@ By default, this value is ``12``.
 Discovery Time
 --------------
 
-``specs`` supports a ``discovery-time`` **optional** value that allows the user to set the time (in milliseconds) before a :ref:`user_manual_user_interface_one_shot` retrieves the output and closes.
-This parameter is useful for very big networks, as |spy| may not discover the whole network fast enough to return a complete information.
+``specs`` supports a ``discovery-time`` **optional** value that sets the time (in milliseconds) a :ref:`user_manual_user_interface_one_shot` waits before it retrieves the output and closes.
+This is useful in very large networks, where |spy| may not discover the whole network fast enough to return complete information.
 It only accepts non-negative integers.
 By default, this value is ``2000`` (2 seconds).
 
@@ -580,11 +575,9 @@ RTPS Participant
 
 ``specs`` supports an ``rtps`` **optional** tag that selects the kind of internal participant the |spy|
 creates to communicate with the DDS network.
-By default it is set to ``false``, and a DDS participant is created, which is the one that applies the
-Fast DDS XML profiles described in the :ref:`Load XML Configuration <user_manual_configuration_dds>`
-section.
-Setting ``rtps: true`` creates a plain RTPS participant instead, in which case XML profiles are not
-applied.
+By default it is ``false`` and the |spy| creates a DDS participant, which applies the Fast DDS XML
+profiles described in the :ref:`Load XML Configuration <user_manual_configuration_dds__xml>` section.
+Setting ``rtps: true`` creates a plain RTPS participant instead.
 
 .. warning::
 
@@ -615,13 +608,13 @@ Logging
 
 ``specs`` supports a ``logging`` **optional** tag to configure the |spy| logs.
 Under the ``logging`` tag, users can configure the type of logs to display and filter the logs based on their content and category.
-When configuring the verbosity to ``info``, all types of logs, including informational messages, warnings, and errors, will be displayed.
-Conversely, setting it to ``warning`` will only show warnings and errors, while choosing ``error`` will exclusively display errors.
-By default, the filter allows all errors to be displayed, while selectively permitting warning and informational messages from ``FASTDDSSPY`` category.
+Setting the verbosity to ``info`` displays all types of logs: informational messages, warnings and errors.
+Setting it to ``warning`` shows only warnings and errors, and ``error`` shows only errors.
+By default, the filter displays all errors, and only the warnings and informational messages of the ``FASTDDSSPY`` category.
 
 .. note::
 
-    Configuring the logs via the Command-Line is still active and takes precedence over YAML configuration when both methods are used simultaneously.
+    The logs can still be configured from the command line, and that configuration takes precedence over the YAML configuration when both are used.
 
 .. list-table::
     :header-rows: 1
@@ -665,8 +658,8 @@ By default, the filter allows all errors to be displayed, while selectively perm
     For the logs to function properly, the ``-DLOG_INFO=ON`` compilation flag is required.
 
 
-The |spy| prints the logs by default (warnings and errors in the standard error and infos in the standard output).
-The |spy|, however, can also publish the logs in a DDS topic.
+By default, the |spy| prints the logs (warnings and errors to the standard error, info messages to the standard output).
+It can also publish the logs on a DDS topic.
 To publish the logs, under the tag ``publish``, set ``enable: true`` and set a ``domain`` and a ``topic-name``.
 The ``enable`` tag is required whenever the ``publish`` tag is present, and ``domain`` accepts an integer
 between ``0`` and ``232``.
@@ -716,11 +709,11 @@ The type of the logs published is defined as follows:
 General Example
 ===============
 
-A complete example of all the configurations described on this page can be found below.
+The following example includes all the configurations described on this page.
 
 .. warning::
 
-    This example can be used as a quick reference, but it may not be correct due to incompatibility or exclusive properties. **Do not take it as a working example**.
+    This example can be used as a quick reference, but it may not be valid because some properties are incompatible or mutually exclusive. **Do not take it as a working example**.
 
 .. code-block:: yaml
 

@@ -15,7 +15,7 @@ This section explains how to compile |espy| with CMake_, either :ref:`locally <l
 Local installation
 ------------------
 
-#.  Create a :code:`Fast-DDS-Spy` directory where to download and build |spy| and its dependencies:
+#.  Create a :code:`Fast-DDS-Spy` directory in which to download and build |spy| and its dependencies:
 
     .. code-block:: bash
 
@@ -83,21 +83,21 @@ Local installation
             cd ~/fastdds-spy
             mkdir build/ddspipe_core
             cd build/ddspipe_core
-            cmake ~/fastdds-spy/ddspipe_core -DCMAKE_INSTALL_PREFIX=~/fastdds-spy/install -DCMAKE_PREFIX_PATH=~/fastdds-spy/install
+            cmake ~/fastdds-spy/src/ddspipe/ddspipe_core -DCMAKE_INSTALL_PREFIX=~/fastdds-spy/install -DCMAKE_PREFIX_PATH=~/fastdds-spy/install
             cmake --build . --target install
 
             # ddspipe_yaml
             cd ~/fastdds-spy
             mkdir build/ddspipe_yaml
             cd build/ddspipe_yaml
-            cmake ~/fastdds-spy/ddspipe_yaml -DCMAKE_INSTALL_PREFIX=~/fastdds-spy/install -DCMAKE_PREFIX_PATH=~/fastdds-spy/install
+            cmake ~/fastdds-spy/src/ddspipe/ddspipe_yaml -DCMAKE_INSTALL_PREFIX=~/fastdds-spy/install -DCMAKE_PREFIX_PATH=~/fastdds-spy/install
             cmake --build . --target install
 
             # ddspipe_participants
             cd ~/fastdds-spy
             mkdir build/ddspipe_participants
             cd build/ddspipe_participants
-            cmake ~/fastdds-spy/ddspipe_participants -DCMAKE_INSTALL_PREFIX=~/fastdds-spy/install -DCMAKE_PREFIX_PATH=~/fastdds-spy/install
+            cmake ~/fastdds-spy/src/ddspipe/ddspipe_participants -DCMAKE_INSTALL_PREFIX=~/fastdds-spy/install -DCMAKE_PREFIX_PATH=~/fastdds-spy/install
             cmake --build . --target install
 
 #.  Once all dependencies are installed, install |espy|:
@@ -129,7 +129,7 @@ Local installation
 
     By default, |espy| does not compile tests.
     However, they can be activated by downloading and installing `Gtest <https://github.com/google/googletest>`_
-    and building with CMake option ``-DBUILD_TESTS=ON``.
+    and building with the CMake option ``-DBUILD_TESTS=ON``.
 
 
 .. _global_installation_sl:
@@ -137,7 +137,7 @@ Local installation
 Global installation
 -------------------
 
-To install |espy| system-wide instead of locally, remove all the flags that appear in the configuration steps of :code:`Fast-CDR`, :code:`Fast-DDS`, :code:`Dev-Utils`, :code:`DDS-Pipe`, and :code:`fastdds-spy`, and change the first in the configuration step of :code:`foonathan_memory_vendor` to the following:
+To install |espy| system-wide instead of locally, remove all the flags that appear in the configuration steps of :code:`Fast-CDR`, :code:`Fast-DDS`, :code:`Dev-Utils`, :code:`DDS-Pipe`, and :code:`fastdds-spy`, and change the first flag in the configuration step of :code:`foonathan_memory_vendor` to the following:
 
 .. code-block:: bash
 
