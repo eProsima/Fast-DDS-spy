@@ -11,6 +11,9 @@ dds:
                 <domainId>1</domainId>
                 <rtps></rtps>
             </participant>
+            <data_reader profile_name="custom_endpoint_profile">
+                <historyMemoryPolicy>DYNAMIC</historyMemoryPolicy>
+            </data_reader>
         </profiles>
 
   dds-profile: "participant_profile"

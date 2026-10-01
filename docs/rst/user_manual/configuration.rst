@@ -84,13 +84,12 @@ endpoints for a topic of that name:
 
 .. code-block:: xml
 
-    <dds>
-        <profiles>
-            <data_reader profile_name="my_topic">
-                <historyMemoryPolicy>DYNAMIC</historyMemoryPolicy>
-            </data_reader>
-        </profiles>
-    </dds>
+    <?xml version="1.0" encoding="UTF-8" ?>
+    <profiles xmlns="http://www.eprosima.com">
+        <data_reader profile_name="my_topic">
+            <historyMemoryPolicy>DYNAMIC</historyMemoryPolicy>
+        </data_reader>
+    </profiles>
 
 Selecting a profile explicitly
 """"""""""""""""""""""""""""""
@@ -545,6 +544,9 @@ A complete example of all the configurations described on this page can be found
                     <domainId>1</domainId>
                     <rtps></rtps>
                 </participant>
+                <data_reader profile_name="custom_endpoint_profile">
+                    <historyMemoryPolicy>DYNAMIC</historyMemoryPolicy>
+                </data_reader>
             </profiles>
 
       dds-profile: "participant_profile"
