@@ -46,6 +46,8 @@ std::vector<std::string> valid_files = {
 };
 std::vector<std::string> invalid_files = {
     "./invalid_config_files/allowlist_topic_no_name.yaml",
+    "./invalid_config_files/allowlist_with_qos.yaml",
+    "./invalid_config_files/blocklist_with_filter.yaml",
     "./invalid_config_files/invalid_domain.yaml",
     "./invalid_config_files/invalid_ignore_participant_flags.yaml",
     "./invalid_config_files/invalid_qos_downsampling.yaml",
@@ -54,6 +56,7 @@ std::vector<std::string> invalid_files = {
     "./invalid_config_files/invalid_verbosity.yaml",
     "./invalid_config_files/log_publish_no_enable.yaml",
     "./invalid_config_files/topics_manual_topic_no_name.yaml",
+    "./invalid_config_files/topics_with_participants.yaml",
     "./invalid_config_files/unknown_property.yaml",
     "./invalid_config_files/xml_no_raw_nor_files.yaml",
 };

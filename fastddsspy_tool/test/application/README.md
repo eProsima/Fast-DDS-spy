@@ -4,21 +4,20 @@ This module builds a test suite for the Fast DDS Spy.
 
 ## Executable [test.py](test.py)
 
-The executable is responsible for running all the tests and verify that the system behaves correctly under the different conditions.
+This executable runs all the tests and verifies that the system behaves correctly under the different conditions.
 
 ## Executable [test_class.py](test_class.py)
 
-Is the base class that provides the foundation for creating test cases.
-Encapsulates various methods and functionalities that enable the definition and execution of individual test cases.
-By inheriting from `test_class.TestCase`, you can create custom test case classes that inherit the features and capabilities of the base class.
-This inheritance allows you to leverage the provided methods and utilities within your test cases.
-However, you also have the flexibility to reimplement or override those methods to tailor them to your specific test cases.
+This is the base class for creating test cases.
+It contains the methods needed to define and run individual test cases.
+By inheriting from `test_class.TestCase`, you can create custom test case classes that use those methods within your test cases.
+You can also reimplement or override them to fit a specific test case.
 
 ## Add a new test case file
 
 To add a new test case file and define specific conditions to test, follow these steps:
 
-1. Create a new python file inside [test_cases](test_cases/) directory.
+1. Create a new python file inside the [test_cases](test_cases/) directory.
 2. In the newly created file, create a child class that inherits from `test_class.TestCase`.
 3. Customize the class by setting the desired parameters to define the conditions you want to test.
 
@@ -53,7 +52,7 @@ You need a class like [this](test_cases/one_shot_participants_verbose_dds.py):
                 dynamic_type_discovered: false\n"""
     ```
 
-If you need to override a specific method for a particular test case, you can do so by providing an implementation within that specific test case class like [here](test_cases/one_shot__help.py) with `valid_output()`.
+To override a method for a particular test case, implement it within that test case class, as [this one](test_cases/one_shot__help.py) does with `valid_output()`.
 
 ## TODO
 

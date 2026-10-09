@@ -1,0 +1,9 @@
+dds:
+  domain: 0
+
+  blocklist:
+    - name: "HelloWorldTopic"
+      filter: "index > 10"
+
+specs:
+  threads: 4

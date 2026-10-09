@@ -8,12 +8,12 @@
 Help
 ====
 
-Show the help information with all the commands available by |spy|.
+Show the help information with all the commands available in |spy|.
 
 Key-words
 ---------
 
-These are the key-words recognize as this command:
+These are the key-words recognized as this command:
 ``h`` ``help`` ``H`` ``man``.
 
 .. _user_manual_commands_extra_version:
@@ -21,12 +21,12 @@ These are the key-words recognize as this command:
 Version
 =======
 
-Show the version information and commit of the application running.
+Show the version and commit of the running application.
 
 Key-words
 ---------
 
-These are the key-words recognize as this command:
+These are the key-words recognized as this command:
 ``version`` ``v`` ``V``.
 
 .. _user_manual_commands_extra_quit:
@@ -39,5 +39,5 @@ Stop and close the application.
 Key-words
 ---------
 
-These are the key-words recognize as this command:
+These are the key-words recognized as this command:
 ``q`` ``x`` ``quit`` ``quit()`` ``exit`` ``exit()``.

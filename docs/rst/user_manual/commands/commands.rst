@@ -7,15 +7,15 @@
 Commands
 ########
 
-These are the commands supported so far by |spy|.
-Every command explained in this section is available from the :ref:`user_manual_user_interface_interactive_app` and from the :ref:`user_manual_user_interface_one_shot`.
-Most of the commands and arguments available have shortcuts and other names related.
-Thus, multiple words execute the same commands (e.g. `participant` = `participants` = `p`).
+These are the commands that |spy| currently supports.
+Every command in this section is available from the :ref:`user_manual_user_interface_interactive_app` and from the :ref:`user_manual_user_interface_one_shot`.
+Most commands and arguments have shortcuts and alternative names,
+so several words run the same command (e.g. `participant` = `participants` = `p`).
 
-Entity Commands
+Entity commands
 ===============
 
-The information retrieved by these commands follows :term:`YAML` format and queries the application database about the network current status.
+These commands query the application database for the current status of the network and return the information in :term:`YAML` format.
 
 .. toctree::
    :maxdepth: 2
@@ -28,7 +28,7 @@ The information retrieved by these commands follows :term:`YAML` format and quer
 Data commands
 =============
 
-This commands show user data being received by the application in real time.
+These commands show the user data that the application receives in real time.
 
 .. toctree::
    :maxdepth: 2
@@ -38,7 +38,7 @@ This commands show user data being received by the application in real time.
 Filter commands
 ===============
 
-This command enables the user to filter the information observed by the application.
+This command lets the user filter the information that the application observes.
 
 .. toctree::
    :maxdepth: 2
@@ -58,7 +58,7 @@ These are other commands available in the application.
 Input format
 ============
 
-Input format for the application command arguments.
+Format of the arguments that the application commands accept.
 
 .. toctree::
    :maxdepth: 2
@@ -111,7 +111,10 @@ Summary
         - ``_`` |br|
           ``verbose`` |br|
           ``vv`` |br|
-          ``<topic name>``
+          ``<topic name>`` |br|
+          ``<topic name> idl`` |br|
+          ``<topic name> keys`` |br|
+          ``<topic name> keys v``
         - ``topic`` ``topics`` |br|
           ``t`` ``T``
 
@@ -126,14 +129,15 @@ Summary
           ``<filter_str>`` |br|
           ``<topic_name>`` |br|
         - ``filter`` ``filters`` |br|
+          ``partitions`` |br|
           ``f`` ``F``
 
     *   - :ref:`user_manual_command_echo`
-        - Show real-time receiving user data.
+        - Show user data received in real time.
         - ``<topic name>`` |br|
           ``<topic name> verbose`` |br|
           ``all``
-        - ``show`` ``print`` |br|
+        - ``echo`` ``show`` ``print`` |br|
           ``s`` ``S``
 
     *   - :ref:`user_manual_commands_extra_help`
@@ -149,7 +153,7 @@ Summary
           ``v`` ``V``
 
     *   - :ref:`user_manual_commands_extra_quit`
-        - Stop and close application.
+        - Stop and close the application.
         -
         - ``quit`` ``exit`` |br|
           ``quit()`` ``exit()`` |br|

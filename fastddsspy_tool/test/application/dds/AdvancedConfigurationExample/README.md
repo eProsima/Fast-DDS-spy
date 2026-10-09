@@ -1,19 +1,19 @@
 # Advanced Configuration Example
 
-This example extends the configuration options of a trivial HelloWorld by letting the user specify properties of
-entities such as durability, reliability or specify the transport protocol to be used, among other possibilities. This
-could be useful, for example, to quickly test whether two endpoints are compatible and hence would match.
+This example extends the configuration options of a trivial HelloWorld by letting the user specify entity properties
+such as durability and reliability, or the transport protocol to use, among other possibilities. This
+can be useful, for example, to quickly test whether two endpoints are compatible and would therefore match.
 
 ## Execution instructions
 
-To launch this test open two different consoles:
+To launch this test, open two different consoles:
 
-In the first one launch: ./AdvancedConfigurationExample publisher (or AdvancedConfigurationExample.exe publisher on windows).
-In the second one: ./AdvancedConfigurationExample subscriber (or AdvancedConfigurationExample.exe subscriber on windows).
+In the first one, launch: ./AdvancedConfigurationExample publisher (or AdvancedConfigurationExample.exe publisher on Windows).
+In the second one: ./AdvancedConfigurationExample subscriber (or AdvancedConfigurationExample.exe subscriber on Windows).
 
 ## Arguments
 
-First argument is `publisher` or `subscriber` and then the rest of arguments are read unordered
+The first argument is `publisher` or `subscriber`; the rest of the arguments can come in any order.
 
 ```sh
 Usage: AdvancedConfigurationExample <publisher|subscriber>
@@ -88,11 +88,11 @@ Discovery options:
 
 ### XML Configuration
 
-Using argument `--xml-profile <profile_name>` will configure the internal DomainParticipant using the profile name loaded from an XML file.
-To load XML files check [Fast DDS documentation](https://fast-dds.docs.eprosima.com/en/latest/fastdds/xml_configuration/xml_configuration.html).
-Loading example XML configuration [file](shm_off.xml) and calling this example with `--xml-profile no_shm_participant_profile` will disable Shared Memory Transport for the internal DomainParticipant created.
+The argument `--xml-profile <profile_name>` configures the internal DomainParticipant with the named profile loaded from an XML file.
+To learn how to load XML files, check the [Fast DDS documentation](https://fast-dds.docs.eprosima.com/en/latest/fastdds/xml_configuration/xml_configuration.html).
+Loading the example XML configuration [file](shm_off.xml) and calling this example with `--xml-profile no_shm_participant_profile` disables Shared Memory Transport for the internal DomainParticipant.
 
-This code presents how to run a publisher with this example without Shared Memory:
+The following command runs a publisher from this example without Shared Memory:
 
 ```sh
 # From AdvancedConfigurationExample installation dir

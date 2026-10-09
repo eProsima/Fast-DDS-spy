@@ -28,6 +28,9 @@ dds:
     - name: "topic_name"
       type: "topic_type"
 
+  partitions:
+    - "partition_name"
+
   topics:
     - name: "temperature/*"
       type: "temperature/types/*"
@@ -35,6 +38,10 @@ dds:
         max-rx-rate: 5
         downsampling: 1
         endpoint-profile-name: "custom_endpoint_profile"
+
+    - name: "HelloWorldTopic"
+      type: "HelloWorld"
+      filter: "index > 10"
 
   ignore-participant-flags: no_filter
   transport: builtin
@@ -46,7 +53,8 @@ dds:
 
 specs:
   threads: 12
-  discovery-time: 1000
+  discovery-time: 2000
+  rtps: false
 
   qos:
     history-depth: 5000
