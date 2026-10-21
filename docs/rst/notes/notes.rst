@@ -3,8 +3,28 @@
 .. include:: forthcoming_version.rst
 
 ##############
-Version v1.5.3
+Version v1.5.4
 ##############
+
+This release includes the following **features**:
+
+* Support topic-name endpoint profile lookup: a loaded XML ``data_reader`` profile whose name matches the topic name is automatically applied when creating its ``DataReader``
+* Add the ``endpoint-profile-name`` tag to select a specific XML profile for a topic
+* Reject the configuration tags that Fast DDS Spy does not apply: ``qos`` and ``filter`` within ``allowlist`` and ``blocklist``, and ``participants`` within ``topics``
+
+This release includes the following **bugfixes**:
+
+* Match the partition filters against the default empty partition, so that endpoints announcing no partition are filtered correctly
+* Report the correct default value of ``--log-verbosity`` in the application's help text
+
+This release includes the following **improvements**:
+
+* Refactor the partitions logic to read the partitions of an endpoint from its announced QoS
+* Solve flaky tests and stabilize the application tests on Windows
+* Run the ``Uncrustify`` and ``Python Linters`` workflows only in pull requests
+* Remove the nightly CI jobs targeting the End-of-Life ``0.x`` branch
+* Document the topic profile lookup and the ``endpoint-profile-name`` tag
+* Update the documentation: complete the configuration reference, the command summary and the installation manual, and merge the Developer Manual into the Installation Manual
 
 This release includes the following **Dependencies Update**:
 
@@ -30,16 +50,17 @@ This release includes the following **Dependencies Update**:
     *   - Dev Utils
         - `eProsima/dev-utils <https://github.com/eProsima/dev-utils>`__
         - `v1.5.3 <https://github.com/eProsima/dev-utils/releases/tag/v1.5.3>`__
-        - `v1.5.3 <https://github.com/eProsima/dev-utils/releases/tag/v1.5.3>`__
+        - `v1.5.4 <https://github.com/eProsima/dev-utils/releases/tag/v1.5.4>`__
     *   - DDS Pipe
         - `eProsima/DDS-Pipe <https://github.com/eProsima/DDS-Pipe>`__
-        - `v1.5.2 <https://github.com/eProsima/DDS-Pipe/releases/tag/v1.5.2>`__
         - `v1.5.3 <https://github.com/eProsima/DDS-Pipe/releases/tag/v1.5.3>`__
+        - `v1.5.4 <https://github.com/eProsima/DDS-Pipe/releases/tag/v1.5.4>`__
 
 #################
 Previous Versions
 #################
 
+.. include:: ./previous_versions/v1.5.3.rst
 .. include:: ./previous_versions/v1.5.2.rst
 .. include:: previous_versions/v1.5.1.rst
 .. include:: ./previous_versions/v1.5.0.rst
