@@ -1,0 +1,10 @@
+dds:
+  domain: 0
+
+  allowlist:
+    - name: "HelloWorldTopic"
+      qos:
+        history-depth: 10
+
+specs:
+  threads: 4

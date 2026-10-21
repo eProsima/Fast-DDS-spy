@@ -7,48 +7,48 @@
 Echo
 ####
 
-This command prints every User Data received in a human readable way.
-The information shown with this command is real-time data that is being received by |spy|.
-In order to stop the command, press enter and the CLI will finish showing the data received.
+This command prints all the user data received, in a human-readable way.
+The data is shown in real time, as the |spy| receives it.
+To stop the command, press enter, and the CLI stops showing the received data.
 
 .. note::
 
-   This is a real-time command that will not stop until enter is pressed.
+   This is a real-time command that does not stop until enter is pressed.
 
 Key-words
 =========
 
-These are the key-words recognize as this command:
+These are the key-words recognized as this command:
 ``echo`` ``show`` ``print`` ``s`` ``S``.
 
 Data Type discovered
 ====================
 
-In order for a :term:`Topic` to be printable by the application, the |spy| requires to know the data type of such topic.
-The information whether the topic data type is already discovered be the application can be shown by using :ref:`user_manual_command_topic` command.
+For a :term:`Topic` to be printable by the application, the |spy| needs to know the data type of that topic.
+Use the :ref:`user_manual_command_topic` command to check whether the application has already discovered the data type of a topic.
 
 Arguments
 =========
 
-**Echo** command supports different combination of arguments:
+The **Echo** command supports different combinations of arguments:
 
 Topic name
 ----------
 
-When a topic name is given, the information shown is the data received in real-time in the topic specified.
-The output format is as follows: :ref:`user_manual_command_echo_output_simple`.
+When a topic name is given, the command shows the data received in real time on that topic.
+The output format is described in :ref:`user_manual_command_echo_output_simple`.
 
 Topic name with wildcards
 -------------------------
-When a topic name is provided with wildcards (*), the command will display real-time information for all topics whose names match the given filter.
+When a topic name is provided with wildcards (*), the command displays real-time information for all topics whose names match the given filter.
 
-For example, if you enter ``sensor_*``, the command will print data from all topics starting with ``sensor_``, such as ``sensor_temperature``, ``sensor_humidity``, etc.
+For example, ``sensor_*`` prints data from all topics starting with ``sensor_``, such as ``sensor_temperature``, ``sensor_humidity``, etc.
 
 Topic name + Verbose
 --------------------
 
-Giving a topic name and the the :ref:`verbose argument <user_manual_commands_input_verbose>` the output is the data received in real-time with additional meta-information as the topic name, the source timestamp, and the source :term:`DataWriter` :term:`Guid`.
-Data is printing using :ref:`user_manual_command_echo_output_verbose`.
+When a topic name and the :ref:`verbose argument <user_manual_commands_input_verbose>` are given, the output is the data received in real time with additional meta-information such as the topic name, the source timestamp, and the source :term:`DataWriter` :term:`Guid`.
+Data is printed using :ref:`user_manual_command_echo_output_verbose`.
 
 Topic name wildcard
 -------------------
@@ -58,8 +58,8 @@ When a topic name is provided with wildcards (*) and the :ref:`verbose argument 
 All
 ---
 
-This argument prints all topics which Data Type has been discovered.
-Data is printing using :ref:`user_manual_command_echo_output_verbose`.
+This argument prints all topics whose Data Type has been discovered.
+Data is printed using :ref:`user_manual_command_echo_output_verbose`.
 
 Output Format
 =============
@@ -69,14 +69,14 @@ Output Format
     The format of the data printed is not YAML.
     The correct YAML format will come in future releases.
 
-The data information is retrieved in 2 formats depending on the verbose option.
+The data is shown in 2 formats depending on the verbose option.
 
 .. _user_manual_command_echo_output_simple:
 
 Simple Data format
 ------------------
 
-Only shows the data, by
+Only shows the data:
 
 .. code-block:: yaml
 
@@ -104,9 +104,9 @@ Verbose Data format
 Example
 =======
 
-Let's assume we have a DDS network where 2 ShapesDemo applications are running.
+Consider a DDS network where 2 ShapesDemo applications are running.
 
-This would be the expected output for the command ``show Circle``:
+This is the expected output of the command ``show Circle``:
 
 .. code-block::
 
@@ -127,7 +127,7 @@ This would be the expected output for the command ``show Circle``:
     ...
 
 
-This would be the expected output for the command ``show Circle verbose``:
+This is the expected output of the command ``show Circle verbose``:
 
 .. code-block::
 
@@ -156,7 +156,7 @@ This would be the expected output for the command ``show Circle verbose``:
     ...
 
 
-This would be the expected output for the command ``datas 01.0f.22.ba.3b.47.ab.3c.00.00.00.00|0.0.1.c1``:
+This is the expected output of the command ``datas 01.0f.22.ba.3b.47.ab.3c.00.00.00.00|0.0.1.c1``:
 
 .. code-block::
 
