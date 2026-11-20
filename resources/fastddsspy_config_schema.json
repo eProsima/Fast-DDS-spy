@@ -50,6 +50,13 @@
                 "dds-profile":{
                     "type":"string"
                 },
+                "endpoint-qos-mode":{
+                    "type":"string",
+                    "enum":[
+                        "xml-overridable",
+                        "xml-standalone"
+                    ]
+                },
                 "domain":{
                     "$ref":"#/definitions/DdsDomain"
                 },
