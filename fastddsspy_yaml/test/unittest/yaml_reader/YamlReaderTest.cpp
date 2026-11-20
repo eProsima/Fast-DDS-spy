@@ -101,6 +101,46 @@ TEST(YamlReaderTest, get_spy_configuration_trivial)
 }
 
 /**
+ * Test that the endpoint QoS mode of the DDS participant is read from the YAML.
+ *
+ * CASES:
+ * - Not set          -> XML_OVERRIDABLE (default)
+ * - xml-standalone   -> XML_STANDALONE
+ * - Unknown value    -> ConfigurationException
+ */
+TEST(YamlReaderTest, get_spy_configuration_endpoint_qos_mode)
+{
+    {
+        Yaml yml = YAML::Load(R"(
+            dds:
+                dds-profile: "participant_profile"
+        )");
+        eprosima::spy::yaml::Configuration configuration(yml);
+        ASSERT_EQ(configuration.dds_configuration->endpoint_qos_mode,
+                ddspipe::participants::EndpointQoSMode::XML_OVERRIDABLE);
+    }
+
+    {
+        Yaml yml = YAML::Load(R"(
+            dds:
+                dds-profile: "participant_profile"
+                endpoint-qos-mode: xml-standalone
+        )");
+        eprosima::spy::yaml::Configuration configuration(yml);
+        ASSERT_EQ(configuration.dds_configuration->endpoint_qos_mode,
+                ddspipe::participants::EndpointQoSMode::XML_STANDALONE);
+    }
+
+    {
+        Yaml yml = YAML::Load(R"(
+            dds:
+                endpoint-qos-mode: xml-only
+        )");
+        ASSERT_THROW(eprosima::spy::yaml::Configuration configuration(yml), eprosima::utils::ConfigurationException);
+    }
+}
+
+/**
  * Test that a duplicated manual topic takes the filter value of the last appearance.
  */
 TEST(YamlReaderTest, duplicate_manual_topic_name_overwrites_filter)
