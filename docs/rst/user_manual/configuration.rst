@@ -38,6 +38,7 @@ The tags accepted under ``dds`` are arranged as follows:
         files: ...
         raw: ...
       dds-profile: ...              # XML profile applied to the internal DomainParticipant
+      endpoint-qos-mode: ...        # how the XML endpoint profiles are applied
 
       allowlist: ...                # topics whose data is processed
       blocklist: ...                # topics whose data is discarded
@@ -156,25 +157,49 @@ topic, and :ref:`Manual Topics <user_manual_configuration_dds__manual_topics>` t
 If no profile with that name is loaded, the |spy| does not look for a profile named after the topic; the endpoint
 falls back to default QoS instead.
 
-Overriding profile QoS from the YAML configuration
-"""""""""""""""""""""""""""""""""""""""""""""""""""
+.. _user_manual_configuration_dds__endpoint_qos_mode:
 
-When a matching XML profile is applied, the following :ref:`Topic QoS <user_manual_configuration_dds__topic_qos>`
-override the corresponding values from the profile, but only if they are explicitly set in the YAML configuration,
-either under a topic in ``topics`` or under ``specs``:
-``durability``, ``reliability``, ``ownership`` and ``history-depth``.
-Every other field keeps the value from the XML profile.
+Endpoint QoS mode
+"""""""""""""""""
 
-QoS values that the |spy| learns from remote endpoints during discovery never override the XML profile.
-Fields that are set neither in the XML profile nor in the YAML configuration therefore take the *Fast DDS* default
-values (e.g. ``KEEP_LAST`` history with depth ``1``), instead of being adapted to the discovered endpoints.
+The ``endpoint-qos-mode`` tag under ``dds`` sets how a matching XML endpoint profile is applied:
+
+.. list-table::
+    :header-rows: 1
+
+    *   - Value
+        - Behavior
+
+    *   - ``xml-overridable`` (default)
+        - The XML profile is used as base.
+          ``durability``, ``reliability``, ``ownership`` and ``history`` are taken from the
+          :ref:`Topic QoS <user_manual_configuration_dds__topic_qos>`, with priority:
+          YAML configuration > QoS discovered from the remote endpoints > |spy| defaults.
+          Every other policy keeps the value of the XML profile.
+
+    *   - ``xml-standalone``
+        - The XML profile is used as is.
+          Neither the YAML configuration nor the discovered QoS override it.
+
+When no profile is found, the endpoint takes ``durability``, ``reliability``, ``ownership`` and ``history`` from the
+Topic QoS in both modes.
+No profile is looked up when ``specs: rtps`` is set to ``true``, so ``endpoint-qos-mode`` has no effect then
+(see :ref:`RTPS Participant <user_manual_configuration_specs_rtps>`).
+
+.. code-block:: yaml
+
+    dds:
+      xml:
+        files:
+          - "./xml_configuration.xml"
+      dds-profile: "participant_profile"
+      endpoint-qos-mode: xml-standalone
 
 .. warning::
 
-    Setting ``history-depth`` under ``specs`` overrides the history of every matching XML profile, even when set to
-    its default value of ``5000``.
-    Likewise, if the remote DataWriters use ``EXCLUSIVE_OWNERSHIP_QOS``, set ``ownership`` either in the XML profile or
-    in the YAML configuration, otherwise the DataReader will not match them.
+    With ``xml-standalone``, the DataReaders do not adapt to the QoS of the remote DataWriters.
+    Make sure the XML profile is compatible with them; e.g. if the remote DataWriters use ``EXCLUSIVE_OWNERSHIP_QOS``,
+    set it in the XML profile, otherwise the DataReader will not match them.
 
 
 .. _user_manual_configuration_dds__topic_filtering:
@@ -583,7 +608,8 @@ Setting ``rtps: true`` creates a plain RTPS participant instead.
 
     When ``rtps`` is set to ``true``, the following configuration has no effect:
 
-    *   The ``xml`` and ``dds-profile`` tags, and the
+    *   The ``xml``, ``dds-profile`` and
+        :ref:`endpoint-qos-mode <user_manual_configuration_dds__endpoint_qos_mode>` tags, and the
         :ref:`endpoint-profile-name <user_manual_configuration_dds__xml_endpoint_profiles>` Topic QoS,
         since XML profiles are only applied by the DDS participant.
     *   The :ref:`Content Filter <user_manual_configuration_dds__content_filter>` of the Manual Topics.
@@ -736,6 +762,8 @@ The following example includes all the configurations described on this page.
             </profiles>
 
       dds-profile: "participant_profile"
+
+      endpoint-qos-mode: xml-overridable
 
       domain: 0
 
