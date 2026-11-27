@@ -49,6 +49,7 @@ std::vector<std::string> invalid_files = {
     "./invalid_config_files/allowlist_with_qos.yaml",
     "./invalid_config_files/blocklist_with_filter.yaml",
     "./invalid_config_files/invalid_domain.yaml",
+    "./invalid_config_files/invalid_endpoint_qos_mode.yaml",
     "./invalid_config_files/invalid_ignore_participant_flags.yaml",
     "./invalid_config_files/invalid_qos_downsampling.yaml",
     "./invalid_config_files/invalid_threads.yaml",

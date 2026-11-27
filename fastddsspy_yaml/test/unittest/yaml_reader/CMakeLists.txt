@@ -27,6 +27,7 @@ set(TEST_LIST
         raise_exception_reading_non_existing_configuration
         parse_parameter_overflow_triggers_exception
         get_spy_configuration_trivial
+        get_spy_configuration_endpoint_qos_mode
         duplicate_manual_topic_name_overwrites_filter
         is_valid_fails_when_dds_configuration_null
         is_valid_fails_when_domain_out_of_range

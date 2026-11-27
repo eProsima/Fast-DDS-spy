@@ -1,0 +1,3 @@
+dds:
+  dds-profile: "spy_profile_name"
+  endpoint-qos-mode: xml-only
