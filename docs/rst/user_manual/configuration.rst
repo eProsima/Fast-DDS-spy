@@ -181,8 +181,13 @@ The ``endpoint-qos-mode`` tag under ``dds`` sets how a matching XML endpoint pro
         - The XML profile is used as is.
           Neither the YAML configuration nor the discovered QoS override it.
 
+    *   - ``disabled``
+        - No XML endpoint profile is looked up, as if none were loaded: the endpoints take their QoS from the
+          :ref:`Topic QoS <user_manual_configuration_dds__topic_qos>`.
+          Useful to stop applying the XML endpoint profiles without removing them from the XML configuration.
+
 When no profile is found, the endpoint takes ``durability``, ``reliability``, ``ownership`` and ``history`` from the
-Topic QoS in both modes.
+Topic QoS with ``xml-overridable`` and ``xml-standalone``.
 No profile is looked up when ``specs: rtps`` is set to ``true``, so ``endpoint-qos-mode`` has no effect then
 (see :ref:`RTPS Participant <user_manual_configuration_specs_rtps>`).
 
