@@ -134,6 +134,17 @@ TEST(YamlReaderTest, get_spy_configuration_endpoint_qos_mode)
     {
         Yaml yml = YAML::Load(R"(
             dds:
+                dds-profile: "participant_profile"
+                endpoint-qos-mode: disabled
+        )");
+        eprosima::spy::yaml::Configuration configuration(yml);
+        ASSERT_EQ(configuration.dds_configuration->endpoint_qos_mode,
+                ddspipe::participants::EndpointQoSMode::XML_DISABLED);
+    }
+
+    {
+        Yaml yml = YAML::Load(R"(
+            dds:
                 endpoint-qos-mode: xml-only
         )");
         ASSERT_THROW(eprosima::spy::yaml::Configuration configuration(yml), eprosima::utils::ConfigurationException);
